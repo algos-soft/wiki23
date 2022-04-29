@@ -3,9 +3,16 @@ package it.algos.wiki23.backend.boot;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.interfaces.*;
+import it.algos.vaad23.backend.packages.geografia.continente.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.packages.attivita.*;
+import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.doppionome.*;
+import it.algos.wiki23.backend.packages.genere.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
+import it.algos.wiki23.backend.packages.professione.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -60,6 +67,14 @@ public class Wiki23Boot extends VaadBoot {
         VaadVar.projectCurrent = "wiki23";
 
         /**
+         * Nome identificativo maiuscolo dell' applicazione <br>
+         * Usato (eventualmente) nella barra di menu in testa pagina <br>
+         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.projectNameUpper = "Wiki23";
+
+        /**
          * Classe da usare per gestire le versioni <br>
          * Di default FlowVers oppure possibile sottoclasse del progetto <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
@@ -75,7 +90,7 @@ public class Wiki23Boot extends VaadBoot {
             property = "algos.wiki23.version";
             VaadVar.projectVersion = Double.parseDouble(Objects.requireNonNull(environment.getProperty(property)));
         } catch (Exception unErrore) {
-            String message=String.format("Non ho trovato la property %s nelle risorse",property);
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
             logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
         }
 
@@ -118,6 +133,14 @@ public class Wiki23Boot extends VaadBoot {
     @Override
     protected void fixMenuRoutes() {
         super.fixMenuRoutes();
+        VaadVar.menuRouteList.remove(ContinenteView.class);
+
+        VaadVar.menuRouteList.add(GenereView.class);
+        VaadVar.menuRouteList.add(AttivitaView.class);
+        VaadVar.menuRouteList.add(NazionalitaView.class);
+        VaadVar.menuRouteList.add(ProfessioneView.class);
+        VaadVar.menuRouteList.add(DoppionomeView.class);
+        VaadVar.menuRouteList.add(BioView.class);
     }
 
 }

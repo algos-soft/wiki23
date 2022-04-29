@@ -10,6 +10,7 @@ import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
@@ -91,7 +92,7 @@ public class BioView extends CrudView {
     public void newItem() {
         String message;
         try {
-            appContext.getBean(DialogInputText.class).open(this::downloadBio);
+            appContext.getBean(DialogNewBio.class).open(this::downloadBio);
         } catch (Exception unErrore) {
             message = String.format("Non sono riuscito a costruire un'istanza di %s", DialogInputText.class.getSimpleName());
             logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());

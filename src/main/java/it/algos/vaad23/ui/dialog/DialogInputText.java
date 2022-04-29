@@ -20,13 +20,14 @@ import java.util.function.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class DialogInputText extends ADialog {
 
-    private static final String TITOLO = "Input";
+    protected static final String TITOLO = "Input";
 
-    private static final String CAPTION = "Testo di input";
+    protected static final String CAPTION = "Testo di input";
 
-    private TextField textField;
+    protected TextField textField;
 
-    private String captionTextField = CAPTION;
+    protected String captionTextField = CAPTION;
+
     protected Consumer<String> confirmHandler;
 
     /**
