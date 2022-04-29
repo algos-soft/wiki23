@@ -23,7 +23,7 @@ import org.springframework.context.*;
  * Nel WAR finale (runtime) occorre (credo) inserire dei servlet di context diversi <br>
  * Senza @ComponentScan, SpringBoot non 'vede' le classi con @SpringView che sono in una directory diversa da questo package <br>
  * <p>
- * Questa classe non fa praticamente niente se non avere le Annotation riportate qui <br>
+ * Questa classe non fa praticamente niente se non avere le Annotation riportate qui. <br>
  * Annotated with @SpringBootApplication (obbligatorio) <br>
  * Annotated with @EnableVaadin (obbligatorio) <br>
  * Annotated with @EntityScan (obbligatorio) <br>
