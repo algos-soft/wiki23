@@ -3,16 +3,9 @@ package it.algos.wiki23.backend.boot;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.packages.geografia.continente.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
-import it.algos.wiki23.backend.packages.attivita.*;
-import it.algos.wiki23.backend.packages.bio.*;
-import it.algos.wiki23.backend.packages.doppionome.*;
-import it.algos.wiki23.backend.packages.genere.*;
-import it.algos.wiki23.backend.packages.nazionalita.*;
-import it.algos.wiki23.backend.packages.professione.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -39,6 +32,8 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Wiki23Boot extends VaadBoot {
 
+    private String property;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -46,6 +41,7 @@ public class Wiki23Boot extends VaadBoot {
      */
     @Autowired
     public LogService logger;
+
 
     /**
      * Regola le variabili generali dell' applicazione con il loro valore iniziale di default <br>
@@ -61,15 +57,7 @@ public class Wiki23Boot extends VaadBoot {
          * Nome identificativo minuscolo del progetto corrente <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
-        VaadVar.projectCurrent = "wiki";
-
-        /**
-         * Nome identificativo maiuscolo dell' applicazione <br>
-         * Usato (eventualmente) nella barra di menu in testa pagina <br>
-         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
-         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
-         */
-        VaadVar.projectNameUpper = "Wiki";
+        VaadVar.projectCurrent = "wiki23";
 
         /**
          * Classe da usare per gestire le versioni <br>
@@ -84,9 +72,11 @@ public class Wiki23Boot extends VaadBoot {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         try {
-            VaadVar.projectVersion = Double.parseDouble(Objects.requireNonNull(environment.getProperty("algos.wiki.version")));
+            property = "algos.wiki23.version";
+            VaadVar.projectVersion = Double.parseDouble(Objects.requireNonNull(environment.getProperty(property)));
         } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(unErrore).usaDb());
+            String message=String.format("Non ho trovato la property %s nelle risorse",property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
         }
 
         /**
@@ -95,11 +85,12 @@ public class Wiki23Boot extends VaadBoot {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         try {
-            VaadVar.projectDate = Objects.requireNonNull(environment.getProperty("algos.wiki.version.date"));
+            property = "algos.wiki23.version.date";
+            VaadVar.projectDate = Objects.requireNonNull(environment.getProperty(property));
         } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(unErrore).usaDb());
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
         }
-
     }
 
     /**
@@ -109,7 +100,7 @@ public class Wiki23Boot extends VaadBoot {
      * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    @Qualifier(TAG_WIKI_VERSION)
+    @Qualifier(TAG_WIKI23_VERSION)
     public void setVersInstance(final AIVers versInstance) {
         this.versInstance = versInstance;
     }
@@ -127,14 +118,6 @@ public class Wiki23Boot extends VaadBoot {
     @Override
     protected void fixMenuRoutes() {
         super.fixMenuRoutes();
-        VaadVar.menuRouteList.remove(ContinenteView.class);
-
-        VaadVar.menuRouteList.add(GenereView.class);
-        VaadVar.menuRouteList.add(AttivitaView.class);
-        VaadVar.menuRouteList.add(NazionalitaView.class);
-        VaadVar.menuRouteList.add(ProfessioneView.class);
-        VaadVar.menuRouteList.add(DoppionomeView.class);
-        VaadVar.menuRouteList.add(BioView.class);
     }
 
 }

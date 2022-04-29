@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Wiki23Cost {
 
-    public static final String TAG_WIKI_VERSION = "wikiversion";
+    public static final String TAG_WIKI23_VERSION = "wikiversion";
 
     public static final String PATH_MODULO = "Modulo:Bio/";
 
