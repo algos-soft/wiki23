@@ -13,16 +13,27 @@ import javax.annotation.*;
 import java.util.*;
 
 /**
- * Project Wiki23
+ * Project Wiki
  * Created by Algos
  * User: gac
- * Date: ven, 29 apr 22
+ * Date: lun, 25 apr 22
  * <p>
  * Creazione da code di alcune preferenze del progetto <br>
  */
-public enum WPref  {
+public enum WPref {
 
-    prova("daEliminare", AETypePref.localdatetime, "Data di oggi.", ROOT_DATA_TIME) {},
+    downloadGenere("downloadGenere", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale attività genere.", ROOT_DATA_TIME),
+    downloadAttivita("downloadAttivita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale attività.", ROOT_DATA_TIME),
+    elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, "Elaborazione di tutte le attività.", ROOT_DATA_TIME),
+    elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, "Durata elaborazione delle attività.", 0),
+    uploadAttivita("uploadAttivita", AETypePref.localdatetime, "Upload di tutte le attività.", ROOT_DATA_TIME),
+    //    uploadAttivitaTime("uploadAttivitaTime", AETypePref.integer, "Durata upload delle attività.", 0),
+    //    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale nazionalità.", ROOT_DATA_TIME),
+    //    downloadProfessione("downloadProfessione", AETypePref.localdatetime, "Download di Modulo:Bio/Link attività.", ROOT_DATA_TIME),
+    //    downloadNomi("downloadNomi", AETypePref.localdatetime, "Download di Progetto:Antroponimi/Nomi doppi.", ROOT_DATA_TIME),
+
+    sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, "Soglia minima per creare la pagina di una attività o nazionalità sul server wiki", 50),
+
     ;
 
     //--codice di riferimento.
@@ -49,7 +60,6 @@ public enum WPref  {
 
     //--Link injected da un metodo static
     private DateService date;
-
 
 
     WPref(final String keyCode, final AETypePref type, final String descrizione, final Object defaultValue) {

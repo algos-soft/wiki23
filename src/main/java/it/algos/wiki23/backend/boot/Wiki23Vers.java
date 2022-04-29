@@ -21,14 +21,14 @@ import org.springframework.context.annotation.Scope;
  * Eseguita quindi a ogni avvio/riavvio del server e NON a ogni sessione <br>
  */
 @SpringComponent
-@Qualifier(TAG_WIKI23_VERSION)
+@Qualifier(TAG_WIKI_VERSION)
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Wiki23Vers extends VaadVers {
 
     /**
      * Property statica per le versioni inserite da vaadin23 direttamente <br>
      */
-    private static final String CODE_PROJECT_WIKI23 = "W";
+    private static final String CODE_PROJECT_WIKI = "W";
 
     /**
      * Executed on container startup <br>
@@ -46,12 +46,12 @@ public class Wiki23Vers extends VaadVers {
     public void inizia() {
         super.inizia();
         int k = 0;
-        codeProject = CODE_PROJECT_WIKI23;
+        codeProject = CODE_PROJECT_WIKI;
 
-        //--prima installazione del progetto specifico 'Wiki23'
+        //--prima installazione del progetto specifico 'Wiki'
         //--non fa nulla, solo informativo
         if (installa(++k)) {
-            this.crea(k, AETypeVers.setup, "Installazione iniziale del programma wiki23");
+            this.crea(k, AETypeVers.setup, "Installazione iniziale del programma wiki");
         }
 
     }

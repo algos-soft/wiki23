@@ -18,22 +18,22 @@
     </appender>
 
 
-    <variable name="VAAD23_LOG_FILE" value="log/vaad23.log"/>
+    <variable name="WIKI23_LOG_FILE" value="log/wiki23.log"/>
     <appender name="rollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${VAAD23_LOG_FILE}</file>
+        <file>${WIKI23_LOG_FILE}</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p --- ${PID:-} [%t] %C.%M:%L --- %m %n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>
-            <FileNamePattern>${VAAD23_LOG_FILE}.%i.log</FileNamePattern>
+            <FileNamePattern>${WIKI23_LOG_FILE}.%i.log</FileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
         </triggeringPolicy>
     </appender>
 
-    <variable name="SPRING_LOG_FILE" value="log/vaad23-spring.log"/>
+    <variable name="SPRING_LOG_FILE" value="log/wiki23-spring.log"/>
     <appender name="springContextAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${SPRING_LOG_FILE}</file>
         <encoder>
@@ -48,7 +48,7 @@
         </triggeringPolicy>
     </appender>
 
-    <variable name="ADMIN_LOG_FILE" value="log/vaad23-admin.log"/>
+    <variable name="ADMIN_LOG_FILE" value="log/wiki23-admin.log"/>
     <appender name="adminAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${ADMIN_LOG_FILE}</file>
         <encoder>
@@ -75,7 +75,7 @@
         <appender-ref ref="springContextAppender"/>
     </logger>
 
-    <logger name="vaad23.admin" level="INFO" additivity="true">
+    <logger name="wiki23.admin" level="INFO" additivity="true">
         <appender-ref ref="adminAppender"/>
     </logger>
 
