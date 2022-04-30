@@ -10,6 +10,7 @@ import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -61,14 +62,11 @@ public class BioView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "nome", "cognome");
-        super.formPropertyNamesList = Arrays.asList("nome", "cognome");
-        super.riordinaColonne = true; //se rimane true, uguale al default, si può cancellare
-        super.usaBottoneRefresh = false; //se rimane false, uguale al default, si può cancellare
-        super.usaBottoneDeleteReset = false; //se rimane false, uguale al default, si può cancellare
-        super.usaBottoneNew = true; //se rimane true, uguale al default, si può cancellare
-        super.usaBottoneEdit = true; //se rimane true, uguale al default, si può cancellare
-        super.usaBottoneDelete = true; //se rimane true, uguale al default, si può cancellare
+        super.gridPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "nome", "cognome", "attivita", "nazionalita");
+        super.formPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "nome", "cognome", "attivita", "nazionalita");
+
+        super.usaBottoneDelete = false;
+        super.usaBottoneSearch = false;
 
         super.dialogClazz = BioDialog.class;
     }
@@ -80,7 +78,7 @@ public class BioView extends CrudView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        addSpanVerde("Prova di colori");
+        addSpanVerde("Biografie");
     }
 
     /**
@@ -89,10 +87,11 @@ public class BioView extends CrudView {
      * Sempre attivo <br>
      * Passa al dialogo gli handler per annullare e creare <br>
      */
+    @Override
     public void newItem() {
         String message;
         try {
-            appContext.getBean(DialogNewBio.class).open(this::downloadBio);
+            appContext.getBean(DialogNewBio.class).openNew(this::downloadBio);
         } catch (Exception unErrore) {
             message = String.format("Non sono riuscito a costruire un'istanza di %s", DialogInputText.class.getSimpleName());
             logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
@@ -112,7 +111,7 @@ public class BioView extends CrudView {
         TextField field = new TextField("Titolo della pagina sul server wiki");
         field.setWidth("16em");
         field.addValueChangeListener(event -> {
-//            newFormEsegue(field.getValue());
+            //            newFormEsegue(field.getValue());
             dialog.close();
         });
         layout.add(field);
@@ -129,14 +128,12 @@ public class BioView extends CrudView {
         dialog.open();
     }
 
-    protected void downloadBio(String wikiTitle) {
-        int a = 87;
-
-        //        Bio bio = ((BioService) entityService).downloadBioSave(wikiTitle);
-        //
-        //        if (bio != null) {
-        //            this.executeRoute(bio);
-        //        }
+    /**
+     * Già controllato che la pagina esista e che sia una biografia (ha il templBio) <br>
+     */
+    protected void downloadBio(WrapBio wrap) {
+        backend.creaIfNotExist(wrap);
+        refresh();
     }
 
 }// end of crud @Route view class

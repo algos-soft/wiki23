@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.packages.attivita;
 import it.algos.vaad23.backend.entity.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 

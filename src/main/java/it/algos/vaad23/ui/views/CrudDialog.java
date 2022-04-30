@@ -13,6 +13,7 @@ import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.*;
+import com.vaadin.flow.data.converter.*;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -109,6 +110,7 @@ public class CrudDialog extends Dialog {
 
     protected boolean usaUnaSolaColonna = true;
 
+    protected HorizontalLayout bottomPlaceHolder;
 
     /**
      * Constructor not @Autowired. <br>
@@ -187,7 +189,7 @@ public class CrudDialog extends Dialog {
         this.add(new H3());
 
         //--Barra placeholder dei bottoni, creati e regolati
-        this.add(fixBottom());
+        this.fixBottom();
     }
 
     /**
@@ -252,6 +254,7 @@ public class CrudDialog extends Dialog {
                 field = switch (type) {
                     case text -> new TextField(key);
                     case integer -> new IntegerField(key);
+                    case lungo -> new TextField(key);
                     case booleano -> new Checkbox(key);
                     case enumeration -> {
                         ComboBox combo = new ComboBox(key);
@@ -276,7 +279,17 @@ public class CrudDialog extends Dialog {
                 };
 
                 formLayout.add(field);
-                binder.forField(field).bind(key);
+                if (type == AETypeField.lungo) {
+                    String message = String.format("%s deve contenere solo caratteri numerici", key);
+                    StringToLongConverter longConverter = new StringToLongConverter(0L, message);
+                    binder.forField(field)
+                            .withConverter(longConverter)
+                            .bind(key);
+                }
+                else {
+                    binder.forField(field).bind(key);
+                }
+
                 if (hasFocus && field instanceof TextField textField) {
                     textField.focus();
                     textField.setAutoselect(true);
@@ -310,28 +323,28 @@ public class CrudDialog extends Dialog {
      * Barra dei bottoni <br>
      * Placeholder (eventuale, presente di default) <br>
      */
-    protected Component fixBottom() {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setClassName("buttons");
-        layout.setPadding(false);
-        layout.setSpacing(true);
-        layout.setMargin(false);
-        layout.setClassName("confirm-dialog-buttons");
+    protected void fixBottom() {
+        bottomPlaceHolder = new HorizontalLayout();
+        bottomPlaceHolder.setClassName("buttons");
+        bottomPlaceHolder.setPadding(false);
+        bottomPlaceHolder.setSpacing(true);
+        bottomPlaceHolder.setMargin(false);
+        bottomPlaceHolder.setClassName("confirm-dialog-buttons");
 
         Label spazioVuotoEspandibile = new Label("");
 
         annullaButton.setText(textAnnullaButton);
-//        annullaButton.getElement().setProperty("title", "Shortcut SHIFT");
+        //        annullaButton.getElement().setProperty("title", "Shortcut SHIFT");
         annullaButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "secondary" : "primary");
         annullaButton.addClickListener(e -> annullaHandler());
         annullaButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
-        layout.add(annullaButton);
+        bottomPlaceHolder.add(annullaButton);
 
         saveButton.setText(textSaveButton);
         saveButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "primary" : "secondary");
         saveButton.addClickListener(e -> saveHandler());
         saveButton.setIcon(new Icon(VaadinIcon.CHECK));
-        layout.add(saveButton);
+        bottomPlaceHolder.add(saveButton);
 
         if (operation == CrudOperation.DELETE) {
             deleteButton.setText(textDeleteButton);
@@ -340,7 +353,7 @@ public class CrudDialog extends Dialog {
             deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
             deleteButton.getElement().setProperty("title", "Shortcut SHIFT+D");
             deleteButton.addClickShortcut(Key.KEY_D, KeyModifier.SHIFT);
-            layout.add(deleteButton);
+            bottomPlaceHolder.add(deleteButton);
         }
 
         switch (operation) {
@@ -363,12 +376,12 @@ public class CrudDialog extends Dialog {
             }
         }
 
-        layout.setFlexGrow(1, spazioVuotoEspandibile);
+        bottomPlaceHolder.setFlexGrow(1, spazioVuotoEspandibile);
 
         //--Controlla la visibilità dei bottoni
         saveButton.setVisible(operation == CrudOperation.ADD || operation == CrudOperation.UPDATE);
 
-        return layout;
+        this.add(bottomPlaceHolder);
     }
 
     /**

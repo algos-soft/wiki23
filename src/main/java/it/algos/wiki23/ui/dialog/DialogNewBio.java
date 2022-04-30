@@ -1,12 +1,16 @@
 package it.algos.wiki23.ui.dialog;
 
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
+import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+
+import java.util.function.*;
 
 /**
  * Project wiki23
@@ -18,6 +22,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class DialogNewBio extends DialogInputText {
+
+    protected Consumer<WrapBio> confirmHandlerNew;
+
+    protected WrapBio wrap;
 
     /**
      * Preferenze usate da questo dialogo <br>
@@ -31,24 +39,50 @@ public class DialogNewBio extends DialogInputText {
         super.captionTextField = "WikiTitle";
     }
 
+
+    public void openNew(final Consumer<WrapBio> confirmHandlerNew) {
+        infoPlaceHolder.setVisible(false);
+        this.confirmHandlerNew = confirmHandlerNew;
+        super.open();
+    }
+
     protected void sincro(HasValue.ValueChangeEvent event) {
         String wikiTitle = textField.getValue();
+        infoPlaceHolder.removeAll();
         boolean esiste = false;
+        boolean biografia = false;
 
         try {
-            esiste = appContext.getBean(QueryExist.class).urlRequest(wikiTitle);
+            esiste = appContext.getBean(QueryExist.class).isEsiste(wikiTitle);
+            if (esiste) {
+                wrap = appContext.getBean(QueryBio.class).getWrap(wikiTitle);
+            }
         } catch (Exception unErrore) {
             logger.warn(new WrapLog().exception(unErrore).usaDb());
         }
-        confirmButton.setEnabled(esiste);
 
-        if (esiste) {
+        if (wrap != null && wrap.isValida()) {
             confirmButton.setEnabled(true);
+            infoPlaceHolder.setVisible(false);
         }
         else {
             confirmButton.setEnabled(false);
-            // messaggio rosso
+            if (esiste) {
+                infoPlaceHolder.add(htmlService.getSpanRosso("La pagina esiste ma non è una bio"));
+            }
+            else {
+                infoPlaceHolder.add(htmlService.getSpanRosso("La pagina non esiste"));
+            }
+            infoPlaceHolder.setVisible(true);
         }
+    }
+    public void confirmHandler() {
+        confirmHandlerNew();
+    }
+
+    public void confirmHandlerNew() {
+        close();
+        confirmHandlerNew.accept(wrap);
     }
 
 }

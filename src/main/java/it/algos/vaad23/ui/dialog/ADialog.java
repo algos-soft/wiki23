@@ -50,15 +50,25 @@ public abstract class ADialog extends Dialog {
     @Autowired
     public TextService textService;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public HtmlService htmlService;
+
     protected String titoloDialogo;
 
     protected String dettaglioFacoltativo;
 
     protected VerticalLayout topPlaceHolder;
+    protected VerticalLayout infoPlaceHolder;
 
     protected VerticalLayout bodyPlaceHolder;
 
     protected HorizontalLayout bottomPlaceHolder;
+
 
     protected Button annullaButton;
 
@@ -120,8 +130,11 @@ public abstract class ADialog extends Dialog {
         this.fixPreferenze();
 
         //--Titolo del dialogo
-        //--Eventuale descrizione
         this.creaHeader();
+
+        //--Informazioni (eventuali) sotto i titoli
+        //--Eventuale descrizione
+        this.creaInfo();
 
         //--Corpo centrale del dialogo
         //--Eventuali componenti di Input
@@ -132,6 +145,7 @@ public abstract class ADialog extends Dialog {
 
         //--Barra dei bottoni, creati e regolati
         this.creaBottom();
+
     }
 
     /**
@@ -157,6 +171,14 @@ public abstract class ADialog extends Dialog {
         topPlaceHolder.add(new H2(titoloDialogo));
         topPlaceHolder.add(new H4(dettaglioFacoltativo));
         this.add(topPlaceHolder);
+    }
+
+    public void creaInfo() {
+        infoPlaceHolder = new VerticalLayout();
+        infoPlaceHolder.setPadding(false);
+        infoPlaceHolder.setSpacing(false);
+        infoPlaceHolder.setMargin(false);
+        this.add(infoPlaceHolder);
     }
 
     /**

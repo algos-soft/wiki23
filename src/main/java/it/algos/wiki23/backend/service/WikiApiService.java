@@ -4,6 +4,7 @@ import com.vaadin.flow.component.*;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import org.json.simple.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -106,13 +107,6 @@ public class WikiApiService extends AbstractService {
     public static final String TAG_REDIRECT_QUATTRO = "#RINVIA";
 
     //--L'API di 'parse' è leggermente più veloce e comunque il codice JSON è più semplice da interpretare
-    public static final String WIKI_PARSE = "https://it.wikipedia.org/w/api.php?action=parse&prop=wikitext&formatversion=2&format=json&page=";
-
-    public static final String API_VIEW = "https://it.wikipedia.org/wiki/";
-
-    public static final String API_EDIT = "https://it.wikipedia.org/w/index.php?action=edit&section=0&title=";
-
-    public static final String API_HISTORY = "https://it.wikipedia.org/w/index.php?action=history&title=";
 
 //    /**
 //     * Converte il valore stringa nel tipo previsto dal parametro PagePar

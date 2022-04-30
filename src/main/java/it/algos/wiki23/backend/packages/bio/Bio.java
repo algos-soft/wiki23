@@ -27,23 +27,23 @@ import java.time.*;
 @EqualsAndHashCode(callSuper = false)
 public class Bio extends AEntity {
 
-    @AIField(type = AETypeField.lungo,  enabled = false)
+    @AIField(type = AETypeField.lungo, enabled = false, widthEM = 7)
     public long pageId;
 
     @NotBlank()
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String wikiTitle;
 
     @Lob
-    @AIField(type = AETypeField.textArea, required = true,  widthEM = 48)
+    @AIField(type = AETypeField.textArea, required = true, widthEM = 48)
     public String tmplBio;
 
 
-    @AIField(type = AETypeField.localDateTime )
+    @AIField(type = AETypeField.localDateTime)
     public LocalDateTime lastServer;
 
-    @AIField(type = AETypeField.localDateTime )
+    @AIField(type = AETypeField.localDateTime)
     public LocalDateTime lastMongo;
 
     /**
@@ -52,51 +52,56 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.booleano)
     public boolean valido;
 
-    @AIField(type = AETypeField.text )
+    /**
+     * elaborato se sono riempiti i campi derivati dal tmplBio
+     */
+    @AIField(type = AETypeField.booleano)
+    public boolean elaborato;
+
+    @AIField(type = AETypeField.text)
     public String nome;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String cognome;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String sesso;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String giornoNato;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String annoNato;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String luogoNato;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String luogoNatoLink;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String giornoMorto;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String annoMorto;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String luogoMorto;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String luogoMortoLink;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String attivita;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String attivita2;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String attivita3;
 
-    @AIField(type = AETypeField.text )
+    @AIField(type = AETypeField.text)
     public String nazionalita;
-
 
 
     @Override

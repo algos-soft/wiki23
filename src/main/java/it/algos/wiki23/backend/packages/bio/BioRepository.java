@@ -34,5 +34,6 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
     @Override
     void delete(Bio entity);
+    Bio findFirstByPageId(long pageID);
 
 }// end of crud repository class

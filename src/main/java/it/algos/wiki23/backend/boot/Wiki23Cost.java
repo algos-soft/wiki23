@@ -35,7 +35,36 @@ public class Wiki23Cost {
 
     public static final String NAZ = "Nazionalità";
 
+
     public static final String PATH_WIKI = "https://it.wikipedia.org/wiki/";
+
+    public static final String API_BASE = "https://it.wikipedia.org/w/api.php?&format=json&formatversion=2";
+
+    public static final String ACTION_PARSE = API_BASE + "&action=parse";
+
+    public static final String WIKI_PARSE = ACTION_PARSE + "&prop=wikitext&page=";
+
+    public static final String ACTION_QUERY = API_BASE + "&action=query";
+
+    public static final String API_TITOLI = "&titles=";
+
+    public static final String WIKI_QUERY = ACTION_QUERY + API_TITOLI;
+
+    public static final String WIKI_QUERY_BASE = ACTION_QUERY + "&rvslots=main&prop=revisions&rvprop=content|ids|timestamp" + API_TITOLI;
+
+    public static final String WIKI_QUERY_ALL = ACTION_QUERY + "&rvslots=main&prop=info|revisions&rvprop=content|ids|flags|timestamp|user|userid|comment|size" + API_TITOLI;
+
+    //
+    //    public static final String API = "https://it.wikipedia.org/w/api.php?&format=json&formatversion=2";
+    //
+    //    public static final String API_QUERY = API + "&action=query&titles=";
+    //
+    //    public static final String API_PARSE = "https://it.wikipedia.org/w/api.php?action=parse&prop=wikitext&formatversion=2&format=json&page=";
+
+    //    public static final String API_EDIT = "https://it.wikipedia.org/w/index.php?action=edit&section=0&title=";
+
+    //    public static final String API_HISTORY = "https://it.wikipedia.org/w/index.php?action=history&title=";
+
 
     public static final String PATH_ATTIVITA = PATH_PROGETTO + ATT;
 
@@ -81,5 +110,60 @@ public class Wiki23Cost {
 
     public static final String TAG_BIO = "bio";
 
+
+    public static final String KEY_JSON_QUERY = "query";
+
+    public static final String KEY_JSON_ERROR = "error";
+
+    public static final String KEY_JSON_NORMALIZED = "normalized";
+
+    public static final String KEY_JSON_ENCODED = "fromencoded";
+
+    public static final String KEY_JSON_CONTINUE = "continue";
+
+    public static final String KEY_JSON_CONTINUE_CM = "cmcontinue";
+
+    public static final String KEY_JSON_PAGES = "pages";
+
+    public static final String KEY_JSON_PAGE_ID = "pageid";
+
+    public static final String KEY_JSON_TITLE = "title";
+
+    public static final String KEY_JSON_MISSING = "missing";
+
+    public static final String KEY_JSON_REVISIONS = "revisions";
+
+    public static final String KEY_JSON_TIMESTAMP = "timestamp";
+
+    public static final String KEY_JSON_SLOTS = "slots";
+
+    public static final String KEY_JSON_MAIN = "main";
+
+    public static final String KEY_JSON_CONTENT = "content";
+
+    public static final String KEY_JSON_VALID = "batchcomplete";
+
+    public static final String KEY_JSON_MEMBERS = "categorymembers";
+
+    public static final String KEY_JSON_CODE = "code";
+
+    public static final String KEY_JSON_INFO = "info";
+
+
+    public static final String KEY_MAP_GRAFFE_ESISTONO = "keyMapGraffeEsistono";
+
+    public static final String KEY_MAP_GRAFFE_TYPE = "keyMapGraffeType";
+
+    public static final String KEY_MAP_GRAFFE_NUMERO = "keyMapGraffeNumero";
+
+    public static final String KEY_MAP_GRAFFE_VALORE_CONTENUTO = "keyMapGraffeValoreContenuto";
+
+    public static final String KEY_MAP_GRAFFE_TESTO_PRECEDENTE = "keyMapGraffeTestoPrecedente";
+
+    public static final String KEY_MAP_GRAFFE_NOME_PARAMETRO = "keyMapGraffeNomeParametro";
+
+    public static final String KEY_MAP_GRAFFE_VALORE_PARAMETRO = "keyMapGraffeValoreParametro";
+
+    public static final String KEY_MAP_GRAFFE_LISTA_WRAPPER = "keyMapGraffeListaWrapper";
 
 }

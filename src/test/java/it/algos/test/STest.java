@@ -1,10 +1,12 @@
 package it.algos.test;
 
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
+import org.springframework.boot.test.context.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.*;
@@ -17,6 +19,8 @@ import org.springframework.data.mongodb.repository.*;
  * Time: 11:28
  * Layer per gestire ApplicationContext
  */
+//@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = {Wiki23Application.class})
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public abstract class STest extends ATest {
@@ -24,9 +28,9 @@ public abstract class STest extends ATest {
     @Autowired
     protected ApplicationContext appContext;
 
-    @Autowired
-    @Qualifier("Logger")
-    protected MongoRepository crudRepository;
+//    @Autowired
+//    @Qualifier("Logger")
+//    protected MongoRepository crudRepository;
 
 
     /**
@@ -46,7 +50,7 @@ public abstract class STest extends ATest {
      */
     protected void initMocks() {
         super.initMocks();
-        assertNotNull(crudRepository);
+//        assertNotNull(crudRepository);
     }
 
     /**
@@ -57,8 +61,8 @@ public abstract class STest extends ATest {
      */
     protected void fixRiferimentiIncrociati() {
         super.fixRiferimentiIncrociati();
-        loggerBackend.crudRepository = crudRepository;
-        loggerBackend.repository = (LoggerRepository) crudRepository;
+//        loggerBackend.crudRepository = crudRepository;
+//        loggerBackend.repository = (LoggerRepository) crudRepository;
     }
 
 }

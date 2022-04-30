@@ -97,6 +97,7 @@ public class ColumnService extends AbstractService {
                 return switch (type) {
                     case text -> new Label((String) field.get(entity));
                     case integer -> new Label(field.get(entity) + VUOTA);
+                    case lungo -> new Label(field.get(entity) + VUOTA);
                     case booleano -> {
                         icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
                         icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);

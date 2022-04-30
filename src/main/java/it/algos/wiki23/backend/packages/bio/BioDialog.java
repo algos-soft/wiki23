@@ -1,9 +1,13 @@
 package it.algos.wiki23.backend.packages.bio;
 
+import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.ui.views.*;
+import it.algos.wiki23.backend.service.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.vaadin.crudui.crud.*;
@@ -22,12 +26,15 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class BioDialog extends CrudDialog {
 
-    //--I fields devono essere class variable e non local variable
-    private TextField code;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ElaboraService elaboraService;
 
-    //--I fields devono essere class variable e non local variable
-    private TextField descrizione;
-
+    private Bio currentItem;
 
     /**
      * Constructor not @Autowired. <br>
@@ -52,25 +59,24 @@ public class BioDialog extends CrudDialog {
      */
     public BioDialog(final Bio entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List fields) {
         super(entityBean, operation, crudBackend, fields);
+        this.currentItem = entityBean;
     }// end of constructor not @Autowired
 
-
-    /**
-     * Crea i fields
-     * Inizializza le properties grafiche (caption, visible, editable, width, ecc)
-     * Aggiunge i fields al binder
-     * Aggiunge eventuali fields specifici direttamente al layout grafico (senza binder e senza fieldMap)
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
     @Override
-    protected void fixBody() {
-        code = new TextField("Code");
-        code.setReadOnly(operation == CrudOperation.DELETE);
+    protected void fixBottom() {
+        super.fixBottom();
 
-        descrizione = new TextField("Descrizione");
-        descrizione.setReadOnly(operation == CrudOperation.DELETE);
+        Button elaboraButton = new Button();
+        elaboraButton.setText("Elabora");
+        elaboraButton.getElement().setAttribute("theme", "error");
+        elaboraButton.addClickListener(e -> elabora());
+        elaboraButton.setIcon(new Icon(VaadinIcon.AMBULANCE));
+        bottomPlaceHolder.add(elaboraButton);
 
-        formLayout.add(code, descrizione);
+    }
+
+    protected void elabora() {
+        currentItem = elaboraService.esegue(currentItem);
     }
 
 }// end of crud Dialog class
