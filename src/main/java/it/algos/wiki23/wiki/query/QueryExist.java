@@ -126,7 +126,7 @@ public class QueryExist extends AQuery {
         }
         else {
             if (jsonPageZero.get(KEY_JSON_PAGE_ID) != null && jsonPageZero.get(KEY_JSON_TITLE) != null) {
-                wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.indeterminata);
+                wrap = new WrapBio().valida(true).title(result.getWikiTitle()).type(AETypePage.indeterminata);
                 if (jsonPageZero.get(KEY_JSON_TITLE) instanceof String wikiTitle) {
                     wrap = wrap.title(wikiTitle);
                 }

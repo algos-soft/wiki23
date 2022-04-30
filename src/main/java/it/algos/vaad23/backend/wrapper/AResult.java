@@ -170,11 +170,13 @@ public class AResult implements AIResult {
     @Override
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
+        this.setValido(false);
     }
 
     @Override
     public AIResult setErrorMessage(final String message) {
         errorMessage = message;
+        this.setValido(false);
         return this;
     }
 
@@ -191,6 +193,7 @@ public class AResult implements AIResult {
     @Override
     public void setValidMessage(String validMessage) {
         this.validMessage = validMessage;
+        this.setValido(true);
     }
 
     @Override
