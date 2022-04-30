@@ -1,6 +1,5 @@
 package it.algos.vaad23.backend.service;
 
-import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 
 /**
