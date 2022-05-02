@@ -26,7 +26,7 @@ public enum ParBio {
     nome("Nome", "nome", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.nome = textService.isValid(value) ? elaboraService.fixNome(value) : null;
+            bio.nome = textService.isValid(value) ? elaboraService.fixNome(value) : null;
         }
 
         @Override
@@ -38,13 +38,8 @@ public enum ParBio {
     cognome("Cognome", "cognome", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.cognome = textService.isValid(value) ? elaboraService.fixCognome(value) : null;
+            bio.cognome = textService.isValid(value) ? elaboraService.fixCognome(value) : null;
         }
-
-        //        @Override
-        //        public String fixValoreGrezzo(final String valoreGrezzo) {
-        //            return elabora.fixMinuscola(valoreGrezzo);
-        //        }
 
         @Override
         public String getValue(final Bio bio) {
@@ -207,17 +202,8 @@ public enum ParBio {
     attivita("Attività", "attivita", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.attivita = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
+            bio.attivita = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
         }
-
-        //        public String fixValoreGrezzo(Bio bio, String valoreGrezzo) throws AlgosException {
-        //            return elabora.fixAttivitaValida(bio, valoreGrezzo);
-        //        }
-        //
-        //        public String fixParametro(Bio bio, String valoreGrezzo) throws AlgosException {
-        //            return elabora.fixAttivitaValida(bio, valoreGrezzo);
-        //        }
-
         @Override
         public String getValue(Bio bio) {
             return bio != null ? bio.attivita : VUOTA;
@@ -229,14 +215,6 @@ public enum ParBio {
         public void setValue(Bio bio, String value) throws AlgosException {
 //            bio.attivita2 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
         }
-
-        //        public String fixValoreGrezzo(Bio bio, String valoreGrezzo) throws AlgosException {
-        //            return elabora.fixAttivitaValida(bio, valoreGrezzo);
-        //        }
-        //
-        //        public String fixParametro(Bio bio, String valoreGrezzo) throws AlgosException {
-        //            return elabora.fixAttivitaValida(bio, valoreGrezzo);
-        //        }
 
         @Override
         public String getValue(Bio bio) {
@@ -250,14 +228,6 @@ public enum ParBio {
 //            bio.attivita3 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
         }
 
-        //        public String fixValoreGrezzo(Bio bio, String valoreGrezzo) throws AlgosException {
-        //            return elabora.fixAttivitaValida(bio, valoreGrezzo);
-        //        }
-        //
-        //        public String fixParametro(Bio bio, String valoreGrezzo) throws AlgosException {
-        //            return elabora.fixAttivitaValida(bio, valoreGrezzo);
-        //        }
-
         @Override
         public String getValue(Bio bio) {
             return bio != null ? bio.attivita3 : VUOTA;
@@ -270,16 +240,8 @@ public enum ParBio {
     nazionalita("Nazionalità", "nazionalita", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.nazionalita = value.equals(VUOTA) ? null : elaboraService.fixNazionalitaValida(value);
+            bio.nazionalita = value.equals(VUOTA) ? null : elaboraService.fixNazionalitaValida(value);
         }
-
-        //        public String fixValoreGrezzo(String valoreGrezzo) {
-        //            return elabora.fixNazionalitaValida(valoreGrezzo);
-        //        }
-        //
-        //        public String fixParametro(String valoreGrezzo) {
-        //            return elabora.fixNazionalitaValida(valoreGrezzo);
-        //        }
 
         @Override
         public String getValue(Bio bio) {

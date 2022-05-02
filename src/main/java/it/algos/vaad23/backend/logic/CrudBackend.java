@@ -148,8 +148,8 @@ public abstract class CrudBackend extends AbstractService {
         return crudRepository.count() == 0;
     }
 
-    public int countAll() {
-        return crudRepository.findAll().size();
+    public int count() {
+        return ((Long) crudRepository.count()).intValue();
     }
 
     public List findByDescrizione(final String value) {

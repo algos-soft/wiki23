@@ -160,6 +160,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected Button buttonDeleteReset;
 
+    protected boolean usaReset;
 
     /**
      * Flag di preferenza per l' utilizzo del bottone. Di default new. <br>
@@ -286,6 +287,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         autoCreateColumns = false;
         usaBottoneRefresh = false;
         usaBottoneDeleteReset = false;
+        usaReset = false;
         usaBottoneNew = true;
         usaBottoneEdit = true;
         usaBottoneDelete = true;
@@ -362,10 +364,10 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             buttonDeleteReset = new Button();
             buttonDeleteReset.getElement().setAttribute("theme", "error");
             //--ha senso solo per le entity che estendono AREntity con la property 'reset'
-            if (AREntity.class.isAssignableFrom(entityClazz)) {
+            if (AREntity.class.isAssignableFrom(entityClazz) || usaReset) {
                 buttonDeleteReset.getElement().setProperty("title", "Reset: ripristina nel database i valori di default annullando le " +
                         "eventuali modifiche apportate successivamente\nShortcut SHIFT+R");
-                buttonDeleteReset.addClickListener(event -> reset());
+                buttonDeleteReset.addClickListener(event -> resetDialog());
                 buttonDeleteReset.addClickShortcut(Key.KEY_R, KeyModifier.SHIFT);
             }
             else {
@@ -486,6 +488,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         // layout configuration
         setSizeFull();
         this.add(grid);
+        sincroFiltri();
     }
 
     protected void fixAutoNumbering() {
@@ -576,7 +579,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected void sicroBottomLayout() {
         String view = textService.primaMaiuscola(entityClazz.getSimpleName());
-        int elementiTotali = crudBackend.countAll();
+        int elementiTotali = crudBackend.count();
         String totaleTxt = textService.format(elementiTotali);
         String filtratiTxtTxt = textService.format(elementiFiltrati);
 
@@ -649,8 +652,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         grid.setItems(crudBackend.findAll(sortOrder));
     }
 
-    protected void reset() {
-        appContext.getBean(DialogDeleteAll.class).open(this::resetEsegue);
+    protected void resetDialog() {
+        appContext.getBean(DialogReset.class).open(this::resetEsegue);
     }
 
     protected void deleteAll() {
@@ -661,6 +664,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         if (crudBackend.reset()) {
             grid.setItems(crudBackend.findAll(sortOrder));
             Avviso.show("Reset all").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            refresh();
         }
     }
 
@@ -702,7 +706,15 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * @param entityBeanDaRegistrare (nuova o esistente)
      */
     public void updateItem(AEntity entityBeanDaRegistrare) {
-        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
+        CrudOperation operation;
+
+        if (usaBottoneEdit) {
+            operation = CrudOperation.UPDATE;
+        }
+        else {
+            operation = CrudOperation.READ;
+        }
+        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, operation, crudBackend, formPropertyNamesList);
         dialog.open(this::saveHandler, this::annullaHandler);
     }
 
@@ -753,7 +765,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         String tag3 = "5.0" + TAG_EM;
 
         try {
-            dim = crudBackend.countAll();
+            dim = crudBackend.count();
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }

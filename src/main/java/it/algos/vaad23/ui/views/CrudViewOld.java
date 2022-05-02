@@ -261,7 +261,7 @@ public abstract class CrudViewOld extends VerticalLayout implements AfterNavigat
      * Ridisegna la GUI <br>
      */
     public void deleteAll() {
-        if (crudBackend.countAll() > 0) {
+        if (crudBackend.count() > 0) {
             try {
                 crudBackend.deleteAll();
             } catch (Exception unErrore) {

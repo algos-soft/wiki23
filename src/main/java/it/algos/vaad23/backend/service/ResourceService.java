@@ -138,7 +138,7 @@ public class ResourceService extends AbstractService {
      */
     public Map<String, List<String>> leggeMappaConfig(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
         String rawText = leggeConfig(simpleNameFileToBeRead);
-        return leggeMappa(rawText, compresiTitoli);
+        return elaboraMappa(rawText, compresiTitoli);
     }
 
 
@@ -165,7 +165,7 @@ public class ResourceService extends AbstractService {
      */
     public Map<String, List<String>> leggeMappaServer(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
         String rawText = leggeServer(simpleNameFileToBeRead);
-        return leggeMappa(rawText, compresiTitoli);
+        return elaboraMappa(rawText, compresiTitoli);
     }
 
     /**
@@ -177,11 +177,14 @@ public class ResourceService extends AbstractService {
      *
      * @return mappa delle righe grezze con eventualmente i titoli
      */
-    private Map<String, List<String>> leggeMappa(final String rawText, final boolean compresiTitoli) {
+    private Map<String, List<String>> elaboraMappa(final String rawText, final boolean compresiTitoli) {
         Map<String, List<String>> mappa = null;
         List<String> listaParti;
         String[] righe;
         String[] parti;
+        boolean usaId = rawText.startsWith("id,") || rawText.startsWith("ID,");
+        int prima = usaId ? 1 : 0;
+        int numRiga = 0;
 
         if (textService.isValid(rawText)) {
             righe = rawText.split(CAPO);
@@ -192,23 +195,31 @@ public class ResourceService extends AbstractService {
                     parti = riga.split(VIRGOLA);
 
                     if (parti != null && parti.length > 1) {
-                        for (int k = 1; k < parti.length; k++) {
+                        for (int k = prima; k < parti.length; k++) {
                             listaParti.add(parti[k]);
                         }
                     }
-                    mappa.put(parti[0], listaParti);
+                    if (usaId) {
+                        mappa.put(parti[0], listaParti);
+                    }
+                    else {
+                        mappa.put(numRiga++ + VUOTA, listaParti);
+                    }
                 }
             }
         }
 
         if (mappa != null) {
             if (!compresiTitoli) {
-                if (mappa.containsKey("id")) {
-                    mappa.remove("id");
-                }
-                else {
-                    logger.error(new WrapLog().exception(new AlgosException("Manca la riga chiave dei titoli")).usaDb());
-                }
+                mappa.remove("id");
+                mappa.remove("0");
+
+                //                if (mappa.containsKey("id")) {
+                //                    mappa.remove("id");
+                //                }
+                //                else {
+                //                    logger.error(new WrapLog().exception(new AlgosException("Manca la riga chiave dei titoli")).usaDb());
+                //                }
             }
         }
 

@@ -88,6 +88,16 @@ public class NazionalitaBackend extends WikiBackend {
                 .build();
     }
 
+    /**
+     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria e unica) <br>
+     *
+     * @param singolare (obbligatorio, unico)
+     *
+     * @return istanza della Entity, null se non trovata
+     */
+    public Nazionalita findBySingolare(final String singolare) {
+        return repository.findFirstBySingolare(singolare);
+    }
 
     /**
      * Legge la mappa di valori dal modulo di wiki <br>

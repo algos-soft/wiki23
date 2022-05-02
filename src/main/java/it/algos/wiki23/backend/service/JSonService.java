@@ -29,7 +29,7 @@ import java.util.*;
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class JSonService extends AbstractService {
+public class JSonService extends WAbstractService {
 
     //    /**
     //     * Crea una mappa standard (valori reali) da una singola page JSON di una multi-pagina action=query <br>

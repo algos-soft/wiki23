@@ -35,7 +35,7 @@ import java.util.regex.*;
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class WikiApiService extends AbstractService {
+public class WikiApiService extends WAbstractService {
 
 
     public static final String PAGINA_ISO_1 = "ISO 3166-1";

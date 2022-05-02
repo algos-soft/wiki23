@@ -30,7 +30,7 @@ import java.util.*;
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class BioService extends AbstractService {
+public class BioService extends WAbstractService {
 
 
     /**

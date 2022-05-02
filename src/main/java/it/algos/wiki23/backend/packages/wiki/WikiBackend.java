@@ -25,6 +25,8 @@ public abstract class WikiBackend extends CrudBackend {
 
     public WPref lastDownload;
 
+    public WPref lastElabora;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -55,15 +57,19 @@ public abstract class WikiBackend extends CrudBackend {
     public void download(final String wikiTitle) {
     }
 
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void elabora() {
+    }
+
     public void fixDownload(final long inizio, final String wikiTitle, final int sizeServerWiki, final int sizeMongoDB) {
         long fine = System.currentTimeMillis();
         Long delta = fine - inizio;
-        int durata;
         String wikiTxt = textService.format(sizeServerWiki);
         String mongoTxt = textService.format(sizeMongoDB);
 
-        delta = delta / 1000;
-        durata = delta.intValue();
         if (lastDownload != null) {
             lastDownload.setValue(LocalDateTime.now());
         }
@@ -73,12 +79,30 @@ public abstract class WikiBackend extends CrudBackend {
         }
 
         if (sizeServerWiki == sizeMongoDB) {
-            message = String.format("Download di %s righe da [%s]", wikiTxt, wikiTitle);
+            message = String.format("Download di %s righe da [%s] in %d millisecondi", wikiTxt, wikiTitle,delta);
         }
         else {
             message = String.format("Download di %s righe da [%s] convertite in %s elementi su mongoDB", wikiTxt, wikiTitle, mongoTxt);
         }
 
+        logger.info(new WrapLog().message(message));
+    }
+
+
+    public void fixElabora(final long inizio, final String modulo) {
+        long fine = System.currentTimeMillis();
+        Long delta = fine - inizio;
+        String mongoTxt = textService.format(count());
+
+        if (lastElabora != null) {
+            lastElabora.setValue(LocalDateTime.now());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("lastElabora è nullo")));
+            return;
+        }
+
+        message = String.format("Elaborate %s %s in %d millisecondi", mongoTxt, modulo, delta);
         logger.info(new WrapLog().message(message));
     }
 

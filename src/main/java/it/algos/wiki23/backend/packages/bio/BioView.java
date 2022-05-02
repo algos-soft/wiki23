@@ -2,9 +2,11 @@ package it.algos.wiki23.backend.packages.bio;
 
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.dialog.*;
+import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
@@ -13,6 +15,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
+import org.vaadin.crudui.crud.*;
 
 import java.util.*;
 
@@ -98,14 +101,25 @@ public class BioView extends CrudView {
         }
     }
 
+    /**
+     * Apre un dialogo di editing <br>
+     * Proveniente da un doppio click su una riga della Grid <br>
+     * Passa al dialogo gli handler per annullare e modificare <br>
+     *
+     * @param entityBeanDaRegistrare (nuova o esistente)
+     */
+    public void updateItem(AEntity entityBeanDaRegistrare) {
+        dialog =  appContext.getBean(BioDialog.class, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
+        dialog.openBio(this::saveHandler, this::annullaHandler,this::elaboraHandler);
+    }
+
+    public void elaboraHandler(final Bio bio) {
+        backend.update(bio);
+        grid.setItems(crudBackend.findAll(sortOrder));
+        Avviso.show(String.format("%s successfully elaborated", bio)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
 
     protected void getInput() {
-        //        EnhancedDialog dialog2 = new EnhancedDialog();
-        //        dialog2.setHeader("Example Header");
-        //        dialog2.setContent(new Span("Content"));
-        //        dialog2.setFooter(new Button("Close", evt -> dialog2.close()));
-        //        dialog2.open();
-
         VerticalLayout layout = new VerticalLayout();
         Dialog dialog = new Dialog();
         TextField field = new TextField("Titolo della pagina sul server wiki");

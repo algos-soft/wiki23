@@ -12,6 +12,7 @@ import it.algos.vaad23.ui.views.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 
 import java.time.*;
 import java.util.*;
@@ -37,21 +38,25 @@ public abstract class WikiView extends CrudView {
 
     protected Button buttonDownload;
 
+    protected boolean usaBottoneElabora;
+
+    protected Button buttonElabora;
+
     protected boolean usaBottoneUpload;
 
     protected Button buttonUpload;
 
-//    protected boolean usaBottoneModulo;
-//
-//    protected Button buttonModulo;
+    //    protected boolean usaBottoneModulo;
+    //
+    //    protected Button buttonModulo;
 
     protected boolean usaBottoneCategoria;
 
     protected Button buttonCategoria;
 
-//    protected boolean usaBottoneStatistiche;
-//
-//    protected Button buttonStatistiche;
+    //    protected boolean usaBottoneStatistiche;
+    //
+    //    protected Button buttonStatistiche;
 
     protected boolean usaBottoneUploadStatistiche;
 
@@ -134,10 +139,11 @@ public abstract class WikiView extends CrudView {
         super.usaBottoneDelete = false;
 
         this.usaBottoneDownload = true;
+        this.usaBottoneElabora = false;
         this.usaBottoneUpload = true;
-//        this.usaBottoneModulo = true;
+        //        this.usaBottoneModulo = true;
         this.usaBottoneCategoria = false;
-//        this.usaBottoneStatistiche = true;
+        //        this.usaBottoneStatistiche = true;
         this.usaBottoneUploadStatistiche = true;
         this.usaBottonePaginaWiki = true;
         this.usaBottoneTest = true;
@@ -147,6 +153,7 @@ public abstract class WikiView extends CrudView {
     protected void fixPreferenzeBackend() {
         if (crudBackend != null) {
             crudBackend.lastDownload = lastDownload;
+            crudBackend.lastElabora = lastElaborazione;
         }
     }
 
@@ -204,32 +211,41 @@ public abstract class WikiView extends CrudView {
             topPlaceHolder.add(buttonDownload);
         }
 
+        if (usaBottoneElabora) {
+            buttonElabora = new Button();
+            buttonElabora.getElement().setAttribute("theme", "primary");
+            buttonElabora.getElement().setProperty("title", "Elabora: tutte le funzioni del package");
+            buttonElabora.setIcon(new Icon(VaadinIcon.PUZZLE_PIECE));
+            buttonElabora.addClickListener(event -> elabora());
+            topPlaceHolder.add(buttonElabora);
+        }
+
         if (usaBottoneUpload) {
             buttonUpload = new Button();
             buttonUpload.getElement().setAttribute("theme", "error");
-            buttonUpload.getElement().setProperty("title", "Upload: costruisce tutte le pagine di attività sul server wiki");
+            buttonUpload.getElement().setProperty("title", "Upload: costruisce tutte le pagine del package sul server wiki");
             buttonUpload.setIcon(new Icon(VaadinIcon.UPLOAD));
             buttonUpload.addClickListener(event -> upload());
             topPlaceHolder.add(buttonUpload);
         }
 
-//        if (usaBottoneModulo) {
-//            buttonModulo = new Button();
-//            buttonModulo.getElement().setAttribute("theme", "secondary");
-//            buttonModulo.getElement().setProperty("title", "Modulo: lettura del modulo originario su wiki");
-//            buttonModulo.setIcon(new Icon(VaadinIcon.LIST));
-//            buttonModulo.addClickListener(event -> wikiModulo());
-//            topPlaceHolder.add(buttonModulo);
-//        }
+        //        if (usaBottoneModulo) {
+        //            buttonModulo = new Button();
+        //            buttonModulo.getElement().setAttribute("theme", "secondary");
+        //            buttonModulo.getElement().setProperty("title", "Modulo: lettura del modulo originario su wiki");
+        //            buttonModulo.setIcon(new Icon(VaadinIcon.LIST));
+        //            buttonModulo.addClickListener(event -> wikiModulo());
+        //            topPlaceHolder.add(buttonModulo);
+        //        }
 
-//        if (usaBottoneStatistiche) {
-//            buttonStatistiche = new Button();
-//            buttonStatistiche.getElement().setAttribute("theme", "secondary");
-//            buttonStatistiche.getElement().setProperty("title", "Statistiche: lettura della pagina su wiki");
-//            buttonStatistiche.setIcon(new Icon(VaadinIcon.TABLE));
-//            buttonStatistiche.addClickListener(event -> statistiche());
-//            topPlaceHolder.add(buttonStatistiche);
-//        }
+        //        if (usaBottoneStatistiche) {
+        //            buttonStatistiche = new Button();
+        //            buttonStatistiche.getElement().setAttribute("theme", "secondary");
+        //            buttonStatistiche.getElement().setProperty("title", "Statistiche: lettura della pagina su wiki");
+        //            buttonStatistiche.setIcon(new Icon(VaadinIcon.TABLE));
+        //            buttonStatistiche.addClickListener(event -> statistiche());
+        //            topPlaceHolder.add(buttonStatistiche);
+        //        }
 
         if (usaBottoneUploadStatistiche) {
             buttonUploadStatistiche = new Button();
@@ -279,6 +295,14 @@ public abstract class WikiView extends CrudView {
             buttonUploadPagina.addClickListener(event -> uploadPagina());
             topPlaceHolder.add(buttonUploadPagina);
         }
+//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.TOOLS)));
+//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.SCREWDRIVER)));
+//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.PUZZLE_PIECE)));
+//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.FIRE)));
+//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.COG)));
+//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.AUTOMATION)));
+//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.BOLT)));
+//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.MAGIC)));
 
         super.fixBottoniTopStandard();
     }
@@ -289,15 +313,21 @@ public abstract class WikiView extends CrudView {
         if (buttonDownload != null) {
             buttonDownload.setEnabled(!singoloSelezionato);
         }
+
+        if (buttonElabora != null) {
+            buttonElabora.setEnabled(!singoloSelezionato);
+        }
+
         if (buttonUpload != null) {
             buttonUpload.setEnabled(!singoloSelezionato);
         }
-//        if (buttonModulo != null) {
-//            buttonModulo.setEnabled(!singoloSelezionato);
-//        }
-//        if (buttonStatistiche != null) {
-//            buttonStatistiche.setEnabled(!singoloSelezionato);
-//        }
+
+        //        if (buttonModulo != null) {
+        //            buttonModulo.setEnabled(!singoloSelezionato);
+        //        }
+        //        if (buttonStatistiche != null) {
+        //            buttonStatistiche.setEnabled(!singoloSelezionato);
+        //        }
         if (buttonUploadStatistiche != null) {
             buttonUploadStatistiche.setEnabled(!singoloSelezionato);
         }
@@ -329,6 +359,16 @@ public abstract class WikiView extends CrudView {
     public void download() {
         crudBackend.download(wikiModuloTitle);
         reload();
+    }
+
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void elabora() {
+        crudBackend.elabora();
+        sortOrder = Sort.by(Sort.Direction.DESC, "bio");
+        refresh();
     }
 
     /**
@@ -419,9 +459,11 @@ public abstract class WikiView extends CrudView {
     public void uploadPagina() {
         reload();
     }
+
     public void addSpanVerdeSmall(final String message) {
         alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde).fontHeight(AEFontHeight.em7)));
     }
+
     public void addSpanRossoBold(final String message) {
         alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).weight(AEFontWeight.bold)));
     }

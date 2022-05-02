@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.ui.views.*;
 import it.algos.wiki23.backend.service.*;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Scope;
 import org.vaadin.crudui.crud.*;
 
 import java.util.*;
+import java.util.function.*;
 
 /**
  * Project wiki
@@ -35,6 +37,8 @@ public class BioDialog extends CrudDialog {
     public ElaboraService elaboraService;
 
     private Bio currentItem;
+
+    private Consumer<Bio> elaboraHandler;
 
     /**
      * Constructor not @Autowired. <br>
@@ -69,14 +73,21 @@ public class BioDialog extends CrudDialog {
         Button elaboraButton = new Button();
         elaboraButton.setText("Elabora");
         elaboraButton.getElement().setAttribute("theme", "error");
-        elaboraButton.addClickListener(e -> elabora());
+        elaboraButton.addClickListener(e -> elaboraHandler());
         elaboraButton.setIcon(new Icon(VaadinIcon.AMBULANCE));
         bottomPlaceHolder.add(elaboraButton);
 
     }
 
-    protected void elabora() {
+    public void openBio(final BiConsumer<AEntity, CrudOperation> saveHandler, final Consumer<AEntity> annullaHandler, final Consumer<Bio> elaboraHandler) {
+        this.elaboraHandler = elaboraHandler;
+        this.open(saveHandler, null, annullaHandler);
+    }
+
+    protected void elaboraHandler() {
         currentItem = elaboraService.esegue(currentItem);
+        elaboraHandler.accept(currentItem);
+        close();
     }
 
 }// end of crud Dialog class

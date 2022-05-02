@@ -7,6 +7,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.hibernate.validator.constraints.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
@@ -224,6 +225,7 @@ public class AnnotationService extends AbstractService {
     public AIField getAIField(final Class<? extends AEntity> entityClazz, final String fieldName) {
         AIField annotation = null;
         Field reflectionJavaField;
+        String message;
 
         // Controlla che il parametro in ingresso non sia nullo
         if (entityClazz == null) {
@@ -239,7 +241,8 @@ public class AnnotationService extends AbstractService {
             reflectionJavaField = entityClazz.getDeclaredField(fieldName);
             annotation = getAIField(reflectionJavaField);
         } catch (Exception unErrore) {
-            logger.error(unErrore);
+            message = String.format("Manca il field %s", fieldName);
+            logger.error(new WrapLog().exception(new AlgosException(unErrore, message)).usaDb());
         }
 
         return annotation;
@@ -522,12 +525,12 @@ public class AnnotationService extends AbstractService {
     }
 
     /**
-     * Get the widthEM of the property.
+     * Get the property.
      *
      * @param entityClazz     the class of type AEntity
      * @param publicFieldName the property name
      *
-     * @return the width of the field expressed in em
+     * @return the property
      */
     public String getHeader(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
         String header = VUOTA;
@@ -545,6 +548,29 @@ public class AnnotationService extends AbstractService {
     }
 
     /**
+     * Get the property.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the property
+     */
+    public String getCaption(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        String caption = VUOTA;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            caption = annotation.caption();
+        }
+
+        if (textService.isEmpty(caption)) {
+            caption = publicFieldName;
+        }
+
+        return caption;
+    }
+
+    /**
      * Get the class of the property.
      *
      * @param entityClazz     the class of type AEntity
@@ -553,7 +579,7 @@ public class AnnotationService extends AbstractService {
      * @return the class
      */
     @SuppressWarnings("all")
-    public Class getEnumClass(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+    public Class getEnumClazz(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
         Class enumClazz = null;
         AIField annotation = this.getAIField(entityClazz, publicFieldName);
 
@@ -562,6 +588,26 @@ public class AnnotationService extends AbstractService {
         }
 
         return enumClazz == Object.class ? null : enumClazz;
+    }
+
+    /**
+     * Get the class of the property.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the class
+     */
+    @SuppressWarnings("all")
+    public Class getLinkClazz(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        Class linkClazz = null;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            linkClazz = annotation.linkClazz();
+        }
+
+        return linkClazz == Object.class ? null : linkClazz;
     }
 
     /**

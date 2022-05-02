@@ -55,7 +55,7 @@ public class Bio extends AEntity {
     /**
      * elaborato se sono riempiti i campi derivati dal tmplBio
      */
-    @AIField(type = AETypeField.booleano)
+    @AIField(type = AETypeField.booleano, header = "fix")
     public boolean elaborato;
 
     @AIField(type = AETypeField.text)

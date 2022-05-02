@@ -1,7 +1,7 @@
-package it.algos.wiki23.backend.packages.bio;
+package it.algos.vaad23.backend.packages.crono.secolo;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
-import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.*;
 import java.util.*;
 
 /**
- * Project wiki
+ * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: gio, 28-apr-2022
- * Time: 11:57
+ * Date: dom, 01-mag-2022
+ * Time: 21:24
  * <p>
  * Estende l'interfaccia MongoRepository col casting alla Entity relativa di questa repository <br>
  * <p>
@@ -22,21 +22,21 @@ import java.util.*;
  * Eventualmente usare una costante di VaadCost come @Qualifier sia qui che nella corrispondente classe xxxBackend <br>
  */
 @Repository
-@Qualifier(TAG_BIO)
-public interface BioRepository extends MongoRepository<Bio, String> {
+@Qualifier(TAG_SECOLO)
+public interface SecoloRepository extends MongoRepository<Secolo, String> {
 
     @Override
-    List<Bio> findAll();
+    List<Secolo> findAll();
 
-    <Bio extends AEntity> Bio insert(Bio entity);
+    <Secolo extends AEntity> Secolo insert(Secolo entity);
 
-    <Bio extends AEntity> Bio save(Bio entity);
+    <Secolo extends AEntity> Secolo save(Secolo entity);
 
     @Override
-    void delete(Bio entity);
-    Bio findFirstByPageId(long pageID);
+    void delete(Secolo entity);
 
-    long countBioByAttivita(String attivita);
-    long countBioByAttivita2(String attivita);
-    long countBioByAttivita3(String attivita);
+    Secolo findFirstByInizioGreaterThanEqualAndFineLessThanEqualAndAnteCristo(int inizio, int fine, boolean anteCristo);
+
+    Secolo findFirstByInizioLessThanEqualAndFineGreaterThanEqualAndAnteCristo(int inizio, int fine, boolean anteCristo);
+
 }// end of crud repository class

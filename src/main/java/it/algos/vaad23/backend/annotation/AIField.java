@@ -69,6 +69,7 @@ public @interface AIField {
      */
     Class<?> comboClazz() default Object.class;
 
+
     /**
      * (Optional) property
      * Utilizzato nei Link.

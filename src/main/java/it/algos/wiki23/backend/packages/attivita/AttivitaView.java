@@ -68,11 +68,13 @@ public class AttivitaView extends WikiView {
         super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "aggiunta", "bio", "pagina");
 
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+
+        super.usaBottoneElabora=true;
         super.lastDownload = WPref.downloadAttivita;
         super.lastElaborazione = WPref.elaboraAttivita;
         super.durataElaborazione = WPref.elaboraAttivitaTime;
         super.lastUpload = WPref.uploadAttivita;
-        //        super.wikiModuloTitle = PATH_MODULO_ATTIVITA;
+        super.wikiModuloTitle = PATH_MODULO_ATTIVITA;
         //        super.wikiStatisticheTitle = PATH_STATISTICHE_ATTIVITA;
         super.usaBottoneCategoria = true;
 

@@ -69,6 +69,7 @@ public class ColumnService extends AbstractService {
         AETypeField type = annotationService.getFormType(entityClazz, propertyName);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yy HH:mm:ss");
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("d-MMM-yy");
+        DateTimeFormatter formatter3 = DateTimeFormatter.ofPattern("HH:mm:ss");
         boolean flexGrow = annotationService.isFlexGrow(entityClazz, propertyName);
         String header = annotationService.getHeader(entityClazz, propertyName);
         VaadinIcon headerIcon = annotationService.getHeaderIcon(entityClazz, propertyName);
@@ -104,8 +105,10 @@ public class ColumnService extends AbstractService {
                         yield icona;
                     }
                     case enumeration -> new Label(obj != null ? obj.toString() : VUOTA);
+                    case link -> new Label(obj != null ? obj.toString() : VUOTA);
                     case localDateTime -> new Label(formatter.format((LocalDateTime) obj));
                     case localDate -> new Label(formatter2.format((LocalDate) obj));
+                    case localTime -> new Label(formatter3.format((LocalTime) obj));
                     default -> {
                         message = String.format("Default Switch, manca il case %s", type);
                         logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());

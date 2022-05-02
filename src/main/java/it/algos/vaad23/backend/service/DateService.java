@@ -1,5 +1,7 @@
 package it.algos.vaad23.backend.service;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -190,6 +192,129 @@ public class DateService extends AbstractService {
 
     public String get(LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("d-MMM-yy H:mm", Locale.ITALIAN));
+    }
+
+    /**
+     * Costruisce tutti i giorni dell'anno <br>
+     * Considera anche l'anno bisestile <br>
+     * <p>
+     * Restituisce un array di Map <br>
+     * Ogni mappa ha: <br>
+     * numeroMese <br>
+     * #progressivoNormale <br>
+     * #progressivoBisestile <br>
+     * nome  (numero per il primo del mese) <br>
+     * titolo (1° per il primo del mese) <br>
+     */
+    public List<HashMap> getAllGiorni() {
+        List<HashMap> listaAnno = new ArrayList<HashMap>();
+        List<HashMap> listaMese;
+        int progAnno = 0;
+
+        for (int k = 1; k <= 12; k++) {
+            listaMese = getGiorniMese(k, progAnno);
+            for (HashMap mappa : listaMese) {
+                listaAnno.add(mappa);
+            }
+            progAnno += listaMese.size();
+        }
+
+        return listaAnno;
+    }
+
+    /**
+     * Costruisce tutti i giorni del mese <br>
+     * Considera anche l'anno bisestile <br>
+     * <p>
+     * Restituisce un array di Map <br>
+     * Ogni mappa ha: <br>
+     * numeroMese <br>
+     * nomeMese <br>
+     * #progressivoNormale <br>
+     * #progressivoBisestile <br>
+     * nome  (numero per il primo del mese) <br>
+     * titolo (1° per il primo del mese) <br>
+     *
+     * @param numMese  numero del mese, partendo da 1 per gennaio
+     * @param progAnno numero del giorno nell'anno, partendo da 1 per il 1° gennaio
+     *
+     * @return lista di mappe, una per ogni giorno del mese considerato
+     */
+    private List<HashMap> getGiorniMese(int numMese, int progAnno) {
+        List<HashMap> listaMese = new ArrayList<HashMap>();
+        HashMap mappa;
+        int giorniDelMese;
+        String nomeMese;
+        AEMese mese = AEMese.getMese(numMese);
+        nomeMese = AEMese.getLong(numMese);
+        giorniDelMese = AEMese.getGiorni(numMese, 2016);
+        final int taglioBisestile = 60;
+        String tag;
+        String tagUno;
+
+        for (int k = 1; k <= giorniDelMese; k++) {
+            progAnno++;
+            tag = k + SPAZIO + nomeMese;
+            mappa = new HashMap();
+
+            mappa.put(KEY_MAPPA_GIORNI_MESE_NUMERO, numMese);
+            mappa.put(KEY_MAPPA_GIORNI_MESE_TESTO, nomeMese);
+            mappa.put(KEY_MAPPA_GIORNI_NOME, tag);
+            mappa.put(KEY_MAPPA_GIORNI_BISESTILE, progAnno);
+            mappa.put(KEY_MAPPA_GIORNI_NORMALE, progAnno);
+            mappa.put(KEY_MAPPA_GIORNI_MESE_MESE, mese);
+
+            if (k == 1) {
+                mappa.put(KEY_MAPPA_GIORNI_TITOLO, PRIMO_GIORNO_MESE + SPAZIO + nomeMese);
+            }
+            else {
+                mappa.put(KEY_MAPPA_GIORNI_TITOLO, tag);
+            }
+            //--gestione degli anni bisestili
+            if (progAnno == taglioBisestile) {
+                mappa.put(KEY_MAPPA_GIORNI_NORMALE, 0);
+            }
+            if (progAnno > taglioBisestile) {
+                mappa.put(KEY_MAPPA_GIORNI_NORMALE, progAnno - 1);
+            }
+            listaMese.add(mappa);
+        }
+        return listaMese;
+    }
+
+
+    /**
+     * Anno bisestile
+     *
+     * @param anno da validare
+     *
+     * @return true se l'anno è bisestile
+     */
+    public boolean isBisestile(int anno) {
+        boolean bisestile = false;
+        int deltaGiuliano = 4;
+        int deltaSecolo = 100;
+        int deltaGregoriano = 400;
+        int inizioGregoriano = 1582;
+        boolean bisestileSecolo = false;
+
+        bisestile = divisibileEsatto(anno, deltaGiuliano);
+        if (anno > inizioGregoriano && bisestile) {
+            if (divisibileEsatto(anno, deltaSecolo)) {
+                if (divisibileEsatto(anno, deltaGregoriano)) {
+                    bisestile = true;
+                }
+                else {
+                    bisestile = false;
+                }
+            }
+        }
+
+        return bisestile;
+    }
+
+    public boolean divisibileEsatto(int dividendo, int divisore) {
+        return dividendo % divisore == 0;
     }
 
 }

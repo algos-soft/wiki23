@@ -2,10 +2,10 @@ package it.algos.vaad23.ui.dialog;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.textfield.*;
-import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import java.util.function.*;
 

@@ -4,6 +4,7 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.datepicker.*;
 import com.vaadin.flow.component.datetimepicker.*;
 import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.formlayout.*;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.component.timepicker.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.data.converter.*;
 import com.vaadin.flow.spring.annotation.*;
@@ -24,6 +26,7 @@ import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
+import org.springframework.context.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.*;
 import org.vaadin.crudui.crud.*;
@@ -51,6 +54,14 @@ public class CrudDialog extends Dialog {
      * Placeholder (eventuale, presente di default) <br>
      */
     protected final FormLayout formLayout = new FormLayout();
+
+    /**
+     * Istanza di una interfaccia SpringBoot <br>
+     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ApplicationContext appContext;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -244,24 +255,29 @@ public class CrudDialog extends Dialog {
         AETypeField type;
         AbstractSinglePropertyField field;
         Class enumClazz;
+        Class linkClazz;
         boolean hasFocus = false;
+        String caption;
+        List enumObjects;
+        List items;
+        ComboBox combo;
 
         try {
             for (String key : fields) {
                 type = annotationService.getFormType(currentItem.getClass(), key);
                 hasFocus = annotationService.hasFocus(currentItem.getClass(), key);
+                caption = annotationService.getCaption(currentItem.getClass(), key); ;
 
                 field = switch (type) {
-                    case text -> new TextField(key);
-                    case integer -> new IntegerField(key);
-                    case lungo -> new TextField(key);
-                    case booleano -> new Checkbox(key);
+                    case text -> new TextField(caption);
+                    case integer -> new IntegerField(caption);
+                    case lungo -> new TextField(caption);
+                    case booleano -> new Checkbox(caption);
                     case enumeration -> {
-                        ComboBox combo = new ComboBox(key);
+                        combo = new ComboBox(caption);
                         try {
-                            enumClazz = annotationService.getEnumClass(currentItem.getClass(), key);
+                            enumClazz = annotationService.getEnumClazz(currentItem.getClass(), key);
                             Object[] elementi = enumClazz.getEnumConstants();
-                            List enumObjects;
                             if (elementi != null) {
                                 enumObjects = Arrays.asList(elementi);
                                 combo.setItems(enumObjects);
@@ -271,7 +287,25 @@ public class CrudDialog extends Dialog {
                         }
                         yield combo;
                     }
-                    case localDateTime -> new DateTimePicker(key);
+                    case link -> {
+                        combo = new ComboBox(caption);
+                        try {
+                            linkClazz = annotationService.getLinkClazz(currentItem.getClass(), key);
+                            Object obj = appContext.getBean(linkClazz);
+                            if (obj instanceof CrudBackend backend) {
+                                items = backend.findAll();
+                                if (items != null) {
+                                    combo.setItems(items);
+                                }
+                            }
+                        } catch (Exception unErrore) {
+                            logger.error(new WrapLog().exception(unErrore).usaDb());
+                        }
+                        yield combo;
+                    }
+                    case localDateTime -> new DateTimePicker(caption);
+                    case localDate -> new DatePicker(caption);
+                    case localTime -> new TimePicker(caption);
                     default -> {
                         logger.error(new WrapLog().exception(new AlgosException("Manca il case dello switch")).usaDb());
                         yield new TextField(key);
@@ -340,11 +374,13 @@ public class CrudDialog extends Dialog {
         annullaButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
         bottomPlaceHolder.add(annullaButton);
 
-        saveButton.setText(textSaveButton);
-        saveButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "primary" : "secondary");
-        saveButton.addClickListener(e -> saveHandler());
-        saveButton.setIcon(new Icon(VaadinIcon.CHECK));
-        bottomPlaceHolder.add(saveButton);
+        if (operation == CrudOperation.ADD || operation == CrudOperation.UPDATE) {
+            saveButton.setText(textSaveButton);
+            saveButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "primary" : "secondary");
+            saveButton.addClickListener(e -> saveHandler());
+            saveButton.setIcon(new Icon(VaadinIcon.CHECK));
+            bottomPlaceHolder.add(saveButton);
+        }
 
         if (operation == CrudOperation.DELETE) {
             deleteButton.setText(textDeleteButton);

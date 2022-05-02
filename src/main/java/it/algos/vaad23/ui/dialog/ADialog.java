@@ -1,19 +1,14 @@
 package it.algos.vaad23.ui.dialog;
 
-import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.orderedlayout.*;
-import com.vaadin.flow.component.textfield.*;
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import javax.annotation.*;
 
@@ -63,6 +58,7 @@ public abstract class ADialog extends Dialog {
     protected String dettaglioFacoltativo;
 
     protected VerticalLayout topPlaceHolder;
+
     protected VerticalLayout infoPlaceHolder;
 
     protected VerticalLayout bodyPlaceHolder;
@@ -169,7 +165,7 @@ public abstract class ADialog extends Dialog {
         topPlaceHolder.setMargin(false);
 
         topPlaceHolder.add(new H2(titoloDialogo));
-        topPlaceHolder.add(new H4(dettaglioFacoltativo));
+        topPlaceHolder.add(new Label(dettaglioFacoltativo));
         this.add(topPlaceHolder);
     }
 

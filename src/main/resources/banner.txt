@@ -10,6 +10,6 @@ Java ver: ${AnsiColor.GREEN}${java.version}${AnsiColor.RED}
 SpringBoot ver: ${AnsiColor.GREEN}${spring-boot.formatted-version}${AnsiColor.RED}
 Vaadin ver: ${AnsiColor.GREEN}${vaadin.version}${AnsiColor.RED}
 Vaadin23 ver: ${AnsiColor.GREEN}${algos.vaadin23.version}${AnsiColor.RED} di ${AnsiColor.GREEN}${algos.vaadin23.version.date}${AnsiColor.RED}
-Simple ver: ${AnsiColor.GREEN}${algos.simple.version}${AnsiColor.RED} di ${AnsiColor.GREEN}${algos.simple.version.date}${AnsiColor.RED}
+Wiki23 ver: ${AnsiColor.GREEN}${algos.wiki23.version}${AnsiColor.RED} di ${AnsiColor.GREEN}${algos.wiki23.version.date}${AnsiColor.RED}
 Tomcat port: ${AnsiColor.GREEN}${server.port}${AnsiColor.RED}
 ${AnsiColor.DEFAULT}

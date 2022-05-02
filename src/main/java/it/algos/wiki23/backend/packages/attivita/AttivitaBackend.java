@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.boot.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.beans.factory.annotation.*;
@@ -33,6 +34,13 @@ public class AttivitaBackend extends WikiBackend {
 
     private AttivitaRepository repository;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public BioBackend bioBackend;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -93,6 +101,21 @@ public class AttivitaBackend extends WikiBackend {
                 .build();
     }
 
+    public List<Attivita> findAll() {
+        return repository.findAll();
+    }
+
+    /**
+     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria e unica) <br>
+     *
+     * @param singolare (obbligatorio, unico)
+     *
+     * @return istanza della Entity, null se non trovata
+     */
+    public Attivita findBySingolare(final String singolare) {
+        return repository.findFirstBySingolare(singolare);
+    }
+
 
     /**
      * Legge la mappa di valori dal modulo di wiki <br>
@@ -126,6 +149,26 @@ public class AttivitaBackend extends WikiBackend {
 
         super.fixDownload(inizio, wikiTitle, mappa.size(), size);
         aggiunge();
+    }
+
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void elabora() {
+        long inizio = System.currentTimeMillis();
+        int numBio = 0;
+
+        //--Spazzola tutte le attività
+        //--Per ognuna calcola quante biografie usano l'attività
+        //--Memorizza e registra il dato nella entityBean
+        for (Attivita attivita : findAll()) {
+            numBio = bioBackend.countAttivita(attivita.singolare);
+            attivita.bio = numBio;
+            update(attivita);
+        }
+
+        super.fixElabora(inizio, "attività");
     }
 
 
@@ -162,7 +205,7 @@ public class AttivitaBackend extends WikiBackend {
                 }
 
                 if (textService.isValid(attivitaSingolare)) {
-                    entity = repository.findFirstBySingolare(attivitaSingolare);
+                    entity = findBySingolare(attivitaSingolare);
                 }
 
                 if (entity != null) {

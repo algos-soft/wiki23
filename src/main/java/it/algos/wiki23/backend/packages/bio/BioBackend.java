@@ -93,5 +93,29 @@ public class BioBackend extends CrudBackend {
                 .build();
     }
 
+    /**
+     * Conta tutte le biografie con una serie di attività. <br>
+     *
+     * @param attivita singola
+     *
+     * @return conteggio di biografie che la usano
+     *
+     */
+    public int countAttivita(final String attivita) {
+        int numBio = 0;
+        Long attivitaUno = repository.countBioByAttivita(attivita);
+        Long attivitaDue = repository.countBioByAttivita2(attivita);
+        Long attivitaTre = repository.countBioByAttivita3(attivita);
+
+        numBio = attivitaUno.intValue();
+
+        //--volendo si potrebbe metter un flag di preferenze (false) per 'cercare' solo l'attività principale
+        //@todo mettere eventualmente un flag in preferenze
+        //        if (pref.isBool(USA_TRE_ATTIVITA) {
+        //            numBio+=attivitaDue.intValue()+attivitaTre.intValue();
+        //        }
+
+        return numBio;
+    }
 
 }// end of crud backend class

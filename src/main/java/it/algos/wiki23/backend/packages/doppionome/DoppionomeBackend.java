@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+import java.util.*;
+
 /**
  * Project wiki
  * Created by Algos
@@ -81,6 +83,21 @@ public class DoppionomeBackend extends WikiBackend {
                 .build();
     }
 
+    /**
+     * Fetches all code of Prenome <br>
+     *
+     * @return all selected property
+     */
+    public List<String> fetchCode() {
+        List<String> lista = new ArrayList<>();
+        List<Doppionome> listaEntities = repository.findAll();
+
+        for (Doppionome doppionome : listaEntities) {
+            lista.add(doppionome.nome);
+        }
+
+        return lista;
+    }
 
     /**
      * Legge la mappa di valori dal modulo di wiki <br>

@@ -247,6 +247,15 @@ public class VaadCost {
 
     public static final String TAG_COMUNE = "comune";
 
+
+    public static final String TAG_GIORNO = "giorno";
+
+    public static final String TAG_MESE = "mese";
+
+    public static final String TAG_ANNO = "anno";
+
+    public static final String TAG_SECOLO = "secolo";
+
     public static final String TAG_VERSIONE = "versione";
 
     public static final String TAG_NOTA = "nota";
@@ -322,5 +331,27 @@ public class VaadCost {
 
 
     public static final String TAG_EM = "em";
+
+    public static final String PRIMO_GIORNO_MESE = "1º";
+
+    public static final String KEY_MAPPA_GIORNI_MESE_NUMERO = "meseNumero";
+
+    public static final String KEY_MAPPA_GIORNI_MESE_TESTO = "meseTesto";
+
+    public static final String KEY_MAPPA_GIORNI_NORMALE = "normale";
+
+    public static final String KEY_MAPPA_GIORNI_BISESTILE = "bisestile";
+
+    public static final String KEY_MAPPA_GIORNI_NOME = "nome";
+
+    public static final String KEY_MAPPA_GIORNI_TITOLO = "titolo";
+
+    public static final String KEY_MAPPA_GIORNI_MESE_MESE = "meseMese";
+
+    public static final int ANNO_INIZIALE = 2000;
+
+    public static final int ANTE_CRISTO = 1000;
+
+    public static final int DOPO_CRISTO = 2030;
 
 }

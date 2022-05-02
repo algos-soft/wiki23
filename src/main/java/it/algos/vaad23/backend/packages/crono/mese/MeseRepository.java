@@ -1,19 +1,19 @@
-package it.algos.wiki23.backend.packages.bio;
+package it.algos.vaad23.backend.packages.crono.mese;
 
-import it.algos.vaad23.backend.entity.*;
-import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+import javax.validation.constraints.*;
 import java.util.*;
 
 /**
- * Project wiki
+ * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: gio, 28-apr-2022
- * Time: 11:57
+ * Date: ven, 18-mar-2022
+ * Time: 06:55
  * <p>
  * Estende l'interfaccia MongoRepository col casting alla Entity relativa di questa repository <br>
  * <p>
@@ -22,21 +22,22 @@ import java.util.*;
  * Eventualmente usare una costante di VaadCost come @Qualifier sia qui che nella corrispondente classe xxxBackend <br>
  */
 @Repository
-@Qualifier(TAG_BIO)
-public interface BioRepository extends MongoRepository<Bio, String> {
+@Qualifier(TAG_MESE)
+public interface MeseRepository extends MongoRepository<Mese, String> {
+
 
     @Override
-    List<Bio> findAll();
-
-    <Bio extends AEntity> Bio insert(Bio entity);
-
-    <Bio extends AEntity> Bio save(Bio entity);
+    List<Mese> findAll();
 
     @Override
-    void delete(Bio entity);
-    Bio findFirstByPageId(long pageID);
+    Mese insert(Mese entity);
 
-    long countBioByAttivita(String attivita);
-    long countBioByAttivita2(String attivita);
-    long countBioByAttivita3(String attivita);
+    @Override
+    Mese save(@NotNull Mese entity);
+
+    @Override
+    void delete(Mese entity);
+
+    Mese findFirstByNome(String nome);
+
 }// end of crud repository class
