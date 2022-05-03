@@ -154,6 +154,7 @@ public abstract class WikiView extends CrudView {
         if (crudBackend != null) {
             crudBackend.lastDownload = lastDownload;
             crudBackend.lastElabora = lastElaborazione;
+            crudBackend.durataElaborazione = durataElaborazione;
         }
     }
 
@@ -181,6 +182,9 @@ public abstract class WikiView extends CrudView {
                 }
                 else {
                     message = String.format("Ultimo elaborazione effettuata il %s", dateService.get(elaborazione));
+                }
+                if (durataElaborazione != null && durataElaborazione.get() instanceof Integer durata) {
+                    message += String.format(" in circa %d secondi", durata);
                 }
                 addSpanVerdeSmall(message);
             }
@@ -295,14 +299,14 @@ public abstract class WikiView extends CrudView {
             buttonUploadPagina.addClickListener(event -> uploadPagina());
             topPlaceHolder.add(buttonUploadPagina);
         }
-//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.TOOLS)));
-//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.SCREWDRIVER)));
-//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.PUZZLE_PIECE)));
-//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.FIRE)));
-//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.COG)));
-//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.AUTOMATION)));
-//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.BOLT)));
-//        topPlaceHolder.add(new Button(new Icon(VaadinIcon.MAGIC)));
+        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.TOOLS)));
+        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.SCREWDRIVER)));
+        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.PUZZLE_PIECE)));
+        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.FIRE)));
+        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.COG)));
+        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.AUTOMATION)));
+        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.BOLT)));
+        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.MAGIC)));
 
         super.fixBottoniTopStandard();
     }

@@ -477,6 +477,35 @@ public class TextService extends AbstractService {
         return numText;
     }
 
+
+    /**
+     * Elimina la parte di stringa successiva al tag, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata   stringa in ingresso
+     * @param tagFinale dopo il quale eliminare
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopo(String entrata, String tagFinale) {
+        String uscita = entrata;
+        int pos;
+
+        if (uscita != null && tagFinale != null) {
+            uscita = entrata.trim();
+            if (uscita.contains(tagFinale)) {
+                pos = uscita.indexOf(tagFinale);
+                uscita = uscita.substring(0, pos);
+                uscita = uscita.trim();
+            }
+        }
+
+        return uscita;
+    }
+
     /**
      * Elimina dal testo il tagFinale, se esiste. <br>
      * <p>
@@ -858,6 +887,20 @@ public class TextService extends AbstractService {
         }
 
         return numTag;
+    }
+
+    /**
+     * Elimina gli spazi multipli eventualmente presenti <br>
+     * Tutti gli spazi multipli vengono ridotti ad uno spazio singolo <br>
+     *
+     * @param line in ingresso
+     *
+     * @return stringa elaborata con tutti gli spazi ridotti ad 1 ed eliminati spazi in testa ed in coda
+     */
+    public String fixOneSpace(String line) {
+        String regexSpazioVariabile = "\\s+"; // una o più occorrenze
+
+        return line.replaceAll(regexSpazioVariabile, SPAZIO).trim();
     }
 
 }

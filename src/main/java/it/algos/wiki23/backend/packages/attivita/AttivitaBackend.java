@@ -32,7 +32,7 @@ import java.util.*;
 public class AttivitaBackend extends WikiBackend {
 
 
-    private AttivitaRepository repository;
+    public AttivitaRepository repository;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -63,10 +63,6 @@ public class AttivitaBackend extends WikiBackend {
 
     public Attivita checkAndSave(final Attivita attivita) {
         return isExist(attivita.singolare) ? null : repository.insert(attivita);
-    }
-
-    public boolean isExist(final String singolare) {
-        return repository.findFirstBySingolare(singolare) != null;
     }
 
 
@@ -101,8 +97,39 @@ public class AttivitaBackend extends WikiBackend {
                 .build();
     }
 
+
     public List<Attivita> findAll() {
         return repository.findAll();
+    }
+
+
+    public List<String> findAllPlurali() {
+        List<String> lista = new ArrayList<>();
+        List<Attivita> listaAll = findAttivitaDistinctByPlurali();
+
+        for (Attivita attivita : listaAll) {
+            lista.add(attivita.plurale);
+        }
+
+        return lista;
+    }
+
+    public List<Attivita> findAttivitaDistinctByPlurali() {
+        List<Attivita> lista = new ArrayList<>();
+        Set<String> set = new HashSet();
+        List<Attivita> listaAll = repository.findAll();
+
+        for (Attivita attivita : listaAll) {
+            if (set.add(attivita.plurale)) {
+                lista.add(attivita);
+            }
+        }
+
+        return lista;
+    }
+
+    public boolean isExist(final String singolare) {
+        return findBySingolare(singolare) != null;
     }
 
     /**
@@ -116,6 +143,47 @@ public class AttivitaBackend extends WikiBackend {
         return repository.findFirstBySingolare(singolare);
     }
 
+
+    public List<Attivita> findByPlurale(final String plurale) {
+        return repository.findByPluraleOrderBySingolareAsc(plurale);
+    }
+
+    public List<String> findSingolariByPlurale(final String plurale) {
+        List<String> listaNomi = new ArrayList<>();
+        List<Attivita> listaAttivita = findByPlurale(plurale);
+
+        for (Attivita attivita : listaAttivita) {
+            listaNomi.add(attivita.singolare);
+        }
+
+        return listaNomi;
+    }
+
+    public LinkedHashMap<String, List<String>> findMappaSingolariByPlurale() {
+        LinkedHashMap<String, List<String>> mappa = new LinkedHashMap<>();
+        List<String> lista;
+        List<Attivita> listaAll = repository.findAll();
+        String plurale;
+        String singolare;
+
+        for (Attivita attivita : listaAll) {
+            plurale = attivita.plurale;
+            singolare = attivita.singolare;
+
+            if (mappa.get(plurale) == null) {
+                lista = new ArrayList<>();
+                lista.add(singolare);
+                mappa.put(plurale, lista);
+            }
+            else {
+                lista = mappa.get(plurale);
+                lista.add(singolare);
+                mappa.put(plurale, lista);
+            }
+        }
+
+        return mappa;
+    }
 
     /**
      * Legge la mappa di valori dal modulo di wiki <br>
@@ -157,15 +225,27 @@ public class AttivitaBackend extends WikiBackend {
      */
     public void elabora() {
         long inizio = System.currentTimeMillis();
-        int numBio = 0;
+        int numBio;
 
-        //--Spazzola tutte le attività
-        //--Per ognuna calcola quante biografie usano l'attività
-        //--Memorizza e registra il dato nella entityBean
         for (Attivita attivita : findAll()) {
-            numBio = bioBackend.countAttivita(attivita.singolare);
-            attivita.bio = numBio;
+            attivita.bio = 0;
             update(attivita);
+        }
+
+        //--Spazzola tutte le attività distinte plurali (circa 657)
+        //--Per ognuna recupera le attività singolari
+        //--Per ognuna attività singolari calcola quante biografie la usano (in 1 o 3 parametri)
+        //--Memorizza e registra il dato nella entityBean
+        for (Attivita attivita : findAttivitaDistinctByPlurali()) {
+            numBio = 0;
+            for (String singolare : findSingolariByPlurale(attivita.plurale)) {
+                numBio += bioBackend.countAttivita(singolare);
+            }
+
+            for (Attivita attivitaOK : findByPlurale(attivita.plurale)) {
+                attivitaOK.bio = numBio;
+                update(attivitaOK);
+            }
         }
 
         super.fixElabora(inizio, "attività");

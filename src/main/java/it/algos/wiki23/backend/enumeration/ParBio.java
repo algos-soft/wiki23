@@ -71,7 +71,7 @@ public enum ParBio {
     sesso("Sesso", "sesso", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.sesso = value.equals("") ? null : elaboraService.fixSesso(value);
+            bio.sesso = value.equals("") ? null : elaboraService.fixSesso(value);
         }
 
         @Override
@@ -83,7 +83,7 @@ public enum ParBio {
     luogoNascita("LuogoNascita", "luogoNato", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.luogoNato = value.equals(VUOTA) ? null : elaboraService.fixLuogoValido(value);
+            bio.luogoNato = value.equals(VUOTA) ? null : elaboraService.fixLuogoValido(value);
         }
 
         @Override
@@ -95,7 +95,7 @@ public enum ParBio {
     luogoNascitaLink("LuogoNascitaLink", "luogoNatoLink", true, false, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.luogoNatoLink = value.equals(VUOTA) ? null : elaboraService.fixLuogoValido(value);
+            bio.luogoNatoLink = value.equals(VUOTA) ? null : elaboraService.fixLuogoValido(value);
         }
 
         @Override
@@ -110,7 +110,7 @@ public enum ParBio {
     giornoMeseNascita("GiornoMeseNascita", "giornoNato", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws Exception {
-//            bio.giornoNato = value.equals(VUOTA) ? null : elaboraService.fixGiornoValido(value);
+            bio.giornoNato = value.equals(VUOTA) ? null : elaboraService.fixGiornoValido(value);
         }
 
         @Override
@@ -122,7 +122,7 @@ public enum ParBio {
     annoNascita("AnnoNascita", "annoNato", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.annoNato = value.equals(VUOTA) ? null : elaboraService.fixAnno(value);
+            bio.annoNato = value.equals(VUOTA) ? null : elaboraService.fixAnno(value);
         }
 
         @Override
@@ -137,7 +137,7 @@ public enum ParBio {
     luogoMorte("LuogoMorte", "luogoMorto", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.luogoMorto = value.equals(VUOTA) ? null : elaboraService.fixLuogoValido(value);
+            bio.luogoMorto = value.equals(VUOTA) ? null : elaboraService.fixLuogoValido(value);
         }
 
         @Override
@@ -149,7 +149,7 @@ public enum ParBio {
     luogoMorteLink("LuogoMorteLink", "luogoMortoLink", true, false, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.luogoMortoLink = value.equals(VUOTA) ? null : elaboraService.fixLuogoValido(value);
+            bio.luogoMortoLink = value.equals(VUOTA) ? null : elaboraService.fixLuogoValido(value);
         }
 
         @Override
@@ -164,7 +164,7 @@ public enum ParBio {
     giornoMeseMorte("GiornoMeseMorte", "giornoMorte", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.giornoMorto = value.equals(VUOTA) ? null : elaboraService.fixGiorno(value);
+            bio.giornoMorto = value.equals(VUOTA) ? null : elaboraService.fixGiorno(value);
         }
 
         @Override
@@ -177,7 +177,7 @@ public enum ParBio {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
             if (textService.isValid(value)) {
-//                bio.annoMorto = elaboraService.fixAnno(value);
+                bio.annoMorto = elaboraService.fixAnno(value);
             }
         }
 
@@ -213,7 +213,7 @@ public enum ParBio {
     attivita2("Attività2", "attivita2", true, false, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.attivita2 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
+            bio.attivita2 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
         }
 
         @Override
@@ -225,7 +225,7 @@ public enum ParBio {
     attivita3("Attività3", "attivita3", true, false, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-//            bio.attivita3 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
+            bio.attivita3 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
         }
 
         @Override

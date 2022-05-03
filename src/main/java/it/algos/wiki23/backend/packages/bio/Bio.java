@@ -64,13 +64,13 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.text)
     public String cognome;
 
-    @AIField(type = AETypeField.text)
+    @AIField(type = AETypeField.text, header = "XY", widthEM = 3)
     public String sesso;
 
-    @AIField(type = AETypeField.text)
+    @AIField(type = AETypeField.text, header = "giorno", widthEM = 7)
     public String giornoNato;
 
-    @AIField(type = AETypeField.text)
+    @AIField(type = AETypeField.text, header = "anno", widthEM = 6)
     public String annoNato;
 
     @AIField(type = AETypeField.text)
@@ -79,10 +79,10 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.text)
     public String luogoNatoLink;
 
-    @AIField(type = AETypeField.text)
+    @AIField(type = AETypeField.text, header = "giorno", widthEM = 7)
     public String giornoMorto;
 
-    @AIField(type = AETypeField.text)
+    @AIField(type = AETypeField.text, header = "anno", widthEM = 7)
     public String annoMorto;
 
     @AIField(type = AETypeField.text)

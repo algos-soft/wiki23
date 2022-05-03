@@ -35,4 +35,6 @@ public interface AnnoRepository extends MongoRepository<Anno, String> {
     @Override
     void delete(Anno entity);
 
+    Anno findFirstByNome(String nome);
+
 }// end of crud repository class

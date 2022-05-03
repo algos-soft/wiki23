@@ -3,6 +3,8 @@ package it.algos.wiki23.backend.packages.bio;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.logic.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
@@ -25,7 +27,7 @@ import java.time.*;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, esiste già @Service) <br>
  */
 @Service
-public class BioBackend extends CrudBackend {
+public class BioBackend extends WikiBackend {
 
     private BioRepository repository;
 
@@ -99,21 +101,20 @@ public class BioBackend extends CrudBackend {
      * @param attivita singola
      *
      * @return conteggio di biografie che la usano
-     *
      */
     public int countAttivita(final String attivita) {
         int numBio = 0;
         Long attivitaUno = repository.countBioByAttivita(attivita);
-        Long attivitaDue = repository.countBioByAttivita2(attivita);
-        Long attivitaTre = repository.countBioByAttivita3(attivita);
+        Long attivitaDue;
+        Long attivitaTre;
 
         numBio = attivitaUno.intValue();
 
-        //--volendo si potrebbe metter un flag di preferenze (false) per 'cercare' solo l'attività principale
-        //@todo mettere eventualmente un flag in preferenze
-        //        if (pref.isBool(USA_TRE_ATTIVITA) {
-        //            numBio+=attivitaDue.intValue()+attivitaTre.intValue();
-        //        }
+        if (WPref.usaTreAttivita.is()) {
+            attivitaDue = repository.countBioByAttivita2(attivita);
+            attivitaTre = repository.countBioByAttivita3(attivita);
+            numBio += attivitaDue.intValue() + attivitaTre.intValue();
+        }
 
         return numBio;
     }

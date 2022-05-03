@@ -1,5 +1,6 @@
 package it.algos.wiki23.backend.service;
 
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.doppionome.*;
@@ -78,6 +79,14 @@ public class WAbstractService extends AbstractService {
      */
     @Autowired
     public BioService bioService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public GiornoBackend giornoBackend;
 
 
 }

@@ -26,6 +26,7 @@ public abstract class WikiBackend extends CrudBackend {
     public WPref lastDownload;
 
     public WPref lastElabora;
+    public WPref durataElaborazione;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -99,6 +100,14 @@ public abstract class WikiBackend extends CrudBackend {
         }
         else {
             logger.warn(new WrapLog().exception(new AlgosException("lastElabora è nullo")));
+            return;
+        }
+
+        if (durataElaborazione != null) {
+            durataElaborazione.setValue(delta.intValue());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("durataElaborazione è nullo")));
             return;
         }
 

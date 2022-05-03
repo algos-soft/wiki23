@@ -94,6 +94,9 @@ public class GiornoBackend extends CrudBackend {
                 .build();
     }
 
+    public Giorno findByNome(final String nome) {
+        return repository.findFirstByNome(nome);
+    }
 
     /**
      * Creazione di alcuni dati iniziali <br>

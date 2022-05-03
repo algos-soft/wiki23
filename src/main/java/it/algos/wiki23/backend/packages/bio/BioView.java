@@ -2,16 +2,20 @@ package it.algos.wiki23.backend.packages.bio;
 
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.dialog.*;
+import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
@@ -34,7 +38,7 @@ import java.util.*;
  */
 @PageTitle("Biografie")
 @Route(value = TAG_BIO, layout = MainLayout.class)
-public class BioView extends CrudView {
+public class BioView extends WikiView {
 
 
     //--per eventuali metodi specifici
@@ -65,12 +69,21 @@ public class BioView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "nome", "cognome", "attivita", "nazionalita");
-        super.formPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "nome", "cognome", "attivita", "nazionalita");
+        super.gridPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "sesso", "nome", "cognome", "giornoNato",
+                "annoNato",
+                "giornoMorto", "annoMorto",
+                "attivita", "attivita2", "attivita3",
+                "nazionalita"
+        );
+        super.formPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "sesso", "nome", "cognome", "giornoNato", "annoNato", "giornoMorto", "annoMorto",
+                "attivita", "attivita2", "attivita3",
+                "nazionalita"
+        );
 
+        super.usaBottoneNew = true;
         super.usaBottoneDelete = false;
         super.usaBottoneSearch = false;
-
+        super.usaBottonePaginaWiki = true;
         super.dialogClazz = BioDialog.class;
     }
 
@@ -82,6 +95,35 @@ public class BioView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
         addSpanVerde("Biografie");
+    }
+
+    @Override
+    protected void fixBodyLayout() {
+        super.fixBodyLayout();
+
+        HeaderRow headerRow = grid.prependHeaderRow();
+        Grid.Column pageId = grid.getColumnByKey("pageId");
+        Grid.Column wikiTitle = grid.getColumnByKey("wikiTitle");
+        Grid.Column elaborato = grid.getColumnByKey("elaborato");
+        Grid.Column sesso = grid.getColumnByKey("sesso");
+        Grid.Column nome = grid.getColumnByKey("nome");
+        Grid.Column cognome = grid.getColumnByKey("cognome");
+        Grid.Column giornoNato = grid.getColumnByKey("giornoNato");
+        Grid.Column annoNato = grid.getColumnByKey("annoNato");
+        Grid.Column giornoMorto = grid.getColumnByKey("giornoMorto");
+        Grid.Column annoMorto = grid.getColumnByKey("annoMorto");
+        Grid.Column attivita = grid.getColumnByKey("attivita");
+        Grid.Column attivita2 = grid.getColumnByKey("attivita2");
+        Grid.Column attivita3 = grid.getColumnByKey("attivita3");
+        Grid.Column nazionalita = grid.getColumnByKey("nazionalita");
+        Grid.Column nazionalita2 = grid.getColumnByKey("nazionalita");
+
+        headerRow.join(pageId, wikiTitle, elaborato).setText("Wiki");
+        headerRow.join(sesso, nome, cognome).setText("Anagrafica");
+        headerRow.join(giornoNato, annoNato).setText("Nascita");
+        headerRow.join(giornoMorto, annoMorto).setText("Morte");
+        headerRow.join(attivita, attivita2, attivita3).setText("Attività");
+        //        headerRow.join(nazionalita,nazionalita2).setText("Nazionalità");
     }
 
     /**
@@ -109,8 +151,8 @@ public class BioView extends CrudView {
      * @param entityBeanDaRegistrare (nuova o esistente)
      */
     public void updateItem(AEntity entityBeanDaRegistrare) {
-        dialog =  appContext.getBean(BioDialog.class, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
-        dialog.openBio(this::saveHandler, this::annullaHandler,this::elaboraHandler);
+        dialog = appContext.getBean(BioDialog.class, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
+        dialog.openBio(this::saveHandler, this::annullaHandler, this::elaboraHandler);
     }
 
     public void elaboraHandler(final Bio bio) {
@@ -140,6 +182,20 @@ public class BioView extends CrudView {
         layout.add(layout2);
         dialog.add(layout);
         dialog.open();
+    }
+
+
+    /**
+     * Esegue un azione di apertura di una pagina su wiki, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected AEntity wikiPage() {
+        Bio bio = (Bio) super.wikiPage();
+
+        wikiApiService.openWikiPage(bio.wikiTitle);
+
+        return null;
     }
 
     /**

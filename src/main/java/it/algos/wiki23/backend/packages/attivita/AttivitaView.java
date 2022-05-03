@@ -69,7 +69,7 @@ public class AttivitaView extends WikiView {
 
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
 
-        super.usaBottoneElabora=true;
+        super.usaBottoneElabora = true;
         super.lastDownload = WPref.downloadAttivita;
         super.lastElaborazione = WPref.elaboraAttivita;
         super.durataElaborazione = WPref.elaboraAttivitaTime;
@@ -147,7 +147,7 @@ public class AttivitaView extends WikiView {
         }
 
         final String textSearchPlurale = searchFieldPlurale != null ? searchFieldPlurale.getValue() : VUOTA;
-        if (textService.isValid(textSearch)) {
+        if (textService.isValid(textSearchPlurale)) {
             items = items.stream().filter(att -> att.plurale.matches("^(?i)" + textSearchPlurale + ".*$")).toList();
         }
 

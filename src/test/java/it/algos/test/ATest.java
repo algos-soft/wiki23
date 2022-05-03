@@ -427,6 +427,7 @@ public abstract class ATest {
     }
 
     protected void print(List<String> lista, String message) {
+        int k = 0;
         if (lista != null && lista.size() > 0) {
             System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size(), message));
         }
@@ -436,6 +437,9 @@ public abstract class ATest {
         System.out.println(VUOTA);
         if (arrayService.isAllValid(lista)) {
             for (String stringa : lista) {
+                System.out.print(++k);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
                 System.out.println(stringa);
             }
         }
@@ -457,6 +461,7 @@ public abstract class ATest {
                     for (String value : lista) {
                         System.out.print(value);
                         System.out.print(VIRGOLA);
+                        System.out.print(SPAZIO);
                     }
                     System.out.println(VUOTA);
                 }

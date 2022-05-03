@@ -1,19 +1,23 @@
 package it.algos.wiki23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad23.backend.boot.VaadCost.NOTE;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
+import static javax.tools.Diagnostic.Kind.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 
 import java.util.*;
+import java.util.regex.*;
 
 /**
  * Project wiki23
@@ -122,6 +126,212 @@ public class ElaboraService extends WAbstractService {
     /**
      * Regola questa property <br>
      * <p>
+     * Regola il testo con le regolazioni di base (fixValoreGrezzo) <br>
+     * A seconda del flag:
+     * CONTROLLA che il valore sia valido - solo M o F <br>
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return testo/parametro regolato in uscita
+     */
+    public String fixSesso(String testoGrezzo) {
+        String testoValido = fixValoreGrezzo(testoGrezzo);
+        testoValido = testoValido.toLowerCase();
+
+        if (MASCHI.contains(testoValido)) {
+            testoValido = "M";
+        }
+
+        if (FEMMINE.contains(testoValido)) {
+            testoValido = "F";
+        }
+
+        return testoValido;
+    }
+
+
+    /**
+     * Regola questa property <br>
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return testoValido regolato in uscita
+     */
+    public String fixLuogoValido(String testoGrezzo) {
+        String testoValido;
+
+        if (textService.isEmpty(testoGrezzo)) {
+            return VUOTA;
+        }
+
+        testoValido = testoGrezzo.trim();
+        testoValido = textService.levaDopo(testoValido, REF);
+        testoValido = textService.levaDopo(testoValido, NOTE);
+        testoValido = textService.levaDopo(testoValido, DOPPIE_GRAFFE_INI);
+        testoValido = textService.levaDopo(testoValido, PUNTO_INTERROGATIVO);
+        testoValido = textService.setNoQuadre(testoValido);
+        testoValido = testoValido.trim();
+
+        if (testoValido.length() > 253) {
+            testoValido = testoValido.substring(0, 252);
+            //@todo manca warning
+        }
+
+        return testoValido;
+    }
+
+
+    /**
+     * Regola questa property <br>
+     * <p>
+     * Regola il testo con le regolazioni specifiche della property <br>
+     * Controlla che il valore esista nella collezione linkata <br>
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return testo/parametro regolato in uscita
+     */
+    public String fixGiornoValido(String testoGrezzo) {
+        String testoValido = fixGiorno(testoGrezzo);
+        Giorno giorno = null;
+
+        try {
+            giorno = giornoBackend.findByNome(testoValido);
+        } catch (Exception unErrore) {
+//            logger.info(unErrore, this.getClass(), "fixGiornoValido");
+        }
+
+        return giorno != null ? giorno.nome : VUOTA;
+    }
+
+    /**
+     * Regola questa property <br>
+     * <p>
+     * Regola il testo con le regolazioni di base (fixValoreGrezzo) <br>
+     * Elimina il testo se NON contiene una spazio vuoto (tipico della data giorno-mese) <br>
+     * Elimina eventuali spazi vuoti DOPPI o TRIPLI (tipico della data tra il giorno ed il mese) <br>
+     * Forza a minuscolo il primo carattere del mese <br>
+     * Forza a ordinale un eventuale primo giorno del mese scritto come numero o come grado <br>
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return testo/parametro regolato in uscita
+     */
+    public String fixGiorno(String testoGrezzo) {
+        //--se contiene un punto interrogativo (in coda) è valido
+        String testoValido = wikiBotService.estraeValoreInizialeGrezzoPuntoEscluso(testoGrezzo);
+        int pos;
+        String primo;
+        String mese;
+
+        //--spazio singolo
+        testoValido = textService.fixOneSpace(testoValido);
+
+        //--senza spazio
+        if (!testoValido.contains(SPAZIO)) {
+            testoValido = separaMese(testoValido);
+        }
+
+        if (!testoValido.contains(SPAZIO)) {
+            return VUOTA;
+        }
+
+        //--elimina eventuali quadre (ini o end) rimaste
+        testoValido = testoValido.replaceAll(QUADRA_INI_REGEX, VUOTA);
+        testoValido = testoValido.replaceAll(QUADRA_END_REGEX, VUOTA);
+
+        //--deve iniziare con un numero
+        if (!Character.isDigit(testoValido.charAt(0))) {
+            return VUOTA;
+        }
+
+        //--deve finire con una lettera
+        if (Character.isDigit(testoValido.charAt(testoValido.length() - 1))) {
+            return VUOTA;
+        }
+
+        //--minuscola
+        testoValido = testoValido.toLowerCase();
+
+        //--Forza a ordinale un eventuale primo giorno del mese scritto come numero o come grado
+        if (testoValido.contains(SPAZIO)) {
+            pos = testoValido.indexOf(SPAZIO);
+            primo = testoValido.substring(0, pos);
+            mese = testoValido.substring(pos + SPAZIO.length());
+
+            if (primo.equals("1") || primo.equals("1°")) {
+                primo = "1º";
+                testoValido = primo + SPAZIO + mese;
+            }
+        }
+
+        return testoValido.trim();
+    }
+
+
+
+    /**
+     * Regola questa property <br>
+     * <p>
+     * Regola il testo con le regolazioni di base (fixValoreGrezzo) <br>
+     * Elimina il testo se contiene la dicitura 'circa' (tipico dell'anno)
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return testo/parametro regolato in uscita
+     */
+    public String fixAnno(String testoGrezzo) {
+        //--se contiene un punto interrogativo (in coda) è valido
+        String testoValido = wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+
+        if (textService.isEmpty(testoValido)) {
+            return VUOTA;
+        }
+
+        //--deve iniziare con un numero
+        if (!Character.isDigit(testoValido.charAt(0))) {
+            return VUOTA;
+        }
+
+        //--tag non ammesso
+        if (testoValido.contains("secolo")) {
+            return VUOTA;
+        }
+
+        //--non deve contenere caratteri alfabetici
+        //--solo (eventualmente): A, a, C, c
+        //--per gli anni prima di Cristo
+        if (contieneCaratteriAlfabetici(testoValido)) {
+            return VUOTA;
+        }
+
+        //--non deve contenere caratteri divisivi di due anni
+        if (testoValido.contains(SLASH) || testoValido.contains(PIPE) || testoValido.contains(TRATTINO)) {
+            return VUOTA;
+        }
+
+        return testoValido.trim();
+    }
+
+
+    public boolean contieneCaratteriAlfabetici(String testoIn) {
+        boolean contiene = false;
+        // Create a Pattern object
+        Pattern pattern = Pattern.compile("[bd-zBD-Z]");
+
+        // Now create matcher object.
+        Matcher matcher = pattern.matcher(testoIn);
+
+        if (matcher != null && matcher.find()) {
+            return true;
+        }
+
+        return contiene;
+    }
+
+    /**
+     * Regola questa property <br>
+     * <p>
      * Regola il testo con le regolazioni specifiche della property <br>
      * Controlla che il valore esista nella collezione linkata <br>
      *
@@ -210,6 +420,75 @@ public class ElaboraService extends WAbstractService {
         //        testoValido = testoValido.replaceAll(QUADRA_END_REGEX,VUOTA);
 
         return testoValido.trim();
+    }
+
+
+    /**
+     * Elabora un valore GREZZO e restituisce un valore VALIDO <br>
+     * NON controlla la corrispondenza dei parametri linkati (Giorno, Anno, Attivita, Nazionalita) <br>
+     * Può essere sottoscritto da alcuni parametri che rispondono in modo particolare <br>
+     *
+     * @param valoreGrezzo in entrata da elaborare
+     *
+     * @return valore finale valido del parametro
+     */
+    public String fixValoreGrezzo(String valoreGrezzo) {
+        String valoreValido = valoreGrezzo.trim();
+
+        if (textService.isEmpty(valoreGrezzo)) {
+            return VUOTA;
+        }
+
+        valoreValido = textService.setNoQuadre(valoreValido);
+
+        //--elimina ref in coda
+        valoreValido = textService.levaDopo(valoreValido, REF_OPEN);
+
+        //--elimina quadra in coda
+        valoreValido = textService.levaDopo(valoreValido, QUADRA_INI);
+
+        return valoreValido.trim();
+    }
+
+
+    public String separaMese(String testoTuttoAttaccato) {
+        String testoSeparato = testoTuttoAttaccato.trim();
+        String giorno;
+        String mese;
+        String inizio;
+
+        if (textService.isEmpty(testoTuttoAttaccato)) {
+            return VUOTA;
+        }
+
+        if (testoSeparato.contains(SPAZIO)) {
+            return testoSeparato;
+        }
+
+        if (Character.isDigit(testoSeparato.charAt(0))) {
+            if (Character.isDigit(testoSeparato.charAt(1))) {
+                giorno = testoSeparato.substring(0, 2);
+                mese = testoSeparato.substring(2);
+            }
+            else {
+                giorno = testoSeparato.substring(0, 1);
+                mese = testoSeparato.substring(1);
+            }
+        }
+        else {
+            return testoSeparato;
+        }
+
+        inizio = mese.substring(0, 1);
+        if (inizio.equals(TRATTINO) || inizio.equals(SLASH)) {
+            mese = mese.substring(1);
+        }
+
+        if (textService.isValid(giorno) && textService.isValid(mese)) {
+            testoSeparato = giorno + SPAZIO + mese;
+        }
+
+        return testoSeparato;
     }
 
 }

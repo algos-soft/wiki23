@@ -90,6 +90,9 @@ public class AnnoBackend extends CrudBackend {
                 .build();
     }
 
+    public Anno findByNome(final String nome) {
+        return repository.findFirstByNome(nome);
+    }
 
     /**
      * Creazione di alcuni dati iniziali <br>

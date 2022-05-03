@@ -1,5 +1,7 @@
 package it.algos;
 
+import com.vaadin.flow.component.dependency.*;
+import com.vaadin.flow.server.*;
 import com.vaadin.flow.spring.annotation.*;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
@@ -38,6 +40,7 @@ import org.springframework.context.*;
 @SpringBootApplication(scanBasePackages = {"it.algos"}, exclude = {SecurityAutoConfiguration.class})
 @EnableVaadin({"it.algos"})
 @EntityScan({"it.algos"})
+@NpmPackage(value = "line-awesome", version = "1.3.0")
 public class Wiki23Application extends SpringBootServletInitializer {
 
     /**
