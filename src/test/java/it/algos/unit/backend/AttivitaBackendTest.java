@@ -34,7 +34,7 @@ import java.util.stream.*;
 @Tag("backend")
 @DisplayName("Attivita service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AttivitaBackendTest extends ATest {
+public class AttivitaBackendTest extends WTest {
 
 
     /**

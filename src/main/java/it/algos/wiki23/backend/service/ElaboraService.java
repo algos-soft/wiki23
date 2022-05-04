@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.service;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.vaad23.backend.boot.VaadCost.NOTE;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -198,7 +199,7 @@ public class ElaboraService extends WAbstractService {
         try {
             giorno = giornoBackend.findByNome(testoValido);
         } catch (Exception unErrore) {
-//            logger.info(unErrore, this.getClass(), "fixGiornoValido");
+            logger.error(new WrapLog().exception(unErrore).usaDb());
         }
 
         return giorno != null ? giorno.nome : VUOTA;
@@ -269,6 +270,29 @@ public class ElaboraService extends WAbstractService {
     }
 
 
+    /**
+     * Regola la property <br>
+     * <p>
+     * Elimina il testo successivo a vari tag (fixPropertyBase) <br>
+     * Elimina il testo se NON contiene una spazio vuoto (tipico della data giorno-mese) <br>
+     * Elimina eventuali DOPPI spazi vuoto (tipico della data tra il giorno ed il mese) <br>
+     * Elimina eventuali spazi vuoti (trim) <br>
+     * Controlla che il valore esista nella collezione Giorno <br>
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return istanza di giorno valido
+     */
+    public Giorno fixGiornoLink(String testoGrezzo) throws Exception {
+        Giorno giorno = null;
+        String testoValido = fixGiorno(testoGrezzo);
+
+        if (textService.isValid(testoValido)) {
+            giorno = giornoBackend.findByNome(testoValido);
+        }
+
+        return giorno;
+    }
 
     /**
      * Regola questa property <br>
@@ -313,6 +337,70 @@ public class ElaboraService extends WAbstractService {
         return testoValido.trim();
     }
 
+    /**
+     * Regola la property <br>
+     * <p>
+     * Elimina il testo successivo a vari tag (fixPropertyBase) <br>
+     * Elimina il testo se NON contiene una spazio vuoto (tipico della data giorno-mese) <br>
+     * Elimina eventuali DOPPI spazi vuoto (tipico della data tra il giorno ed il mese) <br>
+     * Elimina eventuali spazi vuoti (trim) <br>
+     * Controlla che il valore esista nella collezione Anno <br>
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return istanza di anno valido
+     */
+    public Anno fixAnnoLink(final String testoGrezzo) throws Exception {
+        Anno anno = null;
+        String titoloAncheAnteCristo = fixAnno(testoGrezzo);
+
+        if (textService.isValid(titoloAncheAnteCristo)) {
+            anno = this.findAnnoByKey(titoloAncheAnteCristo);
+        }
+
+        return anno;
+    }
+
+
+    /**
+     * Retrieves an entity by its keyProperty.
+     * Considera anche gli anni Ante Cristo, eventualmente scritti male <br>
+     *
+     * @param titoloAncheAnteCristo must not be {@literal null}.
+     *
+     * @return the entity with the given id or {@literal null} if none found
+     */
+    public Anno findAnnoByKey(final String titoloAncheAnteCristo) throws Exception {
+        Anno anno = null;
+        String titoloEsatto = titoloAncheAnteCristo;
+        String tagA = "a";
+        String tagC = "C";
+
+        //--a minuscola
+        titoloEsatto = titoloEsatto.replaceAll("A", tagA);
+
+        //--c maiuscola
+        titoloEsatto = titoloEsatto.replaceAll("c", tagC);
+
+        //--manca spazio
+        if (!titoloEsatto.contains(SPAZIO)) {
+            titoloEsatto = titoloEsatto.replace(tagA, SPAZIO + tagA);
+        }
+
+        //--manca punto dopo 'a'
+        if (!titoloEsatto.contains(tagA + PUNTO)) {
+            titoloEsatto = titoloEsatto.replace(tagA, tagA + PUNTO);
+        }
+
+        //--manca punto dopo 'C'
+        if (!titoloEsatto.contains(tagC + PUNTO)) {
+            titoloEsatto = titoloEsatto.replace(tagC, tagC + PUNTO);
+        }
+
+        anno = annoBackend.findByNome(titoloEsatto);
+
+        return anno;
+    }
 
     public boolean contieneCaratteriAlfabetici(String testoIn) {
         boolean contiene = false;
@@ -422,6 +510,34 @@ public class ElaboraService extends WAbstractService {
         return testoValido.trim();
     }
 
+    /**
+     * Regola la property <br>
+     * <p>
+     * Elimina il testo successivo a vari tag (fixPropertyBase) <br>
+     * Controlla che il valore esista nella collezione Nazionalità <br>
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return istanza di nazionalità valida
+     */
+    public Nazionalita fixNazionalitaLink(String testoGrezzo) {
+        Nazionalita nazionalita = null;
+        String testoValido = VUOTA;
+
+        if (textService.isValid(testoGrezzo)) {
+            testoValido = fixNazionalitaValida(testoGrezzo);
+        }
+
+        if (textService.isValid(testoValido)) {
+            try {
+                nazionalita = nazionalitaBackend.findBySingolare(testoValido);
+            } catch (Exception unErrore) {
+                logger.error(new WrapLog().exception(unErrore).usaDb());
+            }
+        }
+
+        return nazionalita;
+    }
 
     /**
      * Elabora un valore GREZZO e restituisce un valore VALIDO <br>

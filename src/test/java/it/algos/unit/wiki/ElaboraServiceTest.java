@@ -32,7 +32,7 @@ import org.springframework.boot.test.context.*;
 @Tag("integration")
 @DisplayName("ElaboraService - Elaborazione delle biografie.")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ElaboraServiceTest extends ATest {
+public class ElaboraServiceTest extends WTest {
 
     protected static final String NOME_1 = "";
 
@@ -257,7 +257,7 @@ public class ElaboraServiceTest extends ATest {
         super.setUpAll();
 
         //--reindirizzo l'istanza della superclasse
-//        service = elaboraService;
+        service = elaboraService;
 
 //        service.mongo = mongoService;
 //        service.text = textService;
@@ -355,7 +355,7 @@ public class ElaboraServiceTest extends ATest {
         sorgente = giorno;
         ottenutoGiorno = null;
         try {
-//            ottenutoGiorno = service.fixGiornoLink(sorgente);
+            ottenutoGiorno = service.fixGiornoLink(sorgente);
         } catch (Exception unErrore) {
         }
         printGiorno(sorgente, ottenutoGiorno);
@@ -398,7 +398,7 @@ public class ElaboraServiceTest extends ATest {
         sorgente = anno;
         ottenutoAnno = null;
         try {
-//            ottenutoAnno = service.fixAnnoLink(sorgente);
+            ottenutoAnno = service.fixAnnoLink(sorgente);
         } catch (Exception unErrore) {
         }
         printAnno(sorgente, ottenutoAnno);
@@ -483,7 +483,7 @@ public class ElaboraServiceTest extends ATest {
         sorgente = nazionalita;
         ottenutoNazionalita = null;
         try {
-//            ottenutoNazionalita = service.fixNazionalitaLink(sorgente);
+            ottenutoNazionalita = service.fixNazionalitaLink(sorgente);
         } catch (Exception unErrore) {
         }
         printNazionalita(sorgente, ottenutoNazionalita);

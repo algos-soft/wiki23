@@ -1,18 +1,13 @@
 package it.algos.test;
 
-import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.wrapper.*;
+import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
-import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-
-import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.mockito.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.*;
 
@@ -27,11 +22,7 @@ import java.util.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@Tag("testAllValido")
-//@DisplayName("Test W")
-//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public abstract class WTest extends STest {
+public abstract class WTest extends ATest {
 
     /**
      * Istanza di una interfaccia <br>
@@ -40,6 +31,12 @@ public abstract class WTest extends STest {
      */
     @Autowired
     public ApplicationContext appContext;
+
+    @Autowired
+    public WikiBotService wikiBotService;
+
+    @Autowired
+    public ElaboraService elaboraService;
 
     protected final static String PAGINA_INESISTENTE = "Pippooz Belloz";
 
@@ -55,6 +52,42 @@ public abstract class WTest extends STest {
 
     protected WrapBio wrapBio;
 
+    /**
+     * Qui passa una volta sola, chiamato dalle sottoclassi <br>
+     * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     * Si possono aggiungere regolazioni specifiche <br>
+     */
+    protected void setUpAll() {
+        MockitoAnnotations.openMocks(this);
+        slf4jLogger = LoggerFactory.getLogger("wiki23.admin");
+
+        initMocks();
+        fixRiferimentiIncrociati();
+    }
+
+    /**
+     * Inizializzazione dei service <br>
+     * Devono essere tutti 'mockati' prima di iniettare i riferimenti incrociati <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void initMocks() {
+        super.initMocks();
+
+        assertNotNull(wikiBotService);
+    }
+
+    /**
+     * Regola tutti riferimenti incrociati <br>
+     * Deve essere fatto dopo aver costruito tutte le referenze 'mockate' <br>
+     * Nelle sottoclassi devono essere regolati i riferimenti dei service specifici <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixRiferimentiIncrociati() {
+        super.fixRiferimentiIncrociati();
+
+        elaboraService.wikiBotService = wikiBotService;
+    }
 
     /**
      * Qui passa prima di ogni test delle sottoclassi <br>
