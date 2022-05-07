@@ -1,6 +1,6 @@
 package it.algos.unit.service;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 
@@ -22,7 +22,7 @@ import java.time.*;
 @Tag("slowly")
 @DisplayName("Mail service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class MailServiceTest extends ATest {
+public class MailServiceTest extends AlgosTest {
 
 
     /**

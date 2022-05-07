@@ -1,35 +1,38 @@
-package it.algos.unit.service;
+package it.algos.backend;
 
-import it.algos.base.*;
-import it.algos.vaad23.backend.boot.*;
-import it.algos.vaad23.backend.service.*;
+import it.algos.*;
+import it.algos.test.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.test.context.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: sab, 12-mar-2022
- * Time: 18:06
+ * Date: mer, 04-mag-2022
+ * Time: 07:56
  * <p>
  * Unit test di una classe di servizio (di norma) <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("quickly")
-@DisplayName("Class service")
+@Tag("testAllValido")
+@DisplayName("Giorno service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ClassServiceTest extends AlgosTest {
+public class GiornoBackendTest extends ATest {
 
 
     /**
      * Classe principale di riferimento <br>
      * Gia 'costruita' nella superclasse <br>
      */
-    private ClassService service;
+    @Autowired
+    private GiornoBackend service;
 
     /**
      * Execute only once before running all tests <br>
@@ -42,12 +45,12 @@ public class ClassServiceTest extends AlgosTest {
         super.setUpAll();
 
         //--reindirizzo l'istanza della superclasse
-        service = classService;
+//        service = GiornoService;
     }
 
 
     /**
-     * Qui passa prima di ogni test <br>
+     * Qui passa prima di ogni test delle sottoclassi <br>
      * Invocare PRIMA il metodo setUpEach() della superclasse <br>
      * Si possono aggiungere regolazioni specifiche <br>
      */
@@ -59,23 +62,8 @@ public class ClassServiceTest extends AlgosTest {
 
     @Test
     @Order(1)
-    @DisplayName("1 - Test 'a freddo' (senza service)")
-    void first() {
-        Class clazz = VaadCost.class;
-        String canonicalName = clazz.getCanonicalName();
-        assertTrue(textService.isValid(canonicalName));
-        System.out.println(canonicalName);
-        Class clazz2 = null;
-
-        try {
-            clazz2 = Class.forName(canonicalName);
-        } catch (Exception unErrore) {
-            System.out.println(String.format(unErrore.getMessage()));
-        }
-        assertNotNull(clazz2);
-        System.out.println(clazz2.getSimpleName());
-        System.out.println(clazz2.getName());
-        System.out.println(clazz2.getCanonicalName());
+    @DisplayName("Primo test")
+    void primoTest() {
     }
 
 

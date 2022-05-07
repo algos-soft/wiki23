@@ -1,6 +1,6 @@
 package it.algos.unit.service;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
@@ -25,7 +25,7 @@ import java.util.stream.*;
 @Tag("slowly")
 @DisplayName("Date service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DateServiceTest extends ATest {
+public class DateServiceTest extends AlgosTest {
 
     public static final long MILLISECONDI_AL_MINUTO = 60000;
 

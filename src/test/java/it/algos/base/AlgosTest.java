@@ -1,4 +1,4 @@
-package it.algos.test;
+package it.algos.base;
 
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.server.*;
@@ -8,6 +8,7 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
@@ -29,7 +30,7 @@ import java.util.stream.*;
  *
  * @see https://www.baeldung.com/parameterized-tests-junit-5
  */
-public abstract class ATest {
+public abstract class AlgosTest {
 
     public static final String SEP_RIGA = "====================";
 
@@ -95,9 +96,9 @@ public abstract class ATest {
 
     protected double ottenutoDouble = 0;
 
-    protected AIResult previstoRisultato;
+    protected AResult previstoRisultato;
 
-    protected AIResult ottenutoRisultato;
+    protected AResult ottenutoRisultato;
 
     protected Span span;
 
@@ -267,6 +268,7 @@ public abstract class ATest {
         assertNotNull(htmlService);
         assertNotNull(webService);
         assertNotNull(loggerBackend);
+
     }
 
 
@@ -427,6 +429,7 @@ public abstract class ATest {
     }
 
     protected void print(List<String> lista, String message) {
+        int k = 0;
         if (lista != null && lista.size() > 0) {
             System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size(), message));
         }
@@ -436,6 +439,7 @@ public abstract class ATest {
         System.out.println(VUOTA);
         if (arrayService.isAllValid(lista)) {
             for (String stringa : lista) {
+                System.out.print(++k);
                 System.out.print(PARENTESI_TONDA_END);
                 System.out.print(SPAZIO);
                 System.out.println(stringa);
@@ -480,20 +484,22 @@ public abstract class ATest {
         return dateService.deltaTextEsatto(inizio);
     }
 
-    protected void printRisultato(AIResult result) {
+    protected void printRisultato(AResult result) {
         List lista = result.getLista();
         lista = lista != null && lista.size() > 20 ? lista.subList(0, 10) : lista;
 
         System.out.println(VUOTA);
         System.out.println("Risultato");
         System.out.println(String.format("Status: %s", result.isValido() ? "true" : "false"));
-        System.out.println(String.format("Query: %s", result.getQueryType()));
-        System.out.println(String.format("Title: %s", result.getWikiTitle()));
-        System.out.println(String.format("Preliminary url: %s", result.getUrlPreliminary()));
-        System.out.println(String.format("Secondary url: %s", result.getUrlRequest()));
-        System.out.println(String.format("Preliminary response: %s", result.getPreliminaryResponse()));
-        System.out.println(String.format("Token: %s", result.getToken()));
-        System.out.println(String.format("Secondary response: %s", result.getResponse()));
+        System.out.println(String.format("Method: %s", result.getMethod()));
+        //        System.out.println(String.format("Title: %s", result.getWikiTitle()));
+        System.out.println(String.format("Target: %s", result.getTarget()));
+        System.out.println(String.format("Type: %s", result.getType()));
+        //        System.out.println(String.format("Preliminary url: %s", result.getUrlPreliminary()));
+        //        System.out.println(String.format("Secondary url: %s", result.getUrlRequest()));
+        //        System.out.println(String.format("Preliminary response: %s", result.getPreliminaryResponse()));
+        //        System.out.println(String.format("Token: %s", result.getToken()));
+        //        System.out.println(String.format("Secondary response: %s", result.getResponse()));
         System.out.println(String.format("Message code: %s", result.getCodeMessage()));
         System.out.println(String.format("Message: %s", result.getMessage()));
         System.out.println(String.format("Error code: %s", result.getErrorCode()));

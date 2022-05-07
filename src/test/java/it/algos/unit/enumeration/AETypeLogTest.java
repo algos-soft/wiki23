@@ -1,6 +1,6 @@
 package it.algos.unit.enumeration;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.junit.jupiter.api.*;
@@ -25,7 +25,7 @@ import java.util.*;
 @Tag("enums")
 @DisplayName("Enumeration AETypeLog")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AETypeLogTest extends ATest {
+public class AETypeLogTest extends AlgosTest {
 
     private AETypeLog type;
 

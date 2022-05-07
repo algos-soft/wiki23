@@ -1,6 +1,6 @@
 package it.algos.unit.enumeration;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.junit.jupiter.api.*;
@@ -24,7 +24,7 @@ import java.util.*;
 @Tag("enums")
 @DisplayName("Enumeration AETypeParam")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AETypeParamTest extends ATest {
+public class AETypeParamTest extends AlgosTest {
 
 
     private AETypeParam type;

@@ -1,6 +1,6 @@
 package it.algos.unit.service;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
@@ -27,7 +27,7 @@ import java.util.stream.*;
 @Tag("quickly")
 @DisplayName("Text service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TextServiceTest extends ATest {
+public class TextServiceTest extends AlgosTest {
 
 
     /**

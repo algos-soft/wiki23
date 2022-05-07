@@ -1,6 +1,6 @@
 package it.algos.unit.service;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.*;
 @Tag("quickly")
 @DisplayName("Reflection service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ReflectionServiceTest extends ATest {
+public class ReflectionServiceTest extends AlgosTest {
 
 
     /**

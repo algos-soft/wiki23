@@ -1,6 +1,6 @@
 package it.algos.unit;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +29,7 @@ import java.util.stream.*;
 @Tag("quickly")
 @DisplayName("Java - Nuove funzioni Java 17")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class JavaTest extends ATest {
+public class JavaTest extends AlgosTest {
 
 
     private String ottenuto;

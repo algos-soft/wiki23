@@ -1,6 +1,6 @@
 package it.algos.unit.wrapper;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("quickly")
 @DisplayName("WrapLog")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class WrapLogTest extends ATest {
+public class WrapLogTest extends AlgosTest {
 
 
     /**
@@ -68,11 +68,22 @@ public class WrapLogTest extends ATest {
 
     @Test
     @Order(2)
-    @DisplayName("2- Check methods senza API")
-    void normalMethods() {
-        istanza = new WrapLog();
+    @DisplayName("2- Costruttore statico")
+    void costruttoreStatico() {
+        istanza = WrapLog.build();
         assertNotNull(istanza);
-        System.out.println(("2- Check methods senza API"));
+        System.out.println(("2- Costruttore statico"));
+        System.out.println(VUOTA);
+        System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("3- Check methods senza API")
+    void normalMethods() {
+        istanza = WrapLog.build();
+        assertNotNull(istanza);
+        System.out.println(("3- Check methods senza API"));
         System.out.println(VUOTA);
         System.out.println(String.format("Add type e message a un'istanza di %s SENZA API", istanza.getClass().getSimpleName()));
 
@@ -81,41 +92,36 @@ public class WrapLogTest extends ATest {
     }
 
     @Test
-    @Order(3)
-    @DisplayName("3- Fluent API")
+    @Order(4)
+    @DisplayName("4- Fluent API")
     void fluentApi() {
-        istanza = new WrapLog();
+        istanza = WrapLog.build();
         assertNotNull(istanza);
-        System.out.println(("3- Fluent API"));
+        System.out.println(("4- Fluent API"));
 
         System.out.println(VUOTA);
         System.out.println(String.format("Add type e message a un'istanza di %s usando le API", istanza.getClass().getSimpleName()));
-        new WrapLog().type(AETypeLog.checkData).message("messaggio di testo");
+        WrapLog.build().type(AETypeLog.checkData).message("messaggio di testo");
 
         System.out.println(VUOTA);
         System.out.println(String.format("Add message e type (ordine diverso) a un'istanza di %s usando le API", istanza.getClass().getSimpleName()));
-        new WrapLog().message("messaggio di testo").type(AETypeLog.checkData);
+        WrapLog.build().message("messaggio di testo").type(AETypeLog.checkData);
     }
 
     @Test
-    @Order(4)
-    @DisplayName("4- Fluent API get message back")
+    @Order(5)
+    @DisplayName("5- Fluent API get message back")
     void fluentApiGet() {
-        istanza = new WrapLog();
+        istanza = WrapLog.build();
         assertNotNull(istanza);
-        System.out.println(("4- Fluent API get message back"));
+        System.out.println(("5- Fluent API get message back"));
 
         System.out.println(VUOTA);
         System.out.println("Restituisce un messaggio");
-        ottenuto = new WrapLog().type(AETypeLog.checkData).message("messaggio di testo").getMessage();
+        ottenuto = WrapLog.build().type(AETypeLog.checkData).message("messaggio di testo").getMessage();
         System.out.println(ottenuto);
     }
 
-    @Test
-    @Order(4)
-    @DisplayName("4- Fluent API get message back")
-    void fluentView() {
-    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

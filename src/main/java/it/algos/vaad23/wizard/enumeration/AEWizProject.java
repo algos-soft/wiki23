@@ -27,7 +27,7 @@ public enum AEWizProject {
 
     flow("Directory BASE Vaad23 (Wizard compreso)", true, false, "src/main/java/it/algos/vaad23", AECopy.dirDelete),
 
-    //    projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
+//        projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
 
     resources("Directory RESOURCES (vaadin23)", true, false, "src/main/resources", AECopy.dirFilesAddOnly),
 
@@ -46,7 +46,7 @@ public enum AEWizProject {
     read("File README con note di testo (sources)", true, false, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
     testBase("Directory Test/Base (vaadin23)", false, true, "src/test/java/it/algos/base", AECopy.dirFilesModifica),
-//    testUnit("Directory Test/Unit (vaadin23)", false, true, "src/test/java/it/algos/unit", AECopy.dirFilesModifica),
+    testUnit("Directory Test/Unit (vaadin23)", false, true, "src/test/java/it/algos/unit", AECopy.dirFilesModifica),
     application("Main class java", true, false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),

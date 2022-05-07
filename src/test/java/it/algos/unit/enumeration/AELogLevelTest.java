@@ -1,7 +1,7 @@
 package it.algos.unit.enumeration;
 
 import static com.vaadin.flow.server.frontend.FrontendUtils.*;
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.junit.jupiter.api.*;
@@ -27,7 +27,7 @@ import java.util.stream.*;
 @Tag("enums")
 @DisplayName("Enumeration AELogLevel")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AELogLevelTest extends ATest {
+public class AELogLevelTest extends AlgosTest {
 
     private AELogLevel type;
 

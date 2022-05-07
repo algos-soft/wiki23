@@ -1,7 +1,7 @@
 package it.algos.unit.service;
 
 import com.vaadin.flow.router.*;
-import it.algos.test.*;
+import it.algos.base.*;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.utility.versione.*;
@@ -30,7 +30,7 @@ import javax.validation.constraints.*;
 @Tag("quickly")
 @DisplayName("Annotation service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AnnotationServiceTest extends ATest {
+public class AnnotationServiceTest extends AlgosTest {
 
 
     /**
