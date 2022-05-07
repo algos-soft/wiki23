@@ -28,12 +28,10 @@ public class WizElaboraNewProject extends WizElabora {
 
 
     public void esegue(final String pathNewUpdateProject) {
-        String message;
         progettoEsistente = fileService.isContieneProgettoValido(pathNewUpdateProject);
         srcVaadin23 = System.getProperty("user.dir") + SLASH;
         destNewProject = pathNewUpdateProject + SLASH;
-        newUpdateProject = fileService.estraeDirectoryFinaleSenzaSlash(destNewProject).toLowerCase();
-
+        newUpdateProject = fileService.lastDirectory(destNewProject).toLowerCase();
         super.esegue();
 
         for (AEWizProject wiz : AEWizProject.getAllNewProject()) {

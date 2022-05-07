@@ -1,7 +1,6 @@
 package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -98,7 +97,7 @@ public class WebService extends AbstractService {
      * @return risultato col testo grezzo in formato html oppure BSON
      */
     public String leggeWebTxt(final String urlDomain) {
-        return legge(urlDomain).getResponse();
+        return legge(urlDomain);
     }
 
     /**
@@ -112,9 +111,9 @@ public class WebService extends AbstractService {
      *
      * @return risultato col testo grezzo in formato html oppure BSON
      */
-    public AIResult legge(final String urlDomain) {
-        AIResult result;
-        String codiceSorgente;
+    public String legge(final String urlDomain) {
+        AResult result;
+        String codiceSorgente = VUOTA;
         URLConnection urlConn;
         String tag = TAG_INIZIALE;
         String tag2 = TAG_INIZIALE_SECURE;
@@ -123,13 +122,13 @@ public class WebService extends AbstractService {
             String webUrl = urlDomain.startsWith(tag) || urlDomain.startsWith(tag2) ? urlDomain : tag2 + urlDomain;
             urlConn = getURLConnection(webUrl);
             codiceSorgente = getUrlRequest(urlConn);
-            result = AResult.contenuto(codiceSorgente, urlDomain);
+            result = AResult.valido(codiceSorgente);
         } catch (Exception unErrore) {
             result = AResult.errato(unErrore.toString());
         }
-        result.setUrlRequest(urlDomain);
+        //        result.setUrlRequest(urlDomain);
 
-        return result;
+        return codiceSorgente;
     }
 
     /**
@@ -143,7 +142,7 @@ public class WebService extends AbstractService {
      * @return testo sorgente completo della pagina web in formato html
      */
     public String leggeWikiTxt(String wikiTitleGrezzo) {
-        return leggeWiki(wikiTitleGrezzo).getResponse();
+        return leggeWiki(wikiTitleGrezzo);
     }
 
 
@@ -157,13 +156,13 @@ public class WebService extends AbstractService {
      *
      * @return testo sorgente completo della pagina web in formato html
      */
-    public AIResult leggeWiki(final String wikiTitleGrezzo) {
-        AIResult result;
+    public String leggeWiki(final String wikiTitleGrezzo) {
+        String result;
         String wikiTitleElaborato = wikiTitleGrezzo.replaceAll(SPAZIO, UNDERSCORE);
         result = legge(TAG_WIKI + wikiTitleElaborato);
 
-        result.setWikiTitle(wikiTitleGrezzo);
-        result.setUrlRequest(TAG_WIKI + wikiTitleGrezzo);
+        //        result.setWikiTitle(wikiTitleGrezzo);
+        //        result.setUrlRequest(TAG_WIKI + wikiTitleGrezzo);
 
         return result;
     }

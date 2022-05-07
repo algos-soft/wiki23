@@ -1311,26 +1311,26 @@ public class WikiBotService extends WAbstractService {
      *
      * @return risultato col testo completo (visibile) della pagina wiki
      */
-    public AIResult leggeQuery(final String wikiTitleGrezzo) {
-        AIResult result;
+    public WResult leggeQuery(final String wikiTitleGrezzo) {
+        WResult result=null;
         String webUrl;
         String rispostaDellaQuery;
         String testoValido;
 
         if (textService.isEmpty(wikiTitleGrezzo)) {
-            return AResult.errato("Manca il wikiTitle");
+            return WResult.errato("Manca il wikiTitle");
         }
 
         webUrl = webUrlQuery(wikiTitleGrezzo);
         if (textService.isValid(webUrl)) {
-            result = webService.legge(webUrl);
-            rispostaDellaQuery = result.getResponse();
-            testoValido = estraeTestoPaginaWiki(rispostaDellaQuery);
-            result.setResponse(testoValido);
+//            result = webService.legge(webUrl);
+//            rispostaDellaQuery = result.getResponse();
+//            testoValido = estraeTestoPaginaWiki(rispostaDellaQuery);
+//            result.setResponse(testoValido);
             return result;
         }
         else {
-            return AResult.errato("Manca il domain");
+            return WResult.errato("Manca il domain");
         }
     }
 
@@ -1381,9 +1381,9 @@ public class WikiBotService extends WAbstractService {
      *
      * @return true se esiste, false se non esiste
      */
-    public AIResult isEsisteResult(final String wikiSimplePageCategoryTitle) {
-        AIResult resultWiki;
-        AIResult resultWeb;
+    public WResult isEsisteResult(final String wikiSimplePageCategoryTitle) {
+        WResult resultWiki;
+        WResult resultWeb=null;
         String wikiTitleElaborato;
         String rispostaDellaQuery;
         JSONObject objectJson=null;
@@ -1392,18 +1392,18 @@ public class WikiBotService extends WAbstractService {
         long pageId = 0;
 
         if (wikiSimplePageCategoryTitle == null) {
-            resultWiki = AResult.errato(NULL_WIKI_TITLE);
+            resultWiki = (WResult)AResult.errato(NULL_WIKI_TITLE);
             resultWiki.setWebTitle(null);
             return resultWiki;
         }
         if (textService.isEmpty(wikiSimplePageCategoryTitle)) {
-            resultWiki = AResult.errato(ERROR_WIKI_TITLE);
+            resultWiki = (WResult)AResult.errato(ERROR_WIKI_TITLE);
             resultWiki.setWebTitle(VUOTA);
             return resultWiki;
         }
         wikiTitleElaborato = wikiSimplePageCategoryTitle.replaceAll(SPAZIO, UNDERSCORE);
 
-        resultWeb = webService.legge(WIKI_PARSE + wikiTitleElaborato);
+//        resultWeb = (WResult)webService.legge(WIKI_PARSE + wikiTitleElaborato);
         resultWeb.setWebTitle(wikiSimplePageCategoryTitle);
         resultWeb.setWikiTitle(wikiTitleElaborato);
         rispostaDellaQuery = resultWeb.isValido() ? resultWeb.getResponse() : VUOTA;
@@ -1414,7 +1414,7 @@ public class WikiBotService extends WAbstractService {
             }
             else {
                 if (objectJson.get(JSON_ERROR) != null) {
-                    resultWiki = AResult.errato(ERROR_WIKI_PAGINA);
+                    resultWiki = WResult.errato(ERROR_WIKI_PAGINA);
                     resultWiki.setUrlRequest(resultWeb.getUrlRequest());
                     resultWiki.setResponse(rispostaDellaQuery);
                     return resultWiki;
@@ -1444,7 +1444,7 @@ public class WikiBotService extends WAbstractService {
      * @return true se esiste, false se non esiste
      */
     public boolean isEsiste(final String wikiSimplePageCategoryTitle) {
-        AIResult result = isEsisteResult(wikiSimplePageCategoryTitle);
+        WResult result = isEsisteResult(wikiSimplePageCategoryTitle);
         return result.isValido();
     }
 
@@ -1561,8 +1561,9 @@ public class WikiBotService extends WAbstractService {
      *
      * @return result della query
      */
-    public AIResult readCategory(final String catTitle, final String urlDomain) {
-        AIResult result = webService.legge(urlDomain);
+    public WResult readCategory(final String catTitle, final String urlDomain) {
+//        WResult result = webService.legge(urlDomain);
+        WResult result = null;
         JSONArray jsonPagine=null;
         boolean valido = result != null && result.isValido();
         int totalePagine;
@@ -1736,8 +1737,8 @@ public class WikiBotService extends WAbstractService {
      *
      * @return numero di pagine (subcategorie escluse)
      */
-    public AIResult getInfoCategoria(final String categoryTitle) {
-        AIResult result;
+    public WResult getInfoCategoria(final String categoryTitle) {
+        WResult result=null;
         String catTitleUnderscored;
         String catTitle;
         int totale;
@@ -1745,12 +1746,12 @@ public class WikiBotService extends WAbstractService {
         String webUrl;
 
         if (categoryTitle == null) {
-            result = AResult.errato(NULL_WIKI_TITLE);
+            result = WResult.errato(NULL_WIKI_TITLE);
             result.setWebTitle(null);
             return result;
         }
         if (textService.isEmpty(categoryTitle)) {
-            result = AResult.errato(ERROR_WIKI_TITLE);
+            result = WResult.errato(ERROR_WIKI_TITLE);
             result.setWebTitle(VUOTA);
             return result;
         }
@@ -1761,7 +1762,7 @@ public class WikiBotService extends WAbstractService {
 
         if (result.isValido()) {
             webUrl = WIKI_QUERY_CAT_TOTALE + catTitleUnderscored;
-            result = webService.legge(webUrl);
+//            result = webService.legge(webUrl);
             result.setWebTitle(categoryTitle);
             result.setWikiTitle(catTitleUnderscored);
         }

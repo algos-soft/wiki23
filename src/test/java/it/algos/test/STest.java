@@ -1,12 +1,8 @@
 package it.algos.test;
 
-import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.beans.factory.config.*;
-import org.springframework.context.*;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.*;
 
 /**
@@ -17,15 +13,13 @@ import org.springframework.data.mongodb.repository.*;
  * Time: 11:28
  * Layer per gestire ApplicationContext
  */
-@SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+//@SpringComponent
+//@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public abstract class STest extends ATest {
 
-    @Autowired
-    protected ApplicationContext appContext;
 
     @Autowired
-    @Qualifier("Logger")
+    //    @Qualifier("Logger")
     protected MongoRepository crudRepository;
 
 

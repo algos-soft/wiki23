@@ -4,7 +4,6 @@ import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.vaad23.wizard.scripts.WizCost.*;
 import static it.algos.vaad23.wizard.scripts.WizElaboraNewProject.*;
@@ -26,7 +25,7 @@ public class WizElaboraFeedBack extends WizElabora {
         String message;
         boolean esisteSrc;
         boolean esisteDest;
-        AIResult result;
+        AResult result;
         String srcWizardProject = System.getProperty("user.dir");
         String currentProject = fileService.estraeClasseFinaleSenzaJava(srcWizardProject).toLowerCase();
         String destBaseVaadin23 = textService.levaCoda(srcWizardProject, currentProject);
@@ -40,7 +39,7 @@ public class WizElaboraFeedBack extends WizElabora {
         esisteDest = fileService.isEsisteDirectory(destWizard);
 
         if (esisteSrc && esisteDest) {
-            result = fileService.copyDirectory(AECopy.dirAddingOnly, srcWizard, destWizard);
+            result = fileService.copyDirectory(AECopy.dirFilesAddOnly, srcWizard, destWizard);
             if (result.isValido()) {
                 message = "La directory 'wizard' è stata aggiornata su 'vaadin23'";
                 logger.info(new WrapLog().type(AETypeLog.wizard).message(message));

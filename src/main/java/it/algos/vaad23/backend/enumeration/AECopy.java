@@ -11,12 +11,15 @@ import java.util.*;
  */
 public enum AECopy {
 
-    dirDeletingAll("Cancella sempre la vecchia cartella e poi ricopia tutto.", AECopyType.directory),
-    dirAddingOnly("Se non esiste, crea la cartella vuota. Aggiunge files e directories senza cancellare quelli esistenti.", AECopyType.directory),
-    dirSoloSeNonEsiste("Se esiste già, non fa nulla. Se non esiste, crea la cartella vuota.", AECopyType.directory),
-    fileSovrascriveSempreAncheSeEsiste("", AECopyType.file),
-    fileSoloSeNonEsiste("", AECopyType.file),
-    fileCheckFlagSeEsiste("", AECopyType.file),
+    fileDelete("Sovrascrive sempre il file anche se esiste", AECopyType.file),
+    fileOnly("Copia il file solo se non esisteva", AECopyType.file),
+    fileCheck("Controlla un flag iniziale", AECopyType.file),
+
+    dirDelete("Cancella sempre la vecchia cartella e poi ricopia tutto.", AECopyType.directory),
+    dirOnly("Se esiste già, non fa nulla. Se non esiste, crea la cartella e il suo contenuto.", AECopyType.directory),
+    dirFilesAddOnly("Aggiunge directories e files senza modificare o cancellare quelli esistenti.", AECopyType.directory),
+    dirFilesModifica("Aggiunge directories e files e modifica quelli esistenti.", AECopyType.directory),
+
     sourceSovrascriveSempreAncheSeEsiste("", AECopyType.source),
     sourceSoloSeNonEsiste("", AECopyType.source),
     sourceCheckFlagSeEsiste("", AECopyType.source),

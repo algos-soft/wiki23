@@ -4,7 +4,6 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.apache.commons.io.*;
 import org.springframework.beans.factory.config.*;
@@ -40,7 +39,9 @@ public class FileService extends AbstractService {
 
     public static final String PARAMETRO_NULLO = "Il parametro in ingresso è nullo";
 
-    public static final String PATH_NULLO = "Il path in ingresso è nullo o vuoto";
+    public static final String PATH_NULLO = "Il path in ingresso è nullo";
+
+    public static final String PATH_VUOTO = "Il path in ingresso è vuoto";
 
     public static final String PATH_NOT_ABSOLUTE = "Il primo carattere del path NON è uno '/' (slash)";
 
@@ -54,15 +55,25 @@ public class FileService extends AbstractService {
 
     public static final String DIRECTORY_NOT_FILE = "Directory e non file";
 
+    public static final String DIRECTORY_MANCANTE = "Mancava la directory per il file, ma è stata creata";
+
+    public static final String CREATO_FILE = "Il file è stato creato";
+
     public static final String NON_CREATO_FILE = "Il file non è stato creato";
 
     public static final String NON_COPIATO_FILE = "Il file non è stato copiato";
 
+    public static final String CANCELLATO_FILE = "Il file è stato cancellato";
+
     public static final String NON_CANCELLATO_FILE = "Il file non è stato cancellato";
+
+    public static final String CANCELLATA_DIRECTORY = "La directory è stata cancellata";
 
     public static final String NON_CANCELLATA_DIRECTORY = "La directory non è stata cancellata";
 
     public static final String NON_ESISTE_DIRECTORY = "La directory non esiste";
+
+    public static final String CREATA_DIRECTORY = "La directory è stata creata";
 
     public static final String NON_CREATA_DIRECTORY = "La directory non è stata creata";
 
@@ -83,109 +94,47 @@ public class FileService extends AbstractService {
      * <p>
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed inziare con uno 'slash' <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
      *
      * @param directoryToBeChecked con path completo che DEVE cominciare con '/' SLASH
      *
-     * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
+     * @return wrapper di informazioni risultanti
      */
-    public boolean isEsisteDirectory(final File directoryToBeChecked) {
-        return isEsisteDirectoryStr(directoryToBeChecked).equals(VUOTA);
-    }
-
-
-    /**
-     * Controlla l'esistenza di una directory
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
-     *
-     * @param directoryToBeChecked con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se il file esiste
-     */
-    public String isEsisteDirectoryStr(File directoryToBeChecked) {
+    public AResult checkDirectory(final File directoryToBeChecked) {
+        AResult result = checkFileDirectory("checkDirectory", directoryToBeChecked);
+        if (result.isErrato()) {
+            return result;
+        }
         String message;
-
-        if (directoryToBeChecked == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return PARAMETRO_NULLO;
-        }
-
-        if (textService.isEmpty(directoryToBeChecked.getName())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return PATH_NULLO;
-        }
-
-        if (!directoryToBeChecked.getPath().equals(directoryToBeChecked.getAbsolutePath())) {
-            //            message = String.format("Il primo carattere del path di %s NON è uno '/' (slash)", directoryToBeChecked.getAbsolutePath());
-            //            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-            return PATH_NOT_ABSOLUTE;
-        }
 
         if (directoryToBeChecked.exists()) {
             if (directoryToBeChecked.isDirectory()) {
-                //                message = String.format("Trovata la directory %s", directoryToBeChecked.getAbsolutePath());
-                //                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
-                return VUOTA;
+                message = String.format("Trovata la directory %s", directoryToBeChecked.getAbsolutePath());
+                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                return result.validMessage(message);
             }
             else {
-                //                message = String.format("%s non è una directory", directoryToBeChecked.getAbsolutePath());
-                //                logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
-                return NON_E_DIRECTORY;
+                message = String.format("%s%s%s", NON_E_DIRECTORY, FORWARD, directoryToBeChecked.getAbsolutePath());
+                logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                return result.errorMessage(message);
             }
         }
         else {
-            //            message = String.format("La directory %s non esiste", directoryToBeChecked.getAbsolutePath());
-            //            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
-            return NON_ESISTE_DIRECTORY;
+            message = String.format("%s%s%s", NON_ESISTE_DIRECTORY, FORWARD, directoryToBeChecked.getAbsolutePath());
+            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.errorMessage(message);
         }
     }
-
-
-    /**
-     * Creazioni di una directory 'parent' <br>
-     * Se manca il path completo alla creazione di un file, creo la directory 'parent' di quel file <br>
-     * Riprovo la creazione del file <br>
-     */
-    public String creaDirectoryParentAndFile(File unFile) {
-        String risposta = NON_CREATO_FILE;
-        String parentDirectoryName;
-        File parentDirectoryFile = null;
-        boolean parentDirectoryCreata = false;
-
-        if (unFile != null) {
-            parentDirectoryName = unFile.getParent();
-            parentDirectoryFile = new File(parentDirectoryName);
-            parentDirectoryCreata = parentDirectoryFile.mkdirs();
-        }
-
-        if (parentDirectoryCreata) {
-            try { // prova ad eseguire il codice
-                unFile.createNewFile();
-                risposta = VUOTA;
-            } catch (Exception unErrore) { // intercetta l'errore
-                System.out.println("Errore nel path per la creazione di un file");
-            }
-        }
-
-        return risposta;
-    }
-
 
     /**
      * Controlla l'esistenza di una directory <br>
      * <p>
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
      * Controlla che getPath() e getAbsolutePath() siano uguali <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
@@ -193,10 +142,15 @@ public class FileService extends AbstractService {
      *
      * @param absolutePathDirectoryToBeChecked path completo della directory che DEVE cominciare con '/' SLASH
      *
-     * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
+     * @return wrapper di informazioni risultanti
      */
-    public boolean isNotEsisteDirectory(String absolutePathDirectoryToBeChecked) {
-        return !isEsisteDirectoryStr(absolutePathDirectoryToBeChecked).equals(VUOTA);
+    public AResult checkDirectory(final String absolutePathDirectoryToBeChecked) {
+        AResult result = checkPath("checkDirectory", absolutePathDirectoryToBeChecked);
+        if (result.isErrato()) {
+            return result;
+        }
+
+        return checkDirectory(new File(absolutePathDirectoryToBeChecked));
     }
 
 
@@ -216,37 +170,60 @@ public class FileService extends AbstractService {
      * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
      */
     public boolean isEsisteDirectory(final String absolutePathDirectoryToBeChecked) {
-        return isEsisteDirectoryStr(absolutePathDirectoryToBeChecked).equals(VUOTA);
+        return checkDirectory(absolutePathDirectoryToBeChecked).isValido();
     }
 
 
     /**
-     * Controlla l'esistenza di una directory <br>
+     * Controlla l'esistenza di un file <br>
      * <p>
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
      * Controlla che getPath() e getAbsolutePath() siano uguali <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
      *
-     * @param absolutePathDirectoryToBeChecked path completo della directory che DEVE cominciare con '/' SLASH
+     * @param fileToBeChecked con path completo che DEVE cominciare con '/' SLASH
      *
-     * @return testo di errore, vuoto se la directory esiste
+     * @return wrapper di informazioni risultanti
      */
-    public String isEsisteDirectoryStr(final String absolutePathDirectoryToBeChecked) {
-        if (textService.isEmpty(absolutePathDirectoryToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return PATH_NULLO;
+    public AResult checkFile(final File fileToBeChecked) {
+        AResult result = checkFileDirectory("checkFile", fileToBeChecked);
+        if (result.isErrato()) {
+            return result;
         }
+        String message;
 
-        if (this.isNotSlashIniziale(absolutePathDirectoryToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return PATH_NOT_ABSOLUTE;
+        if (fileToBeChecked.exists()) {
+            if (fileToBeChecked.isFile()) {
+                message = String.format("Trovato il file %s", fileToBeChecked.getAbsolutePath());
+                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                return result.validMessage(message);
+            }
+            else {
+                message = String.format("%s%s%s", NON_E_FILE, FORWARD, fileToBeChecked.getAbsolutePath());
+                logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                return result.errorMessage(message);
+            }
         }
+        else {
+            if (this.isNotSuffix(fileToBeChecked.getAbsolutePath())) {
+                message = String.format("%s al file %s", PATH_SENZA_SUFFIX, fileToBeChecked.getAbsolutePath());
+                logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
+                return result.errorMessage(message);
+            }
 
-        return isEsisteDirectoryStr(new File(absolutePathDirectoryToBeChecked));
+            if (!fileToBeChecked.exists()) {
+                message = String.format("%s%s%s", NON_ESISTE_FILE, FORWARD, fileToBeChecked.getAbsolutePath());
+                logger.info(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
+                return result.errorMessage(message);
+            }
+
+            message = String.format("Errore generico nel check del file %s", fileToBeChecked.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(message);
+        }
     }
 
 
@@ -257,15 +234,44 @@ public class FileService extends AbstractService {
      * Il path non deve essere vuoto <br>
      * Il path deve essere completo ed iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
-     * Controlla che getPath() e getAbsolutePath() siano uguali <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      *
-     * @param fileToBeChecked con path completo che DEVE cominciare con '/' SLASH
+     * @param absolutePathFileWithSuffixToBeChecked path completo del file che DEVE cominciare con '/' SLASH
+     *
+     * @return wrapper di informazioni risultanti
+     */
+    public AResult checkFile(final String absolutePathFileWithSuffixToBeChecked) {
+        String message;
+        AResult result = checkPath("checkFile", absolutePathFileWithSuffixToBeChecked);
+        if (result.isErrato()) {
+            return result;
+        }
+
+        if (this.isSlashFinale(absolutePathFileWithSuffixToBeChecked)) {
+            message = String.format("%s%s%s", DIRECTORY_NOT_FILE, FORWARD, absolutePathFileWithSuffixToBeChecked);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(message);
+        }
+
+        return checkFile(new File(absolutePathFileWithSuffixToBeChecked));
+    }
+
+
+    /**
+     * Controlla l'esistenza di un file <br>
+     * <p>
+     * Il path non deve essere nullo <br>
+     * Il path non deve essere vuoto <br>
+     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e terminare con un 'suffix' <br>
+     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
+     *
+     * @param absolutePathFileWithSuffixToBeChecked path completo del file che DEVE cominciare con '/' SLASH
      *
      * @return true se il file esiste, false se non sono rispettate le condizioni della richiesta
      */
-    public boolean isEsisteFile(final File fileToBeChecked) {
-        return isEsisteFileStr(fileToBeChecked).equals(VUOTA);
+    public boolean isEsisteFile(final String absolutePathFileWithSuffixToBeChecked) {
+        return checkFile(absolutePathFileWithSuffixToBeChecked).isValido();
     }
 
 
@@ -289,169 +295,64 @@ public class FileService extends AbstractService {
 
 
     /**
-     * Controlla l'esistenza di un file <br>
+     * Crea una nuova directory
      * <p>
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      *
-     * @param absolutePathFileWithSuffixToBeChecked path completo del file che DEVE cominciare con '/' SLASH
+     * @param directoryToBeCreated con path completo che DEVE cominciare con '/' SLASH
      *
-     * @return true se il file esiste, false se non sono rispettate le condizioni della richiesta
+     * @return wrapper di informazioni risultanti
      */
-    public boolean isEsisteFile(final String absolutePathFileWithSuffixToBeChecked) {
-        return isEsisteFileStr(absolutePathFileWithSuffixToBeChecked).equals(VUOTA);
-    }
-
-
-    /**
-     * Controlla l'esistenza di un file <br>
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param absolutePathFileWithSuffixToBeChecked path completo del file che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se il file esiste
-     */
-    public String isEsisteFileStr(String absolutePathFileWithSuffixToBeChecked) {
-        String risposta = VUOTA;
-
-        if (textService.isEmpty(absolutePathFileWithSuffixToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return PATH_NULLO;
+    public AResult creaDirectory(final File directoryToBeCreated) {
+        AResult result = checkFileDirectory("creaDirectory", directoryToBeCreated);
+        if (result.isErrato()) {
+            return result;
         }
-
-        if (this.isNotSlashIniziale(absolutePathFileWithSuffixToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return PATH_NOT_ABSOLUTE;
-        }
-        if (this.isSlashFinale(absolutePathFileWithSuffixToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(DIRECTORY_NOT_FILE)).usaDb().type(AETypeLog.file));
-            return DIRECTORY_NOT_FILE;
-        }
-
-        risposta = isEsisteFileStr(new File(absolutePathFileWithSuffixToBeChecked));
-        if (!risposta.equals(VUOTA)) {
-            if (isEsisteDirectory(new File(absolutePathFileWithSuffixToBeChecked))) {
-                logger.error(new WrapLog().exception(new AlgosException(NON_E_FILE)).usaDb().type(AETypeLog.file));
-                return NON_E_FILE;
-            }
-
-            if (this.isNotSuffix(absolutePathFileWithSuffixToBeChecked)) {
-                logger.error(new WrapLog().exception(new AlgosException(PATH_SENZA_SUFFIX)).usaDb().type(AETypeLog.file));
-                return PATH_SENZA_SUFFIX;
-            }
-        }
-
-        return risposta;
-    }
-
-
-    /**
-     * Controlla l'esistenza di un file <br>
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * Controlla che getPath() e getAbsolutePath() siano uguali <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param fileToBeChecked con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se il file esiste
-     */
-    public String isEsisteFileStr(File fileToBeChecked) {
         String message;
-        if (fileToBeChecked == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return PARAMETRO_NULLO;
+
+        if (!this.isNotSuffix(directoryToBeCreated.getAbsolutePath())) {
+            message = String.format("%s%s%s", NON_E_DIRECTORY, FORWARD, directoryToBeCreated.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.errorMessage(message);
         }
 
-        if (textService.isEmpty(fileToBeChecked.getName())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return PATH_NULLO;
-        }
-
-        if (!fileToBeChecked.getPath().equals(fileToBeChecked.getAbsolutePath())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return PATH_NOT_ABSOLUTE;
-        }
-
-        if (fileToBeChecked.exists()) {
-            if (fileToBeChecked.isFile()) {
-                return VUOTA;
-            }
-            else {
-                logger.error(new WrapLog().exception(new AlgosException(NON_E_FILE)).usaDb().type(AETypeLog.file));
-                return NON_E_FILE;
-            }
-        }
-        else {
-            if (this.isNotSuffix(fileToBeChecked.getAbsolutePath())) {
-                logger.error(new WrapLog().exception(new AlgosException(PATH_SENZA_SUFFIX)).usaDb().type(AETypeLog.file));
-                return PATH_SENZA_SUFFIX;
-            }
-
-            if (!fileToBeChecked.exists()) {
-                //                message = String.format("Il file %s non esiste", fileToBeChecked);
-                //                logger.info(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-                return NON_ESISTE_FILE;
-            }
-
-            return VUOTA;
+        try {
+            directoryToBeCreated.mkdirs();
+            message = String.format("%s%s%s", CREATA_DIRECTORY, FORWARD, directoryToBeCreated.getAbsolutePath());
+            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.validMessage(message);
+        } catch (Exception unErrore) {
+            message = String.format("%s%s%s", NON_CREATA_DIRECTORY, FORWARD, directoryToBeCreated.getAbsolutePath());
+            logger.error(new WrapLog().exception(unErrore).usaDb().message(message));
+            return result.errorMessage(message);
         }
     }
 
 
     /**
-     * Crea un nuovo file
+     * Crea una nuova directory
      * <p>
-     * Il file DEVE essere costruita col path completo, altrimenti assume che sia nella directory in uso corrente
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Se manca la directory, viene creata dal System <br>
      *
-     * @param absolutePathFileWithSuffixToBeCreated path completo del file che DEVE cominciare con '/' SLASH e compreso il suffisso
+     * @param absolutePathDirectoryToBeCreated path completo della directory che DEVE cominciare con '/' SLASH
      *
-     * @return true se il file è stato creato, false se non sono rispettate le condizioni della richiesta
+     * @return wrapper di informazioni risultanti
      */
-    public boolean creaFile(String absolutePathFileWithSuffixToBeCreated) {
-        return creaFileStr(absolutePathFileWithSuffixToBeCreated).equals(VUOTA);
-    }
-
-
-    /**
-     * Crea un nuovo file
-     * <p>
-     * Il file DEVE essere costruita col path completo, altrimenti assume che sia nella directory in uso corrente
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Se manca la directory, viene creata dal System <br>
-     *
-     * @param absolutePathFileWithSuffixToBeCreated path completo del file che DEVE cominciare con '/' SLASH e compreso il suffisso
-     *
-     * @return testo di errore, vuoto se il file è stato creato
-     */
-    public String creaFileStr(String absolutePathFileWithSuffixToBeCreated) {
-
-        if (textService.isEmpty(absolutePathFileWithSuffixToBeCreated)) {
-            return PATH_NULLO;
+    public AResult creaDirectory(final String absolutePathDirectoryToBeCreated) {
+        AResult result = checkPath("creaDirectory", absolutePathDirectoryToBeCreated);
+        if (result.isErrato()) {
+            return result;
         }
 
-        return creaFileStr(new File(absolutePathFileWithSuffixToBeCreated));
+        return creaDirectory(new File(absolutePathDirectoryToBeCreated));
     }
 
 
@@ -461,267 +362,103 @@ public class FileService extends AbstractService {
      * Il file DEVE essere costruita col path completo, altrimenti assume che sia nella directory in uso corrente
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      * Se manca la directory, viene creata dal System <br>
      *
      * @param fileToBeCreated con path completo che DEVE cominciare con '/' SLASH
      *
-     * @return true se il file è stato creato, false se non sono rispettate le condizioni della richiesta
+     * @return wrapper di informazioni risultanti
      */
-    public boolean creaFile(File fileToBeCreated) {
-        return creaFileStr(fileToBeCreated).equals(VUOTA);
-    }
-
-
-    /**
-     * Crea un nuovo file
-     * <p>
-     * Il file DEVE essere costruita col path completo, altrimenti assume che sia nella directory in uso corrente
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Se manca la directory, viene creata dal System <br>
-     *
-     * @param fileToBeCreated con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se il file è stato creato
-     */
-    public String creaFileStr(File fileToBeCreated) {
-        if (fileToBeCreated == null) {
-            return PARAMETRO_NULLO;
+    public AResult creaFile(final File fileToBeCreated) {
+        AResult result = checkFileDirectory("creaFile", fileToBeCreated);
+        if (result.isErrato()) {
+            return result;
         }
-
-        if (textService.isEmpty(fileToBeCreated.getName())) {
-            return PATH_NULLO;
-        }
-
-        if (!fileToBeCreated.getPath().equals(fileToBeCreated.getAbsolutePath())) {
-            return PATH_NOT_ABSOLUTE;
-        }
+        String message;
 
         if (this.isNotSuffix(fileToBeCreated.getAbsolutePath())) {
-            return PATH_SENZA_SUFFIX;
+            message = String.format("%s%s%s", PATH_SENZA_SUFFIX, FORWARD, fileToBeCreated.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.errorMessage(message);
         }
 
         try {
             fileToBeCreated.createNewFile();
+            message = String.format("%s%s%s", CREATO_FILE, FORWARD, fileToBeCreated.getAbsolutePath());
+            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.validMessage(message);
         } catch (Exception unErrore) {
             return creaDirectoryParentAndFile(fileToBeCreated);
         }
-
-        return fileToBeCreated.exists() ? VUOTA : NON_CREATO_FILE;
     }
 
 
     /**
-     * Crea una nuova directory
+     * Crea un nuovo file
      * <p>
+     * Il file DEVE essere costruita col path completo, altrimenti assume che sia nella directory in uso corrente
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
      * Il path deve essere completo ed iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
+     * Se manca la directory, viene creata dal System <br>
      *
-     * @param absolutePathDirectoryToBeCreated path completo della directory che DEVE cominciare con '/' SLASH
+     * @param absolutePathFileWithSuffixToBeCreated path completo del file che DEVE cominciare con '/' SLASH e compreso il suffisso
      *
-     * @return true se la directory è stata creata, false se non sono rispettate le condizioni della richiesta
+     * @return wrapper di informazioni risultanti
      */
-    public boolean creaDirectory(String absolutePathDirectoryToBeCreated) {
-        return creaDirectoryStr(absolutePathDirectoryToBeCreated).equals(VUOTA);
-    }
-
-
-    /**
-     * Crea una nuova directory
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param absolutePathDirectoryToBeCreated path completo della directory che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se il file è stato creato
-     */
-    public String creaDirectoryStr(String absolutePathDirectoryToBeCreated) {
-        if (textService.isEmpty(absolutePathDirectoryToBeCreated)) {
-            return PATH_NULLO;
+    public AResult creaFile(final String absolutePathFileWithSuffixToBeCreated) {
+        AResult result = checkPath("creaFile", absolutePathFileWithSuffixToBeCreated);
+        if (result.isErrato()) {
+            return result;
         }
 
-        return creaDirectoryStr(new File(absolutePathDirectoryToBeCreated));
+        return creaFile(new File(absolutePathFileWithSuffixToBeCreated));
     }
 
 
     /**
-     * Crea una nuova directory
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
+     * Creazioni di una directory 'parent' <br>
+     * Se manca il path completo alla creazione di un file, creo la directory 'parent' di quel file <br>
+     * Riprovo la creazione del file <br>
      *
-     * @param directoryToBeCreated con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return true se la directory è stata creata, false se non sono rispettate le condizioni della richiesta
+     * @return wrapper di informazioni risultanti
      */
-    public boolean creaDirectory(File directoryToBeCreated) {
-        return creaDirectoryStr(directoryToBeCreated).equals(VUOTA);
-    }
-
-
-    /**
-     * Crea una nuova directory
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param directoryToBeCreated con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se il file è stato creato
-     */
-    public String creaDirectoryStr(File directoryToBeCreated) {
-        if (directoryToBeCreated == null) {
-            return PARAMETRO_NULLO;
-        }
-
-        if (textService.isEmpty(directoryToBeCreated.getName())) {
-            return PATH_NULLO;
-        }
-
-        if (!directoryToBeCreated.getPath().equals(directoryToBeCreated.getAbsolutePath())) {
-            return PATH_NOT_ABSOLUTE;
-        }
-
-        if (!this.isNotSuffix(directoryToBeCreated.getAbsolutePath())) {
-            return NON_E_DIRECTORY;
-        }
-
-        try { // prova ad eseguire il codice
-            directoryToBeCreated.mkdirs();
-        } catch (Exception unErrore) { // intercetta l'errore
-            return NON_CREATA_DIRECTORY;
-        }
-
-        return directoryToBeCreated.exists() ? VUOTA : NON_CREATA_DIRECTORY;
-    }
-
-
-    /**
-     * Cancella un file
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param absolutePathFileWithSuffixToBeCanceled path completo del file che DEVE cominciare con '/' SLASH e compreso il suffisso
-     *
-     * @return true se il file è stato cancellato oppure non esisteva
-     */
-    public boolean deleteFile(String absolutePathFileWithSuffixToBeCanceled) {
-        return deleteFileStr(absolutePathFileWithSuffixToBeCanceled).equals(VUOTA);
-    }
-
-
-    /**
-     * Cancella un file
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param absolutePathFileWithSuffixToBeCanceled path completo del file che DEVE cominciare con '/' SLASH e compreso il suffisso
-     *
-     * @return testo di errore, vuoto se il file è stato cancellato
-     */
-    public String deleteFileStr(String absolutePathFileWithSuffixToBeCanceled) {
-        if (textService.isEmpty(absolutePathFileWithSuffixToBeCanceled)) {
-            return PATH_NULLO;
-        }
-
-        return deleteFileStr(new File(absolutePathFileWithSuffixToBeCanceled));
-    }
-
-
-    /**
-     * Cancella un file
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param fileToBeDeleted con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return true se il file è stato cancellato oppure non esisteva
-     */
-    public boolean deleteFile(File fileToBeDeleted) {
-        return deleteFileStr(fileToBeDeleted).equals(VUOTA);
-    }
-
-
-    /**
-     * Cancella un file
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param fileToBeDeleted con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se il file è stato creato
-     */
-    public String deleteFileStr(File fileToBeDeleted) {
+    public AResult creaDirectoryParentAndFile(final File fileToBeCreated) {
+        AResult result = AResult.build().method("creaDirectoryParentAndFile").target(fileToBeCreated.getAbsolutePath());
         String message;
+        String parentDirectoryName = VUOTA;
+        File parentDirectoryFile;
+        boolean parentDirectoryCreata = false;
 
-        if (fileToBeDeleted == null) {
-            return PARAMETRO_NULLO;
+        if (fileToBeCreated != null) {
+            parentDirectoryName = fileToBeCreated.getParent();
+            parentDirectoryFile = new File(parentDirectoryName);
+            parentDirectoryCreata = parentDirectoryFile.mkdirs();
         }
 
-        if (textService.isEmpty(fileToBeDeleted.getName())) {
-            return PATH_NULLO;
-        }
-
-        if (!fileToBeDeleted.getPath().equals(fileToBeDeleted.getAbsolutePath())) {
-            return PATH_NOT_ABSOLUTE;
-        }
-
-        if (this.isNotSuffix(fileToBeDeleted.getAbsolutePath())) {
-            message = String.format("Manca il 'suffix' terminale nel file %s", fileToBeDeleted.getAbsolutePath());
-            logger.warn(AETypeLog.file, new AlgosException(message));
-            return PATH_SENZA_SUFFIX;
-        }
-
-        if (!fileToBeDeleted.exists()) {
-            message = String.format("Il file %s non esiste", fileToBeDeleted.getAbsolutePath());
-            logger.warn(AETypeLog.file, new AlgosException(message));
-            return NON_ESISTE_FILE;
-        }
-
-        if (fileToBeDeleted.delete()) {
-            return VUOTA;
+        if (parentDirectoryCreata) {
+            message = String.format("%s%s%s", DIRECTORY_MANCANTE, FORWARD, parentDirectoryName + SLASH);
+            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            try {
+                fileToBeCreated.createNewFile();
+                message = String.format("%s%s%s", CREATO_FILE, FORWARD, fileToBeCreated.getAbsolutePath());
+                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                return result.validMessage(message);
+            } catch (Exception unErrore) {
+                message = String.format("Errore nel path per la creazione del file %s", fileToBeCreated.getAbsolutePath());
+                logger.error(new WrapLog().exception(unErrore).message(message).type(AETypeLog.file));
+                return result.errorMessage(message);
+            }
         }
         else {
-            message = String.format("Non sono riuscito a cancellare il file %s", fileToBeDeleted.getAbsolutePath());
-            logger.warn(AETypeLog.file, new AlgosException(message));
-            return NON_CANCELLATO_FILE;
+            message = String.format("Non sono riuscito a creare la directory necessaria per il file %s", fileToBeCreated.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.errorMessage(message);
         }
-
     }
 
 
@@ -730,193 +467,243 @@ public class FileService extends AbstractService {
      * <p>
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param absolutePathDirectoryToBeDeleted path completo della directory che DEVE cominciare con '/' SLASH
-     *
-     * @return true se la directory è stato cancellato oppure non esisteva
-     */
-    public boolean deleteDirectory(String absolutePathDirectoryToBeDeleted) {
-        return deleteDirectoryStr(absolutePathDirectoryToBeDeleted).equals(VUOTA);
-    }
-
-
-    /**
-     * Cancella una directory
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param absolutePathDirectoryToBeDeleted path completo della directory che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se la directory è stata cancellata
-     */
-    public String deleteDirectoryStr(String absolutePathDirectoryToBeDeleted) {
-        if (textService.isEmpty(absolutePathDirectoryToBeDeleted)) {
-            return PATH_NULLO;
-        }
-
-        return deleteDirectoryStr(new File(absolutePathDirectoryToBeDeleted));
-    }
-
-
-    /**
-     * Cancella una directory
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      *
      * @param directoryToBeDeleted con path completo che DEVE cominciare con '/' SLASH
      *
-     * @return true se la directory è stata cancellata oppure non esisteva
+     * @return wrapper di informazioni risultanti
      */
-    public boolean deleteDirectory(File directoryToBeDeleted) {
-        return deleteDirectoryStr(directoryToBeDeleted).equals(VUOTA);
-    }
-
-
-    /**
-     * Cancella una directory
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     *
-     * @param directoryToBeDeleted con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se la directory è stata cancellata
-     */
-    public String deleteDirectoryStr(File directoryToBeDeleted) {
+    public AResult deleteDirectory(final File directoryToBeDeleted) {
+        AResult result = checkFileDirectory("deleteDirectory", directoryToBeDeleted);
+        if (result.isErrato()) {
+            return result;
+        }
         String message;
-        if (directoryToBeDeleted == null) {
-            return PARAMETRO_NULLO;
-        }
-
-        if (textService.isEmpty(directoryToBeDeleted.getName())) {
-            return PATH_NULLO;
-        }
-
-        if (!directoryToBeDeleted.getPath().equals(directoryToBeDeleted.getAbsolutePath())) {
-            return PATH_NOT_ABSOLUTE;
-        }
 
         if (!directoryToBeDeleted.exists()) {
-            message = String.format("La directory %s non esiste", directoryToBeDeleted.getAbsolutePath());
+            message = String.format("%s%s%s", NON_ESISTE_DIRECTORY, FORWARD, directoryToBeDeleted.getAbsolutePath());
             logger.warn(AETypeLog.file, new AlgosException(message));
-            return NON_ESISTE_DIRECTORY;
+            return result.errorMessage(message);
         }
 
         if (directoryToBeDeleted.delete()) {
-            return VUOTA;
+            message = String.format("%s%s%s", CANCELLATA_DIRECTORY, FORWARD, directoryToBeDeleted.getAbsolutePath());
+            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.validMessage(message);
         }
         else {
             try {
                 FileUtils.deleteDirectory(directoryToBeDeleted);
-                return VUOTA;
+                message = String.format("%s%s%s", CANCELLATA_DIRECTORY, FORWARD, directoryToBeDeleted.getAbsolutePath());
+                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                return result.validMessage(message);
             } catch (Exception unErrore) {
-                logger.error(AETypeLog.file, unErrore);
-                return NON_CANCELLATA_DIRECTORY;
+                message = String.format("%s%s%s", NON_CANCELLATA_DIRECTORY, FORWARD, directoryToBeDeleted.getAbsolutePath());
+                logger.info(new WrapLog().message(message).type(AETypeLog.file));
+                logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb().type(AETypeLog.file));
+                return result.errorMessage(unErrore.getMessage());
             }
         }
     }
 
 
     /**
-     * Copia un file
+     * Cancella una directory
      * <p>
-     * Se manca il file sorgente, non fa nulla <br>
-     * Se manca la directory di destinazione, la crea <br>
-     * Se esiste il file destinazione, non fa nulla <br>
+     * Il path non deve essere nullo <br>
+     * Il path non deve essere vuoto <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
+     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      *
-     * @param srcPath  nome completo del file sorgente
-     * @param destPath nome completo del file destinazione
+     * @param absolutePathDirectoryToBeDeleted path completo della directory che DEVE cominciare con '/' SLASH
      *
-     * @return true se il file è stato copiato
+     * @return wrapper di informazioni risultanti
      */
-    @Deprecated
-    public boolean copyFile(String srcPath, String destPath) {
-        return copyFileStr(srcPath, destPath) == VUOTA;
+    public AResult deleteDirectory(final String absolutePathDirectoryToBeDeleted) {
+        AResult result = checkPath("deleteDirectory", absolutePathDirectoryToBeDeleted);
+        if (result.isErrato()) {
+            return result;
+        }
+
+        return deleteDirectory(new File(absolutePathDirectoryToBeDeleted));
     }
 
 
     /**
-     * Copia un file sovrascrivendolo se già esistente
+     * Cancella un file
      * <p>
-     * Se manca il file sorgente, non fa nulla <br>
-     * Se esiste il file destinazione, lo cancella prima di copiarlo <br>
+     * Il path non deve essere nullo <br>
+     * Il path non deve essere vuoto <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
+     * Il path deve essere completo e terminare con un 'suffix' <br>
+     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      *
-     * @param srcPath  nome completo del file sorgente
-     * @param destPath nome completo del file destinazione
+     * @param fileToBeDeleted con path completo che DEVE cominciare con '/' SLASH
      *
-     * @return true se il file è stato copiato
+     * @return wrapper di informazioni risultanti
      */
-    public boolean copyFileDeletingAll(String srcPath, String destPath) {
-        if (!isEsisteFile(srcPath)) {
-            return false;
+    public AResult deleteFile(final File fileToBeDeleted) {
+        AResult result = checkFileDirectory("deleteFile", fileToBeDeleted);
+        if (result.isErrato()) {
+            return result;
+        }
+        String message;
+
+        if (this.isNotSuffix(fileToBeDeleted.getAbsolutePath())) {
+            message = String.format("%s%s%s", PATH_SENZA_SUFFIX, FORWARD, fileToBeDeleted.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.errorMessage(message);
         }
 
-        if (isEsisteFile(destPath)) {
-            deleteFile(destPath);
+        if (!fileToBeDeleted.exists()) {
+            message = String.format("%s%s%s", NON_ESISTE_FILE, FORWARD, fileToBeDeleted.getAbsolutePath());
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
         }
 
-        return copyFileStr(srcPath, destPath) == VUOTA;
+        if (fileToBeDeleted.delete()) {
+            message = String.format("%s%s%s", CANCELLATO_FILE, FORWARD, fileToBeDeleted.getAbsolutePath());
+            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.validMessage(message);
+        }
+        else {
+            message = String.format("%s%s%s", NON_CANCELLATO_FILE, FORWARD, fileToBeDeleted.getAbsolutePath());
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
+        }
     }
 
 
     /**
-     * Copia un file solo se non già esistente
+     * Cancella un file
      * <p>
-     * Se manca il file sorgente, non fa nulla <br>
-     * Se esiste il file destinazione, non fa nulla <br>
+     * Il path non deve essere nullo <br>
+     * Il path non deve essere vuoto <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
+     * Il path deve essere completo e terminare con un 'suffix' <br>
+     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      *
-     * @param srcPath  nome completo del file sorgente
-     * @param destPath nome completo del file destinazione
+     * @param absolutePathFileWithSuffixToBeCanceled path completo del file che DEVE cominciare con '/' SLASH e compreso il suffisso
      *
-     * @return true se il file è stato copiato
+     * @return wrapper di informazioni risultanti
      */
-    public boolean copyFileOnlyNotExisting(String srcPath, String destPath) {
-        return copyFileStr(srcPath, destPath) == VUOTA;
+    public AResult deleteFile(final String absolutePathFileWithSuffixToBeCanceled) {
+        AResult result = checkPath("deleteFile", absolutePathFileWithSuffixToBeCanceled);
+        if (result.isErrato()) {
+            return result;
+        }
+
+        return deleteFile(new File(absolutePathFileWithSuffixToBeCanceled));
     }
 
 
     /**
-     * Copia un file
+     * Copia un file <br>
      * <p>
+     * Controlla che siano validi i path di riferimento <br>
+     * Controlla che esista il path del file sorgente  <br>
      * Se manca il file sorgente, non fa nulla <br>
-     * Se manca la directory di destinazione, la crea <br>
-     * Se esiste il file destinazione, non fa nulla <br>
+     * Se esiste il file di destinazione ed è AECopyFile.soloSeNonEsiste, non fa nulla <br>
+     * Se esiste il file di destinazione ed è AECopyDir.sovrascriveSempreAncheSeEsiste, lo sovrascrive <br>
+     * Se esiste il file di destinazione ed è AECopyFile.checkFlagSeEsiste, controlla il flag sovraScrivibile <br>
+     * Nei messaggi di avviso, accorcia il destPath eliminando i livelli precedenti alla directory indicata <br>
      *
-     * @param srcPath  nome completo del file sorgente
-     * @param destPath nome completo del file destinazione
+     * @param typeCopy    modalità di comportamento se esiste il file di destinazione
+     * @param srcPathDir  path della directory sorgente
+     * @param destPathDir path della directory destinazione
+     * @param nomeFile    nome del file completo di suffisso
      *
-     * @return testo di errore, vuoto se il file è stato copiato
+     * @return wrapper di informazioni risultanti
      */
-    public String copyFileStr(String srcPath, String destPath) {
-        String risposta = VUOTA;
-        File srcFile = new File(srcPath);
-        File destFile = new File(destPath);
+    public AResult copyFile(final AECopy typeCopy, String srcPathDir, String destPathDir, final String nomeFile) {
+        AResult result = AResult.build().method("copyFile").target(nomeFile);
+        String message;
+        srcPathDir = srcPathDir.endsWith(SLASH) ? srcPathDir : srcPathDir + SLASH;
+        destPathDir = destPathDir.endsWith(SLASH) ? destPathDir : destPathDir + SLASH;
+        String srcPath = srcPathDir + nomeFile;
+        String destPath = destPathDir + nomeFile;
+        String path = this.findPathBreve(destPathDir);
+        File fileSrc = new File(srcPath);
+        File fileDest = new File(destPath);
 
-        if (!isEsisteFile(srcPath)) {
-            return NON_ESISTE_FILE;
+        if (typeCopy == null) {
+            message = "Manca il type AECopy";
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
+        }
+        result = result.type(typeCopy.getDescrizione());
+
+        if (typeCopy.getType() != AECopyType.file) {
+            message = String.format("Il type.%s previsto non è compatibile col metodo %s", typeCopy, result.getMethod());
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
         }
 
-        if (isEsisteFile(destPath)) {
-            return PATH_FILE_ESISTENTE;
+        if (textService.isEmpty(nomeFile)) {
+            message = "Manca il nome del file";
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
         }
 
-        try { // prova ad eseguire il codice
-            FileUtils.copyFile(srcFile, destFile);
-        } catch (IOException e) {
-            return NON_COPIATO_FILE;
+        if (textService.isEmpty(destPathDir)) {
+            message = "Manca il nome della directory di destinazione";
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
         }
 
-        return risposta;
+        result = checkPath("copyFile", destPath).target(nomeFile).type(typeCopy.getDescrizione());
+        if (result.isErrato()) {
+            return result;
+        }
+
+        if (!new File(srcPath).exists()) {
+            message = String.format("Non sono riuscito a trovare il file sorgente %s nella directory %s", nomeFile, srcPathDir);
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
+        }
+
+        switch (typeCopy) {
+            case fileDelete:
+                if (fileDest.exists()) {
+                    message = "Il file: " + path + " esisteva già ma è stato modificato.";
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
+                }
+                else {
+                    message = "Il file: " + path + " non esisteva ed è stato copiato.";
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
+                }
+                try {
+                    FileUtils.copyFile(fileSrc, fileDest);
+                } catch (Exception unErrore) {
+                    logger.error(new WrapLog().exception(unErrore).usaDb());
+                    return result.errorMessage(unErrore.getMessage());
+                }
+                return result.validMessage(message);
+            case fileOnly:
+                if (new File(destPath).exists()) {
+                    message = "Il file: " + path + " esisteva già e non è stato modificato.";
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                    return result.validMessage(message);
+                }
+                else {
+                    try {
+                        FileUtils.copyFile(fileSrc, fileDest);
+                        message = "Il file: " + path + " non esisteva ed è stato copiato.";
+                        logger.info(new WrapLog().type(AETypeLog.file).message(message));
+                        return result.validMessage(message);
+                    } catch (Exception unErrore) {
+                        logger.error(new WrapLog().exception(unErrore).usaDb());
+                        return result.errorMessage(unErrore.getMessage());
+                    }
+                }
+            case fileCheck:
+                logger.warn(AETypeLog.file, new AlgosException(SWITCH_FUTURO));
+                return result.errorMessage(SWITCH_FUTURO);
+            default:
+                logger.warn(AETypeLog.file, new AlgosException(SWITCH));
+                return result.errorMessage(SWITCH);
+        }
     }
 
 
@@ -936,348 +723,131 @@ public class FileService extends AbstractService {
      * @param srcPath  nome completo della directory sorgente
      * @param destPath nome completo della directory destinazione
      *
-     * @return true se la directory è stata copiata
+     * @return wrapper di informazioni risultanti
      */
-    public AIResult copyDirectory(AECopy typeCopy, String srcPath, String destPath) {
-        return copyDirectory(typeCopy, srcPath, destPath, VUOTA);
-    }
-
-
-    /**
-     * Copia un file <br>
-     * <p>
-     * Controlla che siano validi i path di riferimento <br>
-     * Controlla che esista il path del file sorgente  <br>
-     * Se manca il file sorgente, non fa nulla <br>
-     * Se esiste il file di destinazione ed è AECopyFile.soloSeNonEsiste, non fa nulla <br>
-     * Se esiste il file di destinazione ed è AECopyDir.sovrascriveSempreAncheSeEsiste, lo sovrascrive <br>
-     * Se esiste il file di destinazione ed è AECopyFile.checkFlagSeEsiste, controlla il flag sovraScrivibile <br>
-     * Nei messaggi di avviso, accorcia il destPath eliminando i livelli precedenti alla directory indicata <br>
-     *
-     * @param typeCopy       modalità di comportamento se esiste il file di destinazione
-     * @param srcPath        nome completo di suffisso del file sorgente
-     * @param destPath       nome completo di suffisso del file da creare
-     * @param firstDirectory da cui iniziare il path per il messaggio di avviso
-     */
-    public void copyFile(AECopy typeCopy, String srcPath, String destPath, String firstDirectory) {
-        boolean esisteFileDest;
+    public AResult copyDirectory(final AECopy typeCopy, final String srcPath, final String destPath) {
+        AResult result = AResult.build().method("copyDirectory").target(destPath);
         String message;
-        String path = this.findPathBreve(destPath, firstDirectory);
+        String path = this.findPathBreve(destPath);
+        File dirSrc = new File(srcPath);
+        File dirDest = new File(destPath);
+        List<String> filesSorgenti;
+        List<String> filesDestinazione;
 
-        if (!this.isEsisteFile(srcPath)) {
-            message = "Non sono riuscito a trovare il file " + srcPath + " nella directory indicata";
+        if (typeCopy == null) {
+            message = "Manca il type AECopy";
             logger.warn(AETypeLog.file, new AlgosException(message));
-            return;
+            return result.errorMessage(message);
         }
+        result = result.type(typeCopy + FORWARD + typeCopy.getDescrizione());
 
-        esisteFileDest = this.isEsisteFile(destPath);
-        switch (typeCopy) {
-            case fileSovrascriveSempreAncheSeEsiste:
-                if (esisteFileDest) {
-                    message = "Il file: " + path + " esisteva già ed è stato modificato.";
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
-                }
-                else {
-                    message = "Il file: " + path + " non esisteva ed è stato copiato.";
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
-                }
-                this.copyFileDeletingAll(srcPath, destPath);
-                break;
-            case fileSoloSeNonEsiste:
-                if (esisteFileDest) {
-                    message = "Il file: " + path + " esisteva già e non è stato modificato.";
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
-                }
-                else {
-                    this.copyFileDeletingAll(srcPath, destPath);
-                    message = "Il file: " + path + " non esisteva ed è stato copiato.";
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
-                }
-                break;
-            default:
-                logger.warn(AETypeLog.file, new AlgosException(SWITCH));
-                break;
-        }
-    }
-
-
-    /**
-     * Copia una directory <br>
-     * <p>
-     * Controlla che siano validi i path di riferimento <br>
-     * Controlla che esista la directory sorgente da copiare <br>
-     * Se manca la directory sorgente, non fa nulla <br>
-     * Se non esiste la directory di destinazione, la crea <br>
-     * Se esiste la directory di destinazione ed è AECopyDir.soloSeNonEsiste, non fa nulla <br>
-     * Se esiste la directory di destinazione ed è AECopyDir.deletingAll, la cancella e poi la copia <br>
-     * Se esiste la directory di destinazione ed è AECopyDir.addingOnly, la integra aggiungendo file/cartelle <br>
-     * Nei messaggi di avviso, accorcia il destPath eliminando i livelli precedenti alla directory indicata <br>
-     *
-     * @param typeCopy       modalità di comportamento se esiste la directory di destinazione
-     * @param srcPath        nome completo della directory sorgente
-     * @param destPath       nome completo della directory destinazione
-     * @param firstDirectory da cui iniziare il path per il messaggio di avviso
-     *
-     * @return true se la directory  è stata copiata
-     */
-    public AIResult copyDirectory(AECopy typeCopy, String srcPath, String destPath, String firstDirectory) {
-        AIResult result = AResult.errato();
-        boolean copiata = false;
-        boolean esisteDest;
-        String message = VUOTA;
         String tag;
-        String path;
 
-        if (textService.isValid(firstDirectory)) {
-            path = this.findPathBreve(destPath, firstDirectory);
-        }
-        else {
-            path = this.estraeDirectoryFinaleSenzaSlash(destPath);
+        if (typeCopy.getType() != AECopyType.directory) {
+            message = String.format("Il type.%s previsto non è compatibile col metodo %s", typeCopy, result.getMethod());
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
         }
 
         if (textService.isEmpty(srcPath) || textService.isEmpty(destPath)) {
             tag = textService.isEmpty(srcPath) ? "srcPath" : "destPath";
             message = String.format("Manca il '%s' della directory da copiare.", tag);
-            result.setErrorMessage(message);
+            return result.setErrorMessage(message);
         }
-        else {
-            if (isEsisteDirectory(srcPath)) {
-                switch (typeCopy) {
-                    case dirSoloSeNonEsiste:
-                        copiata = copyDirectoryOnlyNotExisting(srcPath, destPath);
-                        if (copiata) {
-                            message = String.format("La directory '%s' non esisteva ed è stata copiata.", path);
-                        }
-                        else {
-                            message = String.format("La directory '%s' esisteva già e non è stata toccata.", path);
-                        }
-                        result = AResult.valido(message);
 
-                        message = VUOTA;
-                        break;
-                    case dirDeletingAll:
-                        esisteDest = isEsisteDirectory(destPath);
-                        copiata = copyDirectoryDeletingAll(srcPath, destPath);
-                        if (copiata) {
-                            if (esisteDest) {
-                                message = String.format("La directory '%s' esisteva già ma è stata sostituita.", path);
-                            }
-                            else {
-                                message = String.format("La directory '%s' non esisteva ed è stata creata.", path);
-                            }
-                            result = AResult.valido(message);
-                            message = VUOTA;
-                        }
-                        else {
-                            if (esisteDest) {
-                                message = String.format("Non sono riuscito a sostituire la directory '%s'.", path);
-                            }
-                            else {
-                                message = String.format("Non sono riuscito a creare la directory '%s'.", path);
-                            }
-                            result.setErrorMessage(message);
-                        }
-                        break;
-                    case dirAddingOnly:
-                        esisteDest = isEsisteDirectory(destPath);
-                        copiata = copyDirectoryAddingOnly(srcPath, destPath);
-                        if (copiata) {
-                            if (esisteDest) {
-                                message = String.format("La directory '%s' esisteva già ma è stata integrata.", path);
-                            }
-                            else {
-                                message = String.format("La directory '%s' non esisteva ed è stata creata.", path);
-                            }
-                            result = AResult.valido(message);
-                        }
-                        else {
-                            if (esisteDest) {
-                                message = String.format("Non sono riuscito a integrare la directory '%s'.", path);
-                            }
-                            else {
-                                message = String.format("Non sono riuscito a creare la directory '%s'.", path);
-                            }
-                            result.setErrorMessage(message);
-                        }
-                        break;
-                    default:
-                        copiata = copyDirectoryAddingOnly(srcPath, destPath);
-                        logger.warn(AETypeLog.file, new AlgosException(SWITCH));
-                        break;
+        if (!dirSrc.isDirectory()) {
+            message = String.format("Non esiste la directory sorgente '%s' da copiare.", srcPath);
+            return result.setErrorMessage(message);
+        }
+
+        switch (typeCopy) {
+            case dirOnly:
+                if (dirDest.exists()) {
+                    message = String.format("La directory '%s' esisteva già e non è stata toccata.", path);
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                    return result.setValidMessage(message);
                 }
-            }
-            else {
-                message = String.format("Manca la directory '%s' da copiare.", srcPath);
-                result.setErrorMessage(message);
-            }
-        }
+                else {
+                    try {
+                        FileUtils.copyDirectory(dirSrc, dirDest);
+                        message = String.format("La directory '%s' non esisteva ed è stata copiata.", path);
+                        logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                        return result.setValidMessage(message);
+                    } catch (Exception unErrore) {
+                        logger.error(new WrapLog().exception(unErrore).usaDb());
+                        return result.setErrorMessage(unErrore.getMessage());
+                    }
+                }
+            case dirDelete:
+                if (dirDest.exists()) {
+                    try {
+                        FileUtils.deleteDirectory(dirDest);
+                        message = String.format("La directory '%s' esisteva già ma è stata cancellata e sostituita.", path);
+                    } catch (Exception unErrore) {
+                        logger.error(new WrapLog().exception(unErrore).usaDb());
+                        return result.setErrorMessage(unErrore.getMessage());
+                    }
+                }
+                else {
+                    message = String.format("La directory '%s' non esisteva ed è stata copiata.", path);
+                }
+                try {
+                    FileUtils.copyDirectory(dirSrc, dirDest);
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                    return result.setValidMessage(message);
+                } catch (Exception unErrore) {
+                    logger.error(new WrapLog().exception(unErrore).usaDb());
+                    return result.setErrorMessage(unErrore.getMessage());
+                }
+            case dirFilesAddOnly:
+                if (dirDest.exists()) {
+                    //--recupero i files esistenti nella destinazione
+                    //--copio SOLO i sorgenti NON presenti nella destinazione
+                    filesSorgenti = getFilesName(srcPath);
+                    filesDestinazione = getFilesName(destPath);
 
-        if (!copiata && textService.isValid(message)) {
-            logger.error(AETypeLog.file, new AlgosException(SWITCH));
+                    for (String nomeFile : filesSorgenti) {
+                        if (!filesDestinazione.contains(nomeFile)) {
+                            copyFile(AECopy.fileOnly, srcPath, destPath, nomeFile);
+                        }
+                    }
+                    message = String.format("La directory '%s' esisteva già ma è stata integrata.", path);
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                    return result.setValidMessage(message);
+                }
+                else {
+                    try {
+                        FileUtils.copyDirectory(dirSrc, dirDest);
+                        message = String.format("La directory '%s' non esisteva ed è stata creata.", path);
+                        logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                        return result.setValidMessage(message);
+                    } catch (Exception unErrore) {
+                        return result.setErrorMessage(unErrore.getMessage());
+                    }
+                }
+            case dirFilesModifica:
+                if (dirDest.exists()) {
+                    message = String.format("La directory '%s' esisteva già ma sono stati aggiunti", path);
+                    message += " i files mancanti e modificati quelli esistenti con lo stesso nome";
+                }
+                else {
+                    message = String.format("La directory '%s' non esisteva ed è stata creata.", path);
+                }
+                try {
+                    FileUtils.copyDirectory(dirSrc, dirDest);
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                    return result.setValidMessage(message);
+                } catch (Exception unErrore) {
+                    return result.setErrorMessage(unErrore.getMessage());
+                }
+            default:
+                logger.warn(AETypeLog.file, new AlgosException(SWITCH));
+                break;
         }
 
         return result;
     }
 
-
-    /**
-     * Copia una directory
-     * <p>
-     * Se manca la directory sorgente, non fa nulla <br>
-     * Se manca la directory di destinazione, la crea <br>
-     * Se esiste la directory di destinazione, non fa nulla <br>
-     *
-     * @param srcPath  nome completo della directory sorgente
-     * @param destPath nome completo della directory destinazione
-     *
-     * @return true se la directory  è stata copiata
-     */
-    @Deprecated
-    public boolean copyDirectory(String srcPath, String destPath) {
-        return copyDirectoryAddingOnly(srcPath, destPath);
-    }
-
-
-    /**
-     * Copia una directory sostituendo integralmente quella eventualmente esistente <br>
-     * <p>
-     * Se manca la directory sorgente, non fa nulla <br>
-     * Se manca la directory di destinazione, la crea <br>
-     * Se esiste la directory di destinazione, la cancella prima di ricopiarla <br>
-     * Tutte i files e le subdirectories originali vengono cancellata <br>
-     *
-     * @param srcPath  nome parziale del path sorgente
-     * @param destPath nome parziale del path destinazione
-     * @param dirName  nome della directory da copiare
-     *
-     * @return true se la directory  è stata copiata
-     */
-    public boolean copyDirectoryDeletingAll(String srcPath, String destPath, String dirName) {
-        return copyDirectoryDeletingAll(srcPath + dirName, destPath + dirName);
-    }
-
-
-    /**
-     * Copia una directory sostituendo integralmente quella eventualmente esistente <br>
-     * <p>
-     * Se manca la directory sorgente, non fa nulla <br>
-     * Se manca la directory di destinazione, la crea <br>
-     * Se esiste la directory di destinazione, la cancella prima di ricopiarla <br>
-     * Tutte i files e le subdirectories originali vengono cancellata <br>
-     *
-     * @param srcPath  nome completo della directory sorgente
-     * @param destPath nome completo della directory destinazione
-     *
-     * @return true se la directory  è stata copiata
-     */
-    public boolean copyDirectoryDeletingAll(String srcPath, String destPath) {
-        File srcDir = new File(srcPath);
-        File destDir = new File(destPath);
-
-        if (!isEsisteDirectory(srcPath)) {
-            return false;
-        }
-
-        if (isEsisteDirectory(destPath)) {
-            try {
-                FileUtils.forceDelete(new File(destPath));
-            } catch (Exception unErrore) {
-            }
-        }
-
-        if (isEsisteDirectory(destPath)) {
-            return false;
-        }
-        else {
-            try {
-                FileUtils.copyDirectory(srcDir, destDir);
-                return true;
-            } catch (Exception unErrore) {
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Copia una directory solo se non esisteva <br>
-     * <p>
-     * Se manca la directory sorgente, non fa nulla <br>
-     * Se manca la directory di destinazione, la crea <br>
-     * Se esiste la directory di destinazione, non fa nulla <br>
-     *
-     * @param srcPath  nome completo della directory sorgente
-     * @param destPath nome completo della directory destinazione
-     *
-     * @return true se la directory  è stata copiata
-     */
-    public boolean copyDirectoryOnlyNotExisting(String srcPath, String destPath) {
-        if (!isEsisteDirectory(srcPath)) {
-            return false;
-        }
-
-        if (isEsisteDirectory(destPath)) {
-            return false;
-        }
-
-        return copyDirectoryDeletingAll(srcPath, destPath);
-    }
-
-    //    /**
-    //     * Copia una directory aggiungendo files e subdirectories a quelli eventualmente esistenti <br>
-    //     * Lascia inalterate subdirectories e files già esistenti <br>
-    //     * <p>
-    //     * Se manca la directory sorgente, non fa nulla <br>
-    //     * Se manca la directory di destinazione, la crea <br>
-    //     * Se esiste la directory destinazione, aggiunge files e subdirectories <br>
-    //     * Tutti i files e le subdirectories esistenti vengono mantenuti <br>
-    //     * Tutte le aggiunte sono ricorsive nelle subdirectories <br>
-    //     *
-    //     * @param srcPath  nome parziale del path sorgente
-    //     * @param destPath nome parziale del path destinazione
-    //     * @param dirName  nome della directory da copiare
-    //     *
-    //     * @return true se la directory  è stata copiata
-    //     */
-    //    public boolean copyDirectoryAddingOnly(String srcPath, String destPath, String dirName) {
-    //        return copyDirectoryAddingOnly(srcPath + dirName, destPath + dirName);
-    //    }
-
-
-    /**
-     * Copia una directory aggiungendo files e subdirectories a quelli eventualmente esistenti <br>
-     * Lascia inalterate subdirectories e files già esistenti <br>
-     * <p>
-     * Se manca la directory sorgente, non fa nulla <br>
-     * Se manca la directory di destinazione, la crea <br>
-     * Se esiste la directory destinazione, aggiunge files e subdirectories <br>
-     * Tutti i files e le subdirectories esistenti vengono mantenuti <br>
-     * Tutte le aggiunte sono ricorsive nelle subdirectories <br>
-     *
-     * @param srcPath  nome completo della directory sorgente
-     * @param destPath nome completo della directory destinazione
-     *
-     * @return true se la directory  è stata copiata
-     */
-    public boolean copyDirectoryAddingOnly(String srcPath, String destPath) {
-        boolean copiata = false;
-        File srcDir = new File(srcPath);
-        File destDir = new File(destPath);
-
-        if (!isEsisteDirectory(srcPath)) {
-            return false;
-        }
-
-        try {
-            FileUtils.copyDirectory(srcDir, destDir);
-            copiata = true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return copiata;
-    }
 
 
     /**
@@ -1287,8 +857,8 @@ public class FileService extends AbstractService {
      * @param pathFileToBeWritten nome completo del file
      * @param text                contenuto del file
      */
-    public AIResult scriveNewFile(String pathFileToBeWritten, String text) {
-        AIResult result;
+    public AResult scriveNewFile(String pathFileToBeWritten, String text) {
+        AResult result;
         String message;
 
         if (isEsisteFile(pathFileToBeWritten)) {
@@ -1296,7 +866,7 @@ public class FileService extends AbstractService {
             result = AResult.errato(message);
         }
         else {
-            creaFileStr(pathFileToBeWritten);
+            creaFile(pathFileToBeWritten);
             sovraScriveFile(pathFileToBeWritten, text);
             message = String.format("Il file: %s non esisteva ed è stato creato", pathFileToBeWritten);
             result = AResult.valido(message);
@@ -1314,7 +884,7 @@ public class FileService extends AbstractService {
      * @param testo               contenuto del file
      * @param sovrascrive         anche se esiste già
      */
-    public AIResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo) {
+    public AResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo) {
         return scriveFile(typeCopy, pathFileToBeWritten, testo, VUOTA);
     }
 
@@ -1328,22 +898,22 @@ public class FileService extends AbstractService {
      * @param directory           da cui iniziare il path per il messaggio di avviso
      * @param stampaInfo          flag per usare il logger
      */
-    public AIResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo, String firstDirectory) {
-        AIResult result = AResult.errato();
+    public AResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo, String firstDirectory) {
+        AResult result = AResult.errato();
         String message = VUOTA;
         String path;
 
         if (textService.isValid(firstDirectory)) {
-            path = this.findPathBreve(pathFileToBeWritten, firstDirectory);
+            path = this.findPathBreve(pathFileToBeWritten);
         }
         else {
             path = pathFileToBeWritten.substring((pathFileToBeWritten.lastIndexOf(SLASH) + SLASH.length()));
         }
 
         switch (typeCopy) {
-            case fileCheckFlagSeEsiste, sourceCheckFlagSeEsiste -> {
+            case fileCheck, sourceCheckFlagSeEsiste -> {
             }
-            case fileSoloSeNonEsiste, sourceSoloSeNonEsiste -> {
+            case fileOnly, sourceSoloSeNonEsiste -> {
                 if (isEsisteFile(pathFileToBeWritten)) {
                     message = String.format("Il file '%s' esisteva già e non è stato modificato", path);
                     result.setErrorMessage(message);
@@ -1354,7 +924,7 @@ public class FileService extends AbstractService {
                     result = AResult.valido(message);
                 }
             }
-            case fileSovrascriveSempreAncheSeEsiste, sourceSovrascriveSempreAncheSeEsiste -> {
+            case fileDelete, sourceSovrascriveSempreAncheSeEsiste -> {
                 if (isEsisteFile(pathFileToBeWritten)) {
                     message = String.format("Il file '%s' esisteva già ma è stato modificato", path);
                 }
@@ -1760,7 +1330,7 @@ public class FileService extends AbstractService {
      *
      * @return directory finale del path
      */
-    public String estraeDirectoryFinaleSenzaSlash(final String pathIn) {
+    public String lastDirectory(final String pathIn) {
         String pathOut = pathIn.trim();
 
         if (textService.isValid(pathOut) && pathOut.endsWith(SLASH)) {
@@ -1771,26 +1341,6 @@ public class FileService extends AbstractService {
         return pathOut.trim();
     }
 
-    /**
-     * Recupera l'ultima directory da un path <br>
-     * <p>
-     * Esegue solo se il path è valido <br>
-     * Elimina spazi vuoti iniziali e finali <br>
-     *
-     * @param pathIn in ingresso
-     *
-     * @return directory finale del path, comprensiva di SLASH
-     */
-    public String estraeDirectoryFinale(final String pathIn) {
-        String pathOut = pathIn.trim();
-
-        if (textService.isValid(pathOut) && pathOut.endsWith(SLASH)) {
-            pathOut = textService.levaCoda(pathOut, SLASH);
-            pathOut = pathOut.substring(pathOut.lastIndexOf(SLASH) + 1) + SLASH;
-        }
-
-        return pathOut.trim();
-    }
 
     /**
      * Recupera l'ultima classe da un path <br>
@@ -1872,7 +1422,6 @@ public class FileService extends AbstractService {
         return pathOut.trim();
     }
 
-
     /**
      * Estrae il path parziale da una directory indicata, escludendo il percorso iniziale <br>
      * <p>
@@ -1886,141 +1435,20 @@ public class FileService extends AbstractService {
      *
      * @return path parziale da una directory
      */
-    public String findPathBreve(String pathIn, String directory) {
+    public String findPathBreve(String pathIn) {
         String pathBreve = pathIn;
-        String pathCanonical;
         String prefix = "../";
 
-        if (textService.isEmpty(directory)) {
-            return pathIn;
+        String pathOut = pathIn.trim();
+
+        if (textService.isValid(pathOut) && pathOut.endsWith(SLASH)) {
+            pathOut = textService.levaCoda(pathOut, SLASH);
+            pathOut = pathOut.substring(pathOut.lastIndexOf(SLASH) + 1);
+            pathOut = prefix + pathOut;
         }
 
-        pathCanonical = findPathCanonical(pathIn, directory);
-        if (textService.isValid(pathCanonical)) {
-            pathBreve = prefix + pathCanonical;
-            pathBreve = textService.levaCoda(pathBreve, SLASH);
-            pathBreve = textService.levaCoda(pathBreve, JAVA_SUFFIX);
-        }
-
-        return pathBreve;
+        return pathOut.trim();
     }
-
-    /**
-     * Estrae il path parziale da una directory indicata, escludendo il percorso iniziale <br>
-     * <p>
-     * La directory indicata è l'ultima con quel nome <br>
-     * Esegue solo se il path è valido
-     * Se la directory indicata non esiste nel path, restituisce tutto il path completo <br>
-     * Elimina spazi vuoti iniziali e finali
-     *
-     * @param pathIn    in ingresso
-     * @param directory da cui iniziare il path
-     *
-     * @return path parziale da una directory
-     */
-    public String findPathBreveDa(String pathIn, String directory) {
-        String pathBreve = pathIn;
-        String pathCanonical;
-        String prefix = "../";
-
-        if (textService.isEmpty(directory)) {
-            return pathIn;
-        }
-
-        pathCanonical = findPathCanonicalDa(pathIn, directory);
-        if (textService.isValid(pathCanonical)) {
-            pathBreve = prefix + pathCanonical;
-            pathBreve = textService.levaCoda(pathBreve, SLASH);
-            pathBreve = textService.levaCoda(pathBreve, JAVA_SUFFIX);
-        }
-
-        return pathBreve;
-    }
-
-    /**
-     * Estrae il path canonico da una directory indicata <br>
-     * <p>
-     * La directory indicata è l'ultima con quel nome <br>
-     * Esegue solo se il path è valido
-     * Se la directory indicata non esiste nel path, restituisce tutto il path completo <br>
-     * Elimina spazi vuoti iniziali e finali
-     *
-     * @param pathIn    in ingresso
-     * @param directory da cui iniziare il path
-     *
-     * @return path parziale da una directory
-     */
-    public String findPathCanonical(String pathIn, String directory) {
-        String path = VUOTA;
-
-        if (textService.isEmpty(pathIn) || textService.isEmpty(directory)) {
-            return pathIn;
-        }
-
-        if (pathIn.contains(directory)) {
-            path = pathIn.substring(pathIn.lastIndexOf(directory));
-            if (path.startsWith(SLASH)) {
-                path = path.substring(1);
-            }
-        }
-
-        return path;
-    }
-
-
-    /**
-     * Estrae il path canonico da una directory indicata <br>
-     * <p>
-     * La directory indicata è l'ultima con quel nome <br>
-     * Esegue solo se il path è valido
-     * Se la directory indicata non esiste nel path, restituisce tutto il path completo <br>
-     * Elimina spazi vuoti iniziali e finali
-     *
-     * @param pathIn    in ingresso
-     * @param directory da cui iniziare il path
-     *
-     * @return path parziale da una directory
-     */
-    public String findPathCanonicalDa(String pathIn, String directory) {
-        String path = VUOTA;
-
-        if (textService.isEmpty(pathIn) || textService.isEmpty(directory)) {
-            return pathIn;
-        }
-
-        if (pathIn.contains(directory)) {
-            path = pathIn.substring(pathIn.lastIndexOf(directory) + directory.length());
-            if (path.startsWith(SLASH)) {
-                path = path.substring(1);
-            }
-        }
-
-        return path;
-    }
-
-    //    /**
-    //     * Elabora un path eliminando i livelli iniziali indicati. <br>
-    //     * <p>
-    //     * Esegue solo se il testo è valido <br>
-    //     * Elimina spazi vuoti iniziali e finali <br>
-    //     * Aggiunge un prefisso indicativo -> '../' <br>
-    //     *
-    //     * @param testoIn    ingresso
-    //     * @param numLivelli iniziali da eliminare nel path
-    //     *
-    //     * @return path semplificato
-    //     */
-    //    @Deprecated
-    //    public String pathBreve(final String testoIn, int numLivelli) {
-    //        String path = text.testoDopoTagRipetuto(testoIn, SLASH, numLivelli);
-    //        String prefix = "../";
-    //
-    //        if (!path.equals(testoIn)) {
-    //            path = text.isValid(path) ? prefix + path : path;
-    //        }
-    //
-    //        return path;
-    //    }
 
 
     /**
@@ -2130,7 +1558,7 @@ public class FileService extends AbstractService {
                 if (pathName.endsWith(JAVA_SUFFIX)) {
                     canonicalName = textService.levaCoda(pathName, JAVA_SUFFIX);
                     canonicalName = canonicalName.replaceAll(SLASH, PUNTO);
-                    canonicalName = findPathCanonical(canonicalName, tag);
+                    //                    canonicalName = lastDirectory(canonicalName, tag); //@todo non funziona così
                     canonicalName = canonicalName.substring(1);
                     listaCanonicalNamesOnlyFilesJava.add(canonicalName);
                 }
@@ -2350,50 +1778,6 @@ public class FileService extends AbstractService {
         return lista;
     }
 
-    /**
-     * Sposta un file da una directory ad un'altra <br>
-     * Esegue solo se il path sorgente esiste <br>
-     * Esegue solo se il path destinazione NON esiste <br>
-     * Viene cancellato il file sorgente <br>
-     *
-     * @param pathFileToBeRead  posizione iniziale del file da spostare
-     * @param pathFileToBeWrite posizione iniziale del file da spostare
-     *
-     * @return testo di errore, vuoto se il file è stato spostato
-     */
-    public boolean spostaFile(String pathFileToBeRead, String pathFileToBeWrite) {
-        return spostaFileStr(pathFileToBeRead, pathFileToBeWrite) == VUOTA;
-    }
-
-
-    /**
-     * Sposta un file da una directory ad un'altra <br>
-     * Esegue solo se il path sorgente esiste <br>
-     * Esegue solo se il path destinazione NON esiste <br>
-     * Viene cancellato il file sorgente <br>
-     *
-     * @param pathFileToBeRead  posizione iniziale del file da spostare
-     * @param pathFileToBeWrite posizione iniziale del file da spostare
-     *
-     * @return testo di errore, vuoto se il file è stato spostato
-     */
-    public String spostaFileStr(String pathFileToBeRead, String pathFileToBeWrite) {
-        String status;
-
-        if (textService.isValid(pathFileToBeRead) && textService.isValid(pathFileToBeWrite)) {
-            status = copyFileStr(pathFileToBeRead, pathFileToBeWrite);
-        }
-        else {
-            return PATH_NULLO;
-        }
-
-        if (status.equals(VUOTA)) {
-            status = deleteFileStr(pathFileToBeRead);
-        }
-
-        return status;
-    }
-
 
     /**
      * Controlla se il primo carattere della stringa passata come parametro è quello previsto <br>
@@ -2404,13 +1788,13 @@ public class FileService extends AbstractService {
      * @return true se il primo carattere NON è uno quello previsto
      */
     public boolean isNotPrimoCarattere(final String testoIngresso, final String primoCarattereExpected) {
-        boolean status = true;
+        boolean status = false;
         String primoCarattereEffettivo;
 
         if (textService.isValid(testoIngresso)) {
             primoCarattereEffettivo = testoIngresso.substring(0, 1);
-            if (primoCarattereEffettivo.equals(primoCarattereExpected)) {
-                status = false;
+            if (!primoCarattereEffettivo.equals(primoCarattereExpected)) {
+                status = true;
             }
         }
 
@@ -2507,6 +1891,51 @@ public class FileService extends AbstractService {
         return status;
     }
 
+    public AResult checkFileDirectory(final String methodName, final File fileDirectoryToBeChecked) {
+        AResult result = AResult.build().method(methodName).target(fileDirectoryToBeChecked.getAbsolutePath());
+        String message;
+
+        if (fileDirectoryToBeChecked == null) {
+            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PARAMETRO_NULLO);
+        }
+
+        if (textService.isEmpty(fileDirectoryToBeChecked.getName())) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_NULLO);
+        }
+
+        if (!fileDirectoryToBeChecked.getPath().equals(fileDirectoryToBeChecked.getAbsolutePath())) {
+            message = String.format("%s%s%s", PATH_NOT_ABSOLUTE, FORWARD, fileDirectoryToBeChecked.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(message);
+        }
+
+        return result;
+    }
+
+    public AResult checkPath(final String methodName, final String absolutePathToBeChecked) {
+        AResult result = AResult.build().method(methodName).target(absolutePathToBeChecked);
+
+        if (absolutePathToBeChecked == null) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_NULLO);
+        }
+
+        if (absolutePathToBeChecked.length() == 0) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
+        }
+
+        if (this.isNotSlashIniziale(absolutePathToBeChecked)) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_NOT_ABSOLUTE);
+        }
+
+        return result;
+    }
+
+
     /**
      * Recupera una lista di files (sub-directory escluse) dalla directory <br>
      *
@@ -2528,26 +1957,50 @@ public class FileService extends AbstractService {
         return lista;
     }
 
-
     /**
-     * Recupera una lista di nomi di files (sub-directory escluse) dalla directory <br>
-     * Elimina il suffisso '.java' finale <br>
+     * Recupera una lista di path di files (sub-directory comprese) dalla directory <br>
      *
      * @param pathDirectory da spazzolare
      *
-     * @return lista di files
+     * @return lista di path di files
      */
-    public List<String> getFilesNames(String pathDirectory) {
+    public List<String> getFilesPath(String pathDirectory) {
         List<String> lista = new ArrayList();
-        List<File> listaFiles = getFiles(pathDirectory);
-        String nome;
+        Stream<Path> walk;
 
-        for (File unFile : listaFiles) {
-            if (unFile.isFile()) {
-                nome = unFile.getName();
-                nome = textService.levaCoda(nome, JAVA_SUFFIX);
-                lista.add(nome);
-            }
+        try {
+            walk = Files.walk(Paths.get(pathDirectory));
+            lista = walk
+                    .filter(Files::isRegularFile)
+                    .map(x -> x.toString())
+                    .collect(Collectors.toList());
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        return lista;
+    }
+
+    /**
+     * Recupera una lista di nomi di files (sub-directory comprese) dalla directory <br>
+     *
+     * @param pathDirectory da spazzolare
+     *
+     * @return lista di nomi (parziali) di files
+     */
+    public List<String> getFilesName(String pathDirectory) {
+        List<String> lista = new ArrayList();
+        Stream<Path> walk;
+        final String path = pathDirectory.endsWith(SLASH) ? pathDirectory : pathDirectory + SLASH;
+
+        try {
+            walk = Files.walk(Paths.get(pathDirectory));
+            lista = walk
+                    .filter(Files::isRegularFile)
+                    .map(x -> textService.levaTesta(x.toString(), path))
+                    .collect(Collectors.toList());
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
         }
 
         return lista;

@@ -427,7 +427,6 @@ public abstract class ATest {
     }
 
     protected void print(List<String> lista, String message) {
-        int k = 0;
         if (lista != null && lista.size() > 0) {
             System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size(), message));
         }

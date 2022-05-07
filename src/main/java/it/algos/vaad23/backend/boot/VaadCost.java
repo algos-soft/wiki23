@@ -175,7 +175,9 @@ public class VaadCost {
 
     public static final String ROUTE_NAME_GENERIC_FORM = "form";
 
-    public static final String SWITCH = "Switch - caso non definito";
+    public static final String SWITCH = "Switch - caso non previsto";
+
+    public static final String SWITCH_FUTURO = "Switch - caso ancora da implementare";
 
     /**
      * tag per la singola graffa di apertura
@@ -313,6 +315,8 @@ public class VaadCost {
 
     public static final String FIELD_NAME_COMPANY = "company";
 
+    public static final String TRATTINO = "-";
+
     public static final String COLOR_VERO = "#9FE2BF";
 
     public static final String COLOR_FALSO = "#FF7F50";
@@ -328,7 +332,6 @@ public class VaadCost {
     public static final String PROPERTY_CREAZIONE = "creazione";
 
     public static final String PROPERTY_MODIFICA = "modifica";
-    public static final String TRATTINO = "-";
 
     public static final String PROPERTY_NOTE = "note";
 

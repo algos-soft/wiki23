@@ -6,13 +6,16 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
+import org.springframework.context.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -29,13 +32,15 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
-@SpringBootTest(classes = {Wiki23Application.class})
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("spring")
 @DisplayName("Log service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class LogServiceTest extends STest {
+public class LogServiceTest extends ATest {
 
+    @Autowired
+    protected ApplicationContext appContext;
 
     private WrapLogCompany wrapCompany;
 
@@ -49,6 +54,9 @@ public class LogServiceTest extends STest {
      */
     private LogService service;
 
+    @Autowired
+    //    @Qualifier("Logger")
+    protected LoggerRepository repository;
 
     //--companySigla
     //--userName
@@ -269,25 +277,25 @@ public class LogServiceTest extends STest {
     }
 
 
-        @Test
-        @Order(6)
+    @Test
+    @Order(6)
     @DisplayName("6 - Messaggi con StackTrace registrati su mongoDB")
     void stackTraceConDb() {
-            System.out.println(sorgente);
-            System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
+        System.out.println(sorgente);
+        System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
 
-            wrapLog = new WrapLog()
-                    .message("Messaggio")
-                    .type(AETypeLog.password)
-                    .exception(new AlgosException("Niente"))
-                    .company("crpt")
-                    .user("Domenichetti")
-                    .address("2001:B07:6466:70A3:D869:97FA:FB8E:C443")
-                    .usaDb();
+        wrapLog = new WrapLog()
+                .message("Messaggio")
+                .type(AETypeLog.password)
+                .exception(new AlgosException("Niente"))
+                .company("crpt")
+                .user("Domenichetti")
+                .address("2001:B07:6466:70A3:D869:97FA:FB8E:C443")
+                .usaDb();
 
-            ottenuto = service.error(wrapLog);
-            printMessaggio(ottenuto);
-        }
+        ottenuto = service.error(wrapLog);
+        printMessaggio(ottenuto);
+    }
 
     @Test
     @Order(7)
@@ -428,7 +436,7 @@ public class LogServiceTest extends STest {
     void printWrap(Arguments arg) {
         Object[] mat = arg.get();
         wrapCompany = appContext.getBean(WrapLogCompany.class, mat[0], mat[1], mat[2]);
-        //        service.info((AETypeLog) mat[3], (String) mat[4], wrapCompany);
+        System.out.println(wrapCompany.toString());
     }
 
     /**

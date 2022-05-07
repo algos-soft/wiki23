@@ -2,7 +2,6 @@ package it.algos.vaad23.backend.wrapper;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
 import org.springframework.stereotype.*;
 
@@ -18,17 +17,23 @@ import java.util.*;
  * Semplice wrapper per veicolare una risposta con diverse property <br>
  */
 @Component
-public class AResult implements AIResult {
+public class AResult {
 
     private boolean valido;
 
-    private String webTitle = VUOTA;
+    //    private String webTitle = VUOTA;
+    //
+    //    private String wikiTitle = VUOTA;
+    //
+    //    private String urlPreliminary = VUOTA;
+    //
+    //    private String urlRequest = VUOTA;
 
-    private String wikiTitle = VUOTA;
+    private String target = VUOTA;
 
-    private String urlPreliminary = VUOTA;
+    private String type = VUOTA;
 
-    private String urlRequest = VUOTA;
+    private String method = VUOTA;
 
     private String errorCode = VUOTA;
 
@@ -38,17 +43,17 @@ public class AResult implements AIResult {
 
     private String validMessage = VUOTA;
 
-    private String preliminaryResponse = VUOTA;
+    //    private String preliminaryResponse = VUOTA;
 
-    private String response = VUOTA;
+    //    private String response = VUOTA;
 
-    private String wikiText = VUOTA;
+    //    private String wikiText = VUOTA;
 
-    private String wikiBio = VUOTA;
+    //    private String wikiBio = VUOTA;
 
-    private String token = VUOTA;
+    //    private String token = VUOTA;
 
-    private String queryType = VUOTA;
+    //    private String queryType = VUOTA;
 
     private int intValue = 0;
 
@@ -77,24 +82,56 @@ public class AResult implements AIResult {
         this.intValue = intValue;
     }
 
-    public static AIResult valido() {
+    public static AResult build() {
         return new AResult();
     }
 
-    public static AIResult valido(final String validMessage) {
+    public static AResult valido() {
+        return AResult.build();
+    }
+
+    public AResult validMessage(final String validMessage) {
+        this.valido = true;
+        this.validMessage = validMessage;
+        return this;
+    }
+
+    public AResult errorMessage(final String errorMessage) {
+        this.valido = false;
+        this.errorMessage = errorMessage;
+        return this;
+    }
+
+    public AResult method(final String method) {
+        this.method = method;
+        return this;
+    }
+
+    public AResult target(final String target) {
+        this.target = target;
+        return this;
+    }
+
+    public AResult type(final String type) {
+        this.type = type;
+        return this;
+    }
+
+
+    public static AResult valido(final String validMessage) {
         return new AResult(true, validMessage);
     }
 
-    public static AIResult valido(final String validMessage, final int value) {
+    public static AResult valido(final String validMessage, final int value) {
         return new AResult(true, validMessage, value);
     }
 
-    public static AIResult contenuto(final String text, final String source) {
+    public static AResult contenuto(final String text, final String source) {
         AResult result = new AResult();
 
         if (text != null && text.length() > 0) {
             result.setValido(true);
-            result.setResponse(text);
+            //            result.setResponse(text);
             result.setValidMessage(JSON_SUCCESS);
         }
         else {
@@ -104,55 +141,48 @@ public class AResult implements AIResult {
         return result;
     }
 
-    public static AIResult contenuto(final String text) {
+    public static AResult contenuto(final String text) {
         return contenuto(text, VUOTA);
     }
 
-    public static AIResult errato() {
+    public static AResult errato() {
         return new AResult(false, "Non effettuato");
     }
 
-    public static AIResult errato(final int valore) {
+    public static AResult errato(final int valore) {
         return new AResult(false, VUOTA, valore);
     }
 
-    public static AIResult errato(final String errorMessage) {
+    public static AResult errato(final String errorMessage) {
         AResult result = new AResult(false, errorMessage);
         result.setErrorCode(errorMessage);
         return result;
     }
 
-    @Override
     public boolean isValido() {
         return valido;
     }
 
-    @Override
     public void setValido(final boolean valido) {
         this.valido = valido;
     }
 
-    @Override
     public boolean isErrato() {
         return !valido;
     }
 
-    @Override
     public String getCodeMessage() {
         return codeMessage;
     }
 
-    @Override
     public void setCodeMessage(String codeMessage) {
         this.codeMessage = codeMessage;
     }
 
-    @Override
     public String getMessage() {
         return isValido() ? getValidMessage() : getErrorMessage();
     }
 
-    @Override
     public void setMessage(final String message) {
         if (isValido()) {
             setValidMessage(message);
@@ -162,182 +192,172 @@ public class AResult implements AIResult {
         }
     }
 
-    @Override
     public String getErrorCode() {
         return errorCode;
     }
 
-    @Override
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
         this.setValido(false);
     }
 
-    @Override
-    public AIResult setErrorMessage(final String message) {
+    public AResult setErrorMessage(final String message) {
         errorMessage = message;
         this.setValido(false);
         return this;
     }
 
-    @Override
+    public AResult setValidMessage(final String message) {
+        validMessage = message;
+        this.setValido(true);
+        return this;
+    }
+
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    @Override
     public String getValidMessage() {
         return validMessage;
     }
 
-    @Override
-    public void setValidMessage(String validMessage) {
-        this.validMessage = validMessage;
-        this.setValido(true);
-    }
 
-    @Override
-    public String getWebTitle() {
-        return webTitle;
-    }
+    //    public String getWebTitle() {
+    //        return webTitle;
+    //    }
+    //
+    //    public void setWebTitle(String webTitle) {
+    //        this.webTitle = webTitle;
+    //    }
+    //
+    //    public String getWikiTitle() {
+    //        return wikiTitle;
+    //    }
+    //
+    //    public void setWikiTitle(String wikiTitle) {
+    //        this.wikiTitle = wikiTitle;
+    //    }
 
-    @Override
-    public void setWebTitle(String webTitle) {
-        this.webTitle = webTitle;
-    }
+    //    public String getResponse() {
+    //        return response;
+    //    }
+    //
+    //    public void setResponse(String response) {
+    //        this.response = response;
+    //    }
 
-    @Override
-    public String getWikiTitle() {
-        return wikiTitle;
-    }
-
-    @Override
-    public void setWikiTitle(String wikiTitle) {
-        this.wikiTitle = wikiTitle;
-    }
-
-
-    @Override
-    public String getResponse() {
-        return response;
-    }
-
-    @Override
-    public void setResponse(String response) {
-        this.response = response;
-    }
-
-    @Override
     public int getIntValue() {
         return intValue;
     }
 
-    @Override
     public void setIntValue(int intValue) {
         this.intValue = intValue;
     }
 
-    @Override
     public long getLongValue() {
         return longValue;
     }
 
-    @Override
     public void setLongValue(long longValue) {
         this.longValue = longValue;
     }
 
-    @Override
     public List getLista() {
         return lista;
     }
 
-    @Override
     public void setLista(List lista) {
         this.lista = lista;
     }
 
-    @Override
-    public String getUrlPreliminary() {
-        return urlPreliminary;
-    }
+    //    public String getUrlPreliminary() {
+    //        return urlPreliminary;
+    //    }
+    //
+    //    public void setUrlPreliminary(String urlPreliminary) {
+    //        this.urlPreliminary = urlPreliminary;
+    //    }
+    //
+    //    public String getUrlRequest() {
+    //        return urlRequest;
+    //    }
+    //
+    //    public void setUrlRequest(String urlRequest) {
+    //        this.urlRequest = urlRequest;
+    //    }
 
-    @Override
-    public void setUrlPreliminary(String urlPreliminary) {
-        this.urlPreliminary = urlPreliminary;
-    }
-
-    @Override
-    public String getUrlRequest() {
-        return urlRequest;
-    }
-
-    @Override
-    public void setUrlRequest(String urlRequest) {
-        this.urlRequest = urlRequest;
-    }
-
-    @Override
     public Map getMappa() {
         return mappa;
     }
 
-    @Override
     public void setMappa(Map mappa) {
         this.mappa = mappa;
     }
 
-    @Override
-    public String getPreliminaryResponse() {
-        return preliminaryResponse;
+    //    public String getPreliminaryResponse() {
+    //        return preliminaryResponse;
+    //    }
+    //
+    //    public void setPreliminaryResponse(String preliminaryResponse) {
+    //        this.preliminaryResponse = preliminaryResponse;
+    //    }
+    //
+    //    public String getToken() {
+    //        return token;
+    //    }
+    //
+    //    public void setToken(String token) {
+    //        this.token = token;
+    //    }
+    //
+    //    public String getQueryType() {
+    //        return queryType;
+    //    }
+    //
+    //    public void setQueryType(String queryType) {
+    //        this.queryType = queryType;
+    //    }
+    //
+    //    public String getWikiText() {
+    //        return wikiText;
+    //    }
+    //
+    //    public void setWikiText(String wikiText) {
+    //        this.wikiText = wikiText;
+    //    }
+    //
+    //    public String getWikiBio() {
+    //        return wikiBio;
+    //    }
+    //
+    //    public void setWikiBio(String wikiBio) {
+    //        this.wikiBio = wikiBio;
+    //    }
+
+    public String getTarget() {
+        return target;
     }
 
-    @Override
-    public void setPreliminaryResponse(String preliminaryResponse) {
-        this.preliminaryResponse = preliminaryResponse;
+    public void setTarget(String target) {
+        this.target = target;
     }
 
-    @Override
-    public String getToken() {
-        return token;
+    public String getMethod() {
+        return method;
     }
 
-    @Override
-    public void setToken(String token) {
-        this.token = token;
+    public void setMethod(String method) {
+        this.method = method;
     }
 
-    @Override
-    public String getQueryType() {
-        return queryType;
+    public String getType() {
+        return type;
     }
 
-    @Override
-    public void setQueryType(String queryType) {
-        this.queryType = queryType;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    @Override
-    public String getWikiText() {
-        return wikiText;
-    }
-
-    @Override
-    public void setWikiText(String wikiText) {
-        this.wikiText = wikiText;
-    }
-
-    @Override
-    public String getWikiBio() {
-        return wikiBio;
-    }
-
-    @Override
-    public void setWikiBio(String wikiBio) {
-        this.wikiBio = wikiBio;
-    }
-
-    @Override
     public void print(final LogService logger, final AETypeLog typeLog) {
         if (isValido()) {
             //            logger.log(typeLog, getValidMessage()); @todo rimettere

@@ -15,6 +15,15 @@ import java.util.*;
  */
 public interface AIResult {
 
+
+    AIResult validMessage(final String validMessage);
+
+    AIResult errorMessage(final String errorMessage);
+
+    AIResult query(final String queryType);
+
+    AIResult target(final String target);
+
     boolean isValido();
 
     void setValido(final boolean valido);
@@ -98,6 +107,8 @@ public interface AIResult {
     Map getMappa();
 
     void setMappa(Map mappa);
+
+    String getTarget();
 
 }// end of interface
 

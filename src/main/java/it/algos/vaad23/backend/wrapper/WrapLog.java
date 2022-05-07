@@ -48,6 +48,10 @@ public class WrapLog {
     }
 
 
+    public static WrapLog build() {
+        return new WrapLog();
+    }
+
     public WrapLog message(String message) {
         this.message = message;
         return this;

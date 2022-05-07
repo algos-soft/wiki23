@@ -15,21 +15,21 @@ import java.util.*;
  */
 public enum AEWizProject {
 
-    config("Directory CONFIG di risorse on-line esterne al JAR (vaadin23)", true, true, "config", AECopy.dirAddingOnly),
+    config("Directory CONFIG di risorse on-line esterne al JAR (vaadin23)", true, false, "config", AECopy.dirFilesAddOnly),
 
-    documentation("Directory DOC di documentazione (vaadin23)", true, true, "doc", AECopy.dirAddingOnly),
+    documentation("Directory DOC di documentazione (vaadin23)", true, false, "doc", AECopy.dirFilesModifica),
 
-    frontend("Directory FRONTEND del Client (vaadin23) [need riavvio]", true, true, "frontend", AECopy.dirAddingOnly),
+    frontend("Directory FRONTEND del Client (vaadin23) [need riavvio]", true, false, "frontend", AECopy.dirFilesAddOnly),
 
-    links("Directory LINKS a siti web utili (vaadin23)", true, true, "links", AECopy.dirAddingOnly),
+    links("Directory LINKS a siti web utili (vaadin23)", true, false, "links", AECopy.dirFilesModifica),
 
-    snippets("Directory SNIPPETS di codice suggerito (vaadin23)", true, true, "snippets", AECopy.dirAddingOnly),
+    snippets("Directory SNIPPETS di codice suggerito (vaadin23)", true, false, "snippets", AECopy.dirFilesModifica),
 
-    flow("Directory BASE Vaad23 (Wizard compreso)", true, true, "src/main/java/it/algos/vaad23", AECopy.dirDeletingAll),
+    flow("Directory BASE Vaad23 (Wizard compreso)", true, false, "src/main/java/it/algos/vaad23", AECopy.dirDelete),
 
     //    projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
 
-    resources("Directory RESOURCES (vaadin23)", true, false, "src/main/resources", AECopy.dirAddingOnly),
+    resources("Directory RESOURCES (vaadin23)", true, false, "src/main/resources", AECopy.dirFilesAddOnly),
 
     property("File application.PROPERTIES (sources)", true, false, "src/main/resources/application.properties",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "properties"
@@ -45,7 +45,8 @@ public enum AEWizProject {
 
     read("File README con note di testo (sources)", true, false, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
-    test("Directory Test (vaadin23)", false, false, "src/test/java/it/algos", AECopy.dirAddingOnly),
+    testBase("Directory Test/Base (vaadin23)", false, true, "src/test/java/it/algos/base", AECopy.dirFilesModifica),
+//    testUnit("Directory Test/Unit (vaadin23)", false, true, "src/test/java/it/algos/unit", AECopy.dirFilesModifica),
     application("Main class java", true, false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),

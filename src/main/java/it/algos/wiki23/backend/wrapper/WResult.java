@@ -15,9 +15,27 @@ import org.springframework.stereotype.*;
 @Component
 public class WResult extends AResult {
 
-    private WrapBio wrap;
+        private String webTitle = VUOTA;
 
-    private String wikiBio = VUOTA;
+        private String wikiTitle = VUOTA;
+
+        private String urlPreliminary = VUOTA;
+
+        private String urlRequest = VUOTA;
+
+        private String preliminaryResponse = VUOTA;
+
+        private String response = VUOTA;
+
+        private String wikiText = VUOTA;
+
+        private String wikiBio = VUOTA;
+
+        private String token = VUOTA;
+
+        private String queryType = VUOTA;
+
+    private WrapBio wrap;
 
     private String summary = VUOTA;
 
@@ -128,5 +146,76 @@ public class WResult extends AResult {
     public long getDurata() {
         return fine - inizio;
     }
+
+        public String getWebTitle() {
+            return webTitle;
+        }
+
+        public void setWebTitle(String webTitle) {
+            this.webTitle = webTitle;
+        }
+
+        public String getWikiTitle() {
+            return wikiTitle;
+        }
+
+        public void setWikiTitle(String wikiTitle) {
+            this.wikiTitle = wikiTitle;
+        }
+
+        public String getResponse() {
+            return response;
+        }
+
+        public void setResponse(String response) {
+            this.response = response;
+        }
+        public String getUrlPreliminary() {
+            return urlPreliminary;
+        }
+
+        public void setUrlPreliminary(String urlPreliminary) {
+            this.urlPreliminary = urlPreliminary;
+        }
+
+        public String getUrlRequest() {
+            return urlRequest;
+        }
+
+        public void setUrlRequest(String urlRequest) {
+            this.urlRequest = urlRequest;
+        }
+        public String getPreliminaryResponse() {
+            return preliminaryResponse;
+        }
+
+        public void setPreliminaryResponse(String preliminaryResponse) {
+            this.preliminaryResponse = preliminaryResponse;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getQueryType() {
+            return queryType;
+        }
+
+        public void setQueryType(String queryType) {
+            this.queryType = queryType;
+        }
+
+        public String getWikiText() {
+            return wikiText;
+        }
+
+        public void setWikiText(String wikiText) {
+            this.wikiText = wikiText;
+        }
+
 
 }

@@ -103,7 +103,7 @@ public class ClassService extends AbstractService {
     public String getProjectName() {
         String projectName;
         String pathCurrent = System.getProperty("user.dir") + SLASH;
-        projectName = fileService.estraeDirectoryFinale(pathCurrent);
+        projectName = fileService.lastDirectory(pathCurrent); //@todo da controllarer
 
         if (projectName.endsWith(SLASH)) {
             projectName = textService.levaCoda(projectName, SLASH);
