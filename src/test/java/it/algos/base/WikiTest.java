@@ -1,4 +1,4 @@
-package it.algos.test;
+package it.algos.base;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.service.*;
@@ -22,7 +22,7 @@ import java.util.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
-public abstract class WTest extends ATest {
+public abstract class WikiTest extends AlgosTest {
 
     /**
      * Istanza di una interfaccia <br>

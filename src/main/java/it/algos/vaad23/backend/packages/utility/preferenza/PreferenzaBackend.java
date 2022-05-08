@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
-import java.util.*;
-
 /**
  * Project vaadin23
  * Created by Algos
@@ -26,7 +24,7 @@ import java.util.*;
 @Qualifier(TAG_PRE)
 public class PreferenzaBackend extends CrudBackend {
 
-    private PreferenzaRepository repository;
+    public PreferenzaRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -43,32 +41,14 @@ public class PreferenzaBackend extends CrudBackend {
         this.repository = (PreferenzaRepository) crudRepository;
     }
 
-    public boolean existsById(final String idKey) {
-        return repository.existsById(idKey);
-    }
-
-    public boolean existsByCode(final String code) {
-        return findByCode(code) != null;
+    public boolean existsByKeyCode(final String code) {
+        return findByKeyCode(code) != null;
     }
 
 
-    public Preferenza findByKey(final String key) {
+    public Preferenza findByKeyCode(final String key) {
         return repository.findFirstByCode(key);
     }
 
-    public Preferenza findByCode(final String code) {
-        List<Preferenza> lista = findAllByCode(code);
-        if (lista != null && lista.size() == 1) {
-            return lista.get(0);
-        }
-        else {
-            return null;
-        }
-    }
-
-
-    public List<Preferenza> findAllByCode(final String code) {
-        return repository.findAllByCode(code);
-    }
 
 }// end of crud backend class

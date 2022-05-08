@@ -6,6 +6,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -57,14 +58,21 @@ public class NazionalitaView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale");
-        super.formPropertyNamesList = Arrays.asList("singolare", "plurale");
-
+        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "bio", "pagina");
+        super.formPropertyNamesList = Arrays.asList("singolare", "plurale", "bio", "pagina");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
-//        super.lastDownload = WPref.downloadNazionalita;
+
+
+        super.usaBottoneElabora = true;
+        super.lastDownload = WPref.downloadNazionalita;
+        super.lastElaborazione = WPref.elaboraNazionalita;
+        super.durataElaborazione = WPref.elaboraNazionalitaTime;
+        super.lastUpload = WPref.uploadNazionalita;
         super.wikiModuloTitle = PATH_MODULO_NAZIONALITA;
-        super.wikiStatisticheTitle = PATH_STATISTICHE_NAZIONALITA;
+        //        super.wikiStatisticheTitle = PATH_STATISTICHE_ATTIVITA;
         super.usaBottoneCategoria = true;
+
+        super.fixPreferenzeBackend();
     }
 
     /**
@@ -107,7 +115,7 @@ public class NazionalitaView extends WikiView {
         }
 
         final String textSearchPlurale = searchFieldPlurale != null ? searchFieldPlurale.getValue() : VUOTA;
-        if (textService.isValid(textSearch)) {
+        if (textService.isValid(textSearchPlurale)) {
             items = items.stream().filter(naz -> naz.plurale.matches("^(?i)" + textSearchPlurale + ".*$")).toList();
         }
 

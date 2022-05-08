@@ -1,9 +1,13 @@
 package it.algos.vaad23.backend.boot;
 
 import com.vaadin.flow.spring.annotation.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.packages.utility.preferenza.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -20,8 +24,9 @@ import javax.servlet.*;
  * Creazione da code di alcune preferenze di base <br>
  */
 @SpringComponent
+@Qualifier(TAG_FLOW_PREFERENCES)
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class VaadPref implements ServletContextListener {
+public class VaadPref implements AIEnumPref, ServletContextListener {
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -38,6 +43,14 @@ public class VaadPref implements ServletContextListener {
      */
     @Autowired
     public TextService textService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public LogService logger;
 
     /**
      * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
@@ -68,28 +81,47 @@ public class VaadPref implements ServletContextListener {
      * Controlla che la entity non esista già <br>
      */
     protected void crea(final Pref pref) {
-        crea(pref.getKeyCode(), pref.getType(), pref.getDefaultValue(), pref.getDescrizione(), false);
+        crea(pref.getKeyCode(), pref.getType(), pref.getDefaultValue(), pref.getDescrizione(), false,true);
     }
 
     /**
      * Inserimento di una preferenza del progetto base Vaadin23 <br>
      * Controlla che la entity non esista già <br>
      */
-    protected void crea(final String code, final AETypePref type, final Object value, final String descrizione, final boolean needRiavvio) {
+    protected void crea(final String keyCode, final AETypePref type, final Object value, final String descrizione,
+                        final boolean needRiavvio,final boolean vaad23) {
         Preferenza preferenza = null;
+        String message;
 
-        if (textService.isEmpty(code) || type == null || value == null || textService.isEmpty(descrizione)) {
+        if (textService.isEmpty(keyCode)) {
+            logger.error(new WrapLog().exception(new AlgosException("Manca il keyCode")).usaDb());
             return;
         }
-        if (backend.existsByCode(code)) {
+        if (type == null) {
+            message = String.format("Manca il type nella preferenza %s", keyCode);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return;
+        }
+        if ( textService.isEmpty(descrizione)) {
+            message = String.format("Manca la descrizione nella preferenza %s", keyCode);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return;
+        }
+        if ( value == null) {
+            message = String.format("Il valore della preferenza %s è nullo", keyCode);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return;
+        }
+
+        if (backend.existsByKeyCode(keyCode)) {
             return;
         }
 
         preferenza = new Preferenza();
-        preferenza.code = code;
+        preferenza.code = keyCode;
         preferenza.type = type;
         preferenza.value = type.objectToBytes(value);
-        preferenza.vaad23 = true;
+        preferenza.vaad23 = vaad23;
         preferenza.usaCompany = false;
         preferenza.needRiavvio = needRiavvio;
         preferenza.visibileAdmin = false;

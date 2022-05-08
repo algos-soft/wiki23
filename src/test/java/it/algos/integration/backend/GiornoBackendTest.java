@@ -1,7 +1,7 @@
-package it.algos.backend;
+package it.algos.integration.backend;
 
 import it.algos.*;
-import it.algos.test.*;
+import it.algos.base.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;
@@ -21,10 +21,11 @@ import org.springframework.boot.test.context.*;
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllValido")
-@DisplayName("Giorno service")
+@Tag("integration")
+@Tag("backend")
+@DisplayName("Giorno backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class GiornoBackendTest extends ATest {
+public class GiornoBackendTest extends AlgosTest {
 
 
     /**
@@ -45,7 +46,7 @@ public class GiornoBackendTest extends ATest {
         super.setUpAll();
 
         //--reindirizzo l'istanza della superclasse
-//        service = GiornoService;
+        //        service = GiornoService;
     }
 
 

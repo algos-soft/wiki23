@@ -66,7 +66,6 @@ public class AttivitaView extends WikiView {
         super.fixPreferenze();
 
         super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "aggiunta", "bio", "pagina");
-
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
 
         super.usaBottoneElabora = true;

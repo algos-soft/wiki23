@@ -1,8 +1,7 @@
 package it.algos.unit.wiki;
 
 import it.algos.*;
-import it.algos.test.*;
-import it.algos.vaad23.backend.boot.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
@@ -32,7 +31,7 @@ import org.springframework.boot.test.context.*;
 @Tag("integration")
 @DisplayName("ElaboraService - Elaborazione delle biografie.")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ElaboraServiceTest extends WTest {
+public class ElaboraServiceTest extends WikiTest {
 
     protected static final String NOME_1 = "";
 

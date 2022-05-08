@@ -98,7 +98,7 @@ public enum Pref {
             return null;
         }
 
-        preferenza = preferenzaBackend.findByKey(keyCode);
+        preferenza = preferenzaBackend.findByKeyCode(keyCode);
         javaValue = preferenza != null ? type.bytesToObject(preferenza.getValue()) : null;
 
         return javaValue;

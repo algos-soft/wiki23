@@ -34,13 +34,6 @@ public class AttivitaBackend extends WikiBackend {
 
     public AttivitaRepository repository;
 
-    /**
-     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    public BioBackend bioBackend;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -103,16 +96,6 @@ public class AttivitaBackend extends WikiBackend {
     }
 
 
-    public List<String> findAllPlurali() {
-        List<String> lista = new ArrayList<>();
-        List<Attivita> listaAll = findAttivitaDistinctByPlurali();
-
-        for (Attivita attivita : listaAll) {
-            lista.add(attivita.plurale);
-        }
-
-        return lista;
-    }
 
     public List<Attivita> findAttivitaDistinctByPlurali() {
         List<Attivita> lista = new ArrayList<>();
@@ -123,6 +106,17 @@ public class AttivitaBackend extends WikiBackend {
             if (set.add(attivita.plurale)) {
                 lista.add(attivita);
             }
+        }
+
+        return lista;
+    }
+
+    public List<String> findAllPlurali() {
+        List<String> lista = new ArrayList<>();
+        List<Attivita> listaAll = findAttivitaDistinctByPlurali();
+
+        for (Attivita attivita : listaAll) {
+            lista.add(attivita.plurale);
         }
 
         return lista;
@@ -219,37 +213,6 @@ public class AttivitaBackend extends WikiBackend {
         aggiunge();
     }
 
-    /**
-     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
-     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    public void elabora() {
-        long inizio = System.currentTimeMillis();
-        int numBio;
-
-        for (Attivita attivita : findAll()) {
-            attivita.bio = 0;
-            update(attivita);
-        }
-
-        //--Spazzola tutte le attività distinte plurali (circa 657)
-        //--Per ognuna recupera le attività singolari
-        //--Per ognuna attività singolari calcola quante biografie la usano (in 1 o 3 parametri)
-        //--Memorizza e registra il dato nella entityBean
-        for (Attivita attivita : findAttivitaDistinctByPlurali()) {
-            numBio = 0;
-            for (String singolare : findSingolariByPlurale(attivita.plurale)) {
-                numBio += bioBackend.countAttivita(singolare);
-            }
-
-            for (Attivita attivitaOK : findByPlurale(attivita.plurale)) {
-                attivitaOK.bio = numBio;
-                update(attivitaOK);
-            }
-        }
-
-        super.fixElabora(inizio, "attività");
-    }
 
 
     /**
@@ -302,5 +265,36 @@ public class AttivitaBackend extends WikiBackend {
         logger.info(new WrapLog().message(message));
     }
 
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void elabora() {
+        long inizio = System.currentTimeMillis();
+        int numBio;
+
+        for (Attivita attivita : findAll()) {
+            attivita.bio = 0;
+            update(attivita);
+        }
+
+        //--Spazzola tutte le attività distinte plurali (circa 657)
+        //--Per ognuna recupera le attività singolari
+        //--Per ognuna attività singolare calcola quante biografie la usano (in 1 o 3 parametri)
+        //--Memorizza e registra il dato nella entityBean
+        for (Attivita attivita : findAttivitaDistinctByPlurali()) {
+            numBio = 0;
+            for (String singolare : findSingolariByPlurale(attivita.plurale)) {
+                numBio += bioBackend.countAttivita(singolare);
+            }
+
+            for (Attivita attivitaOK : findByPlurale(attivita.plurale)) {
+                attivitaOK.bio = numBio;
+                update(attivitaOK);
+            }
+        }
+
+        super.fixElaboraSecondi(inizio, "attività");
+    }
 
 }// end of crud backend class

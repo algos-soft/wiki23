@@ -19,6 +19,7 @@ import it.algos.vaad23.backend.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
@@ -49,6 +50,14 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     @Autowired
     public TextService textService;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public VaadBoot vaadBoot;
+
     @Autowired
     protected ApplicationContext appContext;
 
@@ -69,8 +78,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     @Autowired
     protected LogService logger;
 
-    @Autowired
-    protected VaadPref vaadPref;
+    protected AIEnumPref enumPref;
 
     protected Button refreshButton;
 
@@ -86,16 +94,26 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
     protected IndeterminateCheckbox boxBoxRiavvio;
 
+    protected int elementiFiltrati;
+
+    protected boolean usaBottomInfo;
+
+    protected boolean usaBottomTotale;
+
+    protected VerticalLayout bottomPlaceHolder;
+
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
         WebBrowser browser = VaadinSession.getCurrent().getBrowser();
         UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> fixBrowser(details));
+        this.fixPreferenze();
         this.fixAlert();
         this.fixTop();
         this.fixCrud();
         this.fixColumns();
         this.fixFields();
         this.fixOrder();
+        this.fixBottomLayout();
         this.addListeners();
     }
 
@@ -104,6 +122,18 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
      */
     public void fixBrowser(ExtendedClientDetails details) {
         width = details.getBodyClientWidth();
+    }
+
+    /**
+     * Preferenze usate da questa view <br>
+     * Primo metodo chiamato dopo AfterNavigationEvent <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+
+    public void fixPreferenze() {
+        this.enumPref = vaadBoot.prefInstance;
+        this.usaBottomInfo = true;
+        this.usaBottomTotale = true;
     }
 
     /**
@@ -116,6 +146,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         span(String.format("Vaad23=true per le preferenze del programma base '%s'", VaadVar.projectVaadFlow));
         span(String.format("Vaad23=false per le preferenze del programma corrente '%s'", VaadVar.projectCurrent));
         span("NeedRiavvio=true se la preferenza ha effetto solo dopo un riavvio del programma");
+        spanRosso("Le preferenze sono create/cancellate solo via hardcode (tramite una Enumeration)");
         spanRosso("Refresh ripristina nel database i valori di default annullando le successive modifiche");
     }
 
@@ -155,7 +186,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
         deleteButton.addClickListener(e -> deleteItem());
         deleteButton.setEnabled(false);
-        layout.add(deleteButton);
+        //        layout.add(deleteButton);
 
         filter = new TextField();
         filter.setPlaceholder("Filter by code");
@@ -224,7 +255,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
         grid.addColumn(new ComponentRenderer<>(pref ->
                 switch (pref.getType()) {
-                    case string, integer, localdate, localtime, localdatetime -> {
+                    case string, integer, lungo, localdate, localtime, localdatetime, email -> {
                         Label label = new Label(pref.getType().bytesToString(pref.getValue()));
                         label.getElement().getStyle().set("color", pref.getType().getColor());
                         label.getElement().getStyle().set("fontWeight", "bold");
@@ -294,10 +325,21 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         });
     }
 
+
+    protected void fixBottomLayout() {
+        this.bottomPlaceHolder = new VerticalLayout();
+        this.bottomPlaceHolder.setPadding(false);
+        this.bottomPlaceHolder.setSpacing(false);
+        this.bottomPlaceHolder.setMargin(false);
+
+        sicroBottomLayout();
+        this.add(bottomPlaceHolder);
+    }
+
     public void newItem() {
         Preferenza entityBean = new Preferenza();
         entityBean.setType(AETypePref.string);
-        PreferenzaDialog dialog = appContext.getBean(PreferenzaDialog.class, entityBean, CrudOperation.ADD);
+        PreferenzaDialog dialog = appContext.getBean(PreferenzaDialog.class, entityBean, CrudOperation.UPDATE);
         dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
     }
 
@@ -344,23 +386,26 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
         if (items != null) {
             grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
         }
     }
 
     protected void sincroSelection(SelectionEvent event) {
         boolean singoloSelezionato = event.getAllSelectedItems().size() == 1;
+        refreshButton.setEnabled(!singoloSelezionato);
         editButton.setEnabled(singoloSelezionato);
         deleteButton.setEnabled(singoloSelezionato);
     }
 
     protected void refresh() {
-        //        appContext.getBean(DialogDelete.class, "tutta la collection").open(this::refreshAll);
         appContext.getBean(DialogRefreshPreferenza.class).open(this::refreshAll);
     }
 
     protected void refreshAll() {
         backend.deleteAll();
-        vaadPref.inizia();
+        enumPref.inizia();
+        //        vaadBoot.fixPreferenze();
         grid.setItems(backend.findAll());
         Avviso.show("Refreshed view").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
     }
@@ -382,6 +427,37 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         //        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
     }
 
+    protected void sicroBottomLayout() {
+        String view = "Preferenza";
+        String message;
+        int elementiTotali = backend.count();
+        String totaleTxt = textService.format(elementiTotali);
+        String filtratiTxtTxt = textService.format(elementiFiltrati);
+
+        if (elementiFiltrati == 0 || elementiFiltrati == elementiTotali) {
+            message = String.format("%s: in totale ci sono %s elementi", view, totaleTxt);
+        }
+        else {
+            message = String.format("%s: filtrati %s elementi sul totale di %s", view, filtratiTxtTxt, totaleTxt);
+        }
+
+        if (bottomPlaceHolder != null) {
+            bottomPlaceHolder.removeAll();
+            if (usaBottomTotale) {
+                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+            }
+
+            if (usaBottomInfo) {
+                double doppio = VaadVar.projectVersion;
+                String nome = VaadVar.projectNameUpper;
+                String data = VaadVar.projectDate;
+
+                //--Locale.US per forzare la visualizzazione grafica di un punto anziché una virgola
+                message = String.format(Locale.US, "Algos® - %s %2.1f di %s", nome, doppio, data);
+                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blu).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+            }
+        }
+    }
 
     public Span getSpan(final String avviso) {
         return htmlService.getSpanVerde(avviso);

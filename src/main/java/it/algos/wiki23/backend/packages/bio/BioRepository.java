@@ -39,4 +39,5 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     long countBioByAttivita(String attivita);
     long countBioByAttivita2(String attivita);
     long countBioByAttivita3(String attivita);
+    long countBioByNazionalita(String nazionalita);
 }// end of crud repository class

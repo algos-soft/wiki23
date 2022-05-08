@@ -23,10 +23,18 @@ import java.util.*;
 public enum WPref {
 
     downloadGenere("downloadGenere", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale attività genere.", ROOT_DATA_TIME),
+
     downloadAttivita("downloadAttivita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale attività.", ROOT_DATA_TIME),
     elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, "Elaborazione di tutte le attività.", ROOT_DATA_TIME),
     elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, "Durata elaborazione delle attività in secondi.", 0),
     uploadAttivita("uploadAttivita", AETypePref.localdatetime, "Upload di tutte le attività.", ROOT_DATA_TIME),
+
+
+    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale nazionalità.", ROOT_DATA_TIME),
+    elaboraNazionalita("elaboraNazionalita", AETypePref.localdatetime, "Elaborazione di tutte le nazionalità.", ROOT_DATA_TIME),
+    elaboraNazionalitaTime("elaboraNazionalitaTime", AETypePref.integer, "Durata elaborazione delle nazionalità in secondi.", 0),
+    uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, "Upload di tutte le nazionalità.", ROOT_DATA_TIME),
+
     //    uploadAttivitaTime("uploadAttivitaTime", AETypePref.integer, "Durata upload delle attività.", 0),
     //    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale nazionalità.", ROOT_DATA_TIME),
     //    downloadProfessione("downloadProfessione", AETypePref.localdatetime, "Download di Modulo:Bio/Link attività.", ROOT_DATA_TIME),
@@ -94,7 +102,7 @@ public enum WPref {
             return;
         }
 
-        preferenza = preferenzaBackend.findByKey(keyCode);
+        preferenza = preferenzaBackend.findByKeyCode(keyCode);
         if (preferenza == null) {
             return;
         }
@@ -115,7 +123,7 @@ public enum WPref {
             return null;
         }
 
-        preferenza = preferenzaBackend.findByKey(keyCode);
+        preferenza = preferenzaBackend.findByKeyCode(keyCode);
         javaValue = preferenza != null ? type.bytesToObject(preferenza.getValue()) : null;
 
         return javaValue;

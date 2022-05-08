@@ -56,6 +56,14 @@ public abstract class VaadBoot implements ServletContextListener {
     public AIVers versInstance;
 
     /**
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    public AIEnumPref prefInstance;
+
+
+    /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata dal framework SpringBoot/Vaadin usando il metodo setter() <br>
      * al termine del ciclo init() del costruttore di questa classe <br>
@@ -70,12 +78,12 @@ public abstract class VaadBoot implements ServletContextListener {
      * Al termine del ciclo init() del costruttore il framework SpringBoot/Vaadin, inietterà la relativa istanza <br>
      */
     public VaadBoot() {
-        //        this.setEnvironment(environment);
         //        this.setMongo(mongo);
         //        this.setLogger(logger);
-        this.setDataInstance(dataInstance);
-        this.setVersInstance(versInstance);
         this.setEnvironment(environment);
+        this.setVersInstance(versInstance);
+        this.setPrefInstance(prefInstance);
+        this.setDataInstance(dataInstance);
     }// end of constructor with @Autowired on setter
 
     /**
@@ -104,7 +112,7 @@ public abstract class VaadBoot implements ServletContextListener {
     protected void inizia() {
         //        this.fixDBMongo();
         this.fixVariabili();
-        //        this.fixPreferenze();
+        this.fixPreferenze();
         //        this.fixData();
         this.fixMenuRoutes();
         this.fixVersioni();
@@ -194,26 +202,18 @@ public abstract class VaadBoot implements ServletContextListener {
         VaadVar.menuRouteList.add(PreferenzaView.class);
     }
 
-    /**
-     * Inizializzazione delle versioni standard di vaadinFlow <br>
-     * Inizializzazione delle versioni del programma specifico <br>
-     */
-    protected void fixVersioni() {
-        this.versInstance.inizia();
-    }
-
 
     /**
      * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Istanza di una classe di SpringBoot <br>
      * Chiamata dal costruttore di questa classe con valore nullo <br>
      * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    @Qualifier(TAG_FLOW_DATA)
-    public void setDataInstance(final AIData dataInstance) {
-        this.dataInstance = dataInstance;
+    public void setEnvironment(final Environment environment) {
+        this.environment = environment;
     }
+
 
     /**
      * Set con @Autowired di una property chiamata dal costruttore <br>
@@ -229,13 +229,43 @@ public abstract class VaadBoot implements ServletContextListener {
 
     /**
      * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe di SpringBoot <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
      * Chiamata dal costruttore di questa classe con valore nullo <br>
      * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    public void setEnvironment(final Environment environment) {
-        this.environment = environment;
+    @Qualifier(TAG_FLOW_PREFERENCES)
+    public void setPrefInstance(final AIEnumPref prefInstance) {
+        this.prefInstance = prefInstance;
+    }
+
+    /**
+     * Set con @Autowired di una property chiamata dal costruttore <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Chiamata dal costruttore di questa classe con valore nullo <br>
+     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    @Qualifier(TAG_FLOW_DATA)
+    public void setDataInstance(final AIData dataInstance) {
+        this.dataInstance = dataInstance;
+    }
+
+
+    /**
+     * Inizializzazione delle versioni standard di vaadinFlow <br>
+     * Inizializzazione delle versioni del programma specifico <br>
+     */
+    protected void fixVersioni() {
+        this.versInstance.inizia();
+    }
+
+    /**
+     * Inizializzazione delle versioni standard di vaadinFlow <br>
+     * Inizializzazione delle versioni del programma specifico <br>
+     */
+    public void fixPreferenze() {
+        this.prefInstance.inizia();
     }
 
 }

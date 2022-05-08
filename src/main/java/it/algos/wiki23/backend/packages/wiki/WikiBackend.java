@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
@@ -26,6 +27,7 @@ public abstract class WikiBackend extends CrudBackend {
     public WPref lastDownload;
 
     public WPref lastElabora;
+
     public WPref durataElaborazione;
 
     /**
@@ -44,6 +46,13 @@ public abstract class WikiBackend extends CrudBackend {
     @Autowired
     public GenereBackend genereBackend;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public BioBackend bioBackend;
 
     public WikiBackend(final MongoRepository crudRepository, final Class<? extends AEntity> entityClazz) {
         super(crudRepository, entityClazz);
@@ -80,7 +89,7 @@ public abstract class WikiBackend extends CrudBackend {
         }
 
         if (sizeServerWiki == sizeMongoDB) {
-            message = String.format("Download di %s righe da [%s] in %d millisecondi", wikiTxt, wikiTitle,delta);
+            message = String.format("Download di %s righe da [%s] in %d millisecondi", wikiTxt, wikiTitle, delta);
         }
         else {
             message = String.format("Download di %s righe da [%s] convertite in %s elementi su mongoDB", wikiTxt, wikiTitle, mongoTxt);
@@ -90,7 +99,7 @@ public abstract class WikiBackend extends CrudBackend {
     }
 
 
-    public void fixElabora(final long inizio, final String modulo) {
+    public void fixElaboraSecondi(final long inizio, final String modulo) {
         long fine = System.currentTimeMillis();
         Long delta = fine - inizio;
         String mongoTxt = textService.format(count());
@@ -104,6 +113,7 @@ public abstract class WikiBackend extends CrudBackend {
         }
 
         if (durataElaborazione != null) {
+            delta = delta / 1000;
             durataElaborazione.setValue(delta.intValue());
         }
         else {

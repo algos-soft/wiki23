@@ -1,5 +1,6 @@
 package it.algos.wiki23.backend.packages.nazionalita;
 
+import com.vaadin.flow.component.icon.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -30,6 +31,11 @@ public class Nazionalita extends AEntity {
     @AIField(type = AETypeField.text, widthEM = WIDTHEM)
     public String plurale;
 
+    @AIField(type = AETypeField.integer)
+    public int bio;
+
+    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.LIST)
+    public boolean pagina;
 
     /**
      * @return a string representation of the object.

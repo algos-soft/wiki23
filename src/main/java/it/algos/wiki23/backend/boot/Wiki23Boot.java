@@ -120,6 +120,11 @@ public class Wiki23Boot extends VaadBoot {
         this.versInstance = versInstance;
     }
 
+    @Autowired
+    @Qualifier(TAG_WIKI23_PREFERENCES)
+    public void setPrefInstance(final AIEnumPref prefInstance) {
+        this.prefInstance = prefInstance;
+    }
 
     /**
      * Aggiunge al menu le @Route (view) standard e specifiche <br>

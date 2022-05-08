@@ -118,5 +118,16 @@ public class BioBackend extends WikiBackend {
 
         return numBio;
     }
+    /**
+     * Conta tutte le biografie con una serie di nazionalita. <br>
+     *
+     * @param nazionalita singola
+     *
+     * @return conteggio di biografie che la usano
+     */
+    public int countNazionalita(final String nazionalita) {
+        Long nazLong = repository.countBioByNazionalita(nazionalita);
+        return nazLong.intValue();
+    }
 
 }// end of crud backend class

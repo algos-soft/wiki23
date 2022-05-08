@@ -1,7 +1,7 @@
-package it.algos.unit.backend;
+package it.algos.integration.backend;
 
 import it.algos.*;
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import org.junit.jupiter.api.*;
@@ -32,9 +32,9 @@ import java.util.stream.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("backend")
-@DisplayName("Attivita service")
+@DisplayName("Attivita backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AttivitaBackendTest extends WTest {
+public class AttivitaBackendTest extends WikiTest {
 
 
     /**

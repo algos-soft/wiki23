@@ -4,7 +4,9 @@ import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.packages.utility.preferenza.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.*;
@@ -18,6 +20,7 @@ import org.springframework.context.event.*;
  * Creazione da code di alcune preferenze del progetto <br>
  */
 @SpringComponent
+@Qualifier(TAG_WIKI23_PREFERENCES)
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Wiki23Pref extends VaadPref {
 
@@ -40,6 +43,7 @@ public class Wiki23Pref extends VaadPref {
      * Eseguito quindi a ogni avvio/riavvio del server e NON a ogni sessione <br>
      */
     public void inizia() {
+        super.inizia();
         for (WPref pref : WPref.getAllEnums()) {
             crea(pref);
         }
@@ -50,35 +54,8 @@ public class Wiki23Pref extends VaadPref {
      * Controlla che la entity non esista già <br>
      */
     protected void crea(final WPref pref) {
-        crea(pref.getKeyCode(), pref.getType(), pref.getDefaultValue(), pref.getDescrizione(), false);
+        crea(pref.getKeyCode(), pref.getType(), pref.getDefaultValue(), pref.getDescrizione(), false,false);
     }
 
-    /**
-     * Inserimento di una preferenza del progetto specifico <br>
-     * Controlla che la entity non esista già <br>
-     */
-    protected void crea(final String code, final AETypePref type, final Object value, final String descrizione, final boolean needRiavvio) {
-        Preferenza preferenza = null;
-
-        if (textService.isEmpty(code) || type == null || value == null || textService.isEmpty(descrizione)) {
-            return;
-        }
-        if (backend.existsByCode(code)) {
-            return;
-        }
-
-        preferenza = new Preferenza();
-        preferenza.code = code;
-        preferenza.type = type;
-        preferenza.value = type.objectToBytes(value);
-        preferenza.vaad23 = false;
-        preferenza.usaCompany = false;
-        preferenza.needRiavvio = needRiavvio;
-        preferenza.visibileAdmin = true;
-        preferenza.descrizione = descrizione;
-        preferenza.descrizioneEstesa = descrizione;
-
-        backend.add(preferenza);
-    }
 
 }

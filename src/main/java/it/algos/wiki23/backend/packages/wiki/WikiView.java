@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.packages.wiki;
 
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.data.selection.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
@@ -102,6 +103,8 @@ public abstract class WikiView extends CrudView {
 
     protected WikiBackend crudBackend;
 
+    protected VerticalLayout infoPlaceHolder;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -166,6 +169,20 @@ public abstract class WikiView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
+        this.infoPlaceHolder = new VerticalLayout();
+        this.infoPlaceHolder.setPadding(false);
+        this.infoPlaceHolder.setSpacing(false);
+        this.infoPlaceHolder.setMargin(false);
+        alertPlaceHolder.add(infoPlaceHolder);
+        this.fixInfo();
+    }
+
+    /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void fixInfo() {
+        infoPlaceHolder.removeAll();
         if (usaInfoDownload) {
             if (lastDownload != null && lastDownload.get() instanceof LocalDateTime download) {
                 if (download.equals(ROOT_DATA_TIME)) {
@@ -182,10 +199,11 @@ public abstract class WikiView extends CrudView {
                 }
                 else {
                     message = String.format("Ultimo elaborazione effettuata il %s", dateService.get(elaborazione));
+                    if (durataElaborazione != null && durataElaborazione.get() instanceof Integer durata) {
+                        message += String.format(" in circa %d secondi", durata);
+                    }
                 }
-                if (durataElaborazione != null && durataElaborazione.get() instanceof Integer durata) {
-                    message += String.format(" in circa %d secondi", durata);
-                }
+
                 addSpanVerdeSmall(message);
             }
             if (lastUpload != null && lastUpload.get() instanceof LocalDateTime upload) {
@@ -373,6 +391,7 @@ public abstract class WikiView extends CrudView {
         crudBackend.elabora();
         sortOrder = Sort.by(Sort.Direction.DESC, "bio");
         refresh();
+        fixInfo();
     }
 
     /**
@@ -465,7 +484,7 @@ public abstract class WikiView extends CrudView {
     }
 
     public void addSpanVerdeSmall(final String message) {
-        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde).fontHeight(AEFontHeight.em7)));
+        infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde).fontHeight(AEFontHeight.em7)));
     }
 
     public void addSpanRossoBold(final String message) {

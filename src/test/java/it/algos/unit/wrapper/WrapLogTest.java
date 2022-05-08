@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
+@Tag("wrapper")
 @DisplayName("WrapLog")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class WrapLogTest extends AlgosTest {

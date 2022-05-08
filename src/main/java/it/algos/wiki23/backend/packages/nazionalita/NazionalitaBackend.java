@@ -88,6 +88,51 @@ public class NazionalitaBackend extends WikiBackend {
                 .build();
     }
 
+    public List<Nazionalita> findAll() {
+        return repository.findAll();
+    }
+
+
+    public List<Nazionalita> findNazionalitaDistinctByPlurali() {
+        List<Nazionalita> lista = new ArrayList<>();
+        Set<String> set = new HashSet();
+        List<Nazionalita> listaAll = repository.findAll();
+
+        for (Nazionalita nazionalita : listaAll) {
+            if (set.add(nazionalita.plurale)) {
+                lista.add(nazionalita);
+            }
+        }
+
+        return lista;
+    }
+
+    public List<String> findAllPlurali() {
+        List<String> lista = new ArrayList<>();
+        List<Nazionalita> listaAll = findNazionalitaDistinctByPlurali();
+
+        for (Nazionalita nazionalita : listaAll) {
+            lista.add(nazionalita.plurale);
+        }
+
+        return lista;
+    }
+
+    public List<Nazionalita> findByPlurale(final String plurale) {
+        return repository.findByPluraleOrderBySingolareAsc(plurale);
+    }
+
+    public List<String> findSingolariByPlurale(final String plurale) {
+        List<String> listaNomi = new ArrayList<>();
+        List<Nazionalita> listaNazionalita = findByPlurale(plurale);
+
+        for (Nazionalita nazionalita : listaNazionalita) {
+            listaNomi.add(nazionalita.singolare);
+        }
+
+        return listaNomi;
+    }
+
     /**
      * Recupera una istanza della Entity usando la query della property specifica (obbligatoria e unica) <br>
      *
@@ -132,5 +177,36 @@ public class NazionalitaBackend extends WikiBackend {
         super.fixDownload(inizio, wikiTitle, mappa.size(), size);
     }
 
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void elabora() {
+        long inizio = System.currentTimeMillis();
+        int numBio;
+
+        for (Nazionalita nazionalita : findAll()) {
+            nazionalita.bio = 0;
+            update(nazionalita);
+        }
+
+        //--Spazzola tutte le nazionalità distinte plurali (circa 284)
+        //--Per ognuna recupera le nazionalità singolari
+        //--Per ognuna nazionalità singolare calcola quante biografie la usano
+        //--Memorizza e registra il dato nella entityBean
+        for (Nazionalita nazionalita : findNazionalitaDistinctByPlurali()) {
+            numBio = 0;
+            for (String singolare : findSingolariByPlurale(nazionalita.plurale)) {
+                numBio += bioBackend.countNazionalita(singolare);
+            }
+
+            for (Nazionalita nazionalitaOK : findByPlurale(nazionalita.plurale)) {
+                nazionalitaOK.bio = numBio;
+                update(nazionalitaOK);
+            }
+        }
+
+        super.fixElaboraSecondi(inizio, "nazionalità");
+    }
 
 }// end of crud backend class

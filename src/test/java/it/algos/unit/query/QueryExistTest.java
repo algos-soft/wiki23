@@ -1,16 +1,12 @@
 package it.algos.unit.query;
 
 import it.algos.*;
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.extension.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.*;
-import org.springframework.test.context.junit.jupiter.*;
 
 /**
  * Project wiki23
@@ -26,9 +22,10 @@ import org.springframework.test.context.junit.jupiter.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("query")
 @DisplayName("Test QueryExist")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class QueryExistTest extends WTest {
+public class QueryExistTest extends WikiTest {
 
 
 

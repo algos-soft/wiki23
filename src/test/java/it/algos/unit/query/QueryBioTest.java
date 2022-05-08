@@ -1,20 +1,13 @@
 package it.algos.unit.query;
 
 import it.algos.*;
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.wrapper.*;
-import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 
 /**
  * Project wiki23
@@ -30,9 +23,10 @@ import com.vaadin.flow.component.textfield.TextField;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("query")
 @DisplayName("Test QueryBio")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class QueryBioTest extends WTest {
+public class QueryBioTest extends WikiTest {
 
 
     /**

@@ -407,7 +407,7 @@ public class PreferenzaDialog extends Dialog {
         Label spazioVuotoEspandibile = new Label("");
 
         annullaButton.setText(textAnnullaButton);
-        annullaButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "secondary" : "primary");
+        annullaButton.getElement().setAttribute("theme", operation == CrudOperation.UPDATE ? "secondary" : "primary");
         annullaButton.addClickListener(e -> annullaHandler());
         annullaButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
         annullaButton.addClickShortcut(Key.ARROW_LEFT, KeyModifier.CONTROL); //@todo non funziona
@@ -416,7 +416,7 @@ public class PreferenzaDialog extends Dialog {
         //        layout.add(spazioVuotoEspandibile);
 
         saveButton.setText(textSaveButton);
-        saveButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "primary" : "secondary");
+        saveButton.getElement().setAttribute("theme", operation == CrudOperation.UPDATE ? "primary" : "secondary");
         saveButton.addClickListener(e -> saveHandler());
         saveButton.setIcon(new Icon(VaadinIcon.CHECK));
         saveButton.addClickShortcut(Key.ENTER);

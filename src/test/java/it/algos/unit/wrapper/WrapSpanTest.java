@@ -24,6 +24,7 @@ import org.mockito.*;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
+@Tag("wrapper")
 @DisplayName("WrapSpan")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class WrapSpanTest extends AlgosTest {

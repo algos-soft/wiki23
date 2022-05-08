@@ -29,6 +29,10 @@ public class VaadCost {
 
     public static final LocalDateTime ROOT_DATA_TIME = LocalDateTime.of(2000, 1, 1, 0, 0);
 
+    public static final LocalDate ROOT_DATA = LocalDate.of(2000, 1, 1);
+
+    public static final LocalTime ROOT_TIME = LocalTime.of(0, 0, 0);
+
     public static final String PATH_RISORSE = "src/main/resources/META-INF/resources/";
 
     public static final String PATH_ALGOS = "it.algos";
@@ -275,6 +279,8 @@ public class VaadCost {
     public static final String TAG_FLOW_DATA = "flowdata";
 
     public static final String TAG_FLOW_VERSION = "flowversion";
+
+    public static final String TAG_FLOW_PREFERENCES = "23preferences";
 
     public static final int PAD_TYPE = 10;
 

@@ -29,7 +29,7 @@ public abstract class CrudBackend extends AbstractService {
     /**
      * The Entity Class  (obbligatoria sempre e final)
      */
-    protected final Class<? extends AEntity> entityClazz;
+    public final Class<? extends AEntity> entityClazz;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
