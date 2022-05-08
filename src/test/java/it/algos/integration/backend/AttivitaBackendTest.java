@@ -155,7 +155,7 @@ public class AttivitaBackendTest extends WikiTest {
     @DisplayName("3 - findAll sort")
         //--direzione
         //--property
-    void findAllSort(Sort.Direction direction, String property) {
+    void findAllSort(final Sort.Direction direction, final String property) {
         System.out.println("3 - findAll sort");
         int num = 10;
         Sort sort = Sort.by(direction, property);
@@ -193,7 +193,7 @@ public class AttivitaBackendTest extends WikiTest {
     @MethodSource(value = "ATTIVITA_SINGOLARE")
     @Order(6)
     @DisplayName("6 - isExist")
-    void isExist(String singolare, boolean esiste) {
+    void isExist(final String singolare, final boolean esiste) {
         System.out.println("6 - isExist");
         ottenutoBooleano = backend.isExist(singolare);
         assertEquals(esiste, ottenutoBooleano);

@@ -34,7 +34,7 @@ public class AnnoBackend extends CrudBackend {
     @Autowired
     public SecoloBackend secoloBackend;
 
-    private AnnoRepository repository;
+    public AnnoRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -125,14 +125,14 @@ public class AnnoBackend extends CrudBackend {
 
     public void crea(int anno, boolean ante) {
         int ordine;
-        String prima = " a.C";
+        String prima = " a.C.";
         String dopo = VUOTA;
         String nome;
         Secolo secolo;
         boolean bisestile = ante ? false : dateService.isBisestile(anno);
 
         ordine = ANNO_INIZIALE - anno;
-        nome = String.format("%d %s", anno, ante ? prima : dopo);
+        nome = String.format("%d%s", anno, ante ? prima : dopo);
         secolo = ante ? secoloBackend.getSecoloAC(anno) : secoloBackend.getSecoloDC(anno);
         crea(ordine, nome, secolo, ante, bisestile);
     }

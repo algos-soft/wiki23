@@ -3,7 +3,7 @@ package it.algos.integration.backend;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
@@ -11,35 +11,52 @@ import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.data.domain.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: sab, 07-mag-2022
- * Time: 14:50
+ * Date: dom, 08-mag-2022
+ * Time: 14:44
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("backend")
-@DisplayName("Giorno Backend")
+@DisplayName("Anno Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class GiornoBackendTest extends AlgosTest {
+public class AnnoBackendTest extends AlgosTest {
 
     /**
      * The Service.
      */
     @InjectMocks
-    private GiornoBackend backend;
+    private AnnoBackend backend;
 
     @Autowired
-    private GiornoRepository repository;
+    private AnnoRepository repository;
 
-    protected List<Giorno> listaGiorni;
+
+    private Anno entityBean;
+
+
+    private List<Anno> listaBeans;
+
+
+    //--nome
+    //--esiste
+    protected static Stream<Arguments> ANNI() {
+        return Stream.of(
+                Arguments.of(VUOTA, false),
+                Arguments.of("0", false),
+                Arguments.of("24", true),
+                Arguments.of("24 a.C.", true),
+                Arguments.of("3208", false)
+        );
+    }
 
     /**
      * Qui passa una volta sola <br>
@@ -82,6 +99,9 @@ public class GiornoBackendTest extends AlgosTest {
     @BeforeEach
     protected void setUpEach() {
         super.setUpEach();
+
+        this.entityBean = null;
+        this.listaBeans = null;
     }
 
 
@@ -98,6 +118,7 @@ public class GiornoBackendTest extends AlgosTest {
         System.out.println(message);
     }
 
+
     @Test
     @Order(2)
     @DisplayName("2 - findAll")
@@ -105,13 +126,28 @@ public class GiornoBackendTest extends AlgosTest {
         System.out.println("2 - findAll");
         String message;
 
-        listaGiorni = backend.findAll();
-        assertNotNull(listaGiorni);
-        message = String.format("Ci sono in totale %s giorni", textService.format(listaGiorni.size()));
+        listaBeans = backend.findAll();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Anno");
         System.out.println(message);
-        printGiorni(listaGiorni);
+        printBeans(listaBeans);
     }
 
+    @ParameterizedTest
+    @MethodSource(value = "ANNI")
+    @Order(3)
+    @DisplayName("3 - findByNome")
+    void findByNome(final String nome, final boolean esiste) {
+        System.out.println("3 - findByNome");
+        entityBean = backend.findByNome(nome);
+        assertEquals(esiste, entityBean!=null);
+        if (entityBean!=null) {
+            System.out.println(String.format("L'anno '%s' esiste", nome));
+        }
+        else {
+            System.out.println(String.format("L'anno '%s' non esiste", nome));
+        }
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>
@@ -128,15 +164,15 @@ public class GiornoBackendTest extends AlgosTest {
     void tearDownAll() {
     }
 
-    void printGiorni(List<Giorno> listaGiorni) {
+    void printBeans(List<Anno> listaBeans) {
         System.out.println(VUOTA);
         int k = 0;
 
-        for (Giorno giorno : listaGiorni) {
+        for (Anno bean : listaBeans) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(giorno);
+            System.out.println(bean);
         }
     }
 
