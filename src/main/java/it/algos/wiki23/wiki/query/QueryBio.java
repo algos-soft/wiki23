@@ -19,7 +19,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * Date: ven, 29-apr-2022
  * Time: 19:42
  * UrlRequest:
- * urlDomain = "&prop=info|revisions&rvprop=content|ids|flags|timestamp|user|userid|comment|size&titles="
+ * urlDomain = "&rvslots=main&prop=revisions&rvprop=content|ids|timestamp"
  * GET request
  * No POST text
  * No upload cookies
@@ -29,21 +29,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class QueryBio extends AQuery {
 
-    /**
-     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    public WebService webService;
-
-    /**
-     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    public JSonService jSonService;
 
     /**
      * Request principale <br>

@@ -109,11 +109,11 @@ public class BioDialog extends CrudDialog {
      * Esegue un azione di download <br>
      */
     public void download() {
-        Bio bio = null;
-        long pageId = currentItem.pageId;
-        WrapBio wrap = null;
-        wrap = appContext.getBean(QueryBio.class).getWrap(currentItem.wikiTitle);
-        bio = backend.newEntity(wrap);
+        WrapBio wrap = appContext.getBean(QueryBio.class).getWrap(currentItem.pageId);
+        currentItem = backend.newEntity(wrap);
+        elaboraService.esegue(currentItem);
+        binder.readBean(currentItem);
+//        elaboraHandler();
     }
 
 }// end of crud Dialog class

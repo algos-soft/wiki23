@@ -52,16 +52,23 @@ public class Wiki23Cost {
 
     public static final String API_PAGEIDS = "&pageids=";
 
+    public static final String API_CAT = "&titles=Category:";
+
     public static final String WIKI_QUERY = ACTION_QUERY + API_TITLES;
 
     public static final String QUERY_INFO = "&rvslots=main&prop=revisions&rvprop=content|ids|timestamp";
+
     public static final String QUERY_INFO_ALL = "&rvslots=main&prop=info|revisions&rvprop=content|ids|flags|timestamp|user|userid|comment|size";
+
+    public static final String QUERY_CAT_INFO = "&prop=categoryinfo";
 
     public static final String WIKI_QUERY_BASE_TITLE = ACTION_QUERY + QUERY_INFO + API_TITLES;
 
     public static final String WIKI_QUERY_BASE_PAGE = ACTION_QUERY + QUERY_INFO + API_PAGEIDS;
 
     public static final String WIKI_QUERY_ALL = ACTION_QUERY + QUERY_INFO_ALL + API_TITLES;
+
+    public static final String WIKI_QUERY_CAT_INFO = ACTION_QUERY + QUERY_CAT_INFO + API_CAT;
 
     //
     //    public static final String API = "https://it.wikipedia.org/w/api.php?&format=json&formatversion=2";
@@ -141,6 +148,7 @@ public class Wiki23Cost {
     public static final String KEY_JSON_TITLE = "title";
 
     public static final String KEY_JSON_MISSING = "missing";
+    public static final String KEY_JSON_MISSING_TRUE = "missing=true";
 
     public static final String KEY_JSON_REVISIONS = "revisions";
 

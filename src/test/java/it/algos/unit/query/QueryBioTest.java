@@ -3,6 +3,7 @@ package it.algos.unit.query;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -165,6 +166,37 @@ public class QueryBioTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", wrapBio.getTitle()));
+        printWrapBio(wrapBio);
+    }
+    @Test
+    @Order(8)
+    @DisplayName("8- Test per una pagina di disambigua")
+    void getWrapDisambigua() {
+        System.out.println(("8- Test per una pagina di disambigua"));
+
+        sorgente = "Francisco Cabral";
+        wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgente);
+        assertFalse(wrapBio.isValida());
+        assertEquals(AETypePage.disambigua,wrapBio.getType());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esiste la pagina [[%s]] ma è una disambigua", sorgente));
+        printWrapBio(wrapBio);
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("9- Test per una biografia esistente")
+    void getWrapEsistente() {
+        System.out.println(("9- Test per una biografia esistente"));
+
+        sorgente = "Francisco Cabral (tennista)";
+        wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgente);
+        assertTrue(wrapBio.isValida());
+        assertEquals(AETypePage.testoConTmpl,wrapBio.getType());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esiste la pagina [[%s]] ma è una disambigua", sorgente));
         printWrapBio(wrapBio);
     }
 

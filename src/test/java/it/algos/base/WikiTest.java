@@ -26,6 +26,7 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 public abstract class WikiTest extends AlgosTest {
+
     private static int MAX = 175;
 
     /**
@@ -44,8 +45,10 @@ public abstract class WikiTest extends AlgosTest {
 
     @Autowired
     public DidascaliaService didascaliaService;
+
     @Autowired
     public BioService bioService;
+
     @Autowired
     public BioBackend bioBackend;
 
@@ -58,6 +61,12 @@ public abstract class WikiTest extends AlgosTest {
 
     protected final static String PAGINA_ESISTENTE_TRE = "Piozzano";
 
+    protected final static String CATEGORIA_INESISTENTE = "Supercalifragilistichespiralidoso";
+
+    protected final static String CATEGORIA_ESISTENTE_UNO = "Nati nel 1435";
+
+    protected final static String CATEGORIA_ESISTENTE_DUE = "BioBot";
+
     protected WResult previstoRisultato;
 
     protected WResult ottenutoRisultato;
@@ -67,19 +76,28 @@ public abstract class WikiTest extends AlgosTest {
     protected Bio bio;
 
 
-
-
     protected static final String PAGINA_UNO = "Roman Protasevič";
+
     protected static final String PAGINA_DUE = "Aldelmo di Malmesbury";
+
     protected static final String PAGINA_TRE = "Aelfric il grammatico";
+
     protected static final String PAGINA_QUATTRO = "Elfleda di Whitby";
+
     protected static final String PAGINA_CINQUE = "Werburga";
+
     protected static final String PAGINA_SEI = "Bernart Arnaut d'Armagnac";
+
     protected static final String PAGINA_SETTE = "Gaetano Anzalone";
+
     protected static final String PAGINA_OTTO = "Colin Campbell (generale)";
+
     protected static final String PAGINA_NOVE = "Louis Winslow Austin";
+
     protected static final String PAGINA_DIECI = "Maximilian Stadler";
+
     protected static final String PAGINA_DISAMBIGUA = "Rossi";
+
     protected static final String PAGINA_REDIRECT = "Regno di Napoli (1805-1815)";
 
     //--titolo

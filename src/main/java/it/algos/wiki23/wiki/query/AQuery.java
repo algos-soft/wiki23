@@ -147,6 +147,22 @@ public abstract class AQuery {
     @Autowired
     public DateService date;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WebService webService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public JSonService jSonService;
+
     //    public QueryAssert queryAssert;
 
     // ci metto tutti i cookies restituiti da URLConnection.responses
@@ -465,7 +481,7 @@ public abstract class AQuery {
         if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_MISSING) != null) {
             if ((boolean) jsonPageZero.get(KEY_JSON_MISSING)) {
                 result.setValido(false);
-                result.setErrorCode("missing=true");
+                result.setErrorCode(KEY_JSON_MISSING_TRUE);
                 result.setErrorMessage(String.format("La pagina wiki '%s' non esiste", result.getWikiTitle()));
                 wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.nonEsiste);
                 result.setWrap(wrap);
@@ -518,7 +534,7 @@ public abstract class AQuery {
             result.setValido(false);
             result.setErrorCode("disambigua");
             result.setErrorMessage(String.format("La pagina wiki '%s' è una disambigua", result.getWikiTitle()));
-            wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.disambigua);
+            wrap = result.getWrap().valida(false).type(AETypePage.disambigua);
             result.setWrap(wrap);
             return result;
         }
@@ -528,7 +544,7 @@ public abstract class AQuery {
             result.setValido(false);
             result.setErrorCode("redirect");
             result.setErrorMessage(String.format("La pagina wiki '%s' è un redirect", result.getWikiTitle()));
-            wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.redirect);
+            wrap = result.getWrap().valida(false).type(AETypePage.redirect);
             result.setWrap(wrap);
             return result;
         }
