@@ -1,15 +1,22 @@
 package it.algos.wiki23.backend.packages.nazionalita;
 
+import ch.carnet.kasparscherrer.*;
+import com.vaadin.flow.component.checkbox.*;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
+import org.vaadin.crudui.crud.*;
 
 import java.util.*;
 
@@ -35,6 +42,9 @@ public class NazionalitaView extends WikiView {
     private NazionalitaBackend backend;
 
     private TextField searchFieldPlurale;
+    protected IndeterminateCheckbox boxBoxPagina;
+
+    protected Checkbox boxDistinctPlurali;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -58,8 +68,8 @@ public class NazionalitaView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "bio", "pagina");
-        super.formPropertyNamesList = Arrays.asList("singolare", "plurale", "bio", "pagina");
+        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "numBio", "numSingolari", "pagina");
+        super.formPropertyNamesList = Arrays.asList( "plurale",  "numBio");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
 
 
@@ -71,7 +81,10 @@ public class NazionalitaView extends WikiView {
         super.wikiModuloTitle = PATH_MODULO_NAZIONALITA;
         //        super.wikiStatisticheTitle = PATH_STATISTICHE_ATTIVITA;
         super.usaBottoneCategoria = true;
+        super.usaBottoneEdit = true;
 
+        super.dialogClazz = NazionalitaDialog.class;
+        super.fixPreferenzeBackend();
         super.fixPreferenzeBackend();
     }
 
@@ -83,6 +96,12 @@ public class NazionalitaView extends WikiView {
     public void fixAlert() {
         super.fixAlert();
 
+        Anchor anchor = new Anchor(VaadCost.PATH_WIKI + PATH_MODULO_NAZIONALITA, PATH_MODULO_NAZIONALITA);
+        anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+        Anchor anchor2 = new Anchor(VaadCost.PATH_WIKI + PATH_STATISTICHE_NAZIONALITA, PATH_STATISTICHE_NAZIONALITA);
+        anchor2.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+        alertPlaceHolder.add(new Span(anchor, new Label(SEP), anchor2));
+
         message = "Contiene la tabella di conversione delle attività passate via parametri 'Nazionalità/Cittadinanza/NazionalitàNaturalizzato',";
         message += " da singolare maschile e femminile (usati nell'incipit) al plurale maschile per categorizzare la pagina.";
         addSpanVerde(message);
@@ -93,6 +112,9 @@ public class NazionalitaView extends WikiView {
 
         message = "Indipendentemente da come sono scritte nel modulo, tutte le attività singolari e plurali sono convertite in minuscolo.";
         addSpanRosso(message);
+
+        message = String.format("Le singole pagine di nazionalità vengono create su wiki quando superano le %s biografie.", WPref.sogliaAttNazWiki.get());
+        addSpanRossoBold(message);
     }
 
     protected void fixBottoniTopSpecifici() {
@@ -101,6 +123,21 @@ public class NazionalitaView extends WikiView {
         searchFieldPlurale.setClearButtonVisible(true);
         searchFieldPlurale.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(searchFieldPlurale);
+
+        boxBoxPagina = new IndeterminateCheckbox();
+        boxBoxPagina.setLabel("Pagina wiki");
+        boxBoxPagina.setIndeterminate(true);
+        boxBoxPagina.addValueChangeListener(event -> sincroFiltri());
+        HorizontalLayout layout2 = new HorizontalLayout(boxBoxPagina);
+        layout2.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout2);
+
+        boxDistinctPlurali = new Checkbox();
+        boxDistinctPlurali.setLabel("Distinct plurali");
+        boxDistinctPlurali.addValueChangeListener(event -> sincroPlurali());
+        HorizontalLayout layout3 = new HorizontalLayout(boxDistinctPlurali);
+        layout3.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout3);
     }
 
     /**
@@ -117,6 +154,36 @@ public class NazionalitaView extends WikiView {
         final String textSearchPlurale = searchFieldPlurale != null ? searchFieldPlurale.getValue() : VUOTA;
         if (textService.isValid(textSearchPlurale)) {
             items = items.stream().filter(naz -> naz.plurale.matches("^(?i)" + textSearchPlurale + ".*$")).toList();
+        }
+
+        if (boxBoxPagina != null && !boxBoxPagina.isIndeterminate()) {
+            items = items.stream().filter(att -> att.pagina == boxBoxPagina.getValue()).toList();
+            if (boxBoxPagina.getValue()) {
+                sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+            }
+            else {
+                sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+            }
+        }
+
+        if (items != null) {
+            grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
+        }
+    }
+
+    protected void sincroPlurali() {
+        List<Nazionalita> items = null;
+
+        if (boxDistinctPlurali != null) {
+            if (boxDistinctPlurali.getValue()) {
+                items = backend.findNazionalitaDistinctByPlurali();
+            }
+            else {
+                sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+                items = backend.findAll(sortOrder);
+            }
         }
 
         if (items != null) {
@@ -152,6 +219,11 @@ public class NazionalitaView extends WikiView {
         wikiApiService.openWikiPage(path + attivitaText);
 
         return null;
+    }
+
+    public void updateItem(AEntity entityBean) {
+        dialog = appContext.getBean(NazionalitaDialog.class, entityBean, CrudOperation.READ, crudBackend, formPropertyNamesList);
+        dialog.open(this::saveHandler, this::annullaHandler);
     }
 
 }// end of crud @Route view class

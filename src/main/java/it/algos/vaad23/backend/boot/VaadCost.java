@@ -180,6 +180,7 @@ public class VaadCost {
     public static final String ROUTE_NAME_GENERIC_FORM = "form";
 
     public static final String SWITCH = "Switch - caso non previsto";
+    public static final String VIRGOLA_SPAZIO = VIRGOLA + SPAZIO;
 
     public static final String SWITCH_FUTURO = "Switch - caso ancora da implementare";
 

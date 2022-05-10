@@ -92,264 +92,262 @@ public class WikiBotService extends WAbstractService {
     public JSonService jSonService;
 
     //    /**
-//     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-//     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-//     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-//     */
-//    @Autowired
-//    public BioUtility utility;
-//
-//    /**
-//     * Istanza di una interfaccia <br>
-//     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
-//     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-//     */
-//    @Autowired
-//    public BotLogin login;
+    //     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+    //     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+    //     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+    //     */
+    //    @Autowired
+    //    public BioUtility utility;
+    //
+    //    /**
+    //     * Istanza di una interfaccia <br>
+    //     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+    //     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+    //     */
+    //    @Autowired
+    //    public BotLogin login;
 
-//    /**
-//     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
-//     */
-//    protected Predicate<MiniWrap> checkNuovi = wrap -> {
-//        try {
-//            return ((MongoService) mongo).isNotEsiste(Bio.class, wrap.getPageid());
-//        } catch (AlgosException unErrore) {
-//            logger.warn(unErrore, this.getClass(), "checkNuovi");
-//            return false;
-//        }
-//    };
+    //    /**
+    //     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
+    //     */
+    //    protected Predicate<MiniWrap> checkNuovi = wrap -> {
+    //        try {
+    //            return ((MongoService) mongo).isNotEsiste(Bio.class, wrap.getPageid());
+    //        } catch (AlgosException unErrore) {
+    //            logger.warn(unErrore, this.getClass(), "checkNuovi");
+    //            return false;
+    //        }
+    //    };
 
-//    /**
-//     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
-//     */
-//    protected Predicate<MiniWrap> checkEsistenti = wrap -> {
-//        try {
-//            return ((MongoService) mongo).isEsiste(Bio.class, wrap.getPageid());
-//        } catch (AlgosException unErrore) {
-//            logger.warn(unErrore, this.getClass(), "checkEsistenti");
-//        }
-//        return false;
-//    };
+    //    /**
+    //     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
+    //     */
+    //    protected Predicate<MiniWrap> checkEsistenti = wrap -> {
+    //        try {
+    //            return ((MongoService) mongo).isEsiste(Bio.class, wrap.getPageid());
+    //        } catch (AlgosException unErrore) {
+    //            logger.warn(unErrore, this.getClass(), "checkEsistenti");
+    //        }
+    //        return false;
+    //    };
 
-//    /**
-//     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
-//     */
-//    protected Predicate<MiniWrap> checkModificati = wrap -> {
-//        LocalDateTime wrapTime = wrap.getLastModifica();
-//        String key = wrap.getPageid() + VUOTA;
-//        Bio bio = null;
-//        try {
-//            bio = (Bio) mongo.find(Bio.class, key);
-//        } catch (AlgosException unErrore) {
-//            logger.warn(unErrore, this.getClass(), "checkModificati");
-//        }
-//        LocalDateTime mongoTime = bio != null ? bio.getLastMongo() : MONGO_TIME_ORIGIN;
-//
-//        return wrapTime.isAfter(mongoTime);
-//    };
+    //    /**
+    //     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
+    //     */
+    //    protected Predicate<MiniWrap> checkModificati = wrap -> {
+    //        LocalDateTime wrapTime = wrap.getLastModifica();
+    //        String key = wrap.getPageid() + VUOTA;
+    //        Bio bio = null;
+    //        try {
+    //            bio = (Bio) mongo.find(Bio.class, key);
+    //        } catch (AlgosException unErrore) {
+    //            logger.warn(unErrore, this.getClass(), "checkModificati");
+    //        }
+    //        LocalDateTime mongoTime = bio != null ? bio.getLastMongo() : MONGO_TIME_ORIGIN;
+    //
+    //        return wrapTime.isAfter(mongoTime);
+    //    };
 
+    //    /**
+    //     * Legge (come user) una pagina dal server wiki <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest title, pageid, timestamp e tmpl <br>
+    //     * Estrae il wikitext in linguaggio wiki visibile <br>
+    //     *
+    //     * @param wikiTitleGrezzo della pagina wiki
+    //     *
+    //     * @return wrapper con template (visibile) della pagina wiki
+    //     */
+    //    public WrapPage leggePage(final String wikiTitleGrezzo) {
+    //        return this.leggePage(wikiTitleGrezzo, TAG_BIO);
+    //    }
 
-//    /**
-//     * Legge (come user) una pagina dal server wiki <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest title, pageid, timestamp e tmpl <br>
-//     * Estrae il wikitext in linguaggio wiki visibile <br>
-//     *
-//     * @param wikiTitleGrezzo della pagina wiki
-//     *
-//     * @return wrapper con template (visibile) della pagina wiki
-//     */
-//    public WrapPage leggePage(final String wikiTitleGrezzo) {
-//        return this.leggePage(wikiTitleGrezzo, TAG_BIO);
-//    }
+    //    /**
+    //     * Legge (come user) una serie pagina dal server wiki <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest title, pageid, timestamp e wikitext <br>
+    //     * Estrae il wikitext in linguaggio wiki visibile <br>
+    //     *
+    //     * @param listaPageIdsDaLeggere sul server
+    //     *
+    //     * @return lista di wrapper con testo completo (visibile) della pagina wiki
+    //     */
+    //    public List<WrapPage> leggePages(List<Long> listaPageIdsDaLeggere) {
+    //        return leggePages(array.toStringaPipe(listaPageIdsDaLeggere));
+    //    }
 
+    //    /**
+    //     * Legge (come user) una serie pagina dal server wiki <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest title, pageid, timestamp e wikitext <br>
+    //     * Estrae il wikitext in linguaggio wiki visibile <br>
+    //     *
+    //     * @param pageIds stringa dei pageIds delle pagine wiki da leggere
+    //     *
+    //     * @return lista di wrapper con testo completo (visibile) della pagina wiki
+    //     */
+    //    public List<WrapPage> leggePages(String pageIds) {
+    //        long inizio = System.currentTimeMillis();
+    //
+    //        List<WrapPage> listaWrapPage = this.leggePages(pageIds, TAG_BIO);
+    //        if (listaWrapPage != null) {
+    //            if (listaWrapPage.size() > 0) {
+    //                logger.info(AETypeLog.bio, String.format("Recupera una lista di %d wrapPage valide (con tmplBio) in %s", listaWrapPage.size(), date.deltaTextEsatto(inizio)));
+    //            }
+    //            else {
+    //                logger.info(AETypeLog.bio, "Non ci sono wrapPages valide (con tmplBio) da leggere");
+    //            }
+    //        }
+    //        return listaWrapPage;
+    //    }
 
-//    /**
-//     * Legge (come user) una serie pagina dal server wiki <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest title, pageid, timestamp e wikitext <br>
-//     * Estrae il wikitext in linguaggio wiki visibile <br>
-//     *
-//     * @param listaPageIdsDaLeggere sul server
-//     *
-//     * @return lista di wrapper con testo completo (visibile) della pagina wiki
-//     */
-//    public List<WrapPage> leggePages(List<Long> listaPageIdsDaLeggere) {
-//        return leggePages(array.toStringaPipe(listaPageIdsDaLeggere));
-//    }
+    //    /**
+    //     * Recupera (come user) 'lastModifica' di una serie di pageid <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest  pageid e timestamp <br>
+    //     *
+    //     * @param categoryTitle da recuperare
+    //     *
+    //     * @return lista di MiniWrap con 'pageid' e 'lastModifica'
+    //     */
+    //    public List<MiniWrap> getMiniWrap(final String categoryTitle) {
+    //        List<Long> listaPageids = this.getLongCat(categoryTitle, AETypeUser.anonymous);
+    //        return getMiniWrap(categoryTitle, listaPageids);
+    //    }
 
-//    /**
-//     * Legge (come user) una serie pagina dal server wiki <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest title, pageid, timestamp e wikitext <br>
-//     * Estrae il wikitext in linguaggio wiki visibile <br>
-//     *
-//     * @param pageIds stringa dei pageIds delle pagine wiki da leggere
-//     *
-//     * @return lista di wrapper con testo completo (visibile) della pagina wiki
-//     */
-//    public List<WrapPage> leggePages(String pageIds) {
-//        long inizio = System.currentTimeMillis();
-//
-//        List<WrapPage> listaWrapPage = this.leggePages(pageIds, TAG_BIO);
-//        if (listaWrapPage != null) {
-//            if (listaWrapPage.size() > 0) {
-//                logger.info(AETypeLog.bio, String.format("Recupera una lista di %d wrapPage valide (con tmplBio) in %s", listaWrapPage.size(), date.deltaTextEsatto(inizio)));
-//            }
-//            else {
-//                logger.info(AETypeLog.bio, "Non ci sono wrapPages valide (con tmplBio) da leggere");
-//            }
-//        }
-//        return listaWrapPage;
-//    }
+    //    /**
+    //     * Recupera (come user) 'lastModifica' di una serie di pageid <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest  pageid e timestamp <br>
+    //     *
+    //     * @param catTitle da recuperare
+    //     *
+    //     * @return lista di MiniWrap con 'pageid' e 'lastModifica'
+    //     */
+    //    public List<MiniWrap> getMiniWrap(final String catTitle, final List<Long> listaPageids) {
+    //        List<MiniWrap> wraps = new ArrayList<>();
+    //        long inizio = System.currentTimeMillis();
+    //        int limit = LIMIT_USER;
+    //        limit = 500;
+    //        int dimLista = listaPageids.size();
+    //        int cicli = (dimLista / limit) + 1;
+    //        String strisciaIds = VUOTA;
+    //        int ini = 0;
+    //        int end = 0;
+    //
+    //        for (int k = 0; k < cicli; k++) {
+    //            ini = k * limit;
+    //            end = ((k + 1) * limit);
+    //            end = Math.min(end, dimLista);
+    //            strisciaIds = array.toStringaPipe(listaPageids.subList(ini, end));
+    //            wraps.addAll(fixPages(strisciaIds));
+    //        }
+    //
+    //        logger.info(AETypeLog.bio, String.format("La categoria [%s] ha %s miniWrap letti con %s cicli di %d in %s", catTitle, text.format(wraps.size()), cicli, limit, date.deltaTextEsatto(inizio)));
+    //
+    //        return wraps;
+    //    }
 
-//    /**
-//     * Recupera (come user) 'lastModifica' di una serie di pageid <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest  pageid e timestamp <br>
-//     *
-//     * @param categoryTitle da recuperare
-//     *
-//     * @return lista di MiniWrap con 'pageid' e 'lastModifica'
-//     */
-//    public List<MiniWrap> getMiniWrap(final String categoryTitle) {
-//        List<Long> listaPageids = this.getLongCat(categoryTitle, AETypeUser.anonymous);
-//        return getMiniWrap(categoryTitle, listaPageids);
-//    }
+    //    /**
+    //     * Recupera (come user) 'lastModifica' di una serie di pageid <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest  pageid e timestamp <br>
+    //     * Non devono arrivare più di 50 pageid <br>
+    //     *
+    //     * @param pageIds stringa dei pageIds delle pagine wiki da controllare
+    //     *
+    //     * @return lista di MiniWrap con 'pageid' e 'lastModifica'
+    //     */
+    //    public List<MiniWrap> fixPages(final String pageIds) {
+    //        List<MiniWrap> wraps = new ArrayList<>();
+    //        String webUrl;
+    //        AIResult result;
+    //        String rispostaAPI;
+    //
+    //        if (text.isEmpty(pageIds)) {
+    //            return wraps;
+    //        }
+    //
+    //        //        if (pageIds.split(PIPE_REGEX).length > LIMIT_USER) {
+    //        //            return null;
+    //        //        }
+    //
+    //        webUrl = WIKI_QUERY_TIMESTAMP + pageIds;
+    //        result = web.legge(webUrl);
+    //        rispostaAPI = result.getResponse();
+    //
+    //        JSONArray jsonPages = jSonService.getArrayPagine(rispostaAPI);
+    //        if (jsonPages != null) {
+    //            for (Object obj : jsonPages) {
+    //                wraps.add(creaPage((JSONObject) obj));
+    //            }
+    //        }
+    //        return wraps;
+    //    }
 
-//    /**
-//     * Recupera (come user) 'lastModifica' di una serie di pageid <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest  pageid e timestamp <br>
-//     *
-//     * @param catTitle da recuperare
-//     *
-//     * @return lista di MiniWrap con 'pageid' e 'lastModifica'
-//     */
-//    public List<MiniWrap> getMiniWrap(final String catTitle, final List<Long> listaPageids) {
-//        List<MiniWrap> wraps = new ArrayList<>();
-//        long inizio = System.currentTimeMillis();
-//        int limit = LIMIT_USER;
-//        limit = 500;
-//        int dimLista = listaPageids.size();
-//        int cicli = (dimLista / limit) + 1;
-//        String strisciaIds = VUOTA;
-//        int ini = 0;
-//        int end = 0;
-//
-//        for (int k = 0; k < cicli; k++) {
-//            ini = k * limit;
-//            end = ((k + 1) * limit);
-//            end = Math.min(end, dimLista);
-//            strisciaIds = array.toStringaPipe(listaPageids.subList(ini, end));
-//            wraps.addAll(fixPages(strisciaIds));
-//        }
-//
-//        logger.info(AETypeLog.bio, String.format("La categoria [%s] ha %s miniWrap letti con %s cicli di %d in %s", catTitle, text.format(wraps.size()), cicli, limit, date.deltaTextEsatto(inizio)));
-//
-//        return wraps;
-//    }
+    //    public MiniWrap creaPage(final JSONObject jsonPage) {
+    //        long pageid;
+    //        String stringTimestamp;
+    //
+    //        if (jsonPage.get(KEY_JSON_MISSING) != null && (boolean) jsonPage.get(KEY_JSON_MISSING)) {
+    //            return null;
+    //        }
+    //
+    //        pageid = (long) jsonPage.get(KEY_JSON_PAGE_ID);
+    //        JSONArray jsonRevisions = (JSONArray) jsonPage.get(KEY_JSON_REVISIONS);
+    //        JSONObject jsonRevZero = (JSONObject) jsonRevisions.get(0);
+    //        stringTimestamp = (String) jsonRevZero.get(KEY_JSON_TIMESTAMP);
+    //
+    //        return new MiniWrap(pageid, stringTimestamp);
+    //    }
 
-//    /**
-//     * Recupera (come user) 'lastModifica' di una serie di pageid <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest  pageid e timestamp <br>
-//     * Non devono arrivare più di 50 pageid <br>
-//     *
-//     * @param pageIds stringa dei pageIds delle pagine wiki da controllare
-//     *
-//     * @return lista di MiniWrap con 'pageid' e 'lastModifica'
-//     */
-//    public List<MiniWrap> fixPages(final String pageIds) {
-//        List<MiniWrap> wraps = new ArrayList<>();
-//        String webUrl;
-//        AIResult result;
-//        String rispostaAPI;
-//
-//        if (text.isEmpty(pageIds)) {
-//            return wraps;
-//        }
-//
-//        //        if (pageIds.split(PIPE_REGEX).length > LIMIT_USER) {
-//        //            return null;
-//        //        }
-//
-//        webUrl = WIKI_QUERY_TIMESTAMP + pageIds;
-//        result = web.legge(webUrl);
-//        rispostaAPI = result.getResponse();
-//
-//        JSONArray jsonPages = jSonService.getArrayPagine(rispostaAPI);
-//        if (jsonPages != null) {
-//            for (Object obj : jsonPages) {
-//                wraps.add(creaPage((JSONObject) obj));
-//            }
-//        }
-//        return wraps;
-//    }
-
-//    public MiniWrap creaPage(final JSONObject jsonPage) {
-//        long pageid;
-//        String stringTimestamp;
-//
-//        if (jsonPage.get(KEY_JSON_MISSING) != null && (boolean) jsonPage.get(KEY_JSON_MISSING)) {
-//            return null;
-//        }
-//
-//        pageid = (long) jsonPage.get(KEY_JSON_PAGE_ID);
-//        JSONArray jsonRevisions = (JSONArray) jsonPage.get(KEY_JSON_REVISIONS);
-//        JSONObject jsonRevZero = (JSONObject) jsonRevisions.get(0);
-//        stringTimestamp = (String) jsonRevZero.get(KEY_JSON_TIMESTAMP);
-//
-//        return new MiniWrap(pageid, stringTimestamp);
-//    }
-
-//    /**
-//     * Elabora la lista di MiniWrap e costruisce una lista di pageIds da leggere <br>
-//     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
-//     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
-//     *
-//     * @param listaMiniWrap da elaborare
-//     *
-//     * @return lista di pageId da leggere dal server
-//     */
-//    public List<Long> elaboraMiniWrap(final List<MiniWrap> listaMiniWrap) {
-//        List<Long> listaPageIdsDaLeggere = new ArrayList<>();
-//        List<MiniWrap> listaMiniWrapTotali = new ArrayList<>();
-//        long inizio = System.currentTimeMillis();
-//        int nuove;
-//        int modificate;
-//        int totali;
-//        String message = VUOTA;
-//
-//        //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
-//        List<MiniWrap> listaMiniWrapNuovi = listaMiniWrap
-//                .stream()
-//                .filter(checkNuovi)
-//                .sorted()
-//                .collect(Collectors.toList());
-//        nuove = listaMiniWrapNuovi.size();
-//        listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
-//
-//        //--Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica
-//        List<MiniWrap> listaMiniWrapModificati = listaMiniWrap
-//                .stream()
-//                .filter(checkEsistenti)
-//                .filter(checkModificati)
-//                .sorted()
-//                .collect(Collectors.toList());
-//        modificate = listaMiniWrapModificati.size();
-//        listaMiniWrapTotali.addAll(listaMiniWrapModificati);
-//        totali = nuove + modificate;
-//
-//        for (MiniWrap wrap : listaMiniWrapTotali) {
-//            listaPageIdsDaLeggere.add(wrap.getPageid());
-//        }
-//
-//        message = String.format("Elaborata una lista di miniWrap da leggere: %s nuove e %s modificate (%s totali) in %s", text.format(nuove), text.format(modificate), text.format(totali), date.deltaText(inizio));
-//        logger.info(AETypeLog.bio, message);
-//
-//        return listaPageIdsDaLeggere;
-//    }
+    //    /**
+    //     * Elabora la lista di MiniWrap e costruisce una lista di pageIds da leggere <br>
+    //     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
+    //     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
+    //     *
+    //     * @param listaMiniWrap da elaborare
+    //     *
+    //     * @return lista di pageId da leggere dal server
+    //     */
+    //    public List<Long> elaboraMiniWrap(final List<MiniWrap> listaMiniWrap) {
+    //        List<Long> listaPageIdsDaLeggere = new ArrayList<>();
+    //        List<MiniWrap> listaMiniWrapTotali = new ArrayList<>();
+    //        long inizio = System.currentTimeMillis();
+    //        int nuove;
+    //        int modificate;
+    //        int totali;
+    //        String message = VUOTA;
+    //
+    //        //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
+    //        List<MiniWrap> listaMiniWrapNuovi = listaMiniWrap
+    //                .stream()
+    //                .filter(checkNuovi)
+    //                .sorted()
+    //                .collect(Collectors.toList());
+    //        nuove = listaMiniWrapNuovi.size();
+    //        listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
+    //
+    //        //--Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica
+    //        List<MiniWrap> listaMiniWrapModificati = listaMiniWrap
+    //                .stream()
+    //                .filter(checkEsistenti)
+    //                .filter(checkModificati)
+    //                .sorted()
+    //                .collect(Collectors.toList());
+    //        modificate = listaMiniWrapModificati.size();
+    //        listaMiniWrapTotali.addAll(listaMiniWrapModificati);
+    //        totali = nuove + modificate;
+    //
+    //        for (MiniWrap wrap : listaMiniWrapTotali) {
+    //            listaPageIdsDaLeggere.add(wrap.getPageid());
+    //        }
+    //
+    //        message = String.format("Elaborata una lista di miniWrap da leggere: %s nuove e %s modificate (%s totali) in %s", text.format(nuove), text.format(modificate), text.format(totali), date.deltaText(inizio));
+    //        logger.info(AETypeLog.bio, message);
+    //
+    //        return listaPageIdsDaLeggere;
+    //    }
 
     /**
      * Legge il testo del template Bio da una voce <br>
@@ -493,63 +491,63 @@ public class WikiBotService extends WAbstractService {
         int posUgu;
         int posEnd;
 
-//        if (tmplBioServer != null && !tmplBioServer.equals("")) {
-//            mappa = new LinkedHashMap();
-//            for (ParBio par : ParBio.values()) {
-//                if (par == ParBio.titolo) {
-//                    continue;
-//                }
-//                valore = par.getTag();
-//
-//                try { // prova ad eseguire il codice
-//                    pos = text.getPosFirstTag(tmplBioServer, valore);
-//                } catch (Exception unErrore) { // intercetta l'errore
-//                    int a = 87;
-//                }
-//                if (pos > 0) {
-//                    mappaTmp.put(pos, valore);
-//                }
-//            }
-//
-//            Object[] matrice = mappaTmp.keySet().toArray();
-//            Arrays.sort(matrice);
-//            ArrayList<Object> lista = new ArrayList<Object>();
-//            for (Object lungo : matrice) {
-//                lista.add(lungo);
-//            }
-//
-//            for (int k = 1; k <= lista.size(); k++) {
-//                chiave = mappaTmp.get(lista.get(k - 1));
-//
-//                try { // prova ad eseguire il codice
-//                    if (k < lista.size()) {
-//                        posEnd = (Integer) lista.get(k);
-//                    }
-//                    else {
-//                        posEnd = tmplBioServer.length();
-//                    }
-//                    valore = tmplBioServer.substring((Integer) lista.get(k - 1), posEnd);
-//                } catch (Exception unErrore) { // intercetta l'errore
-//                    int c = 76;
-//                }
-//                if (!valore.equals(VUOTA)) {
-//                    valore = valore.trim();
-//                    posUgu = valore.indexOf(uguale);
-//                    if (posUgu != -1) {
-//                        posUgu += uguale.length();
-//                        valore = valore.substring(posUgu).trim();
-//                    }
-//                    valore = regValore(valore);
-//                    if (!text.isPariTag(valore, DOPPIE_GRAFFE_INI, DOPPIE_GRAFFE_END)) {
-//                        valore = regGraffe(valore);
-//                    }
-//                    valore = regACapo(valore);
-//                    valore = regBreakSpace(valore);
-//                    valore = valore.trim();
-//                    mappa.put(chiave, valore);
-//                }
-//            }
-//        }
+        //        if (tmplBioServer != null && !tmplBioServer.equals("")) {
+        //            mappa = new LinkedHashMap();
+        //            for (ParBio par : ParBio.values()) {
+        //                if (par == ParBio.titolo) {
+        //                    continue;
+        //                }
+        //                valore = par.getTag();
+        //
+        //                try { // prova ad eseguire il codice
+        //                    pos = text.getPosFirstTag(tmplBioServer, valore);
+        //                } catch (Exception unErrore) { // intercetta l'errore
+        //                    int a = 87;
+        //                }
+        //                if (pos > 0) {
+        //                    mappaTmp.put(pos, valore);
+        //                }
+        //            }
+        //
+        //            Object[] matrice = mappaTmp.keySet().toArray();
+        //            Arrays.sort(matrice);
+        //            ArrayList<Object> lista = new ArrayList<Object>();
+        //            for (Object lungo : matrice) {
+        //                lista.add(lungo);
+        //            }
+        //
+        //            for (int k = 1; k <= lista.size(); k++) {
+        //                chiave = mappaTmp.get(lista.get(k - 1));
+        //
+        //                try { // prova ad eseguire il codice
+        //                    if (k < lista.size()) {
+        //                        posEnd = (Integer) lista.get(k);
+        //                    }
+        //                    else {
+        //                        posEnd = tmplBioServer.length();
+        //                    }
+        //                    valore = tmplBioServer.substring((Integer) lista.get(k - 1), posEnd);
+        //                } catch (Exception unErrore) { // intercetta l'errore
+        //                    int c = 76;
+        //                }
+        //                if (!valore.equals(VUOTA)) {
+        //                    valore = valore.trim();
+        //                    posUgu = valore.indexOf(uguale);
+        //                    if (posUgu != -1) {
+        //                        posUgu += uguale.length();
+        //                        valore = valore.substring(posUgu).trim();
+        //                    }
+        //                    valore = regValore(valore);
+        //                    if (!text.isPariTag(valore, DOPPIE_GRAFFE_INI, DOPPIE_GRAFFE_END)) {
+        //                        valore = regGraffe(valore);
+        //                    }
+        //                    valore = regACapo(valore);
+        //                    valore = regBreakSpace(valore);
+        //                    valore = valore.trim();
+        //                    mappa.put(chiave, valore);
+        //                }
+        //            }
+        //        }
 
         return mappa;
     }
@@ -655,16 +653,16 @@ public class WikiBotService extends WAbstractService {
             valoreOut = valoreOut.replace(doppioACapo, CAPO);
         }
 
-//        if (!valoreIn.equals(VUOTA) && valoreIn.contains(pipeACapo)) {
-//            mappaGraffe = utility.checkGraffe(valoreIn);
-//
-//            if (mappaGraffe.containsKey(KEY_MAP_GRAFFE_ESISTONO)) {
-//            }
-//            else {
-//                pos = valoreIn.indexOf(pipeACapo);
-//                valoreOut = valoreIn.substring(0, pos);
-//            }
-//        }
+        //        if (!valoreIn.equals(VUOTA) && valoreIn.contains(pipeACapo)) {
+        //            mappaGraffe = utility.checkGraffe(valoreIn);
+        //
+        //            if (mappaGraffe.containsKey(KEY_MAP_GRAFFE_ESISTONO)) {
+        //            }
+        //            else {
+        //                pos = valoreIn.indexOf(pipeACapo);
+        //                valoreOut = valoreIn.substring(0, pos);
+        //            }
+        //        }
 
         return valoreOut.trim();
     }
@@ -837,89 +835,88 @@ public class WikiBotService extends WAbstractService {
         }
 
         //--solo date certe ed esatte
-//        if (valoreGrezzo.contains(CIRCA)) {
-//            return VUOTA;
-//        }
+        //        if (valoreGrezzo.contains(CIRCA)) {
+        //            return VUOTA;
+        //        }
 
         if (valorePropertyTmplBioServer.equals(PUNTO_INTERROGATIVO) && puntoAmmesso) {
             return PUNTO_INTERROGATIVO;
         }
 
-//        valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
-//        valoreGrezzo = textService.levaDopoRef(valoreGrezzo);
-//        valoreGrezzo = textService.levaDopoNote(valoreGrezzo);
-//        valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
-//        valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
-//        valoreGrezzo = textService.levaDopoUguale(valoreGrezzo);
-//        //        valoreGrezzo = text.levaDopoCirca(valoreGrezzo);
-//        valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
-//        valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
+        //        valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
+        //        valoreGrezzo = textService.levaDopoRef(valoreGrezzo);
+        //        valoreGrezzo = textService.levaDopoNote(valoreGrezzo);
+        //        valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
+        //        valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
+        //        valoreGrezzo = textService.levaDopoUguale(valoreGrezzo);
+        //        //        valoreGrezzo = text.levaDopoCirca(valoreGrezzo);
+        //        valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
+        //        valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
 
         return valoreGrezzo.trim();
     }
-//
-//    /**
-//     * Legge (come user) una serie pagina dal server wiki <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest title, pageid, timestamp e wikitext <br>
-//     * Estrae il wikitext in linguaggio wiki visibile <br>
-//     *
-//     * @param pageIds della pagina wiki
-//     *
-//     * @return wrapper con testo completo (visibile) della pagina wiki
-//     */
-//    public List<WrapPage> leggePages(String pageIds, String tagTemplate) {
-//        List<WrapPage> wraps = null;
-//        pageIds = wikiApi.fixWikiTitle(pageIds);
-//        String webUrl = WIKI_QUERY_PAGEIDS + pageIds;
-//        String rispostaAPI = web.legge(webUrl).getResponse();
-//        WrapPage wrap = null;
-//
-//        JSONArray jsonPages = jSonService.getArrayPagine(rispostaAPI);
-//        if (jsonPages != null) {
-//            wraps = new ArrayList<>();
-//            for (Object obj : jsonPages) {
-//                wrap = creaPage(webUrl, (JSONObject) obj, tagTemplate);
-//                if (wrap.isValida()) {
-//                    wraps.add(wrap);
-//                }
-//            }
-//        }
-//
-//        return wraps;
-//    }
-//
-//    /**
-//     * Legge (come user) una pagina dal server wiki <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest title, pageid, timestamp e tmpl <br>
-//     * Estrae il wikitext in linguaggio wiki visibile <br>
-//     *
-//     * @param wikiTitleGrezzo della pagina wiki
-//     *
-//     * @return wrapper con template (visibile) della pagina wiki
-//     */
-//    public WrapPage leggePage(final String wikiTitleGrezzo, String tagTemplate) {
-//        String webUrl = webUrlQueryTitles(wikiTitleGrezzo);
-//        return creaPage(webUrl, tagTemplate);
-//    }
+    //
+    //    /**
+    //     * Legge (come user) una serie pagina dal server wiki <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest title, pageid, timestamp e wikitext <br>
+    //     * Estrae il wikitext in linguaggio wiki visibile <br>
+    //     *
+    //     * @param pageIds della pagina wiki
+    //     *
+    //     * @return wrapper con testo completo (visibile) della pagina wiki
+    //     */
+    //    public List<WrapPage> leggePages(String pageIds, String tagTemplate) {
+    //        List<WrapPage> wraps = null;
+    //        pageIds = wikiApi.fixWikiTitle(pageIds);
+    //        String webUrl = WIKI_QUERY_PAGEIDS + pageIds;
+    //        String rispostaAPI = web.legge(webUrl).getResponse();
+    //        WrapPage wrap = null;
+    //
+    //        JSONArray jsonPages = jSonService.getArrayPagine(rispostaAPI);
+    //        if (jsonPages != null) {
+    //            wraps = new ArrayList<>();
+    //            for (Object obj : jsonPages) {
+    //                wrap = creaPage(webUrl, (JSONObject) obj, tagTemplate);
+    //                if (wrap.isValida()) {
+    //                    wraps.add(wrap);
+    //                }
+    //            }
+    //        }
+    //
+    //        return wraps;
+    //    }
+    //
+    //    /**
+    //     * Legge (come user) una pagina dal server wiki <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest title, pageid, timestamp e tmpl <br>
+    //     * Estrae il wikitext in linguaggio wiki visibile <br>
+    //     *
+    //     * @param wikiTitleGrezzo della pagina wiki
+    //     *
+    //     * @return wrapper con template (visibile) della pagina wiki
+    //     */
+    //    public WrapPage leggePage(final String wikiTitleGrezzo, String tagTemplate) {
+    //        String webUrl = webUrlQueryTitles(wikiTitleGrezzo);
+    //        return creaPage(webUrl, tagTemplate);
+    //    }
 
-
-//    /**
-//     * Legge (come user) una pagina dal server wiki <br>
-//     * Usa una API con action=query SENZA bisogno di loggarsi <br>
-//     * Recupera dalla urlRequest title, pageid, timestamp e wikitext <br>
-//     * Estrae il wikitext in linguaggio wiki visibile <br>
-//     *
-//     * @param webUrl completo
-//     *
-//     * @return wrapper con testo completo (visibile) della pagina wiki
-//     */
-//    private WrapPage creaPage(final String webUrl, String tagTemplate) {
-//        String rispostaAPI = web.legge(webUrl).getResponse();
-//        JSONObject jsonPageZero = jSonService.getObjectPage(rispostaAPI);
-//        return creaPage(webUrl, jsonPageZero, tagTemplate);
-//    }
+    //    /**
+    //     * Legge (come user) una pagina dal server wiki <br>
+    //     * Usa una API con action=query SENZA bisogno di loggarsi <br>
+    //     * Recupera dalla urlRequest title, pageid, timestamp e wikitext <br>
+    //     * Estrae il wikitext in linguaggio wiki visibile <br>
+    //     *
+    //     * @param webUrl completo
+    //     *
+    //     * @return wrapper con testo completo (visibile) della pagina wiki
+    //     */
+    //    private WrapPage creaPage(final String webUrl, String tagTemplate) {
+    //        String rispostaAPI = web.legge(webUrl).getResponse();
+    //        JSONObject jsonPageZero = jSonService.getObjectPage(rispostaAPI);
+    //        return creaPage(webUrl, jsonPageZero, tagTemplate);
+    //    }
 
     //    /**
     //     * Recupera una singola page dal testo JSON di risposta ad una query <br>
@@ -977,58 +974,58 @@ public class WikiBotService extends WAbstractService {
     //        return objectQuery;
     //    }
 
-//    private WrapPage creaPage(final String webUrl, final JSONObject jsonPage, String tagTemplate) {
-//        long pageid;
-//        String title;
-//        String stringTimestamp;
-//        String content;
-//        String tmpl;
-//
-//        title = (String) jsonPage.get(KEY_JSON_TITLE);
-//
-//        if (isMissing(jsonPage)) {
-//            return new WrapPage(webUrl, title, AETypePage.nonEsiste);
-//        }
-//
-//        pageid = (long) jsonPage.get(KEY_JSON_PAGE_ID);
-//        JSONArray jsonRevisions = (JSONArray) jsonPage.get(KEY_JSON_REVISIONS);
-//        JSONObject jsonRevZero = (JSONObject) jsonRevisions.get(0);
-//        stringTimestamp = (String) jsonRevZero.get(KEY_JSON_TIMESTAMP);
-//        JSONObject jsonSlots = (JSONObject) jsonRevZero.get(KEY_JSON_SLOTS);
-//        JSONObject jsonMain = (JSONObject) jsonSlots.get(KEY_JSON_MAIN);
-//        content = (String) jsonMain.get(KEY_JSON_CONTENT);
-//
-//        //--la pagina esiste ma il content no
-//        if (text.isEmpty(content)) {
-//            return new WrapPage(webUrl, pageid, title, VUOTA, stringTimestamp, AETypePage.testoVuoto);
-//        }
-//
-//        //--contenuto inizia col tag della disambigua
-//        if (content.startsWith(TAG_DISAMBIGUA_UNO) || content.startsWith(TAG_DISAMBIGUA_DUE)) {
-//            return new WrapPage(webUrl, title, AETypePage.disambigua);
-//        }
-//
-//        //--contenuto inizia col tag del redirect
-//        if (content.startsWith(TAG_REDIRECT_UNO) || content.startsWith(TAG_REDIRECT_DUE) || content.startsWith(TAG_REDIRECT_TRE) || content.startsWith(TAG_REDIRECT_QUATTRO)) {
-//            return new WrapPage(webUrl, title, AETypePage.redirect);
-//        }
-//
-//        //--flag per la ricerca o meno del template
-//        if (text.isValid(tagTemplate)) {
-//            //--prova ad estrarre il template
-//            //            tmpl = wikiApi.estraeTmpl(content, tagTemplate);//@todo RIMETTERE
-//            tmpl = "pippoz";
-//            if (text.isValid(tmpl)) {
-//                return new WrapPage(webUrl, pageid, title, tmpl, stringTimestamp, AETypePage.testoConTmpl);
-//            }
-//            else {
-//                return new WrapPage(webUrl, pageid, title, content, stringTimestamp, AETypePage.mancaTmpl);
-//            }
-//        }
-//        else {
-//            return new WrapPage(webUrl, pageid, title, content, stringTimestamp, AETypePage.testoSenzaTmpl);
-//        }
-//    }
+    //    private WrapPage creaPage(final String webUrl, final JSONObject jsonPage, String tagTemplate) {
+    //        long pageid;
+    //        String title;
+    //        String stringTimestamp;
+    //        String content;
+    //        String tmpl;
+    //
+    //        title = (String) jsonPage.get(KEY_JSON_TITLE);
+    //
+    //        if (isMissing(jsonPage)) {
+    //            return new WrapPage(webUrl, title, AETypePage.nonEsiste);
+    //        }
+    //
+    //        pageid = (long) jsonPage.get(KEY_JSON_PAGE_ID);
+    //        JSONArray jsonRevisions = (JSONArray) jsonPage.get(KEY_JSON_REVISIONS);
+    //        JSONObject jsonRevZero = (JSONObject) jsonRevisions.get(0);
+    //        stringTimestamp = (String) jsonRevZero.get(KEY_JSON_TIMESTAMP);
+    //        JSONObject jsonSlots = (JSONObject) jsonRevZero.get(KEY_JSON_SLOTS);
+    //        JSONObject jsonMain = (JSONObject) jsonSlots.get(KEY_JSON_MAIN);
+    //        content = (String) jsonMain.get(KEY_JSON_CONTENT);
+    //
+    //        //--la pagina esiste ma il content no
+    //        if (text.isEmpty(content)) {
+    //            return new WrapPage(webUrl, pageid, title, VUOTA, stringTimestamp, AETypePage.testoVuoto);
+    //        }
+    //
+    //        //--contenuto inizia col tag della disambigua
+    //        if (content.startsWith(TAG_DISAMBIGUA_UNO) || content.startsWith(TAG_DISAMBIGUA_DUE)) {
+    //            return new WrapPage(webUrl, title, AETypePage.disambigua);
+    //        }
+    //
+    //        //--contenuto inizia col tag del redirect
+    //        if (content.startsWith(TAG_REDIRECT_UNO) || content.startsWith(TAG_REDIRECT_DUE) || content.startsWith(TAG_REDIRECT_TRE) || content.startsWith(TAG_REDIRECT_QUATTRO)) {
+    //            return new WrapPage(webUrl, title, AETypePage.redirect);
+    //        }
+    //
+    //        //--flag per la ricerca o meno del template
+    //        if (text.isValid(tagTemplate)) {
+    //            //--prova ad estrarre il template
+    //            //            tmpl = wikiApi.estraeTmpl(content, tagTemplate);//@todo RIMETTERE
+    //            tmpl = "pippoz";
+    //            if (text.isValid(tmpl)) {
+    //                return new WrapPage(webUrl, pageid, title, tmpl, stringTimestamp, AETypePage.testoConTmpl);
+    //            }
+    //            else {
+    //                return new WrapPage(webUrl, pageid, title, content, stringTimestamp, AETypePage.mancaTmpl);
+    //            }
+    //        }
+    //        else {
+    //            return new WrapPage(webUrl, pageid, title, content, stringTimestamp, AETypePage.testoSenzaTmpl);
+    //        }
+    //    }
 
     public boolean isMissing(final JSONObject jsonPage) {
         return jsonPage.get(KEY_JSON_MISSING) != null && (boolean) jsonPage.get(KEY_JSON_MISSING);
@@ -1058,16 +1055,16 @@ public class WikiBotService extends WAbstractService {
         return testoPagina;
     }
 
-//    public String getContent(String wikiTitle) {
-//        String textContent = VUOTA;
-//        WikiPage wikiPage = getWikiPageFromTitle(wikiTitle);
-//
-//        if (wikiPage != null) {
-//            textContent = wikiPage.getContent();
-//        }
-//
-//        return textContent;
-//    }
+    //    public String getContent(String wikiTitle) {
+    //        String textContent = VUOTA;
+    //        WikiPage wikiPage = getWikiPageFromTitle(wikiTitle);
+    //
+    //        if (wikiPage != null) {
+    //            textContent = wikiPage.getContent();
+    //        }
+    //
+    //        return textContent;
+    //    }
 
     /**
      * Recupera il contenuto testuale dal testo JSON di una singola pagina <br>
@@ -1114,43 +1111,43 @@ public class WikiBotService extends WAbstractService {
         return textContent;
     }
 
-//    public WikiPage getWikiPageFromTitle(String wikiTitle) {
-//        String rispostaDellaQuery = leggeJsonTxt(wikiTitle);
-//        JSONObject jsonPageZero = jSonService.getObjectPage(rispostaDellaQuery);
-//        Map<String, Object> mappa = jSonService.getMappaJSON(jsonPageZero);
-//
-//        return getWikiPageFromMappa(mappa);
-//    }
+    //    public WikiPage getWikiPageFromTitle(String wikiTitle) {
+    //        String rispostaDellaQuery = leggeJsonTxt(wikiTitle);
+    //        JSONObject jsonPageZero = jSonService.getObjectPage(rispostaDellaQuery);
+    //        Map<String, Object> mappa = jSonService.getMappaJSON(jsonPageZero);
+    //
+    //        return getWikiPageFromMappa(mappa);
+    //    }
 
-//    /**
-//     * Legge la risposta in formato JSON ad una query su API Mediawiki <br>
-//     * Usa le API base SENZA loggarsi <br>
-//     * Testo in linguaggio JSON non leggibile <br>
-//     *
-//     * @param wikiTitle della pagina wiki
-//     *
-//     * @return risultato col testo completo in formato JSON della pagina wiki, che può contenere più 'pages'
-//     */
-//    public String leggeJsonTxt(final String wikiTitle) {
-//        return leggeJson(wikiTitle).getResponse();
-//    }
+    //    /**
+    //     * Legge la risposta in formato JSON ad una query su API Mediawiki <br>
+    //     * Usa le API base SENZA loggarsi <br>
+    //     * Testo in linguaggio JSON non leggibile <br>
+    //     *
+    //     * @param wikiTitle della pagina wiki
+    //     *
+    //     * @return risultato col testo completo in formato JSON della pagina wiki, che può contenere più 'pages'
+    //     */
+    //    public String leggeJsonTxt(final String wikiTitle) {
+    //        return leggeJson(wikiTitle).getResponse();
+    //    }
 
-//    /**
-//     * Legge la risposta in formato JSON ad una query su API Mediawiki <br>
-//     * Usa le API base SENZA loggarsi <br>
-//     * Testo in linguaggio JSON non leggibile <br>
-//     *
-//     * @param wikiTitle della pagina wiki
-//     *
-//     * @return risultato col testo completo in formato JSON della pagina wiki, che può contenere più 'pages'
-//     */
-//    public WResult leggeJson(final String wikiTitle) {
-//        if (textService.isEmpty(wikiTitle)) {
-//            return WResult.errato("Manca il wikiTitle");
-//        }
-//
-//        return web.legge(WIKI_QUERY_TITLES + wikiTitle);
-//    }
+    //    /**
+    //     * Legge la risposta in formato JSON ad una query su API Mediawiki <br>
+    //     * Usa le API base SENZA loggarsi <br>
+    //     * Testo in linguaggio JSON non leggibile <br>
+    //     *
+    //     * @param wikiTitle della pagina wiki
+    //     *
+    //     * @return risultato col testo completo in formato JSON della pagina wiki, che può contenere più 'pages'
+    //     */
+    //    public WResult leggeJson(final String wikiTitle) {
+    //        if (textService.isEmpty(wikiTitle)) {
+    //            return WResult.errato("Manca il wikiTitle");
+    //        }
+    //
+    //        return web.legge(WIKI_QUERY_TITLES + wikiTitle);
+    //    }
 
     //    /**
     //     * Crea una mappa standard (valori reali) da una singola page JSON di una multi-pagina action=query <br>
@@ -1252,51 +1249,51 @@ public class WikiBotService extends WAbstractService {
     //        return mappaOut;
     //    }
 
-//    public WikiPage getWikiPageFromMappa(Map<String, Object> mappa) {
-//        WikiPage wiki = new WikiPage();
-//        fixMappaWiki(wiki, mappa);
-//
-//        return wiki;
-//    }
-//
-//    /**
-//     * Regola i parametri della tavola in base alla mappa letta dal server
-//     * Aggiunge le date di riferimento lettura/scrittura
-//     */
-//    public WikiPage fixMappaWiki(WikiPage wiki, Map mappa) {
-//        List<PagePar> lista = PagePar.getDB();
-//        String key;
-//        Object value;
-//
-//        for (PagePar par : lista) {
-//            key = par.toString();
-//            value = null;
-//
-//            if (mappa.get(key) != null) {
-//                value = mappa.get(key);
-//            }
-//
-//            //--controllo dei LONG che POSSONO essere anche zero
-//            if (par.getType() == PagePar.TypeField.longzero) {
-//                if (value == null) {
-//                    value = 0;
-//                }
-//            }
-//
-//            //--patch
-//            if (par == PagePar.comment) {
-//                if (value instanceof String) {
-//                    if (((String) value).startsWith("[[WP:OA|←]]")) {
-//                        value = "Nuova pagina";
-//                    }
-//                }
-//            }
-//
-//            par.setWiki(wiki, value);
-//        }
-//
-//        return wiki;
-//    }
+    //    public WikiPage getWikiPageFromMappa(Map<String, Object> mappa) {
+    //        WikiPage wiki = new WikiPage();
+    //        fixMappaWiki(wiki, mappa);
+    //
+    //        return wiki;
+    //    }
+    //
+    //    /**
+    //     * Regola i parametri della tavola in base alla mappa letta dal server
+    //     * Aggiunge le date di riferimento lettura/scrittura
+    //     */
+    //    public WikiPage fixMappaWiki(WikiPage wiki, Map mappa) {
+    //        List<PagePar> lista = PagePar.getDB();
+    //        String key;
+    //        Object value;
+    //
+    //        for (PagePar par : lista) {
+    //            key = par.toString();
+    //            value = null;
+    //
+    //            if (mappa.get(key) != null) {
+    //                value = mappa.get(key);
+    //            }
+    //
+    //            //--controllo dei LONG che POSSONO essere anche zero
+    //            if (par.getType() == PagePar.TypeField.longzero) {
+    //                if (value == null) {
+    //                    value = 0;
+    //                }
+    //            }
+    //
+    //            //--patch
+    //            if (par == PagePar.comment) {
+    //                if (value instanceof String) {
+    //                    if (((String) value).startsWith("[[WP:OA|←]]")) {
+    //                        value = "Nuova pagina";
+    //                    }
+    //                }
+    //            }
+    //
+    //            par.setWiki(wiki, value);
+    //        }
+    //
+    //        return wiki;
+    //    }
 
     /**
      * Legge (come user) una pagina dal server wiki <br>
@@ -1312,7 +1309,7 @@ public class WikiBotService extends WAbstractService {
      * @return risultato col testo completo (visibile) della pagina wiki
      */
     public WResult leggeQuery(final String wikiTitleGrezzo) {
-        WResult result=null;
+        WResult result = null;
         String webUrl;
         String rispostaDellaQuery;
         String testoValido;
@@ -1323,10 +1320,10 @@ public class WikiBotService extends WAbstractService {
 
         webUrl = webUrlQuery(wikiTitleGrezzo);
         if (textService.isValid(webUrl)) {
-//            result = webService.legge(webUrl);
-//            rispostaDellaQuery = result.getResponse();
-//            testoValido = estraeTestoPaginaWiki(rispostaDellaQuery);
-//            result.setResponse(testoValido);
+            //            result = webService.legge(webUrl);
+            //            rispostaDellaQuery = result.getResponse();
+            //            testoValido = estraeTestoPaginaWiki(rispostaDellaQuery);
+            //            result.setResponse(testoValido);
             return result;
         }
         else {
@@ -1383,32 +1380,33 @@ public class WikiBotService extends WAbstractService {
      */
     public WResult isEsisteResult(final String wikiSimplePageCategoryTitle) {
         WResult resultWiki;
-        WResult resultWeb=null;
+        WResult resultWeb = null;
         String wikiTitleElaborato;
         String rispostaDellaQuery;
-        JSONObject objectJson=null;
+        JSONObject objectJson = null;
         String wikiText;
         String wikiBio;
         long pageId = 0;
 
         if (wikiSimplePageCategoryTitle == null) {
-            resultWiki = (WResult)AResult.errato(NULL_WIKI_TITLE);
+            resultWiki = WResult.errato(NULL_WIKI_TITLE);
             resultWiki.setWebTitle(null);
             return resultWiki;
         }
         if (textService.isEmpty(wikiSimplePageCategoryTitle)) {
-            resultWiki = (WResult)AResult.errato(ERROR_WIKI_TITLE);
+            resultWiki = WResult.errato(ERROR_WIKI_TITLE);
             resultWiki.setWebTitle(VUOTA);
             return resultWiki;
         }
         wikiTitleElaborato = wikiSimplePageCategoryTitle.replaceAll(SPAZIO, UNDERSCORE);
 
-//        resultWeb = (WResult)webService.legge(WIKI_PARSE + wikiTitleElaborato);
-        resultWeb.setWebTitle(wikiSimplePageCategoryTitle);
-        resultWeb.setWikiTitle(wikiTitleElaborato);
-        rispostaDellaQuery = resultWeb.isValido() ? resultWeb.getResponse() : VUOTA;
-        if (textService.isValid(rispostaDellaQuery)) {
-//            objectJson = jSonService.getObjectJSON(rispostaDellaQuery);
+        rispostaDellaQuery = webService.legge(WIKI_PARSE + wikiTitleElaborato);
+        //        resultWeb = (WResult)webService.legge(WIKI_PARSE + wikiTitleElaborato);
+        resultWeb = WResult.crea().webTitle(wikiSimplePageCategoryTitle).wikiTitle(wikiTitleElaborato);
+
+        //        rispostaDellaQuery = resultWeb.isValido() ? resultWeb.getResponse() : VUOTA;
+//        if (textService.isValid(rispostaDellaQuery)) {
+            objectJson = jSonService.getObjectJSON(rispostaDellaQuery);
             if (objectJson == null) {
                 return resultWeb;
             }
@@ -1430,10 +1428,10 @@ public class WikiBotService extends WAbstractService {
                     return resultWeb;
                 }
             }
-        }
-        else {
-            return resultWeb;
-        }
+//        }
+//        else {
+//            return resultWeb;
+//        }
     }
 
     /**
@@ -1473,80 +1471,79 @@ public class WikiBotService extends WAbstractService {
      * @return lista di pageid
      */
     public List<Long> getLongCat(final String catTitle) {
-//        return getLongCat(catTitle, null);
+        //        return getLongCat(catTitle, null);
         return null;
     }
 
+    //    /**
+    //     * Legge una categoria wiki <br>
+    //     * Senza cicli. Legge una volta sola. Restituisce il risultato <br>
+    //     *
+    //     * @param catTitle da cui estrarre le pagine
+    //     * @param userType selezione tra (anonymous, user, bot)
+    //     *
+    //     * @return lista di pageid
+    //     */
+    //    public AIResult getResultCat(final String catTitle, final AETypeUser userType) {
+    //        AIResult result;
+    //        String catType = AECatType.page.getTag();
+    //        String propType = AECatProp.pageid.getTag();
+    //        String urlDomain = fixUrlCat(catTitle, catType, propType, userType, VUOTA);
+    //
+    //        result = readCategory(catTitle, urlDomain);
+    //
+    //        return result;
+    //    }
 
-//    /**
-//     * Legge una categoria wiki <br>
-//     * Senza cicli. Legge una volta sola. Restituisce il risultato <br>
-//     *
-//     * @param catTitle da cui estrarre le pagine
-//     * @param userType selezione tra (anonymous, user, bot)
-//     *
-//     * @return lista di pageid
-//     */
-//    public AIResult getResultCat(final String catTitle, final AETypeUser userType) {
-//        AIResult result;
-//        String catType = AECatType.page.getTag();
-//        String propType = AECatProp.pageid.getTag();
-//        String urlDomain = fixUrlCat(catTitle, catType, propType, userType, VUOTA);
-//
-//        result = readCategory(catTitle, urlDomain);
-//
-//        return result;
-//    }
-
-//    /**
-//     * Legge una lista di pageid di una categoria wiki <br>
-//     * Se arriva userType=null oppure userType=anonymous:
-//     * mette &cmlimit=500
-//     * non mette &assert=
-//     * ed esegue regolarmente tutti i cicli necessari (ci mette un po) <br>
-//     * //     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
-//     * //     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
-//     * //     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
-//     * Esegue dei cicli di dimensioni uguali a 'cmlimit' ammesso <br>
-//     * La query restituisce SOLO pageid <br>
-//     *
-//     * @param catTitle da cui estrarre le pagine
-//     * @param userType selezione tra (anonymous, user, bot)
-//     *
-//     * @return lista di pageid
-//     */
-//    public List<Long> getLongCat(final String catTitle, final AETypeUser userType) {
-//        List<Long> lista = new ArrayList<>();
-//        String catType = AECatType.page.getTag();
-//        String urlDomain;
-//        String propType = AECatProp.pageid.getTag();
-//        AIResult result;
-//        String continueParam = VUOTA;
-//        AETypeUser loggedUserType = userType != null ? userType : login.getUserType();
-//        long inizio = System.currentTimeMillis();
-//        int cicli = 0;
-//
-//        if (catTitle == null) {
-//            return null;
-//        }
-//        if (text.isEmpty(catTitle)) {
-//            return null;
-//        }
-//
-//        do {
-//            urlDomain = fixUrlCat(catTitle, catType, propType, loggedUserType, continueParam);
-//            //devo fare una POST e non una GET
-//            result = readCategory(catTitle, urlDomain);
-//            lista.addAll(getListaLongCategoria(result.getResponse()));
-//            continueParam = getContinuaCategoria(result.getResponse());
-//            cicli++;
-//        }
-//        while (text.isValid(continueParam));
-//
-//        logger.info(AETypeLog.bio, String.format("La categoria [%s] ha %s pageIds letti con %s cicli di %s in %s", catTitle, text.format(lista.size()), cicli, loggedUserType.limit(), date.deltaTextEsatto(inizio)));
-//
-//        return lista;
-//    }
+    //    /**
+    //     * Legge una lista di pageid di una categoria wiki <br>
+    //     * Se arriva userType=null oppure userType=anonymous:
+    //     * mette &cmlimit=500
+    //     * non mette &assert=
+    //     * ed esegue regolarmente tutti i cicli necessari (ci mette un po) <br>
+    //     * //     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
+    //     * //     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
+    //     * //     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
+    //     * Esegue dei cicli di dimensioni uguali a 'cmlimit' ammesso <br>
+    //     * La query restituisce SOLO pageid <br>
+    //     *
+    //     * @param catTitle da cui estrarre le pagine
+    //     * @param userType selezione tra (anonymous, user, bot)
+    //     *
+    //     * @return lista di pageid
+    //     */
+    //    public List<Long> getLongCat(final String catTitle, final AETypeUser userType) {
+    //        List<Long> lista = new ArrayList<>();
+    //        String catType = AECatType.page.getTag();
+    //        String urlDomain;
+    //        String propType = AECatProp.pageid.getTag();
+    //        AIResult result;
+    //        String continueParam = VUOTA;
+    //        AETypeUser loggedUserType = userType != null ? userType : login.getUserType();
+    //        long inizio = System.currentTimeMillis();
+    //        int cicli = 0;
+    //
+    //        if (catTitle == null) {
+    //            return null;
+    //        }
+    //        if (text.isEmpty(catTitle)) {
+    //            return null;
+    //        }
+    //
+    //        do {
+    //            urlDomain = fixUrlCat(catTitle, catType, propType, loggedUserType, continueParam);
+    //            //devo fare una POST e non una GET
+    //            result = readCategory(catTitle, urlDomain);
+    //            lista.addAll(getListaLongCategoria(result.getResponse()));
+    //            continueParam = getContinuaCategoria(result.getResponse());
+    //            cicli++;
+    //        }
+    //        while (text.isValid(continueParam));
+    //
+    //        logger.info(AETypeLog.bio, String.format("La categoria [%s] ha %s pageIds letti con %s cicli di %s in %s", catTitle, text.format(lista.size()), cicli, loggedUserType.limit(), date.deltaTextEsatto(inizio)));
+    //
+    //        return lista;
+    //    }
 
 
     /**
@@ -1562,22 +1559,22 @@ public class WikiBotService extends WAbstractService {
      * @return result della query
      */
     public WResult readCategory(final String catTitle, final String urlDomain) {
-//        WResult result = webService.legge(urlDomain);
+        //        WResult result = webService.legge(urlDomain);
         WResult result = null;
-        JSONArray jsonPagine=null;
+        JSONArray jsonPagine = null;
         boolean valido = result != null && result.isValido();
         int totalePagine;
 
         if (valido) {
-//            jsonPagine = jSonService.getJsonPagine(result.getResponse());
+            //            jsonPagine = jSonService.getJsonPagine(result.getResponse());
             totalePagine = jsonPagine != null ? jsonPagine.size() : 0;
             valido = totalePagine > 0;
             result.setIntValue(totalePagine);
             result.setValido(valido);
-//            result.setMessage(valido ? VUOTA : String.format("%s", NO_PAGES_CAT, catTitle));
+            //            result.setMessage(valido ? VUOTA : String.format("%s", NO_PAGES_CAT, catTitle));
         }
         else {
-//            result.setMessage(String.format("%s", NO_CAT, urlDomain));
+            //            result.setMessage(String.format("%s", NO_CAT, urlDomain));
         }
 
         return result;
@@ -1595,84 +1592,84 @@ public class WikiBotService extends WAbstractService {
      * @return lista di titles
      */
     public List<String> getTitleCat(final String catTitle) {
-//        return getTitleCat(catTitle, null);
+        //        return getTitleCat(catTitle, null);
         return null;
     }
 
-//    /**
-//     * Legge una lista di titles di una categoria wiki <br>
-//     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
-//     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
-//     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
-//     * La query restituisce SOLO pageid <br>
-//     *
-//     * @param catTitle da cui estrarre le pagine
-//     * @param userType selezione tra (anonymous, user, bot)
-//     *
-//     * @return lista di titles
-//     */
-//    public List<String> getTitleCat(final String catTitle, final AETypeUser userType) {
-//        List<String> lista = new ArrayList<>();
-//        String catType = AECatType.page.getTag();
-//        String urlDomain;
-//        String propType = AECatProp.title.getTag();
-//        AIResult result;
-//        String continueParam = VUOTA;
-//
-//        if (catTitle == null) {
-//            return null;
-//        }
-//        if (text.isEmpty(catTitle)) {
-//            return null;
-//        }
-//
-//        do {
-//            urlDomain = fixUrlCat(catTitle, catType, propType, userType, continueParam);
-//            result = web.legge(urlDomain);
-//            lista.addAll(getListaTitleCategoria(result.getResponse()));
-//            continueParam = getContinuaCategoria(result.getResponse());
-//        }
-//        while (text.isValid(continueParam));
-//
-//        return lista;
-//    }
+    //    /**
+    //     * Legge una lista di titles di una categoria wiki <br>
+    //     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
+    //     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
+    //     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
+    //     * La query restituisce SOLO pageid <br>
+    //     *
+    //     * @param catTitle da cui estrarre le pagine
+    //     * @param userType selezione tra (anonymous, user, bot)
+    //     *
+    //     * @return lista di titles
+    //     */
+    //    public List<String> getTitleCat(final String catTitle, final AETypeUser userType) {
+    //        List<String> lista = new ArrayList<>();
+    //        String catType = AECatType.page.getTag();
+    //        String urlDomain;
+    //        String propType = AECatProp.title.getTag();
+    //        AIResult result;
+    //        String continueParam = VUOTA;
+    //
+    //        if (catTitle == null) {
+    //            return null;
+    //        }
+    //        if (text.isEmpty(catTitle)) {
+    //            return null;
+    //        }
+    //
+    //        do {
+    //            urlDomain = fixUrlCat(catTitle, catType, propType, userType, continueParam);
+    //            result = web.legge(urlDomain);
+    //            lista.addAll(getListaTitleCategoria(result.getResponse()));
+    //            continueParam = getContinuaCategoria(result.getResponse());
+    //        }
+    //        while (text.isValid(continueParam));
+    //
+    //        return lista;
+    //    }
 
-//    /**
-//     * Costruisce l'url <br>
-//     * Se entriamo come (anonymous) restituisce, senza errore, le prime 500 pagine <br>
-//     * Se entriamo come (user) e NON lo siamo, non restituisce nulla e da errore <br>
-//     * Se entriamo come (bot) e NON lo siamo, non restituisce nulla e da errore <br>
-//     *
-//     * @param catTitle      da cui estrarre le pagine
-//     * @param catType       selezione tra (page, subcat or file)
-//     * @param propType      selezione tra (ids, sortkey, sortkeyprefix, timestamp, title, type)
-//     * @param userType      selezione tra (anonymous, user, bot)
-//     * @param continueParam per la successiva query
-//     *
-//     * @return testo dell'url
-//     */
-//    private String fixUrlCat(final String catTitle, final String catType, final String propType, final AETypeUser userType, final String continueParam) {
-//        String query = WIKI_QUERY_CATEGORY + wikiApi.fixWikiTitle(catTitle);
-//        String type = WIKI_QUERY_CAT_TYPE + catType;
-//        String prop = WIKI_QUERY_CAT_PROP + propType;
-//        String limit = userType != null ? userType.limit() : AETypeUser.anonymous.limit();
-//        String user = userType != null ? userType.affermazione() : AETypeUser.anonymous.affermazione();
-//        String continua = WIKI_QUERY_CAT_CONTINUE + continueParam;
-//
-//        return String.format("%s%s%s%s%s%s", query, type, prop, limit, user, continua);
-//    }
+    //    /**
+    //     * Costruisce l'url <br>
+    //     * Se entriamo come (anonymous) restituisce, senza errore, le prime 500 pagine <br>
+    //     * Se entriamo come (user) e NON lo siamo, non restituisce nulla e da errore <br>
+    //     * Se entriamo come (bot) e NON lo siamo, non restituisce nulla e da errore <br>
+    //     *
+    //     * @param catTitle      da cui estrarre le pagine
+    //     * @param catType       selezione tra (page, subcat or file)
+    //     * @param propType      selezione tra (ids, sortkey, sortkeyprefix, timestamp, title, type)
+    //     * @param userType      selezione tra (anonymous, user, bot)
+    //     * @param continueParam per la successiva query
+    //     *
+    //     * @return testo dell'url
+    //     */
+    //    private String fixUrlCat(final String catTitle, final String catType, final String propType, final AETypeUser userType, final String continueParam) {
+    //        String query = WIKI_QUERY_CATEGORY + wikiApi.fixWikiTitle(catTitle);
+    //        String type = WIKI_QUERY_CAT_TYPE + catType;
+    //        String prop = WIKI_QUERY_CAT_PROP + propType;
+    //        String limit = userType != null ? userType.limit() : AETypeUser.anonymous.limit();
+    //        String user = userType != null ? userType.affermazione() : AETypeUser.anonymous.affermazione();
+    //        String continua = WIKI_QUERY_CAT_CONTINUE + continueParam;
+    //
+    //        return String.format("%s%s%s%s%s%s", query, type, prop, limit, user, continua);
+    //    }
 
-//    /**
-//     * Recupera un lista di 'pageid'' dal testo JSON di risposta ad una query <br>
-//     *
-//     * @param rispostaDellaQuery in ingresso
-//     *
-//     * @return array di pageid
-//     */
-//    private List<Long> getListaLongCategoria(String rispostaDellaQuery) {
-//        JSONArray jsonPagine = jSonService.getJsonPagine(rispostaDellaQuery);
-//        return getListaLongCategoria(jsonPagine);
-//    }
+    //    /**
+    //     * Recupera un lista di 'pageid'' dal testo JSON di risposta ad una query <br>
+    //     *
+    //     * @param rispostaDellaQuery in ingresso
+    //     *
+    //     * @return array di pageid
+    //     */
+    //    private List<Long> getListaLongCategoria(String rispostaDellaQuery) {
+    //        JSONArray jsonPagine = jSonService.getJsonPagine(rispostaDellaQuery);
+    //        return getListaLongCategoria(jsonPagine);
+    //    }
 
     /**
      * Recupera un lista di 'pageid'' dal testo JSON di risposta ad una query <br>
@@ -1695,17 +1692,17 @@ public class WikiBotService extends WAbstractService {
         return lista;
     }
 
-//    /**
-//     * Recupera un lista di 'pageid'' dal testo JSON di risposta ad una query <br>
-//     *
-//     * @param rispostaDellaQuery in ingresso
-//     *
-//     * @return array di pageid
-//     */
-//    private List<String> getListaTitleCategoria(String rispostaDellaQuery) {
-//        JSONArray jsonPagine = jSonService.getJsonPagine(rispostaDellaQuery);
-//        return getListaTitleCategoria(jsonPagine);
-//    }
+    //    /**
+    //     * Recupera un lista di 'pageid'' dal testo JSON di risposta ad una query <br>
+    //     *
+    //     * @param rispostaDellaQuery in ingresso
+    //     *
+    //     * @return array di pageid
+    //     */
+    //    private List<String> getListaTitleCategoria(String rispostaDellaQuery) {
+    //        JSONArray jsonPagine = jSonService.getJsonPagine(rispostaDellaQuery);
+    //        return getListaTitleCategoria(jsonPagine);
+    //    }
 
     /**
      * Recupera un lista di 'title'' dal testo JSON di risposta ad una query <br>
@@ -1738,7 +1735,7 @@ public class WikiBotService extends WAbstractService {
      * @return numero di pagine (subcategorie escluse)
      */
     public WResult getInfoCategoria(final String categoryTitle) {
-        WResult result=null;
+        WResult result = null;
         String catTitleUnderscored;
         String catTitle;
         int totale;
@@ -1762,7 +1759,7 @@ public class WikiBotService extends WAbstractService {
 
         if (result.isValido()) {
             webUrl = WIKI_QUERY_CAT_TOTALE + catTitleUnderscored;
-//            result = webService.legge(webUrl);
+            //            result = webService.legge(webUrl);
             result.setWebTitle(categoryTitle);
             result.setWikiTitle(catTitleUnderscored);
         }
@@ -1774,124 +1771,122 @@ public class WikiBotService extends WAbstractService {
         }
 
         rispostaDellaQuery = result.getResponse();
-//        JSONObject jsonPageZero = jSonService.getObjectPage(rispostaDellaQuery);
-//        if (isMissing(jsonPageZero)) {
-//            return AResult.errato();
-//        }
+        //        JSONObject jsonPageZero = jSonService.getObjectPage(rispostaDellaQuery);
+        //        if (isMissing(jsonPageZero)) {
+        //            return AResult.errato();
+        //        }
 
-//        JSONObject categoryInfo = (JSONObject) jsonPageZero.get(CATEGORY_INFO);
-//        if (categoryInfo != null && categoryInfo.get(CATEGORY_PAGES) != null) {
-//            totale = ((Long) categoryInfo.get(CATEGORY_PAGES)).intValue();
-//            result.setIntValue(totale);
-//        }
+        //        JSONObject categoryInfo = (JSONObject) jsonPageZero.get(CATEGORY_INFO);
+        //        if (categoryInfo != null && categoryInfo.get(CATEGORY_PAGES) != null) {
+        //            totale = ((Long) categoryInfo.get(CATEGORY_PAGES)).intValue();
+        //            result.setIntValue(totale);
+        //        }
 
         return result;
     }
 
-//    /**
-//     * Legge (come anonymous) il numero di pagine di una categoria wiki <br>
-//     *
-//     * @param categoryTitle da controllare
-//     *
-//     * @return numero di pagine (subcategorie escluse)
-//     */
-//    public int getTotaleCategoria(final String categoryTitle) {
-//        AIResult result = getInfoCategoria(categoryTitle);
-//
-//        if (result != null && result.isValido()) {
-//            logger.info(AETypeLog.bio, String.format("La categoria [%s] esiste e ci sono %s voci", categoryTitle, text.format(result.getIntValue())));
-//            return result.getIntValue();
-//        }
-//        else {
-//            logger.info(AETypeLog.bio, String.format("La categoria [%s] non esiste oppure è vuota", categoryTitle));
-//            return 0;
-//        }
-//    }
+    //    /**
+    //     * Legge (come anonymous) il numero di pagine di una categoria wiki <br>
+    //     *
+    //     * @param categoryTitle da controllare
+    //     *
+    //     * @return numero di pagine (subcategorie escluse)
+    //     */
+    //    public int getTotaleCategoria(final String categoryTitle) {
+    //        AIResult result = getInfoCategoria(categoryTitle);
+    //
+    //        if (result != null && result.isValido()) {
+    //            logger.info(AETypeLog.bio, String.format("La categoria [%s] esiste e ci sono %s voci", categoryTitle, text.format(result.getIntValue())));
+    //            return result.getIntValue();
+    //        }
+    //        else {
+    //            logger.info(AETypeLog.bio, String.format("La categoria [%s] non esiste oppure è vuota", categoryTitle));
+    //            return 0;
+    //        }
+    //    }
 
+    //    /**
+    //     * Legge una lista di pageid di una categoria wiki <br>
+    //     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
+    //     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
+    //     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
+    //     * La query restituisce SOLO pageid <br>
+    //     *
+    //     * @param categoryTitle da recuperare
+    //     *
+    //     * @return lista di pageid
+    //     */
+    //    public String getPageidsCat(final String categoryTitle) {
+    //        String striscia = VUOTA;
+    //        List<Long> lista = getLongCat(categoryTitle, AETypeUser.anonymous);
+    //
+    //        striscia = array.toStringaPipe(lista);
+    //
+    //        return striscia;
+    //    }
 
-//    /**
-//     * Legge una lista di pageid di una categoria wiki <br>
-//     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
-//     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
-//     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
-//     * La query restituisce SOLO pageid <br>
-//     *
-//     * @param categoryTitle da recuperare
-//     *
-//     * @return lista di pageid
-//     */
-//    public String getPageidsCat(final String categoryTitle) {
-//        String striscia = VUOTA;
-//        List<Long> lista = getLongCat(categoryTitle, AETypeUser.anonymous);
-//
-//        striscia = array.toStringaPipe(lista);
-//
-//        return striscia;
-//    }
+    //    /**
+    //     * Legge una lista di WrapCat di una categoria wiki <br>
+    //     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
+    //     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
+    //     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
+    //     * La query restituisce sia pageid che title <br>
+    //     *
+    //     * @param titleWikiCategoria da recuperare
+    //     *
+    //     * @return lista di WrapCat
+    //     */
+    //    public List<WrapCat> getWrapCat(final String titleWikiCategoria) {
+    //        return getWrapCat(titleWikiCategoria, AECatType.page);
+    //    }
 
-//    /**
-//     * Legge una lista di WrapCat di una categoria wiki <br>
-//     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
-//     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
-//     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
-//     * La query restituisce sia pageid che title <br>
-//     *
-//     * @param titleWikiCategoria da recuperare
-//     *
-//     * @return lista di WrapCat
-//     */
-//    public List<WrapCat> getWrapCat(final String titleWikiCategoria) {
-//        return getWrapCat(titleWikiCategoria, AECatType.page);
-//    }
+    //    /**
+    //     * Legge una lista di WrapCat di pagine/files/subcategorie di una categoria wiki <br>
+    //     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
+    //     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
+    //     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
+    //     * La query restituisce sia pageid che title <br>
+    //     *
+    //     * @param catTitle  da recuperare
+    //     * @param aeCatType per la selezione
+    //     *
+    //     * @return lista di WrapCat
+    //     */
+    //    public List<WrapCat> getWrapCat(final String catTitle, final AECatType aeCatType) {
+    //        List<WrapCat> lista = new ArrayList<>();
+    //        String catType = aeCatType.getTag();
+    //        String urlDomain;
+    //        AIResult result;
+    //        String propType = AECatProp.all.getTag();
+    //        String continueParam = VUOTA;
+    //
+    //        do {
+    //            urlDomain = fixUrlCat(catTitle, catType, propType, null, continueParam);
+    //            result = web.legge(urlDomain);
+    //            if (result.isValido()) {
+    //                lista.addAll(getListaWrapCategoria(result.getResponse()));
+    //                continueParam = getContinuaCategoria(result.getResponse());
+    //            }
+    //            else {
+    //                int a = 87;
+    //            }
+    //        }
+    //        while (text.isValid(continueParam));
+    //
+    //        return lista;
+    //    }
 
-
-//    /**
-//     * Legge una lista di WrapCat di pagine/files/subcategorie di una categoria wiki <br>
-//     * Se non si mette 'cmlimit' restituisce 10 pagine <br>
-//     * Valore massimo di 'cmlimit' (come user) 500 pagine <br>
-//     * Il valore massimo (come user) di 'cmlimit' è 20 <br>
-//     * La query restituisce sia pageid che title <br>
-//     *
-//     * @param catTitle  da recuperare
-//     * @param aeCatType per la selezione
-//     *
-//     * @return lista di WrapCat
-//     */
-//    public List<WrapCat> getWrapCat(final String catTitle, final AECatType aeCatType) {
-//        List<WrapCat> lista = new ArrayList<>();
-//        String catType = aeCatType.getTag();
-//        String urlDomain;
-//        AIResult result;
-//        String propType = AECatProp.all.getTag();
-//        String continueParam = VUOTA;
-//
-//        do {
-//            urlDomain = fixUrlCat(catTitle, catType, propType, null, continueParam);
-//            result = web.legge(urlDomain);
-//            if (result.isValido()) {
-//                lista.addAll(getListaWrapCategoria(result.getResponse()));
-//                continueParam = getContinuaCategoria(result.getResponse());
-//            }
-//            else {
-//                int a = 87;
-//            }
-//        }
-//        while (text.isValid(continueParam));
-//
-//        return lista;
-//    }
-
-//    /**
-//     * Recupera un lista di WrapCat dal testo JSON di risposta ad una query <br>
-//     *
-//     * @param rispostaDellaQuery in ingresso
-//     *
-//     * @return array di WrapCat
-//     */
-//    private List<WrapCat> getListaWrapCategoria(String rispostaDellaQuery) {
-//        JSONArray jsonPagine = jSonService.getJsonPagine(rispostaDellaQuery);
-//        return getListaWrapCategoria(jsonPagine);
-//    }
+    //    /**
+    //     * Recupera un lista di WrapCat dal testo JSON di risposta ad una query <br>
+    //     *
+    //     * @param rispostaDellaQuery in ingresso
+    //     *
+    //     * @return array di WrapCat
+    //     */
+    //    private List<WrapCat> getListaWrapCategoria(String rispostaDellaQuery) {
+    //        JSONArray jsonPagine = jSonService.getJsonPagine(rispostaDellaQuery);
+    //        return getListaWrapCategoria(jsonPagine);
+    //    }
 
     /**
      * Recupera il tag per le categorie successive <br>
@@ -1915,31 +1910,30 @@ public class WikiBotService extends WAbstractService {
         return continua;
     }
 
-
-//    /**
-//     * Recupera un lista di WrapCat dal testo JSON di risposta ad una query <br>
-//     *
-//     * @param jsonPagine in ingresso
-//     *
-//     * @return array di WrapCat
-//     */
-//    private List<WrapCat> getListaWrapCategoria(JSONArray jsonPagine) {
-//        List<WrapCat> lista = new ArrayList<>();
-//        WrapCat wrap;
-//        long pageid;
-//        String title;
-//
-//        if (jsonPagine != null && jsonPagine.size() > 0) {
-//            for (Object obj : jsonPagine) {
-//                pageid = (long) ((JSONObject) obj).get(PAGE_ID);
-//                title = (String) ((JSONObject) obj).get(TITLE);
-//                wrap = new WrapCat(pageid, title);
-//                lista.add(wrap);
-//            }
-//        }
-//
-//        return lista;
-//    }
+    //    /**
+    //     * Recupera un lista di WrapCat dal testo JSON di risposta ad una query <br>
+    //     *
+    //     * @param jsonPagine in ingresso
+    //     *
+    //     * @return array di WrapCat
+    //     */
+    //    private List<WrapCat> getListaWrapCategoria(JSONArray jsonPagine) {
+    //        List<WrapCat> lista = new ArrayList<>();
+    //        WrapCat wrap;
+    //        long pageid;
+    //        String title;
+    //
+    //        if (jsonPagine != null && jsonPagine.size() > 0) {
+    //            for (Object obj : jsonPagine) {
+    //                pageid = (long) ((JSONObject) obj).get(PAGE_ID);
+    //                title = (String) ((JSONObject) obj).get(TITLE);
+    //                wrap = new WrapCat(pageid, title);
+    //                lista.add(wrap);
+    //            }
+    //        }
+    //
+    //        return lista;
+    //    }
 
     /**
      * Legge (come user) una pagina dal server wiki <br>
@@ -1958,11 +1952,11 @@ public class WikiBotService extends WAbstractService {
         return leggeQuery(wikiTitle).getResponse();
     }
 
-//    /**
-//     * Controlla di essere loggato come bot <br>
-//     */
-//    public boolean checkCollegamentoComeBot() {
-//        return appContext.getBean(QueryAssert.class).isValida();
-//    }
+    //    /**
+    //     * Controlla di essere loggato come bot <br>
+    //     */
+    //    public boolean checkCollegamentoComeBot() {
+    //        return appContext.getBean(QueryAssert.class).isValida();
+    //    }
 
 }

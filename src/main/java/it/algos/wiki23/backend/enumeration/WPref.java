@@ -40,8 +40,13 @@ public enum WPref {
     //    downloadProfessione("downloadProfessione", AETypePref.localdatetime, "Download di Modulo:Bio/Link attività.", ROOT_DATA_TIME),
     //    downloadNomi("downloadNomi", AETypePref.localdatetime, "Download di Progetto:Antroponimi/Nomi doppi.", ROOT_DATA_TIME),
 
+    categoriaBio("categoriaBio", AETypePref.string, "Categoria di riferimento per le Biografie", "BioBot"),
     sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, "Soglia minima per creare la pagina di una attività o nazionalità sul server wiki", 50),
     usaTreAttivita("usaTreAttivita", AETypePref.bool, "Considera tutte le attività (tre) nelle liste di attività", false),
+
+
+    simboloNato("simboloNato", AETypePref.string,"Simbolo della nascita nelle didascalie",  "n."),
+    simboloMorto("simboloMorto", AETypePref.string,"Simbolo della morte nelle didascalie",  "†"),
 
     ;
 

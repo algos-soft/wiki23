@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.packages.wiki;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.selection.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
@@ -112,6 +113,8 @@ public abstract class WikiView extends CrudView {
      */
     @Autowired
     public DateService dateService;
+
+    protected TextField searchFieldPlurale;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -329,6 +332,7 @@ public abstract class WikiView extends CrudView {
         super.fixBottoniTopStandard();
     }
 
+
     protected boolean sincroSelection(SelectionEvent event) {
         boolean singoloSelezionato = super.sincroSelection(event);
 
@@ -389,7 +393,7 @@ public abstract class WikiView extends CrudView {
      */
     public void elabora() {
         crudBackend.elabora();
-        sortOrder = Sort.by(Sort.Direction.DESC, "bio");
+        sortOrder = Sort.by(Sort.Direction.DESC, "numBio");
         refresh();
         fixInfo();
     }

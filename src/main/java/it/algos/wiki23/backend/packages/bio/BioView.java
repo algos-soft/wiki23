@@ -3,18 +3,22 @@ package it.algos.wiki23.backend.packages.bio;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.grid.*;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.ui.dialog.*;
@@ -94,7 +98,16 @@ public class BioView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        addSpanVerde("Biografie");
+        String categoria;
+        int numBio = 0;
+
+        categoria = WPref.categoriaBio.getStr();
+
+        Anchor anchor = new Anchor(PATH_CATEGORIA + categoria, "Categoria: " + categoria);
+        anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+        alertPlaceHolder.add(new Span(anchor));
+
+        addSpanVerde(String.format("Nella categoria %s sono presenti %s biografie", categoria, textService.format(numBio)));
     }
 
     @Override

@@ -31,8 +31,11 @@ public class Nazionalita extends AEntity {
     @AIField(type = AETypeField.text, widthEM = WIDTHEM)
     public String plurale;
 
-    @AIField(type = AETypeField.integer)
-    public int bio;
+    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste nazionalità singolari")
+    public int numBio;
+
+    @AIField(type = AETypeField.integer, header = "sin")
+    public int numSingolari;
 
     @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.LIST)
     public boolean pagina;

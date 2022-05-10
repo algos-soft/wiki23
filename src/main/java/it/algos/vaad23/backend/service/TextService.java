@@ -903,4 +903,66 @@ public class TextService extends AbstractService {
         return line.replaceAll(regexSpazioVariabile, SPAZIO).trim();
     }
 
+
+    /**
+     * Aggiunge parentesi quadre doppie in testa e coda alla stringa. <br>
+     * Aggiunge SOLO se gia non esistono (ne doppie, ne singole) <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     * Elimina eventuali quadre già presenti, per evitare di metterle doppie <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con doppie parentesi quadre aggiunte
+     */
+    public String setDoppieQuadre(final String stringaIn) {
+        String stringaOut = stringaIn;
+
+        if (stringaIn != null && stringaIn.length() > 0) {
+            stringaOut = this.setNoQuadre(stringaOut);
+            stringaOut = this.setNoQuadre(stringaOut);
+            if (this.isValid(stringaOut)) {
+                if (!stringaOut.startsWith(DOPPIE_QUADRE_INI)) {
+                    stringaOut = DOPPIE_QUADRE_INI + stringaOut;
+                }
+                if (!stringaOut.endsWith(DOPPIE_QUADRE_END)) {
+                    stringaOut = stringaOut + DOPPIE_QUADRE_END;
+                }
+                if (stringaOut.startsWith(QUADRA_INI + DOPPIE_QUADRE_INI)) {
+                    stringaOut = stringaOut.substring(1);
+                }
+                if (stringaOut.endsWith(QUADRA_END + DOPPIE_QUADRE_END)) {
+                    stringaOut = stringaOut.substring(0, stringaOut.length() - 1);
+                }
+            }
+        }
+
+        return stringaOut.trim();
+    }
+
+
+    /**
+     * Aggiunge parentesi tonde singole in testa e coda alla stringa. <br>
+     * Aggiunge SOLO se gia non esistono <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     * Elimina eventuali quadre già presenti, per evitare di metterle doppie <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con parentesi tonde aggiunte
+     */
+    public String setTonde(String stringaIn) {
+        String stringaOut = stringaIn;
+
+        if (!stringaOut.startsWith(PARENTESI_TONDA_INI)) {
+            stringaOut = PARENTESI_TONDA_INI + stringaOut;
+        }
+        if (!stringaOut.endsWith(PARENTESI_TONDA_END)) {
+            stringaOut = stringaOut + PARENTESI_TONDA_END;
+        }
+
+        return stringaOut.trim();
+    }
+
 }

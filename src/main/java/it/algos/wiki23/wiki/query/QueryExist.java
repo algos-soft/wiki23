@@ -49,6 +49,7 @@ public class QueryExist extends AQuery {
         return requestGet(WIKI_QUERY, wikiTitleGrezzo);
     }
 
+
     /**
      * Esistenza della pagina <br>
      *
@@ -59,6 +60,7 @@ public class QueryExist extends AQuery {
     public boolean isEsiste(final String wikiTitleGrezzo) {
         return urlRequest(wikiTitleGrezzo).isValido();
     }
+
 
     /**
      * Elabora la risposta <br>

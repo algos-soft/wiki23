@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.wrapper;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.wrapper.*;
+import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.stereotype.*;
 
 /**
@@ -15,25 +16,27 @@ import org.springframework.stereotype.*;
 @Component
 public class WResult extends AResult {
 
-        private String webTitle = VUOTA;
+    private String webTitle = VUOTA;
 
-        private String wikiTitle = VUOTA;
+    private long pageid = 0;
 
-        private String urlPreliminary = VUOTA;
+    private String wikiTitle = VUOTA;
 
-        private String urlRequest = VUOTA;
+    private String urlPreliminary = VUOTA;
 
-        private String preliminaryResponse = VUOTA;
+    private String urlRequest = VUOTA;
 
-        private String response = VUOTA;
+    private String preliminaryResponse = VUOTA;
 
-        private String wikiText = VUOTA;
+    private String response = VUOTA;
 
-        private String wikiBio = VUOTA;
+    private String wikiText = VUOTA;
 
-        private String token = VUOTA;
+    private String wikiBio = VUOTA;
 
-        private String queryType = VUOTA;
+    private String token = VUOTA;
+
+    private String queryType = VUOTA;
 
     private WrapBio wrap;
 
@@ -61,6 +64,20 @@ public class WResult extends AResult {
         this.inizio = System.currentTimeMillis();
     }
 
+    public WResult webTitle(final String webTitle) {
+        this.webTitle = webTitle;
+        return this;
+    }
+
+    public WResult wikiTitle(final String wikiTitle) {
+        this.wikiTitle = wikiTitle;
+        return this;
+    }
+
+    public static WResult crea() {
+        return new WResult();
+    }
+
     public static WResult crea(WrapBio wrap) {
         WResult wResult = new WResult(wrap);
         return wResult;
@@ -71,11 +88,17 @@ public class WResult extends AResult {
         wResult.setValido(false);
         return wResult;
     }
+
     public static WResult errato(final String errorMessage) {
-        WResult wResult = new WResult( );
+        WResult wResult = new WResult();
         wResult.setErrorCode(errorMessage);
         wResult.setValido(false);
         return wResult;
+    }
+
+    public WResult queryType(final AETypeQuery queryType) {
+        this.queryType = queryType.get();
+        return this;
     }
 
     public WrapBio getWrap() {
@@ -147,75 +170,84 @@ public class WResult extends AResult {
         return fine - inizio;
     }
 
-        public String getWebTitle() {
-            return webTitle;
-        }
+    public String getWebTitle() {
+        return webTitle;
+    }
 
-        public void setWebTitle(String webTitle) {
-            this.webTitle = webTitle;
-        }
+    public void setWebTitle(String webTitle) {
+        this.webTitle = webTitle;
+    }
 
-        public String getWikiTitle() {
-            return wikiTitle;
-        }
+    public String getWikiTitle() {
+        return wikiTitle;
+    }
 
-        public void setWikiTitle(String wikiTitle) {
-            this.wikiTitle = wikiTitle;
-        }
+    public void setWikiTitle(String wikiTitle) {
+        this.wikiTitle = wikiTitle;
+    }
 
-        public String getResponse() {
-            return response;
-        }
+    public String getResponse() {
+        return response;
+    }
 
-        public void setResponse(String response) {
-            this.response = response;
-        }
-        public String getUrlPreliminary() {
-            return urlPreliminary;
-        }
+    public void setResponse(String response) {
+        this.response = response;
+    }
 
-        public void setUrlPreliminary(String urlPreliminary) {
-            this.urlPreliminary = urlPreliminary;
-        }
+    public String getUrlPreliminary() {
+        return urlPreliminary;
+    }
 
-        public String getUrlRequest() {
-            return urlRequest;
-        }
+    public void setUrlPreliminary(String urlPreliminary) {
+        this.urlPreliminary = urlPreliminary;
+    }
 
-        public void setUrlRequest(String urlRequest) {
-            this.urlRequest = urlRequest;
-        }
-        public String getPreliminaryResponse() {
-            return preliminaryResponse;
-        }
+    public String getUrlRequest() {
+        return urlRequest;
+    }
 
-        public void setPreliminaryResponse(String preliminaryResponse) {
-            this.preliminaryResponse = preliminaryResponse;
-        }
+    public void setUrlRequest(String urlRequest) {
+        this.urlRequest = urlRequest;
+    }
 
-        public String getToken() {
-            return token;
-        }
+    public String getPreliminaryResponse() {
+        return preliminaryResponse;
+    }
 
-        public void setToken(String token) {
-            this.token = token;
-        }
+    public void setPreliminaryResponse(String preliminaryResponse) {
+        this.preliminaryResponse = preliminaryResponse;
+    }
 
-        public String getQueryType() {
-            return queryType;
-        }
+    public String getToken() {
+        return token;
+    }
 
-        public void setQueryType(String queryType) {
-            this.queryType = queryType;
-        }
+    public void setToken(String token) {
+        this.token = token;
+    }
 
-        public String getWikiText() {
-            return wikiText;
-        }
+    public String getQueryType() {
+        return queryType;
+    }
 
-        public void setWikiText(String wikiText) {
-            this.wikiText = wikiText;
-        }
+    public void setQueryType(String queryType) {
+        this.queryType = queryType;
+    }
 
+    public String getWikiText() {
+        return wikiText;
+    }
+
+    public void setWikiText(String wikiText) {
+        this.wikiText = wikiText;
+    }
+
+    public long getPageid() {
+        return pageid;
+    }
+
+    public void setPageid(long pageid) {
+        this.pageid = pageid;
+    }
 
 }

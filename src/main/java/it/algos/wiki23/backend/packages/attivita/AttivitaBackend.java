@@ -9,6 +9,7 @@ import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -96,11 +97,11 @@ public class AttivitaBackend extends WikiBackend {
     }
 
 
-
     public List<Attivita> findAttivitaDistinctByPlurali() {
         List<Attivita> lista = new ArrayList<>();
         Set<String> set = new HashSet();
-        List<Attivita> listaAll = repository.findAll();
+        Sort sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+        List<Attivita> listaAll = repository.findAll(sortOrder);
 
         for (Attivita attivita : listaAll) {
             if (set.add(attivita.plurale)) {
@@ -214,7 +215,6 @@ public class AttivitaBackend extends WikiBackend {
     }
 
 
-
     /**
      * Aggiunge le ex-attività NON presenti nel modulo 'Modulo:Bio/Plurale attività' <br>
      * Le recupera dal modulo 'Modulo:Bio/Plurale attività genere' <br>
@@ -272,9 +272,10 @@ public class AttivitaBackend extends WikiBackend {
     public void elabora() {
         long inizio = System.currentTimeMillis();
         int numBio;
+        int numSingolari;
 
         for (Attivita attivita : findAll()) {
-            attivita.bio = 0;
+            attivita.numBio = 0;
             update(attivita);
         }
 
@@ -284,12 +285,16 @@ public class AttivitaBackend extends WikiBackend {
         //--Memorizza e registra il dato nella entityBean
         for (Attivita attivita : findAttivitaDistinctByPlurali()) {
             numBio = 0;
+            numSingolari = 0;
+
             for (String singolare : findSingolariByPlurale(attivita.plurale)) {
                 numBio += bioBackend.countAttivita(singolare);
+                numSingolari++;
             }
 
             for (Attivita attivitaOK : findByPlurale(attivita.plurale)) {
-                attivitaOK.bio = numBio;
+                attivitaOK.numBio = numBio;
+                attivitaOK.numSingolari = numSingolari;
                 update(attivitaOK);
             }
         }

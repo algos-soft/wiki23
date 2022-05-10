@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Scope;
 public class Wiki23Cost {
 
     public static final String TAG_WIKI23_VERSION = "wikiversion";
+
     public static final String TAG_WIKI23_PREFERENCES = "wikipreferences";
 
     public static final String PATH_MODULO = "Modulo:Bio/";
@@ -47,13 +48,20 @@ public class Wiki23Cost {
 
     public static final String ACTION_QUERY = API_BASE + "&action=query";
 
-    public static final String API_TITOLI = "&titles=";
+    public static final String API_TITLES = "&titles=";
 
-    public static final String WIKI_QUERY = ACTION_QUERY + API_TITOLI;
+    public static final String API_PAGEIDS = "&pageids=";
 
-    public static final String WIKI_QUERY_BASE = ACTION_QUERY + "&rvslots=main&prop=revisions&rvprop=content|ids|timestamp" + API_TITOLI;
+    public static final String WIKI_QUERY = ACTION_QUERY + API_TITLES;
 
-    public static final String WIKI_QUERY_ALL = ACTION_QUERY + "&rvslots=main&prop=info|revisions&rvprop=content|ids|flags|timestamp|user|userid|comment|size" + API_TITOLI;
+    public static final String QUERY_INFO = "&rvslots=main&prop=revisions&rvprop=content|ids|timestamp";
+    public static final String QUERY_INFO_ALL = "&rvslots=main&prop=info|revisions&rvprop=content|ids|flags|timestamp|user|userid|comment|size";
+
+    public static final String WIKI_QUERY_BASE_TITLE = ACTION_QUERY + QUERY_INFO + API_TITLES;
+
+    public static final String WIKI_QUERY_BASE_PAGE = ACTION_QUERY + QUERY_INFO + API_PAGEIDS;
+
+    public static final String WIKI_QUERY_ALL = ACTION_QUERY + QUERY_INFO_ALL + API_TITLES;
 
     //
     //    public static final String API = "https://it.wikipedia.org/w/api.php?&format=json&formatversion=2";
@@ -94,6 +102,8 @@ public class Wiki23Cost {
     public static final String PATH_MODULO_PRENOME = "Progetto:Antroponimi/Nomi doppi";
 
     public static final String PATH_STATISTICHE_GIORNI = PATH_PROGETTO + GIORNI;
+
+    public static final String PATH_CATEGORIA = PATH_WIKI + "Categoria:";
 
     public static final String TAG_EX = "ex ";
 

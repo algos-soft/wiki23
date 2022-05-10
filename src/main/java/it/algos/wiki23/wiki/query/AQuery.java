@@ -183,13 +183,66 @@ public abstract class AQuery {
      * @return testo grezzo della risposta in formato JSON
      */
     protected WResult requestGet(final String pathQuery, final String wikiTitleGrezzo) {
-        WResult result = WResult.errato();
-        String urlDomain = pathQuery + fixWikiTitle(wikiTitleGrezzo);
-        URLConnection urlConn;
-        String urlResponse;
+        WResult result = WResult.errato().queryType(AETypeQuery.get);
+        String message;
+
+        if (textService.isEmpty(pathQuery)) {
+            message = String.format("Manca il pathQuery per %s", wikiTitleGrezzo);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return result;
+        }
+
+        if (textService.isEmpty(wikiTitleGrezzo)) {
+            message = "Manca il wikiTitleGrezzo";
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            result.errorMessage(message);
+            return result;
+        }
 
         result.setWikiTitle(wikiTitleGrezzo);
-        result.setQueryType(AETypeQuery.get.get());
+        return requestGet(result,pathQuery + fixWikiTitle(wikiTitleGrezzo));
+    }
+
+    /**
+     * Request semplice. Crea una connessione base di tipo GET <br>
+     *
+     * @param pathQuery della richiesta
+     * @param pageid    della pagina wiki  usato nella urlRequest
+     *
+     * @return testo grezzo della risposta in formato JSON
+     */
+    protected WResult requestGet(final String pathQuery, final long pageid) {
+        WResult result = WResult.errato().queryType(AETypeQuery.get);
+        String message;
+
+        if (textService.isEmpty(pathQuery)) {
+            message = String.format("Manca il pathQuery per %d", pageid);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return result;
+        }
+
+        if (pageid < 1) {
+            message = "Manca il pageid";
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            result.errorMessage(message);
+            return result;
+        }
+
+        result.setPageid(pageid);
+        return requestGet(result,pathQuery + pageid);
+    }
+
+
+    /**
+     * Request semplice. Crea una connessione base di tipo GET <br>
+     *
+     * @param urlDomain della richiesta
+     *
+     * @return testo grezzo della risposta in formato JSON
+     */
+    protected WResult requestGet(WResult result,final String urlDomain) {
+        URLConnection urlConn;
+        String urlResponse;
         result.setUrlRequest(urlDomain);
 
         try {
@@ -454,6 +507,11 @@ public abstract class AQuery {
         if (jsonMain != null && textService.isValid(jsonMain.get(KEY_JSON_CONTENT))) {
             content = (String) jsonMain.get(KEY_JSON_CONTENT);
         }
+        if (textService.isEmpty(content)) {
+            result.setErrorCode("La query non è valida");
+            wrap = result.getWrap().valida(false).type(AETypePage.indeterminata);
+            result.setWrap(wrap);
+        }
 
         //--contenuto inizia col tag della disambigua
         if (content.startsWith(TAG_DISAMBIGUA_UNO) || content.startsWith(TAG_DISAMBIGUA_DUE)) {
@@ -488,7 +546,7 @@ public abstract class AQuery {
         }
         else {
             result.setErrorCode("manca tmpl Bio");
-            result.setErrorMessage(String.format("La pagina wiki '%s' non è una biografia", result.getWikiTitle()));
+            result.setErrorMessage(String.format("La pagina wiki '%s' esiste ma non è una biografia", result.getWikiTitle()));
             wrap = result.getWrap().valida(false).type(AETypePage.testoSenzaTmpl);
             result.setWrap(wrap);
         }
@@ -504,12 +562,22 @@ public abstract class AQuery {
      * @return titolo 'spedibile' al server
      */
     public String fixWikiTitle(final String wikiTitleGrezzo) {
-        String wikiTitle = wikiTitleGrezzo.replaceAll(SPAZIO, UNDERSCORE);
+        String wikiTitle;
+
+        if (wikiTitleGrezzo == null) {
+            logger.info(new WrapLog().exception(new AlgosException("Manca il wikiTitle della pagina")).usaDb());
+            return VUOTA;
+        }
+        if (wikiTitleGrezzo.length() < 1) {
+            logger.info(new WrapLog().exception(new AlgosException("Il wikiTitle della pagina è vuoto")).usaDb());
+            return VUOTA;
+        }
+
+        wikiTitle = wikiTitleGrezzo.replaceAll(SPAZIO, UNDERSCORE);
         try {
             wikiTitle = URLEncoder.encode(wikiTitle, ENCODE);
-
         } catch (Exception unErrore) {
-
+            logger.error(new WrapLog().exception(unErrore).usaDb());
         }
 
         return wikiTitle;

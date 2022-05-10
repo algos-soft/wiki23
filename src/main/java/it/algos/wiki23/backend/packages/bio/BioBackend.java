@@ -1,7 +1,9 @@
 package it.algos.wiki23.backend.packages.bio;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
@@ -48,7 +50,7 @@ public class BioBackend extends WikiBackend {
 
 
     public Bio creaIfNotExist(final WrapBio wrap) {
-        return checkAndSave(newEntity(wrap.getPageid(), wrap.getTitle(), wrap.getTemplBio()));
+        return checkAndSave(newEntity(wrap));
     }
 
 
@@ -63,6 +65,24 @@ public class BioBackend extends WikiBackend {
 
     public Bio newEntity() {
         return newEntity(0, VUOTA, VUOTA, null);
+    }
+
+    public Bio newEntity(final WrapBio wrap) {
+        String message;
+        if (wrap.isValida()) {
+            return newEntity(wrap.getPageid(), wrap.getTitle(), wrap.getTemplBio());
+        }
+        else {
+            message = "wrap non valido";
+            if (wrap.getPageid() < 1) {
+                message = "Manca il pageid";
+            }
+            if (textService.isEmpty(wrap.getTitle())) {
+                message = "Manca il wikiTitle";
+            }
+            logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return null;
+        }
     }
 
     public Bio newEntity(final long pageId, final String wikiTitle, final String tmplBio) {
@@ -118,6 +138,7 @@ public class BioBackend extends WikiBackend {
 
         return numBio;
     }
+
     /**
      * Conta tutte le biografie con una serie di nazionalita. <br>
      *

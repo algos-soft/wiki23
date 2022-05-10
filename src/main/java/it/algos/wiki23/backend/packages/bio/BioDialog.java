@@ -8,6 +8,8 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.ui.views.*;
 import it.algos.wiki23.backend.service.*;
+import it.algos.wiki23.backend.wrapper.*;
+import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -40,6 +42,10 @@ public class BioDialog extends CrudDialog {
 
     private Consumer<Bio> elaboraHandler;
 
+    protected Button buttonDownload;
+
+    private BioBackend backend;
+
     /**
      * Constructor not @Autowired. <br>
      * Non utilizzato e non necessario <br>
@@ -61,14 +67,23 @@ public class BioDialog extends CrudDialog {
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      * @param fields      da costruire in automatico
      */
-    public BioDialog(final Bio entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List fields) {
+    public BioDialog(final Bio entityBean, final CrudOperation operation, final BioBackend crudBackend, final List fields) {
         super(entityBean, operation, crudBackend, fields);
         this.currentItem = entityBean;
+        this.backend = crudBackend;
     }// end of constructor not @Autowired
 
     @Override
     protected void fixBottom() {
         super.fixBottom();
+
+        buttonDownload = new Button();
+        buttonDownload.setText("Download");
+        buttonDownload.getElement().setAttribute("theme", "primary");
+        buttonDownload.getElement().setProperty("title", "Download: ricarica tutti i valori dal server wiki");
+        buttonDownload.setIcon(new Icon(VaadinIcon.DOWNLOAD));
+        buttonDownload.addClickListener(event -> download());
+        bottomPlaceHolder.add(buttonDownload);
 
         Button elaboraButton = new Button();
         elaboraButton.setText("Elabora");
@@ -88,6 +103,17 @@ public class BioDialog extends CrudDialog {
         currentItem = elaboraService.esegue(currentItem);
         elaboraHandler.accept(currentItem);
         close();
+    }
+
+    /**
+     * Esegue un azione di download <br>
+     */
+    public void download() {
+        Bio bio = null;
+        long pageId = currentItem.pageId;
+        WrapBio wrap = null;
+        wrap = appContext.getBean(QueryBio.class).getWrap(currentItem.wikiTitle);
+        bio = backend.newEntity(wrap);
     }
 
 }// end of crud Dialog class

@@ -184,9 +184,10 @@ public class NazionalitaBackend extends WikiBackend {
     public void elabora() {
         long inizio = System.currentTimeMillis();
         int numBio;
+        int numSingolari;
 
         for (Nazionalita nazionalita : findAll()) {
-            nazionalita.bio = 0;
+            nazionalita.numBio = 0;
             update(nazionalita);
         }
 
@@ -196,12 +197,16 @@ public class NazionalitaBackend extends WikiBackend {
         //--Memorizza e registra il dato nella entityBean
         for (Nazionalita nazionalita : findNazionalitaDistinctByPlurali()) {
             numBio = 0;
+            numSingolari = 0;
+
             for (String singolare : findSingolariByPlurale(nazionalita.plurale)) {
                 numBio += bioBackend.countNazionalita(singolare);
+                numSingolari++;
             }
 
             for (Nazionalita nazionalitaOK : findByPlurale(nazionalita.plurale)) {
-                nazionalitaOK.bio = numBio;
+                nazionalitaOK.numBio = numBio;
+                nazionalitaOK.numSingolari = numSingolari;
                 update(nazionalitaOK);
             }
         }

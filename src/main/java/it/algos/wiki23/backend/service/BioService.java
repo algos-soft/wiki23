@@ -100,15 +100,15 @@ public class BioService extends WAbstractService {
         String tmplBio = tmplBioServer;
         LinkedHashMap<String, String> mappa = null;
         LinkedHashMap mappaGraffe = null;
-        boolean continua = false;
+        boolean continua = true;
         String sepRE = "\n\\|";
         String[] righe = null;
         String chiave;
         String valore;
         int pos;
 
-        if (!tmplBio.equals(VUOTA)) {
-            continua = true;
+        if (textService.isEmpty(tmplBioServer)) {
+            return null;
         }
 
         if (tmplBio.startsWith(DOPPIE_GRAFFE_INI) && tmplBio.endsWith(DOPPIE_GRAFFE_END)) {

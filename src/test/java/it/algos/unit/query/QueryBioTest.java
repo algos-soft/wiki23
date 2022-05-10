@@ -117,7 +117,7 @@ public class QueryBioTest extends WikiTest {
         assertTrue(wrapBio.isValida());
 
         System.out.println(VUOTA);
-        System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", sorgente));
+        System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", wrapBio.getTitle()));
         printWrapBio(wrapBio);
     }
 
@@ -134,6 +134,37 @@ public class QueryBioTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esiste la pagina [[%s]] ma non è una biografia", sorgente));
+        printWrapBio(wrapBio);
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6- Test tramite pageid per una pagina esistente ma non biografia")
+    void getWrapPageids() {
+        System.out.println(("6- Test tramite pageid per una pagina esistente ma non biografia"));
+
+        sorgenteIntero = 2741616;
+        wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgenteIntero);
+        assertFalse(wrapBio.isValida());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esiste la pagina [[%s]] ma non è una biografia", sorgente));
+        printWrapBio(wrapBio);
+    }
+
+
+    @Test
+    @Order(7)
+    @DisplayName("7- Test tramite pageid per una biografia esistente")
+    void getWrapPageids2() {
+        System.out.println(("7- Test tramite pageid per una biografia esistente"));
+
+        sorgenteIntero = 4292050;
+        wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgenteIntero);
+        assertTrue(wrapBio.isValida());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", wrapBio.getTitle()));
         printWrapBio(wrapBio);
     }
 

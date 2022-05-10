@@ -28,14 +28,17 @@ public class Attivita extends AEntity {
     @AIField(type = AETypeField.text, widthEM = WIDTHEM, search = true)
     public String singolare;
 
-    @AIField(type = AETypeField.text, widthEM = WIDTHEM)
+    @AIField(type = AETypeField.text, widthEM = WIDTHEM, caption = "Attività plurale")
     public String plurale;
 
     @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.ADD_DOCK, caption = "aggiunta (ex-attività)", usaCheckBox3Vie = true)
     public boolean aggiunta;
 
-    @AIField(type = AETypeField.integer)
-    public int bio;
+    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste attività singolari")
+    public int numBio;
+
+    @AIField(type = AETypeField.integer, header = "sin")
+    public int numSingolari;
 
     @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.LIST)
     public boolean pagina;

@@ -58,7 +58,7 @@ public class QueryBio extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final String wikiTitleGrezzo) {
-        return requestGet(WIKI_QUERY_BASE, wikiTitleGrezzo);
+        return requestGet(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzo);
     }
 
     /**
@@ -72,5 +72,31 @@ public class QueryBio extends AQuery {
         return urlRequest(wikiTitleGrezzo).getWrap();
     }
 
+    /**
+     * Request principale <br>
+     * <p>
+     * La stringa urlDomain per la request viene elaborata <br>
+     * Si crea una connessione di tipo GET <br>
+     * Si invia la request <br>
+     * La response viene sempre elaborata per estrarre le informazioni richieste <br>
+     *
+     * @param pageid della pagina wiki usato nella urlRequest
+     *
+     * @return wrapper di informazioni
+     */
+    public WResult urlRequest(final long pageid) {
+        return requestGet(WIKI_QUERY_BASE_PAGE, pageid);
+    }
+
+    /**
+     * Wrap della pagina biografica <br>
+     *
+     * @param pageid della pagina wiki usato nella urlRequest
+     *
+     * @return wrap della pagina
+     */
+    public WrapBio getWrap(final long pageid) {
+        return urlRequest(pageid).getWrap();
+    }
 
 }

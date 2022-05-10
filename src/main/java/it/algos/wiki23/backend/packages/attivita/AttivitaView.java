@@ -1,6 +1,8 @@
 package it.algos.wiki23.backend.packages.attivita;
 
 import ch.carnet.kasparscherrer.*;
+import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
@@ -15,6 +17,7 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
+import org.vaadin.crudui.crud.*;
 
 import java.util.*;
 
@@ -39,9 +42,12 @@ public class AttivitaView extends WikiView {
     //--per eventuali metodi specifici
     private AttivitaBackend backend;
 
-    private TextField searchFieldPlurale;
-
     protected IndeterminateCheckbox boxBoxPagina;
+
+    protected Checkbox boxDistinctPlurali;
+
+    //--per eventuali metodi specifici
+    private AttivitaDialog dialog;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -65,7 +71,8 @@ public class AttivitaView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "aggiunta", "bio", "pagina");
+        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "aggiunta", "numBio", "numSingolari", "pagina");
+        super.formPropertyNamesList = Arrays.asList( "plurale",  "numBio");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
 
         super.usaBottoneElabora = true;
@@ -75,8 +82,10 @@ public class AttivitaView extends WikiView {
         super.lastUpload = WPref.uploadAttivita;
         super.wikiModuloTitle = PATH_MODULO_ATTIVITA;
         //        super.wikiStatisticheTitle = PATH_STATISTICHE_ATTIVITA;
+        super.usaBottoneEdit = true;
         super.usaBottoneCategoria = true;
 
+        super.dialogClazz = AttivitaDialog.class;
         super.fixPreferenzeBackend();
     }
 
@@ -111,6 +120,8 @@ public class AttivitaView extends WikiView {
     }
 
     protected void fixBottoniTopSpecifici() {
+        super.fixBottoniTopSpecifici();
+
         searchFieldPlurale = new TextField();
         searchFieldPlurale.setPlaceholder("Filter by plurale");
         searchFieldPlurale.setClearButtonVisible(true);
@@ -132,6 +143,13 @@ public class AttivitaView extends WikiView {
         HorizontalLayout layout2 = new HorizontalLayout(boxBoxPagina);
         layout2.setAlignItems(Alignment.CENTER);
         topPlaceHolder.add(layout2);
+
+        boxDistinctPlurali = new Checkbox();
+        boxDistinctPlurali.setLabel("Distinct plurali");
+        boxDistinctPlurali.addValueChangeListener(event -> sincroPlurali());
+        HorizontalLayout layout3 = new HorizontalLayout(boxDistinctPlurali);
+        layout3.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout3);
     }
 
     /**
@@ -147,6 +165,9 @@ public class AttivitaView extends WikiView {
 
         final String textSearchPlurale = searchFieldPlurale != null ? searchFieldPlurale.getValue() : VUOTA;
         if (textService.isValid(textSearchPlurale)) {
+            if (boxDistinctPlurali != null && boxDistinctPlurali.getValue()) {
+                items = backend.findAttivitaDistinctByPlurali();
+            }
             items = items.stream().filter(att -> att.plurale.matches("^(?i)" + textSearchPlurale + ".*$")).toList();
         }
 
@@ -161,6 +182,26 @@ public class AttivitaView extends WikiView {
             }
             else {
                 sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+            }
+        }
+
+        if (items != null) {
+            grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
+        }
+    }
+
+    protected void sincroPlurali() {
+        List<Attivita> items = null;
+
+        if (boxDistinctPlurali != null) {
+            if (boxDistinctPlurali.getValue()) {
+                items = backend.findAttivitaDistinctByPlurali();
+            }
+            else {
+                sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+                items = backend.findAll(sortOrder);
             }
         }
 
@@ -197,6 +238,11 @@ public class AttivitaView extends WikiView {
         wikiApiService.openWikiPage(path + attivitaText);
 
         return null;
+    }
+
+    public void updateItem(AEntity entityBean) {
+        dialog = appContext.getBean(AttivitaDialog.class, entityBean, CrudOperation.READ, crudBackend, formPropertyNamesList);
+        dialog.open(this::saveHandler, this::annullaHandler);
     }
 
 }// end of crud @Route view class

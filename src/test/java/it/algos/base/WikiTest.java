@@ -1,15 +1,18 @@
 package it.algos.base;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project wiki23
@@ -23,6 +26,7 @@ import java.util.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 public abstract class WikiTest extends AlgosTest {
+    private static int MAX = 175;
 
     /**
      * Istanza di una interfaccia <br>
@@ -38,6 +42,14 @@ public abstract class WikiTest extends AlgosTest {
     @Autowired
     public ElaboraService elaboraService;
 
+    @Autowired
+    public DidascaliaService didascaliaService;
+    @Autowired
+    public BioService bioService;
+    @Autowired
+    public BioBackend bioBackend;
+
+
     protected final static String PAGINA_INESISTENTE = "Pippooz Belloz";
 
     protected final static String PAGINA_ESISTENTE_UNO = "Matteo Salvini";
@@ -51,6 +63,45 @@ public abstract class WikiTest extends AlgosTest {
     protected WResult ottenutoRisultato;
 
     protected WrapBio wrapBio;
+
+    protected Bio bio;
+
+
+
+
+    protected static final String PAGINA_UNO = "Roman Protasevič";
+    protected static final String PAGINA_DUE = "Aldelmo di Malmesbury";
+    protected static final String PAGINA_TRE = "Aelfric il grammatico";
+    protected static final String PAGINA_QUATTRO = "Elfleda di Whitby";
+    protected static final String PAGINA_CINQUE = "Werburga";
+    protected static final String PAGINA_SEI = "Bernart Arnaut d'Armagnac";
+    protected static final String PAGINA_SETTE = "Gaetano Anzalone";
+    protected static final String PAGINA_OTTO = "Colin Campbell (generale)";
+    protected static final String PAGINA_NOVE = "Louis Winslow Austin";
+    protected static final String PAGINA_DIECI = "Maximilian Stadler";
+    protected static final String PAGINA_DISAMBIGUA = "Rossi";
+    protected static final String PAGINA_REDIRECT = "Regno di Napoli (1805-1815)";
+
+    //--titolo
+    //--pagina valida
+    protected static Stream<Arguments> PAGINE_BIO() {
+        return Stream.of(
+                Arguments.of(null, false),
+                Arguments.of(VUOTA, false),
+                Arguments.of("Roman Protasevič", true),
+                Arguments.of("Aldelmo di Malmesbury", true),
+                Arguments.of("Aelfric il grammatico", true),
+                Arguments.of("Werburga", true),
+                Arguments.of("Bernart Arnaut d'Armagnac", true),
+                Arguments.of("Elfleda di Whitby", true),
+                Arguments.of("Gaetano Anzalone", true),
+                Arguments.of("Colin Campbell (generale)", true),
+                Arguments.of("Louis Winslow Austin", true),
+                Arguments.of("Regno di Napoli (1908-1745)", false),
+                Arguments.of("Regno di Napoli (1806-1815)", false),
+                Arguments.of("Rossi", false)
+        );
+    }
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -75,6 +126,10 @@ public abstract class WikiTest extends AlgosTest {
         super.initMocks();
 
         assertNotNull(wikiBotService);
+        assertNotNull(elaboraService);
+        assertNotNull(didascaliaService);
+        assertNotNull(bioService);
+        assertNotNull(bioBackend);
     }
 
     /**
@@ -100,6 +155,7 @@ public abstract class WikiTest extends AlgosTest {
         previstoRisultato = null;
         ottenutoRisultato = null;
         wrapBio = null;
+        bio = null;
     }
 
     protected void printRisultato(WResult result) {
@@ -138,6 +194,23 @@ public abstract class WikiTest extends AlgosTest {
             System.out.println(String.format("Wrap type: %s", wrap.getType()));
             System.out.println(String.format("Wrap templBio: %s", textService.isValid(wrap.getTemplBio()) ? "valido" : "non esiste"));
         }
+    }
+
+    protected void printDidascalia(final String sorgente, final String sorgente2, final String sorgente3, final String ottenuto) {
+        System.out.println(VUOTA);
+        System.out.println(String.format("Titolo effettivo della voce: %s", sorgente));
+        System.out.println(String.format("Nome: %s", sorgente2));
+        System.out.println(String.format("Cognome: %s", sorgente3));
+        System.out.println(String.format("Didascalia: %s", ottenuto));
+    }
+
+    protected String getMax(String message) {
+        message = message.length() < MAX ? message : message.substring(0, Math.min(MAX, message.length()));
+        if (message.contains(CAPO)) {
+            message = message.replaceAll(CAPO, SPAZIO);
+        }
+
+        return message;
     }
 
 }

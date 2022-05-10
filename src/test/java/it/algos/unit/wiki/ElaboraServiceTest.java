@@ -29,6 +29,7 @@ import org.springframework.boot.test.context.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("wiki")
 @DisplayName("ElaboraService - Elaborazione delle biografie.")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ElaboraServiceTest extends WikiTest {
@@ -257,11 +258,6 @@ public class ElaboraServiceTest extends WikiTest {
 
         //--reindirizzo l'istanza della superclasse
         service = elaboraService;
-
-//        service.mongo = mongoService;
-//        service.text = textService;
-//        service.annotation = annotationService;
-//        service.wikiBotService = wikiBotService;
     }
 
 
@@ -283,7 +279,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "NOMI")
     @Order(1)
     @DisplayName("1 - fixNome (come stringa)")
-    void testWithStringParameterNome(String nome) {
+    void fixNome(String nome) {
         System.out.println("1 - fixNome (come stringa)");
 
         sorgente = nome;
@@ -296,7 +292,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "COGNOMI")
     @Order(2)
     @DisplayName("2 - fixCognome (come stringa)")
-    void testWithStringParameterCognome(String cognome) {
+    void fixCognome(String cognome) {
         System.out.println("2 - fixCognome (come stringa)");
 
         sorgente = cognome;
@@ -335,7 +331,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "GIORNI")
     @Order(4)
     @DisplayName("4 - fixGiorno (come stringa)")
-    void testWithStringParameterGiorno(String giorno) {
+    void fixGiorno(String giorno) {
         System.out.println("4 - fixGiorno (come stringa)");
 
         sorgente = giorno;
@@ -348,7 +344,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "GIORNI")
     @Order(5)
     @DisplayName("5 - fixGiornoLink (come Giorno esistente)")
-    void testWithStringParameterGiornoLink(String giorno) {
+    void fixGiornoLink(String giorno) {
         System.out.println("5 - fixGiornoLink (come Giorno esistente)");
 
         sorgente = giorno;
@@ -364,7 +360,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "GIORNI")
     @Order(6)
     @DisplayName("6 - fixGiornoValido (come stringa)")
-    void testWithStringParameterGiornoValido(String giorno) {
+    void fixGiornoValido(String giorno) {
         System.out.println("6 - fixGiornoValido (come stringa)");
 
         sorgente = giorno;
@@ -377,7 +373,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "ANNI")
     @Order(7)
     @DisplayName("7 - fixAnno (come stringa)")
-    void testWithStringParameterAnno(String anno) {
+    void fixAnno(String anno) {
         System.out.println("7 - fixAnno (come stringa)");
 
         sorgente = anno;
@@ -391,7 +387,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "ANNI")
     @Order(8)
     @DisplayName("8 - fixAnnoLink (come Anno esistente)")
-    void testWithStringParameterAnnoLink(String anno) {
+    void fixAnnoLink(String anno) {
         System.out.println("8 - fixAnnoLink (come Anno esistente)");
 
         sorgente = anno;
@@ -404,23 +400,23 @@ public class ElaboraServiceTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
-    @MethodSource(value = "ANNI")
-    @Order(9)
-    @DisplayName("9 - fixAnnoValido (come stringa)")
-    void testWithStringParameterAnnoValido(String anno) {
-        System.out.println("9 - fixAnnoValido (come stringa)");
-
-        sorgente = anno;
-        ottenuto = service.fixAnno(sorgente);
-        printNome(sorgente, ottenuto);
-    }
+//    @ParameterizedTest
+//    @MethodSource(value = "ANNI")
+//    @Order(9)
+//    @DisplayName("9 - fixAnnoValido (come stringa)")
+//    void fixAnno(String anno) {
+//        System.out.println("9 - fixAnnoValido (come stringa)");
+//
+//        sorgente = anno;
+//        ottenuto = service.fixAnno(sorgente);
+//        printNome(sorgente, ottenuto);
+//    }
 
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA_ELABORA")
     @Order(10)
     @DisplayName("10 - fixAttivita (come stringa)")
-    void testWithStringParameterAttivita(String attivita) {
+    void fixAttivita(String attivita) {
         System.out.println("10 - fixAttivita (come stringa)");
 
         sorgente = attivita;
@@ -429,28 +425,28 @@ public class ElaboraServiceTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_ELABORA")
-    @Order(11)
-    @DisplayName("11 - fixAttivitaLink (come Attivita esistente)")
-    void testWithStringParameterAttivitaLink(String attivita) {
-        System.out.println("11 - fixAttivitaLink (come Attivita esistente)");
-
-        sorgente = attivita;
-        ottenutoAttivita = null;
-        try {
-//            ottenutoAttivita = service.fixAttivita(sorgente);
-        } catch (Exception unErrore) {
-        }
-        printAttivita(sorgente, ottenutoAttivita);
-    }
+//    @ParameterizedTest
+//    @MethodSource(value = "ATTIVITA_ELABORA")
+//    @Order(11)
+//    @DisplayName("11 - fixAttivitaLink (come Attivita esistente)")
+//    void testWithStringParameterAttivitaLink(String attivita) {
+//        System.out.println("11 - fixAttivitaLink (come Attivita esistente)");
+//
+//        sorgente = attivita;
+//        ottenutoAttivita = null;
+//        try {
+//            ottenutoAttivita = service.fixAttivitaLink(sorgente);
+//        } catch (Exception unErrore) {
+//        }
+//        printAttivita(sorgente, ottenutoAttivita);
+//    }
 
 
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA_ELABORA")
     @Order(12)
     @DisplayName("12 - fixAttivitaValida (come stringa)")
-    void testWithStringParameterAttivitaValida(String attivita) {
+    void fixAttivitaValida(String attivita) {
         System.out.println("12 - fixAttivitaValida (come stringa)");
 
         sorgente = attivita;
@@ -463,7 +459,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "NAZIONALITA")
     @Order(13)
     @DisplayName("13 - fixNazionalita (come stringa)")
-    void testWithStringParameterNazionalita(String nazionalita) {
+    void fixNazionalita(String nazionalita) {
         System.out.println("13 - fixNazionalita (come stringa)");
 
         sorgente = nazionalita;
@@ -476,7 +472,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "NAZIONALITA")
     @Order(14)
     @DisplayName("14 - fixNazionalitaLink (come Nazionalita esistente)")
-    void testWithStringParameterNazionalitaLink(String nazionalita) {
+    void fixNazionalitaLink(String nazionalita) {
         System.out.println("14 - fixNazionalitaLink (come Nazionalita esistente)");
 
         sorgente = nazionalita;
@@ -493,7 +489,7 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "NAZIONALITA")
     @Order(15)
     @DisplayName("15 - fixNazionalitaValida (come stringa)")
-    void testWithStringParameterNazionalitaValida(String nazionalita) {
+    void fixNazionalitaValida(String nazionalita) {
         System.out.println("15 - fixNazionalitaValida (come stringa)");
 
         sorgente = nazionalita;
