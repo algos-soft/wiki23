@@ -7,6 +7,7 @@ import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.login.*;
 import it.algos.wiki23.backend.service.*;
 import static it.algos.wiki23.backend.service.WikiApiService.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -123,13 +124,13 @@ public abstract class AQuery {
     @Autowired
     public LogService logger;
 
-    //    /**
-    //     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-    //     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-    //     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-    //     */
-    //    @Autowired
-    //    public BotLogin botLogin;
+        /**
+         * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+         * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+         * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+         */
+        @Autowired
+        public BotLogin botLogin;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -163,7 +164,7 @@ public abstract class AQuery {
     @Autowired
     public JSonService jSonService;
 
-    //    public QueryAssert queryAssert;
+//        public QueryAssert queryAssert;
 
     // ci metto tutti i cookies restituiti da URLConnection.responses
     protected Map<String, Object> cookies;
@@ -216,7 +217,7 @@ public abstract class AQuery {
         }
 
         result.setWikiTitle(wikiTitleGrezzo);
-        return requestGet(result,pathQuery + fixWikiTitle(wikiTitleGrezzo));
+        return requestGet(result, pathQuery + fixWikiTitle(wikiTitleGrezzo));
     }
 
     /**
@@ -245,7 +246,7 @@ public abstract class AQuery {
         }
 
         result.setPageid(pageid);
-        return requestGet(result,pathQuery + pageid);
+        return requestGet(result, pathQuery + pageid);
     }
 
 
@@ -256,7 +257,7 @@ public abstract class AQuery {
      *
      * @return testo grezzo della risposta in formato JSON
      */
-    protected WResult requestGet(WResult result,final String urlDomain) {
+    protected WResult requestGet(WResult result, final String urlDomain) {
         URLConnection urlConn;
         String urlResponse;
         result.setUrlRequest(urlDomain);
@@ -432,13 +433,15 @@ public abstract class AQuery {
         JSONObject jsonPageZero = null;
         JSONArray jsonRevisions = null;
         JSONObject jsonRevZero = null;
+        JSONObject jsonCategory = null;
         String stringTimestamp = VUOTA;
         JSONObject jsonSlots = null;
         JSONObject jsonMain = null;
         long pageId = 0;
+        Long pages=0L;
         String wikiTitle;
         String content = VUOTA;
-        String tmplBio;
+        //        String tmplBio;
         WrapBio wrap;
         JSONObject jsonAll = (JSONObject) JSONValue.parse(rispostaDellaQuery);
 
@@ -449,7 +452,10 @@ public abstract class AQuery {
         if (jsonAll != null && jsonAll.get(KEY_JSON_VALID) != null) {
             if (!(boolean) jsonAll.get(KEY_JSON_VALID)) {
                 result.setErrorCode("batchcomplete=false");
-                result.setErrorMessage(String.format("Qualcosa non ha funzionato nella lettura delle pagina wiki '%s'", result.getWikiTitle()));
+                result.setErrorMessage(String.format(
+                        "Qualcosa non ha funzionato nella lettura della pagina wiki '%s'",
+                        result.getWikiTitle()
+                ));
                 return result;
             }
         }
@@ -523,47 +529,43 @@ public abstract class AQuery {
         if (jsonMain != null && textService.isValid(jsonMain.get(KEY_JSON_CONTENT))) {
             content = (String) jsonMain.get(KEY_JSON_CONTENT);
         }
-        if (textService.isEmpty(content)) {
-            result.setErrorCode("La query non è valida");
-            wrap = result.getWrap().valida(false).type(AETypePage.indeterminata);
-            result.setWrap(wrap);
+
+        if (textService.isValid(content)) {
+            result.wikiText(content);
+
+            //--contenuto inizia col tag della disambigua
+            if (content.startsWith(TAG_DISAMBIGUA_UNO) || content.startsWith(TAG_DISAMBIGUA_DUE)) {
+                result.setValido(false);
+                result.setErrorCode("disambigua");
+                result.setErrorMessage(String.format("La pagina wiki '%s' è una disambigua", result.getWikiTitle()));
+                wrap = result.getWrap().valida(false).type(AETypePage.disambigua);
+                result.setWrap(wrap);
+                return result;
+            }
+
+            //--contenuto inizia col tag del redirect
+            if (content.startsWith(TAG_REDIRECT_UNO) || content.startsWith(TAG_REDIRECT_DUE) || content.startsWith(TAG_REDIRECT_TRE) || content.startsWith(TAG_REDIRECT_QUATTRO)) {
+                result.setValido(false);
+                result.setErrorCode("redirect");
+                result.setErrorMessage(String.format("La pagina wiki '%s' è un redirect", result.getWikiTitle()));
+                wrap = result.getWrap().valida(false).type(AETypePage.redirect);
+                result.setWrap(wrap);
+                return result;
+            }
         }
 
-        //--contenuto inizia col tag della disambigua
-        if (content.startsWith(TAG_DISAMBIGUA_UNO) || content.startsWith(TAG_DISAMBIGUA_DUE)) {
-            result.setValido(false);
-            result.setErrorCode("disambigua");
-            result.setErrorMessage(String.format("La pagina wiki '%s' è una disambigua", result.getWikiTitle()));
-            wrap = result.getWrap().valida(false).type(AETypePage.disambigua);
-            result.setWrap(wrap);
-            return result;
-        }
+        //--cat info
+        if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_CATEGORY) != null) {
+            jsonCategory = (JSONObject) jsonPageZero.get(KEY_JSON_CATEGORY);
 
-        //--contenuto inizia col tag del redirect
-        if (content.startsWith(TAG_REDIRECT_UNO) || content.startsWith(TAG_REDIRECT_DUE) || content.startsWith(TAG_REDIRECT_TRE) || content.startsWith(TAG_REDIRECT_QUATTRO)) {
-            result.setValido(false);
-            result.setErrorCode("redirect");
-            result.setErrorMessage(String.format("La pagina wiki '%s' è un redirect", result.getWikiTitle()));
-            wrap = result.getWrap().valida(false).type(AETypePage.redirect);
-            result.setWrap(wrap);
-            return result;
-        }
-
-        //--controllo l'esistenza del template bio
-        //--estrazione del template
-        tmplBio = wikiBot.estraeTmpl(content);
-        if (textService.isValid(tmplBio)) {
-            result.setErrorCode(VUOTA);
-            result.setErrorMessage(VUOTA);
-            result.setCodeMessage("valida");
-            result.setValidMessage(String.format("La pagina wiki '%s' è una biografia", result.getWikiTitle()));
-            wrap = result.getWrap().type(AETypePage.testoConTmpl).templBio(tmplBio).time(stringTimestamp);
-            result.setWrap(wrap);
-        }
-        else {
-            result.setErrorCode("manca tmpl Bio");
-            result.setErrorMessage(String.format("La pagina wiki '%s' esiste ma non è una biografia", result.getWikiTitle()));
-            wrap = result.getWrap().valida(false).type(AETypePage.testoSenzaTmpl);
+            if (jsonCategory != null && jsonCategory.get(KEY_JSON_PAGES) != null) {
+                pages=  (Long) jsonCategory.get(KEY_JSON_PAGES);
+            }
+            if (pages>0) {
+                result.setIntValue(pages.intValue());
+            }
+            result.setValidMessage(String.format("Trovata la %s", result.getWikiTitle()));
+            wrap = new WrapBio().valida(true).title(result.getWikiTitle()).pageid(pageId).type(AETypePage.categoria);
             result.setWrap(wrap);
         }
 

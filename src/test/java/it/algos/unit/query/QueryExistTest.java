@@ -3,6 +3,7 @@ package it.algos.unit.query;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,6 +64,7 @@ public class QueryExistTest extends WikiTest {
     @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
         System.out.println(("1- Costruttore base senza parametri"));
+        assertTrue(istanza == null);
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
 
@@ -75,6 +77,7 @@ public class QueryExistTest extends WikiTest {
     @DisplayName("2- Test per una pagina inesistente")
     void nonEsiste() {
         System.out.println(("2- Test per una pagina inesistente"));
+        assertTrue(istanza == null);
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
 
@@ -82,6 +85,8 @@ public class QueryExistTest extends WikiTest {
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
+        assertEquals(AETypePage.nonEsiste,ottenutoRisultato.getWrap().getType());
+
         ottenutoBooleano = istanza.isEsiste(sorgente);
         assertFalse(ottenutoBooleano);
 
@@ -100,6 +105,7 @@ public class QueryExistTest extends WikiTest {
         ottenutoRisultato = appContext.getBean(QueryExist.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
+        assertEquals(AETypePage.indeterminata,ottenutoRisultato.getWrap().getType());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Trovata la pagina [[%s]] su wikipedia", sorgente));

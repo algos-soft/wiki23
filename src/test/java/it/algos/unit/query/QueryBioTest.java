@@ -62,6 +62,7 @@ public class QueryBioTest extends WikiTest {
     @Order(1)
     @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
+        assertTrue(istanza == null);
         istanza = appContext.getBean(QueryBio.class);
         assertNotNull(istanza);
 
@@ -74,6 +75,7 @@ public class QueryBioTest extends WikiTest {
     @DisplayName("2- Test per una pagina inesistente")
     void nonEsiste() {
         System.out.println(("2- Test per una pagina inesistente"));
+        assertTrue(istanza == null);
         istanza = appContext.getBean(QueryBio.class);
         assertNotNull(istanza);
 
@@ -81,9 +83,11 @@ public class QueryBioTest extends WikiTest {
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
+
         wrapBio = istanza.getWrap(sorgente);
         assertNotNull(wrapBio);
         assertFalse(wrapBio.isValida());
+        assertEquals(AETypePage.nonEsiste, wrapBio.getType());
 
         System.out.println(VUOTA);
         System.out.println(String.format("La pagina [[%s]] non esiste su wikipedia", sorgente));
@@ -114,12 +118,18 @@ public class QueryBioTest extends WikiTest {
         System.out.println(("4- Test per una biografia esistente (getWrap)"));
 
         sorgente = PAGINA_ESISTENTE_DUE;
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
         wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgente);
+        assertNotNull(wrapBio);
         assertTrue(wrapBio.isValida());
+        assertEquals(AETypePage.testoConTmpl, wrapBio.getType());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", wrapBio.getTitle()));
-        printWrapBio(wrapBio);
+        printRisultato(ottenutoRisultato);
     }
 
 
@@ -130,12 +140,18 @@ public class QueryBioTest extends WikiTest {
         System.out.println(("5- Test per una pagina esistente ma non bio"));
 
         sorgente = PAGINA_ESISTENTE_TRE;
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+
         wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgente);
+        assertNotNull(wrapBio);
         assertFalse(wrapBio.isValida());
+        assertEquals(AETypePage.testoSenzaTmpl, wrapBio.getType());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esiste la pagina [[%s]] ma non è una biografia", sorgente));
-        printWrapBio(wrapBio);
+        printRisultato(ottenutoRisultato);
     }
 
     @Test
@@ -145,12 +161,18 @@ public class QueryBioTest extends WikiTest {
         System.out.println(("6- Test tramite pageid per una pagina esistente ma non biografia"));
 
         sorgenteIntero = 2741616;
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgenteIntero);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+
         wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgenteIntero);
+        assertNotNull(wrapBio);
         assertFalse(wrapBio.isValida());
+        assertEquals(AETypePage.testoSenzaTmpl, wrapBio.getType());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esiste la pagina [[%s]] ma non è una biografia", sorgente));
-        printWrapBio(wrapBio);
+        printRisultato(ottenutoRisultato);
     }
 
 
@@ -161,13 +183,20 @@ public class QueryBioTest extends WikiTest {
         System.out.println(("7- Test tramite pageid per una biografia esistente"));
 
         sorgenteIntero = 4292050;
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgenteIntero);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
         wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgenteIntero);
+        assertNotNull(wrapBio);
         assertTrue(wrapBio.isValida());
+        assertEquals(AETypePage.testoConTmpl, wrapBio.getType());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", wrapBio.getTitle()));
-        printWrapBio(wrapBio);
+        printRisultato(ottenutoRisultato);
     }
+
     @Test
     @Order(8)
     @DisplayName("8- Test per una pagina di disambigua")
@@ -175,13 +204,18 @@ public class QueryBioTest extends WikiTest {
         System.out.println(("8- Test per una pagina di disambigua"));
 
         sorgente = "Francisco Cabral";
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+
         wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgente);
+        assertNotNull(wrapBio);
         assertFalse(wrapBio.isValida());
-        assertEquals(AETypePage.disambigua,wrapBio.getType());
+        assertEquals(AETypePage.disambigua, wrapBio.getType());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esiste la pagina [[%s]] ma è una disambigua", sorgente));
-        printWrapBio(wrapBio);
+        printRisultato(ottenutoRisultato);
     }
 
     @Test
@@ -191,13 +225,18 @@ public class QueryBioTest extends WikiTest {
         System.out.println(("9- Test per una biografia esistente"));
 
         sorgente = "Francisco Cabral (tennista)";
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
         wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgente);
+        assertNotNull(wrapBio);
         assertTrue(wrapBio.isValida());
-        assertEquals(AETypePage.testoConTmpl,wrapBio.getType());
+        assertEquals(AETypePage.testoConTmpl, wrapBio.getType());
 
         System.out.println(VUOTA);
-        System.out.println(String.format("Esiste la pagina [[%s]] ma è una disambigua", sorgente));
-        printWrapBio(wrapBio);
+        System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", wrapBio.getTitle()));
+        printRisultato(ottenutoRisultato);
     }
 
     /**

@@ -22,6 +22,7 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.ui.dialog.*;
+import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.annotation.*;
 import org.vaadin.crudui.crud.*;
 
@@ -100,8 +101,10 @@ public class BioView extends WikiView {
         super.fixAlert();
         String categoria;
         int numBio = 0;
-
+        WResult result;
         categoria = WPref.categoriaBio.getStr();
+        result = appContext.getBean(QueryInfoCat.class).urlRequest(categoria);
+        numBio = result.getIntValue();
 
         Anchor anchor = new Anchor(PATH_CATEGORIA + categoria, "Categoria: " + categoria);
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());

@@ -148,6 +148,7 @@ public class Wiki23Cost {
     public static final String KEY_JSON_TITLE = "title";
 
     public static final String KEY_JSON_MISSING = "missing";
+
     public static final String KEY_JSON_MISSING_TRUE = "missing=true";
 
     public static final String KEY_JSON_REVISIONS = "revisions";
@@ -163,6 +164,8 @@ public class Wiki23Cost {
     public static final String KEY_JSON_VALID = "batchcomplete";
 
     public static final String KEY_JSON_MEMBERS = "categorymembers";
+
+    public static final String KEY_JSON_CATEGORY = "categoryinfo";
 
     public static final String KEY_JSON_CODE = "code";
 
@@ -185,4 +188,11 @@ public class Wiki23Cost {
 
     public static final String KEY_MAP_GRAFFE_LISTA_WRAPPER = "keyMapGraffeListaWrapper";
 
+    private static final String PROPERTY_ERROR = "In application.properties non esiste il valore di ";
+
+    public static final String PROPERTY_LOGIN_NAME = PROPERTY_ERROR + "loginName";
+
+    public static final String PROPERTY_LOGIN_PASSWORD = PROPERTY_ERROR + "loginPassword";
+
+public static final String SUCCESS_LOGIN_RESPONSE="lguserid: 124123, lgusername: Biobot";
 }

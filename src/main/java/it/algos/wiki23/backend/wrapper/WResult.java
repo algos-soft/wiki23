@@ -101,6 +101,11 @@ public class WResult extends AResult {
         return this;
     }
 
+    public WResult wikiText(final String wikiText) {
+        this.wikiText = wikiText;
+        return this;
+    }
+
     public WrapBio getWrap() {
         return wrap;
     }
@@ -248,6 +253,14 @@ public class WResult extends AResult {
 
     public void setPageid(long pageid) {
         this.pageid = pageid;
+    }
+
+    public long getInizio() {
+        return inizio;
+    }
+
+    public long getFine() {
+        return fine;
     }
 
 }

@@ -69,7 +69,15 @@ public class DateService extends AbstractService {
      * @return tempo esatto in millisecondi in forma leggibile
      */
     public String deltaTextEsatto(final long inizio) {
-        long fine = System.currentTimeMillis();
+        return deltaTextEsatto(inizio, System.currentTimeMillis());
+    }
+
+    /**
+     * Restituisce come stringa (intelligente) un durata espressa in long <br>
+     *
+     * @return tempo esatto in millisecondi in forma leggibile
+     */
+    public String deltaTextEsatto(final long inizio, final long fine) {
         return textService.format(fine - inizio) + MILLI_SECONDI;
     }
 

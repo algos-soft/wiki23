@@ -199,6 +199,7 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("List value: %s", lista));
         System.out.println(String.format("Map value: %s", result.getMappa()));
         System.out.println(String.format("Risultato ottenuto in %s", dateService.toText(result.getDurata())));
+        System.out.println(String.format("Risultato ottenuto in %s", dateService.deltaTextEsatto(result.getInizio(),result.getFine())));
         printWrapBio(result.getWrap());
     }
 
@@ -211,6 +212,9 @@ public abstract class WikiTest extends AlgosTest {
             System.out.println(String.format("Wrap pageid: %s", wrap.getPageid()));
             System.out.println(String.format("Wrap type: %s", wrap.getType()));
             System.out.println(String.format("Wrap templBio: %s", textService.isValid(wrap.getTemplBio()) ? "valido" : "non esiste"));
+            if (textService.isValid(wrap.getTemplBio())) {
+                System.out.println(String.format("templBio: %s", getMax(wrap.getTemplBio())));
+            }
         }
     }
 

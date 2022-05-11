@@ -61,6 +61,7 @@ public class QueryInfoCatTest extends WikiTest {
     @Order(1)
     @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
+        assertTrue(istanza == null);
         istanza = appContext.getBean(QueryInfoCat.class);
         assertNotNull(istanza);
 
@@ -77,6 +78,7 @@ public class QueryInfoCatTest extends WikiTest {
         assertNotNull(istanza);
 
         sorgente = CATEGORIA_INESISTENTE;
+        assertTrue(istanza == null);
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
@@ -97,14 +99,31 @@ public class QueryInfoCatTest extends WikiTest {
         ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
+        assertEquals(AETypePage.categoria, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getIntValue() > 0);
 
         System.out.println(VUOTA);
         System.out.println(String.format("Trovata la categoria [[%s]] su wikipedia", sorgente));
         printRisultato(ottenutoRisultato);
     }
 
+    @Test
+    @Order(4)
+    @DisplayName("4- Test per la categoria BioBot")
+    void urlRequest2() {
+        System.out.println(("4- Test per la categoria BioBot"));
 
+        sorgente = CATEGORIA_ESISTENTE_DUE;
+        ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        assertEquals(AETypePage.categoria, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getIntValue() > 0);
 
+        System.out.println(VUOTA);
+        System.out.println(String.format("Trovata la categoria [[%s]] su wikipedia", sorgente));
+        printRisultato(ottenutoRisultato);
+    }
 
 
     /**

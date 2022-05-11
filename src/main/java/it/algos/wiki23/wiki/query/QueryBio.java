@@ -1,9 +1,11 @@
 package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
 import static it.algos.wiki23.backend.service.WikiBotService.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -82,6 +84,48 @@ public class QueryBio extends AQuery {
      */
     public WrapBio getWrap(final long pageid) {
         return urlRequest(pageid).getWrap();
+    }
+
+
+    /**
+     * Elabora la risposta <br>
+     * <p>
+     * Informazioni, contenuto e validità della risposta
+     * Controllo del contenuto (testo) ricevuto
+     */
+    protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
+        result = super.elaboraResponse(result, rispostaDellaQuery);
+        WrapBio wrap;
+        String tmplBio;
+        String content = result.getWikiText();
+
+        //--controllo del 'content'
+        //--controllo l'esistenza del template bio
+        //--estrazione del template
+        if (result.isValido()) {
+            tmplBio = wikiBot.estraeTmpl(content);
+            if (textService.isValid(tmplBio)) {
+                result.setErrorCode(VUOTA);
+                result.setErrorMessage(VUOTA);
+                result.setCodeMessage("valida");
+                result.setValidMessage(String.format("La pagina wiki '%s' è una biografia", result.getWikiTitle()));
+                wrap = result.getWrap().type(AETypePage.testoConTmpl).templBio(tmplBio);
+                result.setWrap(wrap);
+            }
+            else {
+                if (result.getWrap().getType()==AETypePage.disambigua||result.getWrap().getType()==AETypePage.redirect) {
+
+                }
+                else {
+                    result.setErrorCode("manca tmpl Bio");
+                    result.setErrorMessage(String.format("La pagina wiki '%s' esiste ma non è una biografia", result.getWikiTitle()));
+                    wrap = result.getWrap().valida(false).type(AETypePage.testoSenzaTmpl);
+                    result.setWrap(wrap);
+                }
+            }
+        }
+
+        return result;
     }
 
 }
