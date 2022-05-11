@@ -97,7 +97,7 @@ public class WResult extends AResult {
     }
 
     public WResult queryType(final AETypeQuery queryType) {
-        this.queryType = queryType.get();
+        this.queryType = queryType != null ? queryType.get() : VUOTA;
         return this;
     }
 

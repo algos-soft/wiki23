@@ -62,6 +62,8 @@ public class Wiki23Cost {
 
     public static final String QUERY_CAT_INFO = "&prop=categoryinfo";
 
+    public static final String QUERY_CAT_REQUEST = ACTION_QUERY + "&list=categorymembers" + API_CAT;
+
     public static final String WIKI_QUERY_BASE_TITLE = ACTION_QUERY + QUERY_INFO + API_TITLES;
 
     public static final String WIKI_QUERY_BASE_PAGE = ACTION_QUERY + QUERY_INFO + API_PAGEIDS;
@@ -194,5 +196,6 @@ public class Wiki23Cost {
 
     public static final String PROPERTY_LOGIN_PASSWORD = PROPERTY_ERROR + "loginPassword";
 
-public static final String SUCCESS_LOGIN_RESPONSE="lguserid: 124123, lgusername: Biobot";
+    public static final String SUCCESS_LOGIN_RESPONSE = "lguserid: 124123, lgusername: Biobot";
+
 }

@@ -90,6 +90,7 @@ public abstract class AQuery {
     protected static final String CSRF_TOKEN = "csrftoken";
 
     protected static final String TOKENS = "tokens";
+    protected AETypeQuery queryType;
 
     //    /**
     //     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -124,13 +125,13 @@ public abstract class AQuery {
     @Autowired
     public LogService logger;
 
-        /**
-         * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-         * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-         * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-         */
-        @Autowired
-        public BotLogin botLogin;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public BotLogin botLogin;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -164,7 +165,7 @@ public abstract class AQuery {
     @Autowired
     public JSonService jSonService;
 
-//        public QueryAssert queryAssert;
+    //        public QueryAssert queryAssert;
 
     // ci metto tutti i cookies restituiti da URLConnection.responses
     protected Map<String, Object> cookies;
@@ -176,16 +177,14 @@ public abstract class AQuery {
      *
      * @return true se la connessione è valida
      */
-    protected AIResult checkBot(AIResult result) {
-        AIResult assertResult;
+    protected WResult checkBot(WResult result) {
+        WResult assertResult = appContext.getBean(QueryAssert.class).urlRequest();
 
-        //        queryAssert = queryAssert != null ? queryAssert : appContext.getBean(QueryAssert.class);
-        //        assertResult = queryAssert.urlRequest();
-        //        if (assertResult.isErrato()) {
-        //            result.setValido(false);
-        //            result.setErrorCode(assertResult.getErrorCode());
-        //            result.setErrorMessage(assertResult.getErrorMessage());
-        //        }
+        if (!assertResult.isValido()) {
+            result.setValido(false);
+            result.setErrorCode(assertResult.getErrorCode());
+            result.setErrorMessage(assertResult.getErrorMessage());
+        }
 
         return result;
     }
@@ -200,7 +199,7 @@ public abstract class AQuery {
      * @return testo grezzo della risposta in formato JSON
      */
     protected WResult requestGet(final String pathQuery, final String wikiTitleGrezzo) {
-        WResult result = WResult.errato().queryType(AETypeQuery.get);
+        WResult result = WResult.errato().queryType(queryType);
         String message;
 
         if (textService.isEmpty(pathQuery)) {
@@ -438,7 +437,7 @@ public abstract class AQuery {
         JSONObject jsonSlots = null;
         JSONObject jsonMain = null;
         long pageId = 0;
-        Long pages=0L;
+        Long pages = 0L;
         String wikiTitle;
         String content = VUOTA;
         //        String tmplBio;
@@ -559,9 +558,9 @@ public abstract class AQuery {
             jsonCategory = (JSONObject) jsonPageZero.get(KEY_JSON_CATEGORY);
 
             if (jsonCategory != null && jsonCategory.get(KEY_JSON_PAGES) != null) {
-                pages=  (Long) jsonCategory.get(KEY_JSON_PAGES);
+                pages = (Long) jsonCategory.get(KEY_JSON_PAGES);
             }
-            if (pages>0) {
+            if (pages > 0) {
                 result.setIntValue(pages.intValue());
             }
             result.setValidMessage(String.format("Trovata la %s", result.getWikiTitle()));

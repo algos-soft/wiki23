@@ -45,6 +45,7 @@ public class QueryBio extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final String wikiTitleGrezzo) {
+        queryType = AETypeQuery.get;
         return requestGet(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzo);
     }
 
@@ -113,7 +114,7 @@ public class QueryBio extends AQuery {
                 result.setWrap(wrap);
             }
             else {
-                if (result.getWrap().getType()==AETypePage.disambigua||result.getWrap().getType()==AETypePage.redirect) {
+                if (result.getWrap().getType() == AETypePage.disambigua || result.getWrap().getType() == AETypePage.redirect) {
 
                 }
                 else {

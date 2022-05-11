@@ -191,7 +191,7 @@ public class QueryLogin extends AQuery {
      * Recupera il logintoken dalla urlResponse <br>
      */
     protected WResult preliminaryRequestGet() {
-        WResult result = WResult.valido();
+        WResult result = WResult.valido().queryType(AETypeQuery.login);
         String urlDomain = TAG_LOGIN_PRELIMINARY_REQUEST_GET;
         String urlResponse = VUOTA;
         URLConnection urlConn;
@@ -220,7 +220,6 @@ public class QueryLogin extends AQuery {
         JSONObject jsonQuery = null;
         JSONObject jsonTokens = null;
 
-        result.setQueryType(AETypeQuery.login.get());
         result.setPreliminaryResponse(rispostaDellaQuery);
         jsonAll = (JSONObject) JSONValue.parse(rispostaDellaQuery);
 
@@ -372,14 +371,7 @@ public class QueryLogin extends AQuery {
         //--controllo finale tramite una query GET coi cookies che controlla assert=bot
         if (valido) {
             //--controlla l'esistenza e la validità del collegamento come bot
-            //            result=checkBot(result);
-            //            queryAssert = queryAssert != null ? queryAssert : appContext.getBean(QueryAssert.class);
-            //            queryAssert.botLogin = botLogin;
-            //
-            //            assertResult = queryAssert.urlRequest();
-            //            if (assertResult.isErrato()) {
-            //                result = assertResult;
-            //            }
+            result = checkBot(result);
         }
 
         return result;

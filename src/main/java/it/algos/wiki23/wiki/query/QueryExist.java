@@ -46,6 +46,7 @@ public class QueryExist extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final String wikiTitleGrezzo) {
+        queryType = AETypeQuery.get;
         return requestGet(WIKI_QUERY, wikiTitleGrezzo);
     }
 
