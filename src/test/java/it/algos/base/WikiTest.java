@@ -121,6 +121,25 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
+
+    //--titolo
+    //--pagina esistente
+    protected static Stream<Arguments> PAGINE_E_CATEGORIE() {
+        return Stream.of(
+                Arguments.of(null, false),
+                Arguments.of(VUOTA, false),
+                Arguments.of("Roman Protasevič", true),
+                Arguments.of("Louis Winslow Austin", true),
+                Arguments.of("Categoria:Nati nel 1435", true),
+                Arguments.of("Categoria:Nati nel 2387", false),
+                Arguments.of("Categoria:BioBot", true),
+                Arguments.of("Categoria:Supercalifragilistichespiralidoso", false),
+                Arguments.of("Supercalifragilistichespiralidoso", true),
+                Arguments.of("Regno di Napoli (1908-1745)", false),
+                Arguments.of("Rossi", true)
+        );
+    }
+
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>

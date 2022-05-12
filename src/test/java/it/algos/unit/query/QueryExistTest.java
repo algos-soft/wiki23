@@ -7,6 +7,8 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 import org.springframework.boot.test.context.*;
 
 /**
@@ -112,23 +114,32 @@ public class QueryExistTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-    @Test
-    @Order(4)
-    @DisplayName("4- Test per una pagina esistente (isEsiste)")
-    void isEsiste() {
-        System.out.println(("4- Test per una pagina esistente (isEsiste)"));
 
-        sorgente = PAGINA_ESISTENTE_DUE;
+    @ParameterizedTest
+    @MethodSource(value = "PAGINE_E_CATEGORIE")
+    @Order(4)
+    @DisplayName("4- Test per pagine e categorie (isEsiste)")
+        //--titolo
+        //--pagina esistente
+    void isEsiste(final String wikiTitleVoceOCategoria, final boolean paginaEsistente) {
+        System.out.println(("4- Test per pagine e categorie (isEsiste)"));
+
+        sorgente = wikiTitleVoceOCategoria;
         ottenutoBooleano = appContext.getBean(QueryExist.class).isEsiste(sorgente);
-        assertTrue(ottenutoBooleano);
+        assertEquals(paginaEsistente,ottenutoBooleano);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("Trovata la pagina [[%s]] su wikipedia", sorgente));
+        if (ottenutoBooleano) {
+            System.out.println(String.format("Trovata la pagina/categoria [[%s]] su wikipedia", sorgente));
+        }
+        else {
+            System.out.println(String.format("La pagina/categoria [[%s]] non esiste su wikipedia", sorgente));
+        }
     }
 
-    /**
-     * Qui passa al termine di ogni singolo test <br>
-     */
+        /**
+         * Qui passa al termine di ogni singolo test <br>
+         */
     @AfterEach
     void tearDown() {
     }

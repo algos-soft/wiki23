@@ -98,7 +98,7 @@ public class QueryBio extends AQuery {
         result = super.elaboraResponse(result, rispostaDellaQuery);
         WrapBio wrap;
         String tmplBio;
-        String content = (String)mappaUrlResponse.get(KEY_JSON_CONTENT);
+        String content = (String) mappaUrlResponse.get(KEY_JSON_CONTENT);
 
         //--controllo del 'content'
         //--controllo l'esistenza del template bio

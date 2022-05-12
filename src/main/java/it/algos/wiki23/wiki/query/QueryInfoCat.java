@@ -39,7 +39,7 @@ public class QueryInfoCat extends AQuery {
      */
     public WResult urlRequest(final String wikiTitleGrezzo) {
         queryType = AETypeQuery.get;
-        return requestGet(WIKI_QUERY_CAT_INFO, wikiTitleGrezzo);
+        return requestGet(WIKI_QUERY_CAT_INFO, CAT+wikiTitleGrezzo);
     }
 
 

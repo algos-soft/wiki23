@@ -173,6 +173,18 @@ public abstract class AQuery {
 
     protected LinkedHashMap<String, Object> mappaUrlResponse;
 
+
+    /**
+     * Controlla l'esistenza della pagina/categoria <br>
+     *
+     * @param wikiTitleGrezzo della pagina/categoria wiki (necessita di codifica) usato nella urlRequest
+     *
+     * @return true se la pagina/categoria esiste
+     */
+    protected boolean checkEsistenza(final String wikiTitleGrezzo) {
+        return appContext.getBean(QueryExist.class).isEsiste(wikiTitleGrezzo);
+    }
+
     /**
      * Controlla l'esistenza e la validità del collegamento come bot <br>
      *
@@ -216,6 +228,18 @@ public abstract class AQuery {
             logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
             result.errorMessage(message);
             return result;
+        }
+
+        //--richiama una query specializzata per controllare l'esistenza della pagina/categoria
+        //--esclude la query stessa per evitare un loop
+        if (this.getClass() != QueryExist.class) {
+            if (!appContext.getBean(QueryExist.class).isEsiste(wikiTitleGrezzo)) {
+                message = "La pagina/categoria non esiste su wikipedia";
+                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+                result.errorMessage(message);
+                result.setWrap(new WrapBio().valida(false).title(wikiTitleGrezzo).type(AETypePage.nonEsiste));
+                return result;
+            }
         }
 
         result.setWikiTitle(wikiTitleGrezzo);
