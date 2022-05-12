@@ -70,80 +70,19 @@ public class QueryExist extends AQuery {
      * Controllo del contenuto (testo) ricevuto
      */
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
-        JSONObject jsonQuery = null;
-        JSONArray jsonPages = null;
-        JSONObject jsonPageZero = null;
+        result = super.elaboraResponse(result, rispostaDellaQuery);
         String message;
-        WrapBio wrap;
-        JSONObject jsonAll = (JSONObject) JSONValue.parse(rispostaDellaQuery);
 
-        //--fissa durata
-        result.setFine();
-
-        //--controllo del batchcomplete
-        if (jsonAll != null && jsonAll.get(KEY_JSON_VALID) != null) {
-            if (!(boolean) jsonAll.get(KEY_JSON_VALID)) {
-                result.setErrorCode("batchcomplete=false");
-                result.setErrorMessage(String.format("Qualcosa non ha funzionato nella lettura delle pagina wiki '%s'", result.getWikiTitle()));
-                return result;
-            }
-        }
-
-        //--controllo dell'errore
-        if (jsonAll != null && jsonAll.get(KEY_JSON_ERROR) != null && jsonAll.get(KEY_JSON_ERROR) instanceof JSONObject jsonError) {
-            if (jsonError != null && jsonError.get(KEY_JSON_CODE) != null && jsonError.get(KEY_JSON_CODE) instanceof String errorMessage) {
-                result.setErrorCode(errorMessage);
-            }
-            if (jsonError != null && jsonError.get(KEY_JSON_INFO) != null && jsonError.get(KEY_JSON_INFO) instanceof String infoMessage) {
-                result.setErrorMessage(infoMessage);
-            }
-            return result;
-        }
-
-        if (jsonAll != null && jsonAll.get(KEY_JSON_QUERY) != null) {
-            jsonQuery = (JSONObject) jsonAll.get(KEY_JSON_QUERY);
-        }
-
-        if (jsonQuery != null && jsonQuery.get(KEY_JSON_PAGES) != null) {
-            jsonPages = (JSONArray) jsonQuery.get(KEY_JSON_PAGES);
-        }
-
-        if (jsonPages != null && jsonPages.size() > 0) {
-            jsonPageZero = (JSONObject) jsonPages.get(0);
-        }
-
-        if (jsonPageZero == null) {
-            message = "jsonPageZero mancante";
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return WResult.errato(message);
-        }
-
-        //--controllo del missing
-        if (jsonPageZero.get(KEY_JSON_MISSING) != null) {
-            result.setValido(false);
-            result.setErrorCode("missing=true");
-            result.setErrorMessage(String.format("La pagina wiki '%s' non esiste", result.getWikiTitle()));
-            wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.nonEsiste);
-            result.setWrap(wrap);
+        if ((boolean) mappaUrlResponse.get(KEY_JSON_BATCH)) {
             return result;
         }
         else {
-            if (jsonPageZero.get(KEY_JSON_PAGE_ID) != null && jsonPageZero.get(KEY_JSON_TITLE) != null) {
-                wrap = new WrapBio().valida(true).title(result.getWikiTitle()).type(AETypePage.indeterminata);
-                if (jsonPageZero.get(KEY_JSON_TITLE) instanceof String wikiTitle) {
-                    wrap = wrap.title(wikiTitle);
-                }
-                if (jsonPageZero.get(KEY_JSON_PAGE_ID) instanceof Long pageId) {
-                    wrap = wrap.pageid(pageId);
-                }
-                message = String.format("La pagina %s esiste ma è di type %s", result.getWikiTitle(), AETypePage.indeterminata);
-                result.setValidMessage(message);
-                result.setWrap(wrap);
-                return result;
-            }
+            result.setErrorCode("batchcomplete=false");
+            message = String.format("Qualcosa non ha funzionato nella lettura della pagina wiki '%s'", result.getWikiTitle());
+            result.setErrorMessage(message);
+            return result;
         }
 
-        return result;
     }
 
 }

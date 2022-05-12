@@ -52,7 +52,11 @@ public class Wiki23Cost {
 
     public static final String API_PAGEIDS = "&pageids=";
 
-    public static final String API_CAT = "&cmtitle=Category:";
+    public static final String CAT = "Category:";
+
+    public static final String API_CAT = "&cmtitle=" + CAT;
+
+    public static final String API_CAT_INFO = API_TITLES + CAT;
 
     public static final String WIKI_QUERY = ACTION_QUERY + API_TITLES;
 
@@ -70,7 +74,7 @@ public class Wiki23Cost {
 
     public static final String WIKI_QUERY_ALL = ACTION_QUERY + QUERY_INFO_ALL + API_TITLES;
 
-    public static final String WIKI_QUERY_CAT_INFO = ACTION_QUERY + QUERY_CAT_INFO + API_CAT;
+    public static final String WIKI_QUERY_CAT_INFO = ACTION_QUERY + QUERY_CAT_INFO + API_CAT_INFO;
 
     //
     //    public static final String API = "https://it.wikipedia.org/w/api.php?&format=json&formatversion=2";
@@ -143,6 +147,8 @@ public class Wiki23Cost {
 
     public static final String KEY_JSON_CONTINUE_CM = "cmcontinue";
 
+    public static final String KEY_JSON_ALL = "all";
+
     public static final String KEY_JSON_PAGES = "pages";
 
     public static final String KEY_JSON_PAGE_ID = "pageid";
@@ -157,21 +163,28 @@ public class Wiki23Cost {
 
     public static final String KEY_JSON_TIMESTAMP = "timestamp";
 
+    public static final String KEY_JSON_LOGIN = "login";
+
     public static final String KEY_JSON_SLOTS = "slots";
 
     public static final String KEY_JSON_MAIN = "main";
 
     public static final String KEY_JSON_CONTENT = "content";
 
-    public static final String KEY_JSON_VALID = "batchcomplete";
 
     public static final String KEY_JSON_MEMBERS = "categorymembers";
 
     public static final String KEY_JSON_CATEGORY = "categoryinfo";
 
+    public static final String KEY_JSON_CATEGORY_PAGES = "categorypages";
+
     public static final String KEY_JSON_CODE = "code";
 
     public static final String KEY_JSON_INFO = "info";
+
+    public static final String KEY_JSON_ZERO = "zero";
+
+    public static final String KEY_JSON_BATCH = "batchcomplete";
 
 
     public static final String KEY_MAP_GRAFFE_ESISTONO = "keyMapGraffeEsistono";

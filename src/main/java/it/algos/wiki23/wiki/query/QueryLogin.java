@@ -320,15 +320,9 @@ public class QueryLogin extends AQuery {
      * @return true se il collegamento come bot è confermato
      */
     protected WResult elaboraSecondaryResponse(WResult result, final String rispostaDellaQuery) {
-        WResult assertResult;
-        result.setFine();//--fissa durata
-        JSONObject jsonLogin = null;
-        String jsonResult = VUOTA;
-        JSONObject jsonAll = (JSONObject) JSONValue.parse(rispostaDellaQuery);
-
-        if (jsonAll != null && jsonAll.get(LOGIN) != null) {
-            jsonLogin = (JSONObject) jsonAll.get(LOGIN);
-        }
+        result = super.elaboraResponse(result, rispostaDellaQuery);
+        JSONObject jsonLogin = (JSONObject) mappaUrlResponse.get(KEY_JSON_LOGIN);
+        String jsonResult = null;
 
         if (jsonLogin != null) {
             result.setResponse(jsonLogin.toString());

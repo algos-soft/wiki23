@@ -98,12 +98,12 @@ public class QueryBio extends AQuery {
         result = super.elaboraResponse(result, rispostaDellaQuery);
         WrapBio wrap;
         String tmplBio;
-        String content = result.getWikiText();
+        String content = (String)mappaUrlResponse.get(KEY_JSON_CONTENT);
 
         //--controllo del 'content'
         //--controllo l'esistenza del template bio
         //--estrazione del template
-        if (result.isValido()) {
+        if (textService.isValid(content)) {
             tmplBio = wikiBot.estraeTmpl(content);
             if (textService.isValid(tmplBio)) {
                 result.setErrorCode(VUOTA);

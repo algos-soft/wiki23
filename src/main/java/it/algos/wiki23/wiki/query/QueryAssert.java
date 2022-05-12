@@ -29,7 +29,6 @@ import java.util.*;
 public class QueryAssert extends AQuery {
 
 
-    private boolean valida = false;
 
     public QueryAssert() {
         super();
@@ -101,40 +100,18 @@ public class QueryAssert extends AQuery {
      * Recupera il token 'logintoken' dalla preliminaryRequestGet <br>
      * Viene convertito in lgtoken necessario per la successiva secondaryRequestPost <br>
      */
-    protected WResult elaboraResponse(final WResult result, final String rispostaDellaQuery) {
-        valida = false;
-        JSONObject jsonAll;
-        JSONObject jsonError;
-        String jsonCode;
-        String jsonInfo;
+    protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
+        result = super.elaboraResponse(result, rispostaDellaQuery);
 
-        jsonAll = (JSONObject) JSONValue.parse(rispostaDellaQuery);
-
-        if (jsonAll != null && jsonAll.get(KEY_JSON_VALID) != null) {
-            valida = (boolean) jsonAll.get(KEY_JSON_VALID);
-            if (valida) {
-                result.setCodeMessage(KEY_JSON_VALID);
-                result.setValidMessage("Collegato come bot");
-                result.setResponse(jsonAll.toJSONString());
-                return result;
-            }
-        }
-
-        if (jsonAll != null && jsonAll.get(JSON_ERROR) != null) {
-            jsonError = (JSONObject) jsonAll.get(JSON_ERROR);
-            jsonCode = (String) jsonError.get(JSON_CODE);
-            jsonInfo = (String) jsonError.get(JSON_INFO);
-            result.setValido(false);
-            result.setErrorCode(jsonCode);
-            result.setErrorMessage(jsonInfo);
+        if ((boolean) mappaUrlResponse.get(KEY_JSON_BATCH)) {
+            result.setCodeMessage(KEY_JSON_BATCH);
+            result.setValidMessage("Collegato come bot");
+            result.setResponse(mappaUrlResponse.get(KEY_JSON_ALL).toString());
             return result;
         }
 
         return result;
     }
 
-    public boolean isValida() {
-        return valida;
-    }
 
 }

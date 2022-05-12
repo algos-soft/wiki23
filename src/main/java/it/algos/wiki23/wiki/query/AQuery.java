@@ -90,6 +90,7 @@ public abstract class AQuery {
     protected static final String CSRF_TOKEN = "csrftoken";
 
     protected static final String TOKENS = "tokens";
+
     protected AETypeQuery queryType;
 
     //    /**
@@ -169,6 +170,8 @@ public abstract class AQuery {
 
     // ci metto tutti i cookies restituiti da URLConnection.responses
     protected Map<String, Object> cookies;
+
+    protected LinkedHashMap<String, Object> mappaUrlResponse;
 
     /**
      * Controlla l'esistenza e la validità del collegamento come bot <br>
@@ -425,14 +428,23 @@ public abstract class AQuery {
      * <p>
      * Informazioni, contenuto e validità della risposta
      * Controllo del contenuto (testo) ricevuto
+     *
+     * @param rispostaDellaQuery in formato JSON da elaborare
      */
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
+        //--fissa durata
+        result.setFine();
+
+        //--mappa utilizzata nelle sottoclassi
+        this.fixMappaUrlResponse();
+
         JSONObject jsonQuery = null;
         JSONArray jsonPages = null;
         JSONObject jsonPageZero = null;
         JSONArray jsonRevisions = null;
         JSONObject jsonRevZero = null;
         JSONObject jsonCategory = null;
+        JSONObject jsonLogin = null;
         String stringTimestamp = VUOTA;
         JSONObject jsonSlots = null;
         JSONObject jsonMain = null;
@@ -442,19 +454,17 @@ public abstract class AQuery {
         String content = VUOTA;
         //        String tmplBio;
         WrapBio wrap;
+        String message;
         JSONObject jsonAll = (JSONObject) JSONValue.parse(rispostaDellaQuery);
-
-        //--fissa durata
-        result.setFine();
+        mappaUrlResponse.put(KEY_JSON_ALL, jsonAll);
 
         //--controllo del batchcomplete
-        if (jsonAll != null && jsonAll.get(KEY_JSON_VALID) != null) {
-            if (!(boolean) jsonAll.get(KEY_JSON_VALID)) {
+        if (jsonAll != null && jsonAll.get(KEY_JSON_BATCH) != null) {
+            if (!(boolean) jsonAll.get(KEY_JSON_BATCH)) {
+                mappaUrlResponse.put(KEY_JSON_BATCH, false);
                 result.setErrorCode("batchcomplete=false");
-                result.setErrorMessage(String.format(
-                        "Qualcosa non ha funzionato nella lettura della pagina wiki '%s'",
-                        result.getWikiTitle()
-                ));
+                message = String.format("Qualcosa non ha funzionato nella lettura della pagina wiki '%s'", result.getWikiTitle());
+                result.setErrorMessage(message);
                 return result;
             }
         }
@@ -472,19 +482,23 @@ public abstract class AQuery {
 
         if (jsonAll != null && jsonAll.get(KEY_JSON_QUERY) != null) {
             jsonQuery = (JSONObject) jsonAll.get(KEY_JSON_QUERY);
+            mappaUrlResponse.put(KEY_JSON_QUERY, jsonQuery);
         }
 
         if (jsonQuery != null && jsonQuery.get(KEY_JSON_PAGES) != null) {
             jsonPages = (JSONArray) jsonQuery.get(KEY_JSON_PAGES);
+            mappaUrlResponse.put(KEY_JSON_PAGES, jsonPages);
         }
 
         if (jsonPages != null && jsonPages.size() > 0) {
             jsonPageZero = (JSONObject) jsonPages.get(0);
+            mappaUrlResponse.put(KEY_JSON_ZERO, jsonPageZero);
         }
 
         //--controllo del missing
         if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_MISSING) != null) {
             if ((boolean) jsonPageZero.get(KEY_JSON_MISSING)) {
+                mappaUrlResponse.put(KEY_JSON_MISSING, true);
                 result.setValido(false);
                 result.setErrorCode(KEY_JSON_MISSING_TRUE);
                 result.setErrorMessage(String.format("La pagina wiki '%s' non esiste", result.getWikiTitle()));
@@ -492,6 +506,13 @@ public abstract class AQuery {
                 result.setWrap(wrap);
                 return result;
             }
+        }
+
+        //--login
+        if (jsonAll != null && jsonAll.get(LOGIN) != null) {
+            jsonLogin = (JSONObject) jsonAll.get(LOGIN);
+            mappaUrlResponse.put(KEY_JSON_LOGIN, jsonLogin);
+            return result;
         }
 
         //--pageId
@@ -519,19 +540,20 @@ public abstract class AQuery {
 
         if (jsonRevZero != null && jsonRevZero.get(KEY_JSON_SLOTS) != null) {
             jsonSlots = (JSONObject) jsonRevZero.get(KEY_JSON_SLOTS);
+            mappaUrlResponse.put(KEY_JSON_SLOTS, jsonSlots);
         }
 
         if (jsonSlots != null && jsonSlots.get(KEY_JSON_MAIN) != null) {
             jsonMain = (JSONObject) jsonSlots.get(KEY_JSON_MAIN);
+            mappaUrlResponse.put(KEY_JSON_MAIN, jsonMain);
         }
 
         if (jsonMain != null && textService.isValid(jsonMain.get(KEY_JSON_CONTENT))) {
             content = (String) jsonMain.get(KEY_JSON_CONTENT);
+            mappaUrlResponse.put(KEY_JSON_CONTENT, content);
         }
 
         if (textService.isValid(content)) {
-            result.wikiText(content);
-
             //--contenuto inizia col tag della disambigua
             if (content.startsWith(TAG_DISAMBIGUA_UNO) || content.startsWith(TAG_DISAMBIGUA_DUE)) {
                 result.setValido(false);
@@ -559,6 +581,7 @@ public abstract class AQuery {
 
             if (jsonCategory != null && jsonCategory.get(KEY_JSON_PAGES) != null) {
                 pages = (Long) jsonCategory.get(KEY_JSON_PAGES);
+                mappaUrlResponse.put(KEY_JSON_CATEGORY_PAGES, pages);
             }
             if (pages > 0) {
                 result.setIntValue(pages.intValue());
@@ -569,6 +592,14 @@ public abstract class AQuery {
         }
 
         return result;
+    }
+
+
+    protected void fixMappaUrlResponse() {
+        mappaUrlResponse = new LinkedHashMap<>();
+        mappaUrlResponse.put(KEY_JSON_BATCH, true);
+        mappaUrlResponse.put(KEY_JSON_MISSING, false);
+        mappaUrlResponse.put(KEY_JSON_CONTENT, VUOTA);
     }
 
     /**

@@ -220,9 +220,30 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(9)
-    @DisplayName("9- Test per una biografia esistente")
+    @DisplayName("9- Test per una pagina di redirect")
+    void getWrapRedirect() {
+        System.out.println(("9- Test per una pagina di redirect"));
+
+        sorgente = "Federico Leonardo Lucia";
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+
+        wrapBio = appContext.getBean(QueryBio.class).getWrap(sorgente);
+        assertNotNull(wrapBio);
+        assertFalse(wrapBio.isValida());
+        assertEquals(AETypePage.redirect, wrapBio.getType());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esiste la pagina [[%s]] ma è un redirect", sorgente));
+        printRisultato(ottenutoRisultato);
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("10- Test per una biografia esistente")
     void getWrapEsistente() {
-        System.out.println(("9- Test per una biografia esistente"));
+        System.out.println(("10- Test per una biografia esistente"));
 
         sorgente = "Francisco Cabral (tennista)";
         ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
@@ -238,6 +259,7 @@ public class QueryBioTest extends WikiTest {
         System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", wrapBio.getTitle()));
         printRisultato(ottenutoRisultato);
     }
+
 
     /**
      * Qui passa al termine di ogni singolo test <br>
