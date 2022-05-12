@@ -65,20 +65,20 @@ public class QueryCatTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1- Costruttore base senza parametri")
+    @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
         istanza = new QueryCat();
         assertNotNull(istanza);
-        System.out.println(("1- Costruttore base senza parametri"));
+        System.out.println(("1 - Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
     @Test
     @Order(2)
-    @DisplayName("2- Test per una categoria inesistente")
+    @DisplayName("2 - Test per una categoria inesistente")
     void nonEsiste() {
-        System.out.println(("2- Test per una categoria inesistente"));
+        System.out.println(("2 - Test per una categoria inesistente"));
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryCat.class);
         assertNotNull(istanza);
@@ -90,6 +90,25 @@ public class QueryCatTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("La categoria [[%s]] non esiste su wikipedia", sorgente));
+        printRisultato(ottenutoRisultato);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - Categoria esistente")
+    void esiste() {
+        System.out.println(("2- Categoria esistente"));
+        assertTrue(istanza == null);
+        istanza = appContext.getBean(QueryCat.class);
+        assertNotNull(istanza);
+
+        sorgente = CATEGORIA_ESISTENTE_UNO;
+        ottenutoRisultato = istanza.urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Trovata la categoria [[%s]] su wikipedia", sorgente));
         printRisultato(ottenutoRisultato);
     }
 

@@ -52,7 +52,7 @@ public class Wiki23Cost {
 
     public static final String API_PAGEIDS = "&pageids=";
 
-    public static final String API_CAT = "&titles=Category:";
+    public static final String API_CAT = "&cmtitle=Category:";
 
     public static final String WIKI_QUERY = ACTION_QUERY + API_TITLES;
 

@@ -74,11 +74,11 @@ public class QueryInfoCatTest extends WikiTest {
     @DisplayName("2- Test per una categoria inesistente")
     void nonEsiste() {
         System.out.println(("2- Test per una pagina inesistente"));
+        assertTrue(istanza == null);
         istanza = appContext.getBean(QueryInfoCat.class);
         assertNotNull(istanza);
 
         sorgente = CATEGORIA_INESISTENTE;
-        assertTrue(istanza == null);
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
@@ -106,6 +106,7 @@ public class QueryInfoCatTest extends WikiTest {
         System.out.println(String.format("Trovata la categoria [[%s]] su wikipedia", sorgente));
         printRisultato(ottenutoRisultato);
     }
+
 
     @Test
     @Order(4)
