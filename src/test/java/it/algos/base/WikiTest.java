@@ -1,6 +1,9 @@
 package it.algos.base;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.login.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -51,6 +54,8 @@ public abstract class WikiTest extends AlgosTest {
 
     @Autowired
     public BioBackend bioBackend;
+    @Autowired
+    public BotLogin botLogin;
 
 
     protected final static String PAGINA_INESISTENTE = "Pippooz Belloz";
@@ -140,6 +145,19 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
+    //--categoria
+    //--esiste
+    protected static Stream<Arguments> CATEGORIE() {
+        return Stream.of(
+//                Arguments.of(null, false),
+//                Arguments.of(VUOTA, false),
+//                Arguments.of("Inesistente", false),
+                Arguments.of("Nati nel 1435", true)
+//                Arguments.of("Ambasciatori britannici in Brasile", true),
+//                Arguments.of("BioBot", true)
+        );
+    }
+
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
@@ -167,6 +185,7 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(didascaliaService);
         assertNotNull(bioService);
         assertNotNull(bioBackend);
+        assertNotNull(botLogin);
     }
 
     /**

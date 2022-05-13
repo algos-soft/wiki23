@@ -41,25 +41,35 @@ public class QueryExist extends AQuery {
      * Si invia la request <br>
      * La response viene sempre elaborata per estrarre le informazioni richieste <br>
      *
-     * @param wikiTitleGrezzo della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param wikiTitlePageid della pagina wiki (necessita di codifica) usato nella urlRequest
      *
      * @return wrapper di informazioni
      */
-    public WResult urlRequest(final String wikiTitleGrezzo) {
+    public WResult urlRequest(final Object wikiTitlePageid) {
         queryType = AETypeQuery.get;
-        return requestGet(WIKI_QUERY, wikiTitleGrezzo);
+        if (wikiTitlePageid instanceof String wikiTitleGrezzo) {
+            return requestGet(WIKI_QUERY, wikiTitleGrezzo);
+        }
+        if (wikiTitlePageid instanceof Integer pageid) {
+            return requestGet(WIKI_QUERY_PAGEIDS, pageid);
+        }
+        if (wikiTitlePageid instanceof Long pageid) {
+            return requestGet(WIKI_QUERY_PAGEIDS, pageid);
+        }
+
+        return WResult.errato("I parametri della urlRequest sono errati ");
     }
 
 
     /**
      * Esistenza della pagina <br>
      *
-     * @param wikiTitleGrezzo della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param wikiTitlePageid della pagina wiki (necessita di codifica) usato nella urlRequest
      *
      * @return esistenza della pagina
      */
-    public boolean isEsiste(final String wikiTitleGrezzo) {
-        return urlRequest(wikiTitleGrezzo).isValido();
+    public boolean isEsiste(final Object wikiTitlePageid) {
+        return urlRequest(wikiTitlePageid).isValido();
     }
 
 

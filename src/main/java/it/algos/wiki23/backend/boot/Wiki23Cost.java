@@ -54,11 +54,12 @@ public class Wiki23Cost {
 
     public static final String CAT = "Category:";
 
-    public static final String API_CAT = "&cmtitle=" + CAT;
+    public static final String API_CAT = "&cmtitle=";
 
     public static final String API_CAT_INFO = API_TITLES ;
 
     public static final String WIKI_QUERY = ACTION_QUERY + API_TITLES;
+    public static final String WIKI_QUERY_PAGEIDS = ACTION_QUERY + API_PAGEIDS;
 
     public static final String QUERY_INFO = "&rvslots=main&prop=revisions&rvprop=content|ids|timestamp";
 

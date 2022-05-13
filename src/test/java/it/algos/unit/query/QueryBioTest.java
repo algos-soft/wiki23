@@ -171,7 +171,7 @@ public class QueryBioTest extends WikiTest {
         assertEquals(AETypePage.testoSenzaTmpl, wrapBio.getType());
 
         System.out.println(VUOTA);
-        System.out.println(String.format("Esiste la pagina [[%s]] ma non è una biografia", sorgente));
+        System.out.println(String.format("Esiste la pagina '%s' (pageid) ma non è una biografia", sorgenteIntero));
         printRisultato(ottenutoRisultato);
     }
 

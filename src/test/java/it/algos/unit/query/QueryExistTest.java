@@ -31,7 +31,6 @@ import org.springframework.boot.test.context.*;
 public class QueryExistTest extends WikiTest {
 
 
-
     /**
      * Classe principale di riferimento <br>
      */
@@ -56,8 +55,7 @@ public class QueryExistTest extends WikiTest {
      */
     @BeforeEach
     protected void setUpEach() {
-        super.setUpEach();
-        istanza = null;
+        super.setUpEach(); istanza = null;
     }
 
 
@@ -87,7 +85,7 @@ public class QueryExistTest extends WikiTest {
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
-        assertEquals(AETypePage.nonEsiste,ottenutoRisultato.getWrap().getType());
+        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getWrap().getType());
 
         ottenutoBooleano = istanza.isEsiste(sorgente);
         assertFalse(ottenutoBooleano);
@@ -97,36 +95,84 @@ public class QueryExistTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
+
     @Test
     @Order(3)
-    @DisplayName("3- Test per una pagina esistente (urlRequest)")
+    @DisplayName("3- Test per una pagina inesistente come pageid")
+    void nonEsistePageid() {
+        System.out.println(("3- Test per una pagina inesistente come pageid"));
+        assertTrue(istanza == null);
+        istanza = appContext.getBean(QueryExist.class);
+        assertNotNull(istanza);
+
+        sorgenteIntero = 27416167;
+        ottenutoRisultato = istanza.urlRequest(sorgenteIntero);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getWrap().getType());
+
+        ottenutoBooleano = istanza.isEsiste(sorgente);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("La pagina '%d' (pageid) non esiste su wikipedia", sorgenteIntero));
+        printRisultato(ottenutoRisultato);
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("4- Test per una pagina esistente (urlRequest)")
     void urlRequest() {
-        System.out.println(("3- Test per una pagina esistente (urlRequest)"));
+        System.out.println(("4- Test per una pagina esistente (urlRequest)"));
 
         sorgente = PAGINA_ESISTENTE_UNO;
         ottenutoRisultato = appContext.getBean(QueryExist.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
-        assertEquals(AETypePage.indeterminata,ottenutoRisultato.getWrap().getType());
+        assertEquals(AETypePage.indeterminata, ottenutoRisultato.getWrap().getType());
+
+        System.out.println(VUOTA); System.out.println(String.format("Trovata la pagina [[%s]] su wikipedia", sorgente));
+        printRisultato(ottenutoRisultato);
+    }
+
+
+    @Test
+    @Order(5)
+    @DisplayName("5- Test per una pagina esistente come pageid")
+    void esistePageid() {
+        System.out.println(("5- Test per una pagina esistente come pageid"));
+        assertTrue(istanza == null);
+        istanza = appContext.getBean(QueryExist.class);
+        assertNotNull(istanza);
+
+        sorgenteIntero = 2741616;
+        ottenutoRisultato = istanza.urlRequest(sorgenteIntero);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        assertEquals(AETypePage.indeterminata, ottenutoRisultato.getWrap().getType());
+
+        ottenutoBooleano = istanza.isEsiste(sorgenteIntero);
+        assertTrue(ottenutoBooleano);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("Trovata la pagina [[%s]] su wikipedia", sorgente));
+        System.out.println(VUOTA); System.out.println(String.format("Trovata la pagina '%d' (pageid) su wikipedia", sorgenteIntero));
         printRisultato(ottenutoRisultato);
     }
 
 
     @ParameterizedTest
     @MethodSource(value = "PAGINE_E_CATEGORIE")
-    @Order(4)
-    @DisplayName("4- Test per pagine e categorie (isEsiste)")
+    @Order(6)
+    @DisplayName("6- Test per pagine e categorie (isEsiste)")
         //--titolo
         //--pagina esistente
     void isEsiste(final String wikiTitleVoceOCategoria, final boolean paginaEsistente) {
-        System.out.println(("4- Test per pagine e categorie (isEsiste)"));
+        System.out.println(("6- Test per pagine e categorie (isEsiste)"));
 
         sorgente = wikiTitleVoceOCategoria;
         ottenutoBooleano = appContext.getBean(QueryExist.class).isEsiste(sorgente);
-        assertEquals(paginaEsistente,ottenutoBooleano);
+        assertEquals(paginaEsistente, ottenutoBooleano);
 
         System.out.println(VUOTA);
         if (ottenutoBooleano) {
@@ -137,9 +183,9 @@ public class QueryExistTest extends WikiTest {
         }
     }
 
-        /**
-         * Qui passa al termine di ogni singolo test <br>
-         */
+    /**
+     * Qui passa al termine di ogni singolo test <br>
+     */
     @AfterEach
     void tearDown() {
     }

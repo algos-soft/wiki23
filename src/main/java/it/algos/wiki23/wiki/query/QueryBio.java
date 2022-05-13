@@ -73,6 +73,7 @@ public class QueryBio extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final long pageid) {
+        queryType = AETypeQuery.get;
         return requestGet(WIKI_QUERY_BASE_PAGE, pageid);
     }
 

@@ -173,17 +173,16 @@ public abstract class AQuery {
 
     protected LinkedHashMap<String, Object> mappaUrlResponse;
 
-
-    /**
-     * Controlla l'esistenza della pagina/categoria <br>
-     *
-     * @param wikiTitleGrezzo della pagina/categoria wiki (necessita di codifica) usato nella urlRequest
-     *
-     * @return true se la pagina/categoria esiste
-     */
-    protected boolean checkEsistenza(final String wikiTitleGrezzo) {
-        return appContext.getBean(QueryExist.class).isEsiste(wikiTitleGrezzo);
-    }
+    //    /**
+    //     * Controlla l'esistenza della pagina/categoria <br>
+    //     *
+    //     * @param wikiTitleGrezzo della pagina/categoria wiki (necessita di codifica) usato nella urlRequest
+    //     *
+    //     * @return true se la pagina/categoria esiste
+    //     */
+    //    protected boolean checkEsistenza(final String wikiTitleGrezzo) {
+    //        return appContext.getBean(QueryExist.class).isEsiste(wikiTitleGrezzo);
+    //    }
 
     /**
      * Controlla l'esistenza e la validità del collegamento come bot <br>
@@ -204,6 +203,77 @@ public abstract class AQuery {
         return result;
     }
 
+    protected WResult checkIniziale(final String pathQuery, final Object wikiTitlePageid) {
+        WResult result = WResult.valido().queryType(queryType);
+        String message;
+
+        if (wikiTitlePageid == null) {
+            message = String.format("Manca il parametro wikiTitle o pageid");
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            result.errorMessage(message);
+            result.setFine();
+            return result;
+        }
+
+        if (textService.isEmpty(pathQuery)) {
+            message = String.format("Manca il pathQuery");
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            result.errorMessage(message);
+            result.setFine();
+            return result;
+        }
+
+        if (wikiTitlePageid instanceof String wikiTitleGrezzo) {
+            result.setWikiTitle(wikiTitleGrezzo);
+            if (textService.isEmpty(wikiTitleGrezzo)) {
+                message = "Manca il wikiTitleGrezzo";
+                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+                result.errorMessage(message);
+                result.setWikiTitle(wikiTitleGrezzo);
+                result.setFine();
+                return result;
+            }
+        }
+
+        if (wikiTitlePageid instanceof Long pageid) {
+            result.setPageid(pageid);
+            if (pageid < 1) {
+                message = "Manca il pageid";
+                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+                result.errorMessage(message);
+                result.setPageid(pageid);
+                result.setFine();
+                return result;
+            }
+        }
+
+        if (wikiTitlePageid instanceof Integer pageid) {
+            result.setPageid(pageid);
+            if (pageid < 1) {
+                message = "Manca il pageid";
+                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+                result.errorMessage(message);
+                result.setPageid((pageid).longValue());
+                result.setFine();
+                return result;
+            }
+        }
+
+        //--richiama una query specializzata per controllare l'esistenza della pagina/categoria
+        //--esclude la query stessa per evitare un loop
+        if (this.getClass() != QueryExist.class) {
+            if (!appContext.getBean(QueryExist.class).isEsiste(wikiTitlePageid)) {
+                message = String.format("La pagina/categoria '%s' non esiste su wikipedia",wikiTitlePageid);
+                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+                result.errorMessage(message);
+                result.setWrap(new WrapBio().valida(false).type(AETypePage.nonEsiste).title(wikiTitlePageid.toString()));
+                result.setFine();
+                return result;
+            }
+        }
+
+        return result;
+    }
 
     /**
      * Request semplice. Crea una connessione base di tipo GET <br>
@@ -214,37 +284,10 @@ public abstract class AQuery {
      * @return testo grezzo della risposta in formato JSON
      */
     protected WResult requestGet(final String pathQuery, final String wikiTitleGrezzo) {
-        WResult result = WResult.errato().queryType(queryType);
-        String message;
-
-        if (textService.isEmpty(pathQuery)) {
-            message = String.format("Manca il pathQuery per %s", wikiTitleGrezzo);
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return result;
-        }
-
-        if (textService.isEmpty(wikiTitleGrezzo)) {
-            message = "Manca il wikiTitleGrezzo";
-            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-            result.errorMessage(message);
-            return result;
-        }
-
-        //--richiama una query specializzata per controllare l'esistenza della pagina/categoria
-        //--esclude la query stessa per evitare un loop
-        if (this.getClass() != QueryExist.class) {
-            if (!appContext.getBean(QueryExist.class).isEsiste(wikiTitleGrezzo)) {
-                message = "La pagina/categoria non esiste su wikipedia";
-                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-                result.errorMessage(message);
-                result.setWrap(new WrapBio().valida(false).title(wikiTitleGrezzo).type(AETypePage.nonEsiste));
-                return result;
-            }
-        }
-
-        result.setWikiTitle(wikiTitleGrezzo);
+        WResult result = checkIniziale(pathQuery, wikiTitleGrezzo);
         return requestGet(result, pathQuery + fixWikiTitle(wikiTitleGrezzo));
     }
+
 
     /**
      * Request semplice. Crea una connessione base di tipo GET <br>
@@ -255,24 +298,26 @@ public abstract class AQuery {
      * @return testo grezzo della risposta in formato JSON
      */
     protected WResult requestGet(final String pathQuery, final long pageid) {
-        WResult result = WResult.errato().queryType(AETypeQuery.get);
-        String message;
-
-        if (textService.isEmpty(pathQuery)) {
-            message = String.format("Manca il pathQuery per %d", pageid);
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return result;
-        }
-
-        if (pageid < 1) {
-            message = "Manca il pageid";
-            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-            result.errorMessage(message);
-            return result;
-        }
-
-        result.setPageid(pageid);
+        WResult result = checkIniziale(pathQuery, pageid);
         return requestGet(result, pathQuery + pageid);
+        //        WResult result = WResult.errato().queryType(AETypeQuery.get);
+        //        String message;
+        //
+        //        if (textService.isEmpty(pathQuery)) {
+        //            message = String.format("Manca il pathQuery per %d", pageid);
+        //            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+        //            return result;
+        //        }
+        //
+        //        if (pageid < 1) {
+        //            message = "Manca il pageid";
+        //            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+        //            result.errorMessage(message);
+        //            return result;
+        //        }
+        //
+        //        result.setPageid(pageid);
+        //        return requestGet(result, pathQuery + pageid);
     }
 
 
@@ -467,7 +512,8 @@ public abstract class AQuery {
         JSONObject jsonPageZero = null;
         JSONArray jsonRevisions = null;
         JSONObject jsonRevZero = null;
-        JSONObject jsonCategory = null;
+        JSONObject jsonContinue = null;
+        JSONArray jsonCategory = null;
         JSONObject jsonLogin = null;
         String stringTimestamp = VUOTA;
         JSONObject jsonSlots = null;
@@ -504,6 +550,12 @@ public abstract class AQuery {
             return result;
         }
 
+
+        if (jsonAll != null && jsonAll.get(KEY_JSON_CONTINUE) != null) {
+            jsonContinue = (JSONObject) jsonAll.get(KEY_JSON_CONTINUE);
+            mappaUrlResponse.put(KEY_JSON_CONTINUE, jsonContinue);
+        }
+
         if (jsonAll != null && jsonAll.get(KEY_JSON_QUERY) != null) {
             jsonQuery = (JSONObject) jsonAll.get(KEY_JSON_QUERY);
             mappaUrlResponse.put(KEY_JSON_QUERY, jsonQuery);
@@ -517,6 +569,11 @@ public abstract class AQuery {
         if (jsonPages != null && jsonPages.size() > 0) {
             jsonPageZero = (JSONObject) jsonPages.get(0);
             mappaUrlResponse.put(KEY_JSON_ZERO, jsonPageZero);
+        }
+
+        if (jsonQuery != null && jsonQuery.get(KEY_JSON_MEMBERS) != null) {
+            jsonCategory = (JSONArray) jsonQuery.get(KEY_JSON_MEMBERS);
+            mappaUrlResponse.put(KEY_JSON_MEMBERS, jsonCategory);
         }
 
         //--controllo del missing
@@ -597,22 +654,6 @@ public abstract class AQuery {
                 result.setWrap(wrap);
                 return result;
             }
-        }
-
-        //--cat info
-        if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_CATEGORY) != null) {
-            jsonCategory = (JSONObject) jsonPageZero.get(KEY_JSON_CATEGORY);
-
-            if (jsonCategory != null && jsonCategory.get(KEY_JSON_PAGES) != null) {
-                pages = (Long) jsonCategory.get(KEY_JSON_PAGES);
-                mappaUrlResponse.put(KEY_JSON_CATEGORY_PAGES, pages);
-            }
-            if (pages > 0) {
-                result.setIntValue(pages.intValue());
-            }
-            result.setValidMessage(String.format("Trovata la %s", result.getWikiTitle()));
-            wrap = new WrapBio().valida(true).title(result.getWikiTitle()).pageid(pageId).type(AETypePage.categoria);
-            result.setWrap(wrap);
         }
 
         return result;

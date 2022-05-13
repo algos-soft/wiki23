@@ -4,6 +4,7 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
 import it.algos.wiki23.wiki.query.*;
 import static it.algos.wiki23.wiki.query.QueryLogin.*;
@@ -159,7 +160,7 @@ public class QueryLoginTest extends WikiTest {
 
     @Test
     @Order(5)
-    @DisplayName("5 - istanza di queryLogin (valida)")
+    @DisplayName("5 - istanza di queryLogin 'Biobot' (valida)")
     void urlRequest() {
         System.out.println("5 - istanza di queryLogin (valida)");
 
@@ -178,7 +179,7 @@ public class QueryLoginTest extends WikiTest {
 
     @Test
     @Order(6)
-    @DisplayName("6 - urlRequest di queryLogin (valida)")
+    @DisplayName("6 - urlRequest di queryLogin 'Biobot' (valida)")
     void urlRequest2() {
         System.out.println("6 - urlRequest di queryLogin (valida) che registra i valori in botLogin");
 
@@ -192,13 +193,31 @@ public class QueryLoginTest extends WikiTest {
         printBotLogin();
     }
 
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - urlRequest di queryLogin 'hamed' - user (valida)")
+    void urlRequest3() {
+        System.out.println("7 - urlRequest di queryLogin 'hamed' - user (valida) che registra i valori in botLogin");
+
+        previsto = JSON_SUCCESS;
+        ottenutoRisultato = appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.user);
+        assertTrue(ottenutoRisultato.isValido());
+        assertEquals(previsto, ottenutoRisultato.getCodeMessage());
+        assertEquals("lguserid: 1985, lgusername: Hamed", ottenutoRisultato.getMessage());
+        assertFalse(botLogin.isBot());
+        printRisultato(ottenutoRisultato);
+        printBotLogin();
+    }
+
     protected void printBotLogin() {
         System.out.println(VUOTA);
         System.out.println("Valori attuali del singleton BotLogin");
+        System.out.println(String.format("Valido: %s", botLogin.isValido() ? "true" : "false"));
         System.out.println(String.format("Bot: %s", botLogin.isBot() ? "true" : "false"));
         System.out.println(String.format("Userid: %d", botLogin.getUserid()));
         System.out.println(String.format("Username: %s", botLogin.getUsername()));
-        System.out.println(String.format("UserType url: %s", botLogin.getUserType()));
+        System.out.println(String.format("UserType: %s", botLogin.getUserType()));
     }
 
     /**

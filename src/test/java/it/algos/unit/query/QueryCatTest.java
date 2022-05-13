@@ -4,11 +4,14 @@ package it.algos.unit.query;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 import org.springframework.boot.test.context.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -74,7 +77,7 @@ public class QueryCatTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - Test per una categoria inesistente")
     void nonEsiste() {
@@ -93,11 +96,11 @@ public class QueryCatTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-    @Test
+    //    @Test
     @Order(3)
-    @DisplayName("3 - Categoria esistente")
-    void esiste() {
-        System.out.println(("2- Categoria esistente"));
+    @DisplayName("3 - Categoria esistente senza login")
+    void esiste3() {
+        System.out.println(("3 - Categoria esistente senza login"));
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryCat.class);
         assertNotNull(istanza);
@@ -111,6 +114,51 @@ public class QueryCatTest extends WikiTest {
         System.out.println(String.format("Trovata la categoria [[%s]] su wikipedia", sorgente));
         printRisultato(ottenutoRisultato);
     }
+
+    //    @Test
+    @Order(4)
+    @DisplayName("4 - Categoria esistente login come user")
+    void esisteUser() {
+        System.out.println(("4 - Categoria esistente login come user"));
+        appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.user);
+
+        sorgente = CATEGORIA_ESISTENTE_UNO;
+        ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        //        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Trovata la categoria [[%s]] su wikipedia", sorgente));
+        printRisultato(ottenutoRisultato);
+    }
+
+    @Test
+    @Order(30)
+    @DisplayName("30 - Obbligatorio PRIMA del 31 per regolare il botLogin")
+    void nonCollegato() {
+        botLogin.reset();
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "CATEGORIE")
+    @Order(31)
+    @DisplayName("31- Test per categorie senza collegamento")
+        //--categoria
+        //--esiste
+    void esisteNonCollegato(final String wikiCategoria, final boolean categoriaEsistente) {
+        System.out.println("31 - Test per categorie senza collegamento");
+        System.out.println("Il botLogin è stato regolato nel test '30'");
+
+        ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
+        assertNotNull(ottenutoRisultato);
+//        assertEquals(categoriaEsistente,ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
+        System.out.println(VUOTA);
+        printRisultato(ottenutoRisultato);
+    }
+
 
     /**
      * Qui passa al termine di ogni singolo test <br>

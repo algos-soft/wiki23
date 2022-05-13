@@ -11,9 +11,10 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
  */
 public enum AETypeUser {
 
-    anonymous(VUOTA, 50),
-    user("user", 500),
-    bot("bot", 5000),
+    anonymous(VUOTA, VUOTA, 50),
+    user("user", ".user", 500),
+    admin("admin", VUOTA, 500),
+    bot("bot", VUOTA, 5000),
     ;
 
     private static final String ASSERT = "&assert=";
@@ -22,10 +23,13 @@ public enum AETypeUser {
 
     private final String affermazione;
 
+    private final String tagLogin;
+
     private final int limit;
 
-     AETypeUser(String affermazione, int limit) {
+    AETypeUser(final String affermazione, final String tagLogin, final int limit) {
         this.affermazione = affermazione;
+        this.tagLogin = tagLogin;
         this.limit = limit;
     }
 
@@ -36,6 +40,10 @@ public enum AETypeUser {
 
     public String limit() {
         return LIMIT + limit;
+    }
+
+    public String tagLogin() {
+        return tagLogin;
     }
 
 }

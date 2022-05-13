@@ -36,6 +36,8 @@ public class BotLogin {
 
     private AETypeUser userType;
 
+    private boolean valido;
+
     public BotLogin() {
     }
 
@@ -87,7 +89,16 @@ public class BotLogin {
         this.userType = userType;
     }
 
+    public boolean isValido() {
+        return valido;
+    }
+
+    public void setValido(boolean valido) {
+        this.valido = valido;
+    }
+
     public void reset() {
+        this.valido = false;
         this.bot = false;
         this.result = null;
         this.lguserid = 0;

@@ -72,8 +72,6 @@ public class QueryLogin extends AQuery {
      * Valore di collegamento iniziale <br>
      * Eventualmente inseribile in 'application.properties' (meglio) <br>
      */
-    //    public static final String LOGIN_PASSWORD = "lhgfmeb8ckefkniq85qmhul18r689nbq";
-
     private String loginPassword;
 
     /**
@@ -126,6 +124,35 @@ public class QueryLogin extends AQuery {
 
     private boolean valido = false;
 
+    private AETypeUser typeUser;
+
+    public WResult urlRequest() {
+        return urlRequest(AETypeUser.bot);
+    }
+
+    public WResult fixUserPassword(AETypeUser typeUser) {
+        WResult result = WResult.valido();
+        this.typeUser = typeUser;
+        String message;
+
+        try {
+            message = String.format("algos.wiki23%s.loginName", typeUser.tagLogin());
+            loginName = Objects.requireNonNull(environment.getProperty(message));
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(PROPERTY_LOGIN_NAME)).usaDb());
+            result.errorMessage(PROPERTY_LOGIN_NAME);
+        }
+        try {
+            message = String.format("algos.wiki23%s.loginPassword", typeUser.tagLogin());
+            loginPassword = Objects.requireNonNull(environment.getProperty(message));
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(PROPERTY_LOGIN_PASSWORD)).usaDb());
+            result.errorMessage(PROPERTY_LOGIN_PASSWORD);
+        }
+
+        result.setFine();
+        return result;
+    }
 
     /**
      * Request al software mediawiki composta di due request <br>
@@ -145,26 +172,14 @@ public class QueryLogin extends AQuery {
      *
      * @return wrapper di informazioni
      */
-    public WResult urlRequest() {
-        WResult result;
-        this.reset();
+    public WResult urlRequest(AETypeUser typeUser) {
+        queryType = AETypeQuery.login;
+        WResult result = fixUserPassword(typeUser);
 
-        try {
-            loginName = Objects.requireNonNull(environment.getProperty("algos.wiki23.loginName"));
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(PROPERTY_LOGIN_NAME)).usaDb());
-            result = WResult.errato(PROPERTY_LOGIN_NAME);
-            result.setFine();
+        if (result.isErrato()) {
             return result;
         }
-        try {
-            loginPassword = Objects.requireNonNull(environment.getProperty("algos.wiki23.loginPassword"));
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(PROPERTY_LOGIN_PASSWORD)).usaDb());
-            result = WResult.errato(PROPERTY_LOGIN_PASSWORD);
-            result.setFine();
-            return result;
-        }
+        this.reset();
 
         //--La prima request è di tipo GET
         result = this.preliminaryRequestGet();
@@ -191,7 +206,7 @@ public class QueryLogin extends AQuery {
      * Recupera il logintoken dalla urlResponse <br>
      */
     protected WResult preliminaryRequestGet() {
-        WResult result = WResult.valido().queryType(AETypeQuery.login);
+        WResult result = WResult.valido().queryType(queryType);
         String urlDomain = TAG_LOGIN_PRELIMINARY_REQUEST_GET;
         String urlResponse = VUOTA;
         URLConnection urlConn;
@@ -353,10 +368,11 @@ public class QueryLogin extends AQuery {
 
         //--trasferisce nella istanza singleton BotLogin i cookies per essere utilizzati in tutte le query
         if (valido) {
-            botLogin.setBot(true);
+            botLogin.setValido(true);
+            botLogin.setBot(typeUser == AETypeUser.bot);
             botLogin.setLguserid(lguserid);
             botLogin.setLgusername(lgusername);
-            botLogin.setUserType(AETypeUser.bot);
+            botLogin.setUserType(typeUser);
             botLogin.setResult(result);
             result.setResponse(jsonLogin.toString());
             result.setValidMessage(String.format("%s: %d, %s: %s", LOGIN_USER_ID, lguserid, LOGIN_USER_NAME, lgusername));
