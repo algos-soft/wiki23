@@ -137,6 +137,9 @@ public class QueryCatTest extends WikiTest {
     @DisplayName("30 - Obbligatorio PRIMA del 31 per regolare il botLogin")
     void nonCollegato() {
         botLogin.reset();
+
+        assertNotNull(botLogin);
+        assertTrue(botLogin.getUserType().name().equals(AETypeUser.anonymous.name()));
     }
 
     @ParameterizedTest
@@ -151,10 +154,77 @@ public class QueryCatTest extends WikiTest {
 
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
         assertNotNull(ottenutoRisultato);
-//        assertEquals(categoriaEsistente,ottenutoRisultato.isValido());
+        assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
+        System.out.println(VUOTA);
+        printRisultato(ottenutoRisultato);
+    }
+
+
+    @Test
+    @Order(40)
+    @DisplayName("40 - Obbligatorio PRIMA del 41 per regolare il botLogin")
+    void collegatoUser() {
+        botLogin.reset();
+
+        appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.user);
+        assertNotNull(botLogin);
+        assertTrue(botLogin.isValido());
+        assertEquals(botLogin.getUserType(), AETypeUser.user);
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "CATEGORIE")
+    @Order(41)
+    @DisplayName("41- Test per categorie collegamento user")
+        //--categoria
+        //--esiste
+    void esisteCollegatoUser(final String wikiCategoria, final boolean categoriaEsistente) {
+        System.out.println("41 - Test per categorie collegamento user");
+        System.out.println("Il botLogin è stato regolato nel test '40'");
+
+        ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
+        assertNotNull(ottenutoRisultato);
+        assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come user", wikiCategoria));
+        System.out.println(VUOTA);
+        printRisultato(ottenutoRisultato);
+    }
+
+    @Test
+    @Order(50)
+    @DisplayName("50 - Obbligatorio PRIMA del 51 per regolare il botLogin")
+    void collegatoAdmin() {
+        botLogin.reset();
+
+        appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.admin);
+        assertNotNull(botLogin);
+        assertTrue(botLogin.isValido());
+        assertEquals(botLogin.getUserType(), AETypeUser.admin);
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "CATEGORIE")
+    @Order(51)
+    @DisplayName("51- Test per categorie collegamento admin")
+        //--categoria
+        //--esiste
+    void esisteCollegatoAdmin(final String wikiCategoria, final boolean categoriaEsistente) {
+        System.out.println("51 - Test per categorie collegamento admin");
+        System.out.println("Il botLogin è stato regolato nel test '50'");
+
+        ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
+        assertNotNull(ottenutoRisultato);
+        assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come admin", wikiCategoria));
         System.out.println(VUOTA);
         printRisultato(ottenutoRisultato);
     }

@@ -54,7 +54,7 @@ public class BotLogin {
     }
 
     public AETypeUser getUserType() {
-        return isBot() ? AETypeUser.bot : AETypeUser.anonymous;
+        return userType;
     }
 
     public Map<String, Object> getCookies() {

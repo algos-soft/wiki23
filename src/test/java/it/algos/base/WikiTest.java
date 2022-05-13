@@ -54,6 +54,7 @@ public abstract class WikiTest extends AlgosTest {
 
     @Autowired
     public BioBackend bioBackend;
+
     @Autowired
     public BotLogin botLogin;
 
@@ -149,12 +150,12 @@ public abstract class WikiTest extends AlgosTest {
     //--esiste
     protected static Stream<Arguments> CATEGORIE() {
         return Stream.of(
-//                Arguments.of(null, false),
-//                Arguments.of(VUOTA, false),
-//                Arguments.of("Inesistente", false),
-                Arguments.of("Nati nel 1435", true)
-//                Arguments.of("Ambasciatori britannici in Brasile", true),
-//                Arguments.of("BioBot", true)
+                Arguments.of(null, false),
+                Arguments.of(VUOTA, false),
+                Arguments.of("Inesistente", false),
+                Arguments.of("Nati nel 1435", true),
+                Arguments.of("Ambasciatori britannici in Brasile", true),
+                Arguments.of("Nati nel 1935", true)
         );
     }
 
@@ -223,6 +224,8 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Status: %s", result.isValido() ? "true" : "false"));
         System.out.println(String.format("Query: %s", result.getQueryType()));
         System.out.println(String.format("Title: %s", result.getWikiTitle()));
+        System.out.println(String.format("User: %s", result.getUserType()));
+        System.out.println(String.format("Limit: %d", result.getLimit()));
         System.out.println(String.format("Preliminary url: %s", result.getUrlPreliminary()));
         System.out.println(String.format("Secondary url: %s", result.getUrlRequest()));
         System.out.println(String.format("Preliminary response: %s", result.getPreliminaryResponse()));
@@ -234,10 +237,11 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Error message: %s", result.getErrorMessage()));
         System.out.println(String.format("Valid message: %s", result.getValidMessage()));
         System.out.println(String.format("Numeric value: %s", textService.format(result.getIntValue())));
+        System.out.println(String.format("Cicli: %d", result.getCicli()));;
         System.out.println(String.format("List value: %s", lista));
         System.out.println(String.format("Map value: %s", result.getMappa()));
         System.out.println(String.format("Risultato ottenuto in %s", dateService.toText(result.getDurata())));
-        System.out.println(String.format("Risultato ottenuto in %s", dateService.deltaTextEsatto(result.getInizio(),result.getFine())));
+        System.out.println(String.format("Risultato ottenuto in %s", dateService.deltaTextEsatto(result.getInizio(), result.getFine())));
         printWrapBio(result.getWrap());
     }
 

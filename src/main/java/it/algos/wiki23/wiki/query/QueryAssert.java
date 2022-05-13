@@ -56,7 +56,7 @@ public class QueryAssert extends AQuery {
         URLConnection urlConn;
 
         result.setUrlRequest(TAG_REQUEST_ASSERT);
-        result.setQueryType(AETypeQuery.getCookies.get());
+        result.setQueryType(AETypeQuery.getCookies);
 
         //--se manca il botLogin
         if (botLogin == null) {

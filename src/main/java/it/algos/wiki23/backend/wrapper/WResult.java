@@ -36,7 +36,11 @@ public class WResult extends AResult {
 
     private String token = VUOTA;
 
-    private String queryType = VUOTA;
+    private AETypeQuery queryType = null;
+
+    private AETypeUser userType = null;
+
+    private int limit;
 
     private WrapBio wrap;
 
@@ -53,6 +57,8 @@ public class WResult extends AResult {
     private long fine;
 
     private boolean modificata = false;
+
+    private int cicli;
 
     private WResult() {
         this(null);
@@ -97,7 +103,22 @@ public class WResult extends AResult {
     }
 
     public WResult queryType(final AETypeQuery queryType) {
-        this.queryType = queryType != null ? queryType.get() : VUOTA;
+        this.queryType = queryType;
+        return this;
+    }
+
+    public WResult userType(final AETypeUser userType) {
+        this.userType = userType;
+        return this;
+    }
+
+    public WResult limit(final int limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public WResult cicli(final int cicli) {
+        this.cicli = cicli;
         return this;
     }
 
@@ -231,11 +252,11 @@ public class WResult extends AResult {
         this.token = token;
     }
 
-    public String getQueryType() {
+    public AETypeQuery getQueryType() {
         return queryType;
     }
 
-    public void setQueryType(String queryType) {
+    public void setQueryType(AETypeQuery queryType) {
         this.queryType = queryType;
     }
 
@@ -253,6 +274,30 @@ public class WResult extends AResult {
 
     public void setPageid(long pageid) {
         this.pageid = pageid;
+    }
+
+    public AETypeUser getUserType() {
+        return userType;
+    }
+
+    public void setUserType(AETypeUser userType) {
+        this.userType = userType;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getCicli() {
+        return cicli;
+    }
+
+    public void setCicli(int cicli) {
+        this.cicli = cicli;
     }
 
     public long getInizio() {

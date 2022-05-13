@@ -13,8 +13,8 @@ public enum AETypeUser {
 
     anonymous(VUOTA, VUOTA, 50),
     user("user", ".user", 500),
-    admin("admin", VUOTA, 500),
-    bot("bot", VUOTA, 5000),
+    admin("user", ".admin", 500),
+    bot("bot", ".bot", 5000),
     ;
 
     private static final String ASSERT = "&assert=";
@@ -46,4 +46,7 @@ public enum AETypeUser {
         return tagLogin;
     }
 
+    public int getLimit() {
+        return limit;
+    }
 }

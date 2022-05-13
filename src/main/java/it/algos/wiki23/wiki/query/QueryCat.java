@@ -55,13 +55,19 @@ public class QueryCat extends AQuery {
 
         String urlDomain = VUOTA;
         String tokenContinue = VUOTA;
+        String message = VUOTA;
         URLConnection urlConn;
         String urlResponse = VUOTA;
         int pageIdsRecuperati = 0;
+        int cicli = 0;
 
         if (botLogin == null) {
             result.errorMessage("Manca il botLogin");
             return result;
+        }
+        else {
+            result.setUserType(botLogin.getUserType());
+            result.setLimit(botLogin.getUserType().getLimit());
         }
 
         urlDomain = fixUrlCat(catTitleGrezzo, VUOTA);
@@ -73,6 +79,7 @@ public class QueryCat extends AQuery {
                 uploadCookies(urlConn, botLogin != null ? botLogin.getCookies() : null);
                 urlResponse = sendRequest(urlConn);
                 result = elaboraResponse(result, urlResponse);
+                result.setCicli(++cicli);
                 tokenContinue = result.getToken();
             }
             while (textService.isValid(tokenContinue));
@@ -82,9 +89,9 @@ public class QueryCat extends AQuery {
 
         pageIdsRecuperati = result.getIntValue();
         result.setUrlRequest(urlDomain);
-        result.setMessage(String.format("Recuperati %s pageIds dalla categoria '%s'", textService.format(pageIdsRecuperati), catTitleGrezzo));
+        message = String.format("Recuperati %s pageIds dalla categoria '%s' in %d cicli", textService.format(pageIdsRecuperati), catTitleGrezzo, cicli);
+        result.setMessage(message);
 
-        //        return requestGet(QUERY_CAT_REQUEST, catTitle);
         return result;
     }
 
@@ -94,13 +101,14 @@ public class QueryCat extends AQuery {
         List<Long> listaOld;
         long pageid;
         result = super.elaboraResponse(result, rispostaDellaQuery);
-        JSONObject jsonContinue = (JSONObject) mappaUrlResponse.get(KEY_JSON_CONTINUE); ; ;
-        String tokenContinue = (String) jsonContinue.get(KEY_JSON_CONTINUE_CM);
-        JSONArray jsonCategory = (JSONArray) mappaUrlResponse.get(KEY_JSON_MEMBERS); ;
+        String tokenContinue = VUOTA;
 
+        if (mappaUrlResponse.get(KEY_JSON_CONTINUE) instanceof JSONObject jsonContinue) {
+            tokenContinue = (String) jsonContinue.get(KEY_JSON_CONTINUE_CM);
+        }
         result.setToken(tokenContinue);
 
-        if (jsonCategory != null) {
+        if (mappaUrlResponse.get(KEY_JSON_MEMBERS) instanceof JSONArray jsonCategory) {
             if (jsonCategory.size() > 0) {
                 for (Object obj : jsonCategory) {
                     pageid = (long) ((JSONObject) obj).get(PAGE_ID);
@@ -144,17 +152,15 @@ public class QueryCat extends AQuery {
         String query = QUERY_CAT_REQUEST + CAT + wikiBot.wikiApiService.fixWikiTitle(catTitle);
         String type = WIKI_QUERY_CAT_TYPE + "page";
         String prop = WIKI_QUERY_CAT_PROP + "ids";//--potrebbe essere anche "ids|title"
+        String limit = botLogin.getUserType().limit();
+        String user = botLogin.getUserType().affermazione();
 
         if (textService.isValid(continueParam)) {
-//            String limit = AETypeUser.bot.limit();
-//            String user = AETypeUser.bot.affermazione();
             String continua = WIKI_QUERY_CAT_CONTINUE + continueParam;
-
-            //            return String.format("%s%s%s%s%s%s", query, type, prop, limit, user, continua);
-            return String.format("%s%s%s%s%s%s", query, type, prop, continua);
+            return String.format("%s%s%s%s%s%s", query, type, prop, limit, user,continua);
         }
         else {
-            return String.format("%s%s%s", query, type, prop);
+            return String.format("%s%s%s%s%s", query, type, prop, limit,user);
         }
 
     }

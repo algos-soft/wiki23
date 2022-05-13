@@ -136,14 +136,14 @@ public class QueryLogin extends AQuery {
         String message;
 
         try {
-            message = String.format("algos.wiki23%s.loginName", typeUser.tagLogin());
+            message = String.format("wiki23%s.loginName", typeUser.tagLogin());
             loginName = Objects.requireNonNull(environment.getProperty(message));
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(new AlgosException(PROPERTY_LOGIN_NAME)).usaDb());
             result.errorMessage(PROPERTY_LOGIN_NAME);
         }
         try {
-            message = String.format("algos.wiki23%s.loginPassword", typeUser.tagLogin());
+            message = String.format("wiki23%s.loginPassword", typeUser.tagLogin());
             loginPassword = Objects.requireNonNull(environment.getProperty(message));
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(new AlgosException(PROPERTY_LOGIN_PASSWORD)).usaDb());
