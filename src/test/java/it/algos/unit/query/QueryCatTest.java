@@ -230,6 +230,41 @@ public class QueryCatTest extends WikiTest {
     }
 
 
+
+    @Test
+    @Order(60)
+    @DisplayName("60 - Obbligatorio PRIMA del 61 per regolare il botLogin")
+    void collegatoBot() {
+        botLogin.reset();
+
+        appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.bot);
+        assertNotNull(botLogin);
+        assertTrue(botLogin.isValido());
+        assertEquals(botLogin.getUserType(), AETypeUser.bot);
+    }
+
+
+    @Test
+    @Order(61)
+    @DisplayName("61- Test per categorie collegamento bot")
+        //--categoria
+        //--esiste
+    void esisteCollegatoBot() {
+        System.out.println("61 - Test per categorie collegamento bot");
+        System.out.println("Il botLogin è stato regolato nel test '60'");
+
+        sorgente="BioBot";
+        ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue( ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come bot", sorgente));
+        System.out.println(VUOTA);
+        printRisultato(ottenutoRisultato);
+    }
+
+
     /**
      * Qui passa al termine di ogni singolo test <br>
      */
