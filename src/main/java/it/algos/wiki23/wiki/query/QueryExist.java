@@ -29,40 +29,80 @@ public class QueryExist extends AQuery {
     /**
      * Request principale <br>
      * <p>
+     * Non accetta il separatore PIPE nel wikiTitleGrezzo <br>
+     * La stringa urlDomain per la request viene elaborata <br>
+     * Si crea una connessione di tipo GET <br>
+     * Si invia la request <br>
+     * La response viene sempre elaborata per estrarre le informazioni richieste <br>
+     * <p>
+     * Nella risposta positiva la gerarchia è: <br>
+     * ....batchcomplete <br>
+     * ....query <br>
+     * ........normalized <br>
+     * ........pages <br>
+     * ............[0] <br>
+     * ................ns <br>
+     * ................pageid <br>
+     * ................title <br>
+     * <p>
+     * Nella risposta negativa la gerarchia è: <br>
+     * ....batchcomplete <br>
+     * ....query <br>
+     * ........normalized <br>
+     * ........pages <br>
+     * ............[0] <br>
+     * ................ns <br>
+     * ................missing=true <br>
+     * ................pageid <br>
+     * ................title <br>
+     *
+     * @param wikiTitlePaginaCategoriaGrezzo della pagina/categoria wiki (necessita di codifica) usato nella urlRequest. Non accetta il separatore PIPE
+     *
+     * @return wrapper di informazioni
+     */
+    public WResult urlRequest(final String wikiTitlePaginaCategoriaGrezzo) {
+        queryType = AETypeQuery.get;
+        return requestGetTitle(WIKI_QUERY, wikiTitlePaginaCategoriaGrezzo);
+    }
+
+    /**
+     * Request principale <br>
+     * <p>
      * La stringa urlDomain per la request viene elaborata <br>
      * Si crea una connessione di tipo GET <br>
      * Si invia la request <br>
      * La response viene sempre elaborata per estrarre le informazioni richieste <br>
      *
-     * @param wikiTitlePageid della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param pageid della pagina/categoria wik usato nella urlRequest.
      *
      * @return wrapper di informazioni
      */
-    public WResult urlRequest(final Object wikiTitlePageid) {
+    public WResult urlRequest(final long pageid) {
         queryType = AETypeQuery.get;
-        if (wikiTitlePageid instanceof String wikiTitleGrezzo) {
-            return requestGetTitle(WIKI_QUERY, wikiTitleGrezzo);
-        }
-        if (wikiTitlePageid instanceof Integer pageid) {
-            return requestGetPage(WIKI_QUERY_PAGEIDS, pageid);
-        }
-        if (wikiTitlePageid instanceof Long pageid) {
-            return requestGetPage(WIKI_QUERY_PAGEIDS, pageid);
-        }
-
-        return WResult.errato("I parametri della urlRequest sono errati ");
+        return requestGetPage(WIKI_QUERY_PAGEIDS, pageid);
     }
 
 
     /**
      * Esistenza della pagina <br>
      *
-     * @param wikiTitlePageid della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param wikiTitlePaginaCategoriaGrezzo della pagina/categoria wiki (necessita di codifica) usato nella urlRequest. Non accetta il separatore PIPE
      *
-     * @return esistenza della pagina
+     * @return true se la pagina/categoria esiste
      */
-    public boolean isEsiste(final Object wikiTitlePageid) {
-        return urlRequest(wikiTitlePageid).isValido();
+    public boolean isEsiste(final String wikiTitlePaginaCategoriaGrezzo) {
+        return urlRequest(wikiTitlePaginaCategoriaGrezzo).isValido();
+    }
+
+    /**
+     * Esistenza della pagina <br>
+     *
+     * @param pageid della pagina/categoria wik usato nella urlRequest.
+     *
+     * @return true se la pagina/categoria esiste
+     */
+    public boolean isEsiste(final long pageid) {
+        return urlRequest(pageid).isValido();
     }
 
 
@@ -73,14 +113,6 @@ public class QueryExist extends AQuery {
      * Controllo del contenuto (testo) ricevuto <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      *
-     * Nella risposta positiva la gerarchia è:
-     * batchcomplete
-     * query
-     *      normalized
-     *      pages
-     *          [0]
-     *             missing
-     *             title
      * @param rispostaDellaQuery in formato JSON da elaborare
      *
      * @return wrapper di informazioni

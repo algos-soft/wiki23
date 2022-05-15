@@ -207,14 +207,14 @@ public abstract class AQuery {
         //--richiama una query specializzata per controllare l'esistenza della pagina/categoria
         //--esclude la query stessa per evitare un loop
         if (this.getClass() != QueryExist.class) {
-            if (!appContext.getBean(QueryExist.class).isEsiste(wikiTitlePageid)) {
-                message = String.format("La pagina/categoria '%s' non esiste su wikipedia", wikiTitlePageid);
-                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-                result.errorMessage(message);
-                result.setWrap(new WrapBio().valida(false).type(AETypePage.nonEsiste));
-                result.setFine();
-                return result;
-            }
+            //            if (!appContext.getBean(QueryExist.class).isEsiste(wikiTitlePageid)) {
+            //                message = String.format("La pagina/categoria '%s' non esiste su wikipedia", wikiTitlePageid);
+            //                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            //                result.errorMessage(message);
+            //                result.setWrap(new WrapBio().valida(false).type(AETypePage.nonEsiste));
+            //                result.setFine();
+            //                return result;
+            //            }
         }
 
         return result;
@@ -222,7 +222,7 @@ public abstract class AQuery {
 
     protected WResult checkInizialePipe(WResult result, final String wikiTitleGrezzo) {
 
-        if (wikiTitleGrezzo.contains(PIPE)) {
+        if (wikiTitleGrezzo != null && wikiTitleGrezzo.contains(PIPE)) {
             result = WResult.errato();
             String message = "Il wikiTitle contiene un 'pipe' non accettabile";
             logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
@@ -577,8 +577,8 @@ public abstract class AQuery {
                 result.setErrorCode(KEY_JSON_MISSING_TRUE);
                 result.setErrorMessage(String.format("La pagina wiki '%s' non esiste", result.getWikiTitle()));
                 result.setTypePage(AETypePage.nonEsiste);
-//                wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.nonEsiste);
-//                result.setWrap(wrap);
+                //                wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.nonEsiste);
+                //                result.setWrap(wrap);
                 return result;
             }
         }
@@ -591,15 +591,15 @@ public abstract class AQuery {
         }
 
         //--pageId
-//        if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_PAGE_ID) != null && jsonPageZero.get(KEY_JSON_TITLE) != null) {
-//            pageId = (long) jsonPageZero.get(KEY_JSON_PAGE_ID);
-//            wikiTitle = (String) jsonPageZero.get(KEY_JSON_TITLE);
-//            result.setWikiTitle(wikiTitle);
-//            result.setLongValue(pageId);
-//            result.setValidMessage(String.format("Trovata la pagina %s", wikiTitle));
-//            wrap = new WrapBio().valida(true).title(wikiTitle).pageid(pageId).type(AETypePage.indeterminata);
-//            result.setWrap(wrap);
-//        }
+        //        if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_PAGE_ID) != null && jsonPageZero.get(KEY_JSON_TITLE) != null) {
+        //            pageId = (long) jsonPageZero.get(KEY_JSON_PAGE_ID);
+        //            wikiTitle = (String) jsonPageZero.get(KEY_JSON_TITLE);
+        //            result.setWikiTitle(wikiTitle);
+        //            result.setLongValue(pageId);
+        //            result.setValidMessage(String.format("Trovata la pagina %s", wikiTitle));
+        //            wrap = new WrapBio().valida(true).title(wikiTitle).pageid(pageId).type(AETypePage.indeterminata);
+        //            result.setWrap(wrap);
+        //        }
 
         if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_REVISIONS) != null) {
             jsonRevisions = (JSONArray) jsonPageZero.get(KEY_JSON_REVISIONS);

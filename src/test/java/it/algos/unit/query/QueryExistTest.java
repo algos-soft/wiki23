@@ -106,8 +106,8 @@ public class QueryExistTest extends WikiTest {
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
 
-        sorgenteIntero = 27416167;
-        ottenutoRisultato = istanza.urlRequest(sorgenteIntero);
+        sorgenteLong = 27416167;
+        ottenutoRisultato = istanza.urlRequest(sorgenteLong);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
         assertTrue(ottenutoRisultato.getWrap() == null);
@@ -117,7 +117,7 @@ public class QueryExistTest extends WikiTest {
         assertFalse(ottenutoBooleano);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("La pagina '%d' (pageid) non esiste su wikipedia", sorgenteIntero));
+        System.out.println(String.format("La pagina '%d' (pageid) non esiste su wikipedia", sorgenteLong));
         printRisultato(ottenutoRisultato);
     }
 
@@ -149,14 +149,14 @@ public class QueryExistTest extends WikiTest {
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
 
-        sorgenteIntero = 2741616;
-        ottenutoRisultato = istanza.urlRequest(sorgenteIntero);
+        sorgenteLong = 2741616;
+        ottenutoRisultato = istanza.urlRequest(sorgenteLong);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         assertTrue(ottenutoRisultato.getWrap() == null);
         assertEquals(AETypePage.indeterminata, ottenutoRisultato.getTypePage());
 
-        ottenutoBooleano = istanza.isEsiste(sorgenteIntero);
+        ottenutoBooleano = istanza.isEsiste(sorgenteLong);
         assertTrue(ottenutoBooleano);
 
         System.out.println(VUOTA);
