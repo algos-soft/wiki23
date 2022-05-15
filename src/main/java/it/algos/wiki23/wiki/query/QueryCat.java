@@ -120,6 +120,12 @@ public class QueryCat extends AQuery {
         }
         result.setToken(tokenContinue);
 
+//        if (result.getWrap() != null && result.getWrap().isValida()) {
+//            result.getWrap().type(AETypePage.categoria);
+//            result.getWrap().valida(false);
+//        }
+
+
         if (mappaUrlResponse.get(KEY_JSON_CATEGORY_MEMBERS) instanceof JSONArray jsonCategory) {
             if (jsonCategory.size() > 0) {
                 for (Object obj : jsonCategory) {

@@ -82,6 +82,9 @@ public class QueryInfoCatTest extends WikiTest {
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.getWrap() != null);
+        assertFalse(ottenutoRisultato.getWrap().isValida());
+        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getWrap().getType());
 
         System.out.println(VUOTA);
         System.out.println(String.format("La categoria [[%s]] non esiste su wikipedia", sorgente));
@@ -99,6 +102,8 @@ public class QueryInfoCatTest extends WikiTest {
         ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.getWrap() != null);
+        assertFalse(ottenutoRisultato.getWrap().isValida());
         assertEquals(AETypePage.categoria, ottenutoRisultato.getWrap().getType());
         assertTrue(ottenutoRisultato.getIntValue() > 0);
 
@@ -118,6 +123,8 @@ public class QueryInfoCatTest extends WikiTest {
         ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.getWrap() != null);
+        assertFalse(ottenutoRisultato.getWrap().isValida());
         assertEquals(AETypePage.categoria, ottenutoRisultato.getWrap().getType());
         assertTrue(ottenutoRisultato.getIntValue() > 0);
 

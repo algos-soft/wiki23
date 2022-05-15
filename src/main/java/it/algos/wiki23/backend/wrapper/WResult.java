@@ -60,6 +60,8 @@ public class WResult extends AResult {
 
     private int cicli;
 
+    private AETypePage typePage;
+
     private WResult() {
         this(null);
     }
@@ -124,6 +126,10 @@ public class WResult extends AResult {
 
     public WResult wikiText(final String wikiText) {
         this.wikiText = wikiText;
+        return this;
+    }
+    public WResult typePage(final AETypePage typePage) {
+        this.typePage = typePage;
         return this;
     }
 
@@ -303,6 +309,14 @@ public class WResult extends AResult {
 
     public void setCicli(int cicli) {
         this.cicli = cicli;
+    }
+
+    public AETypePage getTypePage() {
+        return typePage;
+    }
+
+    public void setTypePage(AETypePage typePage) {
+        this.typePage = typePage;
     }
 
     public long getInizio() {

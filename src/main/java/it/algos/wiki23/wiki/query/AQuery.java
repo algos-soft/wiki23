@@ -279,7 +279,7 @@ public abstract class AQuery {
      * @param pathQuery       della richiesta
      * @param wikiTitleGrezzo della pagina wiki (necessita di codifica) usato nella urlRequest
      *
-     * @return testo grezzo della risposta in formato JSON
+     * @return wrapper di informazioni
      */
     protected WResult requestGetTitle(final String pathQuery, final String wikiTitleGrezzo) {
         WResult result = checkIniziale(pathQuery, wikiTitleGrezzo);
@@ -293,7 +293,7 @@ public abstract class AQuery {
      * @param pathQuery della richiesta
      * @param pageid    della pagina wiki  usato nella urlRequest
      *
-     * @return testo grezzo della risposta in formato JSON
+     * @return wrapper di informazioni
      */
     protected WResult requestGetPage(final String pathQuery, final long pageid) {
         WResult result = checkIniziale(pathQuery, pageid);
@@ -306,7 +306,7 @@ public abstract class AQuery {
      *
      * @param urlDomain della richiesta
      *
-     * @return testo grezzo della risposta in formato JSON
+     * @return wrapper di informazioni
      */
     protected WResult requestGet(WResult result, final String urlDomain) {
         URLConnection urlConn;
@@ -479,14 +479,18 @@ public abstract class AQuery {
     /**
      * Elabora la risposta <br>
      * <p>
-     * Informazioni, contenuto e validità della risposta
-     * Controllo del contenuto (testo) ricevuto
+     * Informazioni, contenuto e validità della risposta <br>
+     * Controllo del contenuto (testo) ricevuto <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      *
      * @param rispostaDellaQuery in formato JSON da elaborare
+     *
+     * @return wrapper di informazioni
      */
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         //--fissa durata
         result.setFine();
+        result.setTypePage(AETypePage.indeterminata);
 
         //--mappa utilizzata nelle sottoclassi
         this.fixMappaUrlResponse();
@@ -572,8 +576,9 @@ public abstract class AQuery {
                 result.setValido(false);
                 result.setErrorCode(KEY_JSON_MISSING_TRUE);
                 result.setErrorMessage(String.format("La pagina wiki '%s' non esiste", result.getWikiTitle()));
-                wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.nonEsiste);
-                result.setWrap(wrap);
+                result.setTypePage(AETypePage.nonEsiste);
+//                wrap = new WrapBio().title(result.getWikiTitle()).type(AETypePage.nonEsiste);
+//                result.setWrap(wrap);
                 return result;
             }
         }
@@ -586,15 +591,15 @@ public abstract class AQuery {
         }
 
         //--pageId
-        if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_PAGE_ID) != null && jsonPageZero.get(KEY_JSON_TITLE) != null) {
-            pageId = (long) jsonPageZero.get(KEY_JSON_PAGE_ID);
-            wikiTitle = (String) jsonPageZero.get(KEY_JSON_TITLE);
-            result.setWikiTitle(wikiTitle);
-            result.setLongValue(pageId);
-            result.setValidMessage(String.format("Trovata la pagina %s", wikiTitle));
-            wrap = new WrapBio().valida(true).title(wikiTitle).pageid(pageId).type(AETypePage.indeterminata);
-            result.setWrap(wrap);
-        }
+//        if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_PAGE_ID) != null && jsonPageZero.get(KEY_JSON_TITLE) != null) {
+//            pageId = (long) jsonPageZero.get(KEY_JSON_PAGE_ID);
+//            wikiTitle = (String) jsonPageZero.get(KEY_JSON_TITLE);
+//            result.setWikiTitle(wikiTitle);
+//            result.setLongValue(pageId);
+//            result.setValidMessage(String.format("Trovata la pagina %s", wikiTitle));
+//            wrap = new WrapBio().valida(true).title(wikiTitle).pageid(pageId).type(AETypePage.indeterminata);
+//            result.setWrap(wrap);
+//        }
 
         if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_REVISIONS) != null) {
             jsonRevisions = (JSONArray) jsonPageZero.get(KEY_JSON_REVISIONS);

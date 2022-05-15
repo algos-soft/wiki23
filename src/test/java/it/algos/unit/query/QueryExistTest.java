@@ -85,7 +85,8 @@ public class QueryExistTest extends WikiTest {
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
-        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getTypePage());
 
         ottenutoBooleano = istanza.isEsiste(sorgente);
         assertFalse(ottenutoBooleano);
@@ -109,7 +110,8 @@ public class QueryExistTest extends WikiTest {
         ottenutoRisultato = istanza.urlRequest(sorgenteIntero);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
-        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getTypePage());
 
         ottenutoBooleano = istanza.isEsiste(sorgente);
         assertFalse(ottenutoBooleano);
@@ -130,7 +132,8 @@ public class QueryExistTest extends WikiTest {
         ottenutoRisultato = appContext.getBean(QueryExist.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
-        assertEquals(AETypePage.indeterminata, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.indeterminata, ottenutoRisultato.getTypePage());
 
         System.out.println(VUOTA); System.out.println(String.format("Trovata la pagina [[%s]] su wikipedia", sorgente));
         printRisultato(ottenutoRisultato);
@@ -150,7 +153,8 @@ public class QueryExistTest extends WikiTest {
         ottenutoRisultato = istanza.urlRequest(sorgenteIntero);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
-        assertEquals(AETypePage.indeterminata, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.indeterminata, ottenutoRisultato.getTypePage());
 
         ottenutoBooleano = istanza.isEsiste(sorgenteIntero);
         assertTrue(ottenutoBooleano);

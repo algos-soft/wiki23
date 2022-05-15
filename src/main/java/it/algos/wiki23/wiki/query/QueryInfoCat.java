@@ -61,6 +61,7 @@ public class QueryInfoCat extends AQuery {
 
         if (result.getWrap() != null && result.getWrap().isValida()) {
             result.getWrap().type(AETypePage.categoria);
+            result.getWrap().valida(false);
         }
 
         if (mappaUrlResponse.get(KEY_JSON_CATEGORY_INFO) instanceof JSONObject jsonCategoryInfo) {

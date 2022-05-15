@@ -69,8 +69,21 @@ public class QueryExist extends AQuery {
     /**
      * Elabora la risposta <br>
      * <p>
-     * Informazioni, contenuto e validità della risposta
-     * Controllo del contenuto (testo) ricevuto
+     * Informazioni, contenuto e validità della risposta <br>
+     * Controllo del contenuto (testo) ricevuto <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     *
+     * Nella risposta positiva la gerarchia è:
+     * batchcomplete
+     * query
+     *      normalized
+     *      pages
+     *          [0]
+     *             missing
+     *             title
+     * @param rispostaDellaQuery in formato JSON da elaborare
+     *
+     * @return wrapper di informazioni
      */
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
