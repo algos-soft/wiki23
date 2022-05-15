@@ -33,6 +33,16 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class QueryCat extends AQuery {
 
+    /**
+     * Lista dei pageids di una categoria <br>
+     *
+     * @param catTitleGrezzo della categoria wiki (necessita di codifica) usato nella urlRequest
+     *
+     * @return lista (pageids) degli elementi contenuti nella categoria
+     */
+    public List<Long> getLista(final String catTitleGrezzo) {
+        return (List<Long>) urlRequest(catTitleGrezzo).getLista();
+    }
 
     /**
      * Request principale <br>
@@ -66,8 +76,10 @@ public class QueryCat extends AQuery {
             return result;
         }
         else {
-            result.setUserType(botLogin.getUserType());
-            result.setLimit(botLogin.getUserType().getLimit());
+            if (botLogin!=null) {
+                result.setUserType(botLogin.getUserType());
+                result.setLimit(botLogin.getUserType().getLimit());
+            }
         }
 
         urlDomain = fixUrlCat(catTitleGrezzo, VUOTA);
@@ -108,7 +120,7 @@ public class QueryCat extends AQuery {
         }
         result.setToken(tokenContinue);
 
-        if (mappaUrlResponse.get(KEY_JSON_MEMBERS) instanceof JSONArray jsonCategory) {
+        if (mappaUrlResponse.get(KEY_JSON_CATEGORY_MEMBERS) instanceof JSONArray jsonCategory) {
             if (jsonCategory.size() > 0) {
                 for (Object obj : jsonCategory) {
                     pageid = (long) ((JSONObject) obj).get(PAGE_ID);
@@ -157,10 +169,10 @@ public class QueryCat extends AQuery {
 
         if (textService.isValid(continueParam)) {
             String continua = WIKI_QUERY_CAT_CONTINUE + continueParam;
-            return String.format("%s%s%s%s%s%s", query, type, prop, limit, user,continua);
+            return String.format("%s%s%s%s%s%s", query, type, prop, limit, user, continua);
         }
         else {
-            return String.format("%s%s%s%s%s", query, type, prop, limit,user);
+            return String.format("%s%s%s%s%s", query, type, prop, limit, user);
         }
 
     }

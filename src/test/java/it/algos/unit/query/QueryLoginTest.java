@@ -197,7 +197,7 @@ public class QueryLoginTest extends WikiTest {
     @Test
     @Order(7)
     @DisplayName("7 - urlRequest di queryLogin 'hamed' - user (valida)")
-    void urlRequest3() {
+    void urlRequestUser() {
         System.out.println("7 - urlRequest di queryLogin 'hamed' - user (valida) che registra i valori in botLogin");
 
         previsto = JSON_SUCCESS;
@@ -205,6 +205,22 @@ public class QueryLoginTest extends WikiTest {
         assertTrue(ottenutoRisultato.isValido());
         assertEquals(previsto, ottenutoRisultato.getCodeMessage());
         assertEquals("lguserid: 1985, lgusername: Hamed", ottenutoRisultato.getMessage());
+        assertFalse(botLogin.isBot());
+        printRisultato(ottenutoRisultato);
+        printBotLogin();
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - urlRequest di queryLogin 'gac' - admin (valida)")
+    void urlRequestAdmin() {
+        System.out.println("8 - urlRequest di queryLogin 'gac' - admin (valida) che registra i valori in botLogin");
+
+        previsto = JSON_SUCCESS;
+        ottenutoRisultato = appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.admin);
+        assertTrue(ottenutoRisultato.isValido());
+        assertEquals(previsto, ottenutoRisultato.getCodeMessage());
+        assertEquals("lguserid: 399, lgusername: Gac", ottenutoRisultato.getMessage());
         assertFalse(botLogin.isBot());
         printRisultato(ottenutoRisultato);
         printBotLogin();

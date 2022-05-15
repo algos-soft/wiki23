@@ -127,6 +127,11 @@ public class WResult extends AResult {
         return this;
     }
 
+    public WResult pageid(final long pageid) {
+        this.pageid = pageid;
+        return this;
+    }
+
     public WrapBio getWrap() {
         return wrap;
     }

@@ -2,15 +2,9 @@ package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.service.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.service.*;
-import static it.algos.wiki23.backend.service.WikiBotService.*;
 import it.algos.wiki23.backend.wrapper.*;
-import org.json.simple.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
@@ -46,7 +40,7 @@ public class QueryBio extends AQuery {
      */
     public WResult urlRequest(final String wikiTitleGrezzo) {
         queryType = AETypeQuery.get;
-        return requestGet(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzo);
+        return requestGetTitle(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzo);
     }
 
     /**
@@ -74,7 +68,7 @@ public class QueryBio extends AQuery {
      */
     public WResult urlRequest(final long pageid) {
         queryType = AETypeQuery.get;
-        return requestGet(WIKI_QUERY_BASE_PAGE, pageid);
+        return requestGetPage(WIKI_QUERY_BASE_PAGE, pageid);
     }
 
     /**

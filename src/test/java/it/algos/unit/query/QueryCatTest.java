@@ -155,6 +155,7 @@ public class QueryCatTest extends WikiTest {
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
         assertNotNull(ottenutoRisultato);
         assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
+        assertNull(ottenutoRisultato.getWrap());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
@@ -230,7 +231,6 @@ public class QueryCatTest extends WikiTest {
     }
 
 
-
     @Test
     @Order(60)
     @DisplayName("60 - Obbligatorio PRIMA del 61 per regolare il botLogin")
@@ -253,10 +253,10 @@ public class QueryCatTest extends WikiTest {
         System.out.println("61 - Test per categorie collegamento bot");
         System.out.println("Il botLogin è stato regolato nel test '60'");
 
-        sorgente="BioBot";
+        sorgente = "BioBot";
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
-        assertTrue( ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come bot", sorgente));

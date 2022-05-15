@@ -173,9 +173,9 @@ public class Wiki23Cost {
     public static final String KEY_JSON_CONTENT = "content";
 
 
-    public static final String KEY_JSON_MEMBERS = "categorymembers";
+    public static final String KEY_JSON_CATEGORY_MEMBERS = "categorymembers";
 
-    public static final String KEY_JSON_CATEGORY = "categoryinfo";
+    public static final String KEY_JSON_CATEGORY_INFO = "categoryinfo";
 
     public static final String KEY_JSON_CATEGORY_PAGES = "categorypages";
 

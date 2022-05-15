@@ -34,7 +34,7 @@ public class BotLogin {
      */
     private String lgusername;
 
-    private AETypeUser userType;
+    private AETypeUser userType = AETypeUser.anonymous;
 
     private boolean valido;
 

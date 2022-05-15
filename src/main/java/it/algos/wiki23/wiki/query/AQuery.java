@@ -2,7 +2,6 @@ package it.algos.wiki23.wiki.query;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
@@ -173,17 +172,6 @@ public abstract class AQuery {
 
     protected LinkedHashMap<String, Object> mappaUrlResponse;
 
-    //    /**
-    //     * Controlla l'esistenza della pagina/categoria <br>
-    //     *
-    //     * @param wikiTitleGrezzo della pagina/categoria wiki (necessita di codifica) usato nella urlRequest
-    //     *
-    //     * @return true se la pagina/categoria esiste
-    //     */
-    //    protected boolean checkEsistenza(final String wikiTitleGrezzo) {
-    //        return appContext.getBean(QueryExist.class).isEsiste(wikiTitleGrezzo);
-    //    }
-
     /**
      * Controlla l'esistenza e la validità del collegamento come bot <br>
      *
@@ -203,17 +191,10 @@ public abstract class AQuery {
         return result;
     }
 
-    protected WResult checkIniziale(final String pathQuery, final Object wikiTitlePageid) {
+
+    private WResult checkInizialeBase(final String pathQuery, final Object wikiTitlePageid) {
         WResult result = WResult.valido().queryType(queryType);
         String message;
-
-        if (wikiTitlePageid == null) {
-            message = String.format("Manca il parametro wikiTitle o pageid");
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            result.errorMessage(message);
-            result.setFine();
-            return result;
-        }
 
         if (textService.isEmpty(pathQuery)) {
             message = String.format("Manca il pathQuery");
@@ -223,56 +204,73 @@ public abstract class AQuery {
             return result;
         }
 
-        if (wikiTitlePageid instanceof String wikiTitleGrezzo) {
-            result.setWikiTitle(wikiTitleGrezzo);
-            if (textService.isEmpty(wikiTitleGrezzo)) {
-                message = "Manca il wikiTitleGrezzo";
-                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-                result.errorMessage(message);
-                result.setWikiTitle(wikiTitleGrezzo);
-                result.setFine();
-                return result;
-            }
-        }
-
-        if (wikiTitlePageid instanceof Long pageid) {
-            result.setPageid(pageid);
-            if (pageid < 1) {
-                message = "Manca il pageid";
-                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-                result.errorMessage(message);
-                result.setPageid(pageid);
-                result.setFine();
-                return result;
-            }
-        }
-
-        if (wikiTitlePageid instanceof Integer pageid) {
-            result.setPageid(pageid);
-            if (pageid < 1) {
-                message = "Manca il pageid";
-                logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-                result.errorMessage(message);
-                result.setPageid((pageid).longValue());
-                result.setFine();
-                return result;
-            }
-        }
-
         //--richiama una query specializzata per controllare l'esistenza della pagina/categoria
         //--esclude la query stessa per evitare un loop
         if (this.getClass() != QueryExist.class) {
             if (!appContext.getBean(QueryExist.class).isEsiste(wikiTitlePageid)) {
-                message = String.format("La pagina/categoria '%s' non esiste su wikipedia",wikiTitlePageid);
+                message = String.format("La pagina/categoria '%s' non esiste su wikipedia", wikiTitlePageid);
                 logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
                 result.errorMessage(message);
-                result.setWrap(new WrapBio().valida(false).type(AETypePage.nonEsiste).title(wikiTitlePageid.toString()));
+                result.setWrap(new WrapBio().valida(false).type(AETypePage.nonEsiste));
                 result.setFine();
                 return result;
             }
         }
 
         return result;
+    }
+
+    protected WResult checkInizialePipe(WResult result, final String wikiTitleGrezzo) {
+
+        if (wikiTitleGrezzo.contains(PIPE)) {
+            result = WResult.errato();
+            String message = "Il wikiTitle contiene un 'pipe' non accettabile";
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            result.errorMessage(message);
+            result.setWikiTitle(wikiTitleGrezzo);
+            result.setFine();
+        }
+
+        return result;
+    }
+
+    protected WResult checkIniziale(final String pathQuery, final String wikiTitleGrezzo) {
+        WResult result = checkInizialeBase(pathQuery, wikiTitleGrezzo);
+        result = checkInizialePipe(result, wikiTitleGrezzo);
+
+        if (textService.isEmpty(wikiTitleGrezzo)) {
+            String message = "Manca il wikiTitleGrezzo";
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            result.errorMessage(message);
+            result.setWikiTitle(wikiTitleGrezzo);
+            result.setFine();
+            return result;
+        }
+
+        if (result.getWrap() != null) {
+            result.getWrap().title(wikiTitleGrezzo);
+        }
+        return result.wikiTitle(wikiTitleGrezzo);
+    }
+
+
+    protected WResult checkIniziale(final String pathQuery, final long pageid) {
+        WResult result = checkInizialeBase(pathQuery, pageid);
+
+        result.setPageid(pageid);
+        if (pageid < 1) {
+            String message = "Manca il pageid";
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            result.errorMessage(message);
+            result.setPageid(pageid);
+            result.setFine();
+            return result;
+        }
+
+        if (result.getWrap() != null) {
+            result.getWrap().pageid(pageid);
+        }
+        return result.pageid(pageid);
     }
 
     /**
@@ -283,7 +281,7 @@ public abstract class AQuery {
      *
      * @return testo grezzo della risposta in formato JSON
      */
-    protected WResult requestGet(final String pathQuery, final String wikiTitleGrezzo) {
+    protected WResult requestGetTitle(final String pathQuery, final String wikiTitleGrezzo) {
         WResult result = checkIniziale(pathQuery, wikiTitleGrezzo);
         return requestGet(result, pathQuery + fixWikiTitle(wikiTitleGrezzo));
     }
@@ -297,27 +295,9 @@ public abstract class AQuery {
      *
      * @return testo grezzo della risposta in formato JSON
      */
-    protected WResult requestGet(final String pathQuery, final long pageid) {
+    protected WResult requestGetPage(final String pathQuery, final long pageid) {
         WResult result = checkIniziale(pathQuery, pageid);
         return requestGet(result, pathQuery + pageid);
-        //        WResult result = WResult.errato().queryType(AETypeQuery.get);
-        //        String message;
-        //
-        //        if (textService.isEmpty(pathQuery)) {
-        //            message = String.format("Manca il pathQuery per %d", pageid);
-        //            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-        //            return result;
-        //        }
-        //
-        //        if (pageid < 1) {
-        //            message = "Manca il pageid";
-        //            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-        //            result.errorMessage(message);
-        //            return result;
-        //        }
-        //
-        //        result.setPageid(pageid);
-        //        return requestGet(result, pathQuery + pageid);
     }
 
 
@@ -332,6 +312,10 @@ public abstract class AQuery {
         URLConnection urlConn;
         String urlResponse;
         result.setUrlRequest(urlDomain);
+
+        if (result.isErrato()) {
+            return result;
+        }
 
         try {
             urlConn = this.creaGetConnection(urlDomain);
@@ -513,7 +497,8 @@ public abstract class AQuery {
         JSONArray jsonRevisions = null;
         JSONObject jsonRevZero = null;
         JSONObject jsonContinue = null;
-        JSONArray jsonCategory = null;
+        JSONArray jsonCategoryMembers = null;
+        JSONObject jsonCategoryInfo = null;
         JSONObject jsonLogin = null;
         String stringTimestamp = VUOTA;
         JSONObject jsonSlots = null;
@@ -550,7 +535,6 @@ public abstract class AQuery {
             return result;
         }
 
-
         if (jsonAll != null && jsonAll.get(KEY_JSON_CONTINUE) != null) {
             jsonContinue = (JSONObject) jsonAll.get(KEY_JSON_CONTINUE);
             mappaUrlResponse.put(KEY_JSON_CONTINUE, jsonContinue);
@@ -571,9 +555,14 @@ public abstract class AQuery {
             mappaUrlResponse.put(KEY_JSON_ZERO, jsonPageZero);
         }
 
-        if (jsonQuery != null && jsonQuery.get(KEY_JSON_MEMBERS) != null) {
-            jsonCategory = (JSONArray) jsonQuery.get(KEY_JSON_MEMBERS);
-            mappaUrlResponse.put(KEY_JSON_MEMBERS, jsonCategory);
+        if (jsonQuery != null && jsonQuery.get(KEY_JSON_CATEGORY_MEMBERS) != null) {
+            jsonCategoryMembers = (JSONArray) jsonQuery.get(KEY_JSON_CATEGORY_MEMBERS);
+            mappaUrlResponse.put(KEY_JSON_CATEGORY_MEMBERS, jsonCategoryMembers);
+        }
+
+        if (jsonPageZero != null && jsonPageZero.get(KEY_JSON_CATEGORY_INFO) != null) {
+            jsonCategoryInfo = (JSONObject) jsonPageZero.get(KEY_JSON_CATEGORY_INFO);
+            mappaUrlResponse.put(KEY_JSON_CATEGORY_INFO, jsonCategoryInfo);
         }
 
         //--controllo del missing

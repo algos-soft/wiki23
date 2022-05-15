@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.json.simple.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
@@ -39,7 +40,7 @@ public class QueryInfoCat extends AQuery {
      */
     public WResult urlRequest(final String wikiTitleGrezzo) {
         queryType = AETypeQuery.get;
-        return requestGet(WIKI_QUERY_CAT_INFO, CAT + wikiTitleGrezzo);
+        return requestGetTitle(WIKI_QUERY_CAT_INFO, CAT + wikiTitleGrezzo);
     }
 
 
@@ -51,10 +52,23 @@ public class QueryInfoCat extends AQuery {
      */
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
+        Long pagine = 0L;
 
         //--controllo del missing e leggera modifica delle informazioni di errore
         if (result.getErrorCode().equals(KEY_JSON_MISSING_TRUE)) {
             result.setErrorMessage(String.format("La categoria wiki '%s' non esiste", result.getWikiTitle()));
+        }
+
+        if (result.getWrap() != null && result.getWrap().isValida()) {
+            result.getWrap().type(AETypePage.categoria);
+        }
+
+        if (mappaUrlResponse.get(KEY_JSON_CATEGORY_INFO) instanceof JSONObject jsonCategoryInfo) {
+            Object alfa = jsonCategoryInfo;
+            if (jsonCategoryInfo.get(KEY_JSON_PAGES) != null) {
+                pagine = (Long) jsonCategoryInfo.get(KEY_JSON_PAGES);
+                result.setIntValue(pagine.intValue());
+            }
         }
 
         return result;

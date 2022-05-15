@@ -73,6 +73,8 @@ public abstract class WikiTest extends AlgosTest {
 
     protected final static String CATEGORIA_ESISTENTE_DUE = "BioBot";
 
+    protected final static String CATEGORIA_ESISTENTE_TRE = "Ambasciatori britannici in Brasile";
+
     protected WResult previstoRisultato;
 
     protected WResult ottenutoRisultato;
@@ -81,6 +83,9 @@ public abstract class WikiTest extends AlgosTest {
 
     protected Bio bio;
 
+    protected List<Long> listaPageIds;
+
+    protected List<WrapBio> listWrapBio;
 
     protected static final String PAGINA_UNO = "Roman Protasevič";
 
@@ -213,6 +218,8 @@ public abstract class WikiTest extends AlgosTest {
         ottenutoRisultato = null;
         wrapBio = null;
         bio = null;
+        listaPageIds = null;
+        listWrapBio = null;
     }
 
     protected void printRisultato(WResult result) {
@@ -237,7 +244,7 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Error message: %s", result.getErrorMessage()));
         System.out.println(String.format("Valid message: %s", result.getValidMessage()));
         System.out.println(String.format("Numeric value: %s", textService.format(result.getIntValue())));
-        System.out.println(String.format("Cicli: %d", result.getCicli()));;
+        System.out.println(String.format("Cicli: %d", result.getCicli())); ;
         System.out.println(String.format("List value: %s", lista));
         System.out.println(String.format("Map value: %s", result.getMappa()));
         System.out.println(String.format("Risultato ottenuto in %s", dateService.toText(result.getDurata())));

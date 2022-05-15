@@ -1,18 +1,11 @@
 package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
-import org.json.simple.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-
-import java.net.*;
 
 /**
  * Project wiki23
@@ -48,13 +41,13 @@ public class QueryExist extends AQuery {
     public WResult urlRequest(final Object wikiTitlePageid) {
         queryType = AETypeQuery.get;
         if (wikiTitlePageid instanceof String wikiTitleGrezzo) {
-            return requestGet(WIKI_QUERY, wikiTitleGrezzo);
+            return requestGetTitle(WIKI_QUERY, wikiTitleGrezzo);
         }
         if (wikiTitlePageid instanceof Integer pageid) {
-            return requestGet(WIKI_QUERY_PAGEIDS, pageid);
+            return requestGetPage(WIKI_QUERY_PAGEIDS, pageid);
         }
         if (wikiTitlePageid instanceof Long pageid) {
-            return requestGet(WIKI_QUERY_PAGEIDS, pageid);
+            return requestGetPage(WIKI_QUERY_PAGEIDS, pageid);
         }
 
         return WResult.errato("I parametri della urlRequest sono errati ");

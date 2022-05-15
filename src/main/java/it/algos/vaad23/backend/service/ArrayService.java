@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.service;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.functional.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -224,6 +225,56 @@ public class ArrayService extends AbstractService {
         }
 
         return mappaSemplice;
+    }
+
+    /**
+     * Crea una stringa con i valori dell'array separati da virgola <br>
+     *
+     * @param array lista di valori
+     *
+     * @return stringa con i singoli valori separati da virgola
+     *
+     * @since Java 9
+     */
+    public String toStringaVirgola(final List array) {
+        return toStringaBase(array, VIRGOLA);
+    }
+
+    /**
+     * Costruisce una stringa con i singoli valori separati da un pipe <br>
+     *
+     * @param array lista di valori
+     *
+     * @return stringa con i singoli valori separati da pipe
+     */
+    public String toStringaPipe(final List array) {
+        return toStringaBase(array, PIPE);
+    }
+
+    /**
+     * Crea una stringa con i valori dell'array separati da un separatore <br>
+     *
+     * @param array lista di valori
+     * @param sep   caratteri separatore
+     *
+     * @return stringa con i singoli valori separati da separatore
+     *
+     * @since Java 9
+     */
+    private String toStringaBase(final List array, final String sep) {
+        StringBuffer buffer = new StringBuffer();
+
+        if (array != null) {
+            array.forEach(obj -> {
+                {
+                    buffer.append(sep);
+                    buffer.append(obj);
+                }
+            });
+            buffer.delete(0, sep.length());
+        }
+
+        return buffer.toString();
     }
 
 }
