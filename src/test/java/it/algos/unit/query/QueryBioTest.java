@@ -271,6 +271,11 @@ public class QueryBioTest extends WikiTest {
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
 
+        wrapBio = ottenutoRisultato.getWrap();
+        assertNotNull(wrapBio);
+        assertFalse(wrapBio.isValida());
+        assertEquals(AETypePage.contienePipe, wrapBio.getType());
+
         System.out.println(VUOTA);
         System.out.println(String.format("La pagina [[%s]] non esiste su wikipedia", sorgente));
         printRisultato(ottenutoRisultato);

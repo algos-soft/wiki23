@@ -72,7 +72,13 @@ public class QueryBio extends AQuery {
      */
     public WResult urlRequest(final String wikiTitleGrezzoBio) {
         queryType = AETypeQuery.get;
-        return requestGetTitle(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzoBio);
+        WResult result = requestGetTitle(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzoBio);
+
+        if (result.getTypePage() == AETypePage.contienePipe) {
+            result.setWrap(new WrapBio().valida(false).title(result.getWikiTitle()).pageid(result.getPageid()).type(AETypePage.contienePipe));
+        }
+
+        return result;
     }
 
     /**
@@ -123,8 +129,7 @@ public class QueryBio extends AQuery {
      */
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
-        String tmplBio;
-        //        String content = VUOTA;
+        //        String tmplBio;
         String wikiTitle = result.getWikiTitle();
         long pageId = result.getPageid();
 
@@ -146,54 +151,30 @@ public class QueryBio extends AQuery {
             return result;
         }
 
-        //        //--estrae informazioni dalla pagina 'zero'
-        //        //--estrae il 'content' dalla pagina 'zero'
-        //        if (mappaUrlResponse.get(KEY_JSON_ZERO) instanceof JSONObject jsonPageZero) {
-        //            if (jsonPageZero.get(KEY_JSON_PAGE_ID) instanceof Long pageid) {
-        //                pageId = pageid;
-        //                result.pageid(pageId);
+        //        //--controllo del 'content'
+        //        //--controllo l'esistenza del template bio
+        //        //--estrazione del template
+        //        if (mappaUrlResponse.get(KEY_JSON_CONTENT) instanceof String content) {
+        //            tmplBio = wikiBot.estraeTmpl(content);
+        //            if (textService.isValid(tmplBio)) {
+        //                result.setErrorCode(VUOTA);
+        //                result.setErrorMessage(VUOTA);
+        //                result.setCodeMessage("valida");
+        //                result.setValidMessage(String.format("La pagina wiki '%s' è una biografia", wikiTitle));
+        //                result.setWrap(new WrapBio().valida(true).title(wikiTitle).pageid(pageId).type(AETypePage.testoConTmpl).templBio(tmplBio));
         //            }
-        //            if (jsonPageZero.get(KEY_JSON_TITLE) instanceof String title) {
-        //                wikiTitle = title;
-        //                result.wikiTitle(wikiTitle);
-        //            }
+        //            else {
+        //                result.setErrorCode("manca tmpl Bio");
+        //                result.setErrorMessage(String.format("La pagina wiki '%s' esiste ma non è una biografia", wikiTitle));
+        //                result.setWrap(new WrapBio().valida(false).title(wikiTitle).pageid(pageId).type(AETypePage.testoSenzaTmpl));
         //
-        //            if (jsonPageZero.get(KEY_JSON_REVISIONS) instanceof JSONArray jsonRevisions) {
-        //                if (jsonRevisions.size() > 0) {
-        //                    JSONObject jsonRevZero = (JSONObject) jsonRevisions.get(0);
-        //                    if (jsonRevZero.get(KEY_JSON_SLOTS) instanceof JSONObject jsonSlots) {
-        //                        if (jsonSlots.get(KEY_JSON_MAIN) instanceof JSONObject jsonMain) {
-        //                            content = (String) jsonMain.get(KEY_JSON_CONTENT);
-        //                        }
-        //                    }
-        //                }
         //            }
+        //            return result;
         //        }
 
-        //--controllo del 'content'
-        //--controllo l'esistenza del template bio
-        //--estrazione del template
-        if (mappaUrlResponse.get(KEY_JSON_CONTENT) instanceof String content) {
-            tmplBio = wikiBot.estraeTmpl(content);
-            if (textService.isValid(tmplBio)) {
-                result.setErrorCode(VUOTA);
-                result.setErrorMessage(VUOTA);
-                result.setCodeMessage("valida");
-                result.setValidMessage(String.format("La pagina wiki '%s' è una biografia", wikiTitle));
-                result.setWrap(new WrapBio().valida(true).title(wikiTitle).pageid(pageId).type(AETypePage.testoConTmpl).templBio(tmplBio));
-            }
-            else {
-                result.setErrorCode("manca tmpl Bio");
-                result.setErrorMessage(String.format("La pagina wiki '%s' esiste ma non è una biografia", wikiTitle));
-                result.setWrap(new WrapBio().valida(false).title(wikiTitle).pageid(pageId).type(AETypePage.testoSenzaTmpl));
-
-            }
-            return result;
-        }
-
-        result.setErrorCode("pippoz");
-        result.setErrorMessage(String.format("La pagina wiki '%s' esiste ? forse ? ", wikiTitle));
-        result.setWrap(new WrapBio().type(AETypePage.indeterminata).valida(false));
+        //        result.setErrorCode("pippoz");
+        //        result.setErrorMessage(String.format("La pagina wiki '%s' esiste ? forse ? ", wikiTitle));
+        //        result.setWrap(new WrapBio().type(AETypePage.indeterminata).valida(false));
         return result;
     }
 

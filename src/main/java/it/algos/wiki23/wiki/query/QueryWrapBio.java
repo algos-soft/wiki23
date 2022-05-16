@@ -49,4 +49,28 @@ public class QueryWrapBio extends AQuery {
         return requestGetTitle(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzo);
     }
 
+    @Override
+    protected WResult elaboraResponse(WResult result, String rispostaDellaQuery) {
+        result = super.elaboraResponse(result, rispostaDellaQuery);
+        String tmplBio;
+        String wikiTitle = result.getWikiTitle();
+        long pageId = result.getPageid();
+
+        if (mappaUrlResponse.get(KEY_JSON_NUM_PAGES) instanceof Integer numPages) {
+            if (numPages == 0) {
+                result.setErrorMessage("Qualcosa non ha funzionato");
+                result.setWrap(new WrapBio().valida(false).title(wikiTitle).pageid(pageId).type(AETypePage.indeterminata));
+                return result;
+            }
+
+            if (numPages == 1) {
+            }
+            if (numPages > 1) {
+            }
+
+        }
+
+        return result;
+    }
+
 }
