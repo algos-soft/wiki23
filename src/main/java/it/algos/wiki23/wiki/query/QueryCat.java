@@ -40,27 +40,49 @@ public class QueryCat extends AQuery {
      *
      * @return lista (pageids) degli elementi contenuti nella categoria
      */
-    public List<Long> getLista(final String catTitleGrezzo) {
+    public List<Long> getListaPageIds(final String catTitleGrezzo) {
         return (List<Long>) urlRequest(catTitleGrezzo).getLista();
     }
 
     /**
      * Request principale <br>
      * <p>
+     * Non accetta il separatore PIPE nel wikiTitoloGrezzoPaginaCategoria <br>
      * La stringa urlDomain per la request viene elaborata <br>
      * Si crea una connessione di tipo GET <br>
      * Si invia la request <br>
      * La response viene sempre elaborata per estrarre le informazioni richieste <br>
+     * <p>
+     * Nella risposta negativa la gerarchia è: <br>
+     * ....error <br>
+     * ........code (forse asserbotfailed) <br>
+     * ........docref (info -> You do not have the "bot" right, so the action could not be completed) <br>
+     * ........info <br>
+     * <p>
+     * Nella risposta positiva la gerarchia è: <br>
+     * ....batchcomplete <br>
+     * ....continue <br>
+     * ........continue <br>
+     * ........cmcontinue <br>
+     * ....query <br>
+     * ........normalized <br>
+     * ........categorymembers (potrebbe essere vuoto ma tipicamente più di uno) <br>
+     * ............[0] <br>
+     * ............[1] <br>
+     * ................pageid <br>
      *
-     * @param catTitleGrezzo della categoria wiki (necessita di codifica) usato nella urlRequest
+     * @param wikiTitoloGrezzoPaginaCategoria della pagina/categoria wiki (necessita di codifica) usato nella urlRequest. Non accetta il separatore PIPE
      *
      * @return wrapper di informazioni
      */
-    public WResult urlRequest(final String catTitleGrezzo) {
+    public WResult urlRequest(final String wikiTitoloGrezzoPaginaCategoria) {
         queryType = AETypeQuery.getCookies;
-        WResult result = checkIniziale(QUERY_CAT_REQUEST, CAT + catTitleGrezzo);
+        WResult result = checkIniziale(QUERY_CAT_REQUEST, CAT + wikiTitoloGrezzoPaginaCategoria);
         if (result.isErrato()) {
             return result;
+        }
+        if (wikiTitoloGrezzoPaginaCategoria==null) {
+            return  result.errato("Il wikiTitle è nullo");
         }
 
         String urlDomain = VUOTA;
@@ -82,11 +104,11 @@ public class QueryCat extends AQuery {
             }
         }
 
-        urlDomain = fixUrlCat(catTitleGrezzo, VUOTA);
+        urlDomain = fixUrlCat(wikiTitoloGrezzoPaginaCategoria, VUOTA);
         result.setUrlPreliminary(urlDomain);
         try {
             do {
-                urlDomain = fixUrlCat(catTitleGrezzo, tokenContinue);
+                urlDomain = fixUrlCat(wikiTitoloGrezzoPaginaCategoria, tokenContinue);
                 urlConn = this.creaGetConnection(urlDomain);
                 uploadCookies(urlConn, botLogin != null ? botLogin.getCookies() : null);
                 urlResponse = sendRequest(urlConn);
@@ -101,7 +123,7 @@ public class QueryCat extends AQuery {
 
         pageIdsRecuperati = result.getIntValue();
         result.setUrlRequest(urlDomain);
-        message = String.format("Recuperati %s pageIds dalla categoria '%s' in %d cicli", textService.format(pageIdsRecuperati), catTitleGrezzo, cicli);
+        message = String.format("Recuperati %s pageIds dalla categoria '%s' in %d cicli", textService.format(pageIdsRecuperati), wikiTitoloGrezzoPaginaCategoria, cicli);
         result.setMessage(message);
 
         return result;
@@ -119,12 +141,6 @@ public class QueryCat extends AQuery {
             tokenContinue = (String) jsonContinue.get(KEY_JSON_CONTINUE_CM);
         }
         result.setToken(tokenContinue);
-
-//        if (result.getWrap() != null && result.getWrap().isValida()) {
-//            result.getWrap().type(AETypePage.categoria);
-//            result.getWrap().valida(false);
-//        }
-
 
         if (mappaUrlResponse.get(KEY_JSON_CATEGORY_MEMBERS) instanceof JSONArray jsonCategory) {
             if (jsonCategory.size() > 0) {
@@ -152,9 +168,9 @@ public class QueryCat extends AQuery {
         return result;
     }
 
-    private String fixUrlCat(final String catTitle) {
-        return fixUrlCat(catTitle, VUOTA);
-    }
+//    private String fixUrlCat(final String catTitle) {
+//        return fixUrlCat(catTitle, VUOTA);
+//    }
 
     /**
      * Costruisce un url come user/admin/bot <br>

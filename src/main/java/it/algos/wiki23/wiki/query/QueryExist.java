@@ -29,11 +29,22 @@ public class QueryExist extends AQuery {
     /**
      * Request principale <br>
      * <p>
-     * Non accetta il separatore PIPE nel wikiTitleGrezzo <br>
+     * Non accetta il separatore PIPE nel wikiTitoloGrezzoPaginaCategoria <br>
      * La stringa urlDomain per la request viene elaborata <br>
      * Si crea una connessione di tipo GET <br>
      * Si invia la request <br>
      * La response viene sempre elaborata per estrarre le informazioni richieste <br>
+     * <p>
+     * Nella risposta negativa la gerarchia è: <br>
+     * ....batchcomplete <br>
+     * ....query <br>
+     * ........normalized <br>
+     * ........pages <br>
+     * ............[0] (sempre solo uno se non si usa il PIPE) <br>
+     * ................ns <br>
+     * ................missing=true <br>
+     * ................pageid <br>
+     * ................title <br>
      * <p>
      * Nella risposta positiva la gerarchia è: <br>
      * ....batchcomplete <br>
@@ -44,25 +55,14 @@ public class QueryExist extends AQuery {
      * ................ns <br>
      * ................pageid <br>
      * ................title <br>
-     * <p>
-     * Nella risposta negativa la gerarchia è: <br>
-     * ....batchcomplete <br>
-     * ....query <br>
-     * ........normalized <br>
-     * ........pages <br>
-     * ............[0] <br>
-     * ................ns <br>
-     * ................missing=true <br>
-     * ................pageid <br>
-     * ................title <br>
      *
-     * @param wikiTitlePaginaCategoriaGrezzo della pagina/categoria wiki (necessita di codifica) usato nella urlRequest. Non accetta il separatore PIPE
+     * @param wikiTitoloGrezzoPaginaCategoria della pagina/categoria wiki (necessita di codifica) usato nella urlRequest. Non accetta il separatore PIPE
      *
      * @return wrapper di informazioni
      */
-    public WResult urlRequest(final String wikiTitlePaginaCategoriaGrezzo) {
+    public WResult urlRequest(final String wikiTitoloGrezzoPaginaCategoria) {
         queryType = AETypeQuery.get;
-        return requestGetTitle(WIKI_QUERY, wikiTitlePaginaCategoriaGrezzo);
+        return requestGetTitle(WIKI_QUERY, wikiTitoloGrezzoPaginaCategoria);
     }
 
     /**
@@ -86,12 +86,12 @@ public class QueryExist extends AQuery {
     /**
      * Esistenza della pagina <br>
      *
-     * @param wikiTitlePaginaCategoriaGrezzo della pagina/categoria wiki (necessita di codifica) usato nella urlRequest. Non accetta il separatore PIPE
+     * @param wikiTitoloGrezzoPaginaCategoria della pagina/categoria wiki (necessita di codifica) usato nella urlRequest. Non accetta il separatore PIPE
      *
      * @return true se la pagina/categoria esiste
      */
-    public boolean isEsiste(final String wikiTitlePaginaCategoriaGrezzo) {
-        return urlRequest(wikiTitlePaginaCategoriaGrezzo).isValido();
+    public boolean isEsiste(final String wikiTitoloGrezzoPaginaCategoria) {
+        return urlRequest(wikiTitoloGrezzoPaginaCategoria).isValido();
     }
 
     /**

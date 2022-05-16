@@ -82,9 +82,8 @@ public class QueryInfoCatTest extends WikiTest {
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
-        assertTrue(ottenutoRisultato.getWrap() != null);
-        assertFalse(ottenutoRisultato.getWrap().isValida());
-        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getTypePage());
 
         System.out.println(VUOTA);
         System.out.println(String.format("La categoria [[%s]] non esiste su wikipedia", sorgente));
@@ -102,9 +101,8 @@ public class QueryInfoCatTest extends WikiTest {
         ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
-        assertTrue(ottenutoRisultato.getWrap() != null);
-        assertFalse(ottenutoRisultato.getWrap().isValida());
-        assertEquals(AETypePage.categoria, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.categoria, ottenutoRisultato.getTypePage());
         assertTrue(ottenutoRisultato.getIntValue() > 0);
 
         System.out.println(VUOTA);
@@ -112,20 +110,37 @@ public class QueryInfoCatTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-
     @Test
     @Order(4)
-    @DisplayName("4- Test per la categoria BioBot")
+    @DisplayName("4- Test per una categoria con PIPE nel titolo")
+    void urlRequest4() {
+        System.out.println(("4- Test per una categoria con PIPE nel titolo"));
+
+        sorgente = "2741616|27416167";
+        ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getTypePage());
+        assertTrue(ottenutoRisultato.getIntValue() == 0);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("La categoria [[%s]] non esiste su wikipedia", sorgente));
+        printRisultato(ottenutoRisultato);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5- Test per la categoria BioBot")
     void urlRequest2() {
-        System.out.println(("4- Test per la categoria BioBot"));
+        System.out.println(("5 - Test per la categoria BioBot"));
 
         sorgente = CATEGORIA_ESISTENTE_DUE;
         ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
-        assertTrue(ottenutoRisultato.getWrap() != null);
-        assertFalse(ottenutoRisultato.getWrap().isValida());
-        assertEquals(AETypePage.categoria, ottenutoRisultato.getWrap().getType());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.categoria, ottenutoRisultato.getTypePage());
         assertTrue(ottenutoRisultato.getIntValue() > 0);
 
         System.out.println(VUOTA);

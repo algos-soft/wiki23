@@ -159,7 +159,6 @@ public class QueryCatTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
-        System.out.println(VUOTA);
         printRisultato(ottenutoRisultato);
     }
 
@@ -193,7 +192,6 @@ public class QueryCatTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come user", wikiCategoria));
-        System.out.println(VUOTA);
         printRisultato(ottenutoRisultato);
     }
 
@@ -226,7 +224,6 @@ public class QueryCatTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come admin", wikiCategoria));
-        System.out.println(VUOTA);
         printRisultato(ottenutoRisultato);
     }
 
@@ -244,7 +241,7 @@ public class QueryCatTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(61)
     @DisplayName("61- Test per categorie collegamento bot")
         //--categoria
@@ -264,6 +261,35 @@ public class QueryCatTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
+
+    @ParameterizedTest
+    @MethodSource(value = "CATEGORIE")
+        //--categoria
+        //--esiste
+    @Order(70)
+    @DisplayName("70 - Recupera direttamente la lista di pageids")
+    void getLista(final String wikiCategoria, final boolean categoriaEsistente) {
+        System.out.println("70 - Recupera direttamente la lista di pageids");
+        System.out.println("Il botLogin viene resettato per collegarsi come anonymous");
+        botLogin.reset();
+
+        listaPageIds = appContext.getBean(QueryCat.class).getListaPageIds(wikiCategoria);
+        if (categoriaEsistente) {
+            assertNotNull(listaPageIds);
+            assertEquals(categoriaEsistente, listaPageIds.size()>0);
+
+            System.out.println(VUOTA);
+            System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
+            System.out.println(VUOTA);
+            System.out.println(String.format("La categoria [[%s]] contiene %d elementi. Ne stampo SOLO i primi 10 (se ci sono)", sorgente,
+                    listaPageIds.size()));
+            printLista(listaPageIds.subList(0,Math.min(10,listaPageIds.size())));
+        }
+        else {
+            System.out.println(VUOTA);
+            System.out.println(String.format("La categoria [[%s]] non esiste su wikipedia", sorgente));
+        }
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

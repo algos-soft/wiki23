@@ -56,9 +56,10 @@ public class Wiki23Cost {
 
     public static final String API_CAT = "&cmtitle=";
 
-    public static final String API_CAT_INFO = API_TITLES ;
+    public static final String API_CAT_INFO = API_TITLES;
 
     public static final String WIKI_QUERY = ACTION_QUERY + API_TITLES;
+
     public static final String WIKI_QUERY_PAGEIDS = ACTION_QUERY + API_PAGEIDS;
 
     public static final String QUERY_INFO = "&rvslots=main&prop=revisions&rvprop=content|ids|timestamp";
@@ -179,6 +180,8 @@ public class Wiki23Cost {
 
     public static final String KEY_JSON_CATEGORY_PAGES = "categorypages";
 
+    public static final String KEY_JSON_CATEGORY_SIZE = "size";
+
     public static final String KEY_JSON_CODE = "code";
 
     public static final String KEY_JSON_INFO = "info";
@@ -186,6 +189,10 @@ public class Wiki23Cost {
     public static final String KEY_JSON_ZERO = "zero";
 
     public static final String KEY_JSON_BATCH = "batchcomplete";
+
+    public static final String KEY_JSON_DISAMBIGUA = "disambigua";
+
+    public static final String KEY_JSON_REDIRECT = "redirect";
 
 
     public static final String KEY_MAP_GRAFFE_ESISTONO = "keyMapGraffeEsistono";

@@ -142,6 +142,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Roman Protasevič", true),
                 Arguments.of("Louis Winslow Austin", true),
                 Arguments.of("Categoria:Nati nel 1435", true),
+                Arguments.of("2741616|27416167", false),
                 Arguments.of("Categoria:Nati nel 2387", false),
                 Arguments.of("Categoria:BioBot", true),
                 Arguments.of("Categoria:Supercalifragilistichespiralidoso", false),
@@ -159,6 +160,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of(VUOTA, false),
                 Arguments.of("Inesistente", false),
                 Arguments.of("Nati nel 1435", true),
+                Arguments.of("2741616|27416167", false),
                 Arguments.of("Ambasciatori britannici in Brasile", true),
                 Arguments.of("Nati nel 1935", true)
         );

@@ -260,6 +260,21 @@ public class QueryBioTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
+    @Test
+    @Order(11)
+    @DisplayName("11- Test per una pagina inesistente")
+    void getPageIdMultipli() {
+        System.out.println(("11 - Test per una pagina inesistente"));
+
+        sorgente = "256787|6764532";
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("La pagina [[%s]] non esiste su wikipedia", sorgente));
+        printRisultato(ottenutoRisultato);
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

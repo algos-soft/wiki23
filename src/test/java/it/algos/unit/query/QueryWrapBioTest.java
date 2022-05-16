@@ -97,7 +97,7 @@ public class QueryWrapBioTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-    @Test
+//    @Test
     @Order(3)
     @DisplayName("3- Test per una singola biografia esistente (urlRequest)")
     void urlRequest() {

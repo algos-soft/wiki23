@@ -29,22 +29,22 @@ import java.util.*;
 public class QueryAssert extends AQuery {
 
 
-
     public QueryAssert() {
         super();
     }
 
-    /**
-     * Esistenza del botLogin valido e del collegamento come bot <br>
-     *
-     * @return esistenza del botLogin valido
-     */
-    public boolean isEsiste() {
-        return urlRequest().isValido();
-    }
 
     /**
      * La request unica <br>
+     * <p>
+     * Nella risposta negativa la gerarchia è: <br>
+     * ....error <br>
+     * ........code <br>
+     * ........docref <br>
+     * ........info <br>
+     * <p>
+     * Nella risposta positiva la gerarchia è: <br>
+     * ....batchcomplete=true <br>
      *
      * @return wrapper di informazioni
      */
@@ -93,6 +93,14 @@ public class QueryAssert extends AQuery {
         return elaboraResponse(result, urlResponse);
     }
 
+    /**
+     * Esistenza del botLogin valido e del collegamento come bot <br>
+     *
+     * @return esistenza del botLogin valido
+     */
+    public boolean isEsiste() {
+        return urlRequest().isValido();
+    }
 
     /**
      * Elabora la risposta <br>
