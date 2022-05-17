@@ -113,6 +113,10 @@ public class WResult extends AResult {
         this.userType = userType;
         return this;
     }
+    public WResult typePage(final AETypePage typePage) {
+        this.typePage = typePage;
+        return this;
+    }
 
     public WResult limit(final int limit) {
         this.limit = limit;
@@ -128,8 +132,9 @@ public class WResult extends AResult {
         this.wikiText = wikiText;
         return this;
     }
-    public WResult typePage(final AETypePage typePage) {
-        this.typePage = typePage;
+
+    public WResult setValido() {
+        this.setValido(true);
         return this;
     }
 

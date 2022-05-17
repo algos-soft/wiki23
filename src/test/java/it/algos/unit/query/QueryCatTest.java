@@ -155,7 +155,6 @@ public class QueryCatTest extends WikiTest {
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
         assertNotNull(ottenutoRisultato);
         assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
-        assertNull(ottenutoRisultato.getWrap());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));

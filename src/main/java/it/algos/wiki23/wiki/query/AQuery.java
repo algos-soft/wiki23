@@ -123,6 +123,14 @@ public abstract class AQuery {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
+    public ArrayService arrayService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
     public LogService logger;
 
     /**
@@ -520,7 +528,7 @@ public abstract class AQuery {
             if (jsonError != null && jsonError.get(KEY_JSON_INFO) != null && jsonError.get(KEY_JSON_INFO) instanceof String infoMessage) {
                 result.setErrorMessage(infoMessage);
             }
-            return result;
+            return result.typePage(AETypePage.nonEsiste);
         }
 
         //--regola il token per le categorie
@@ -529,8 +537,9 @@ public abstract class AQuery {
             mappaUrlResponse.put(KEY_JSON_CONTINUE, jsonContinue);
         }
 
-        fixQueryPagesZero(jsonAll);
-        fixQueryCategoryMembers(jsonAll);
+        result = fixQueryPagesZero(result, jsonAll);
+
+        result = fixQueryCategoryMembers(result, jsonAll);
 
         //--controllo del missing
         if (mappaUrlResponse.get(KEY_JSON_ZERO) != null && ((JSONObject) mappaUrlResponse.get(KEY_JSON_ZERO)).get(KEY_JSON_MISSING) != null) {
@@ -556,13 +565,10 @@ public abstract class AQuery {
         //--regola le pagine di disambigua e redirect
         result = fixQueryDisambiguaRedirect(result);
 
-        //--estrae il tmplBio dal content
-        result = fixQueryTmplBio(result);
-
         return result;
     }
 
-    protected void fixQueryPagesZero(final JSONObject jsonAll) {
+    protected WResult fixQueryPagesZero(WResult result, final JSONObject jsonAll) {
         JSONObject queryPageZero = null;
         JSONObject query = null;
         JSONArray pages = null;
@@ -581,10 +587,13 @@ public abstract class AQuery {
         if (pages != null && pages.size() > 0) {
             queryPageZero = (JSONObject) pages.get(0);
             mappaUrlResponse.put(KEY_JSON_ZERO, queryPageZero);
+            result.setValido().typePage(AETypePage.indeterminata);
         }
+
+        return result;
     }
 
-    protected void fixQueryCategoryMembers(final JSONObject jsonAll) {
+    protected WResult fixQueryCategoryMembers(WResult result, final JSONObject jsonAll) {
         JSONArray queryCategory = null;
         JSONObject query = null;
 
@@ -596,7 +605,10 @@ public abstract class AQuery {
         if (query != null && query.get(KEY_JSON_CATEGORY_MEMBERS) != null) {
             queryCategory = (JSONArray) query.get(KEY_JSON_CATEGORY_MEMBERS);
             mappaUrlResponse.put(KEY_JSON_CATEGORY_MEMBERS, queryCategory);
+            result.typePage(AETypePage.categoria).setValido();
         }
+
+        return result;
     }
 
     //--estrae informazioni dalla pagina 'zero'
@@ -630,6 +642,44 @@ public abstract class AQuery {
         }
 
         return result;
+    }
+
+
+    protected WrapBio getWrap(JSONObject jsonPageZero) {
+        WrapBio wrapBio = null;
+        String content = VUOTA;
+        String wikiTitle = VUOTA;
+        long pageId = 0L;
+        String tmplBio;
+
+        if (jsonPageZero.get(KEY_JSON_PAGE_ID) instanceof Long pageid) {
+            pageId = pageid;
+        }
+        if (jsonPageZero.get(KEY_JSON_TITLE) instanceof String title) {
+            wikiTitle = title;
+        }
+
+        if (jsonPageZero.get(KEY_JSON_REVISIONS) instanceof JSONArray jsonRevisions) {
+            if (jsonRevisions.size() > 0) {
+                JSONObject jsonRevZero = (JSONObject) jsonRevisions.get(0);
+                if (jsonRevZero.get(KEY_JSON_SLOTS) instanceof JSONObject jsonSlots) {
+                    if (jsonSlots.get(KEY_JSON_MAIN) instanceof JSONObject jsonMain) {
+                        content = (String) jsonMain.get(KEY_JSON_CONTENT);
+                        mappaUrlResponse.put(KEY_JSON_CONTENT, content);
+                    }
+                }
+            }
+        }
+
+        tmplBio = wikiBot.estraeTmpl(content);
+        if (textService.isValid(tmplBio)) {
+            wrapBio = new WrapBio().valida(true).title(wikiTitle).pageid(pageId).type(AETypePage.testoConTmpl).templBio(tmplBio);
+        }
+        else {
+            wrapBio = new WrapBio().valida(false).title(wikiTitle).pageid(pageId).type(AETypePage.testoSenzaTmpl).templBio(tmplBio);
+        }
+
+        return wrapBio;
     }
 
 
@@ -672,7 +722,15 @@ public abstract class AQuery {
         String wikiTitle = result.getWikiTitle();
         long pageId = result.getPageid();
 
+        if ((boolean) mappaUrlResponse.get(KEY_JSON_MISSING)) {
+            return result;
+        }
+
         if (mappaUrlResponse.get(KEY_JSON_CONTENT) instanceof String content) {
+            if (textService.isEmpty(content)) {
+                return result;
+            }
+
             tmplBio = wikiBot.estraeTmpl(content);
             if (textService.isValid(tmplBio)) {
                 result.setErrorCode(VUOTA);

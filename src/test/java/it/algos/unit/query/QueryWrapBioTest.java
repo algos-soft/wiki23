@@ -4,6 +4,7 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.context.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import com.vaadin.flow.component.textfield.TextField;
+
+import java.util.*;
 
 /**
  * Project wiki23
@@ -84,34 +87,55 @@ public class QueryWrapBioTest extends WikiTest {
         istanza = appContext.getBean(QueryWrapBio.class);
         assertNotNull(istanza);
 
-        sorgente = PAGINA_INESISTENTE;
-        ottenutoRisultato = istanza.urlRequest(sorgente);
+        sorgenteLong = 13257755L;
+        ottenutoRisultato = istanza.urlRequest(sorgenteLong);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
 
-        listWrapBio = istanza.getWrap(sorgente);
+        listWrapBio = istanza.getWrap(sorgenteLong);
         assertNull(listWrapBio);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("La pagina [[%s]] non esiste su wikipedia", sorgente));
+        System.out.println(String.format("La pagina [[%d]] non esiste su wikipedia", sorgenteLong));
         printRisultato(ottenutoRisultato);
     }
 
-//    @Test
+    @Test
     @Order(3)
     @DisplayName("3- Test per una singola biografia esistente (urlRequest)")
     void urlRequest() {
         System.out.println(("3- Test per una singola biografia esistente (urlRequest)"));
 
-        sorgente = PAGINA_ESISTENTE_UNO;
-        listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(sorgente);
+        listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(132555L);
         assertNotNull(listWrapBio);
         assertTrue(listWrapBio.size() > 0);
 
         wrapBio = listWrapBio.get(0);
         System.out.println(VUOTA);
-        System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", sorgente));
+        System.out.println(String.format("Trovata 1 biografia (%s) su wikipedia", sorgente));
         printWrapBio(wrapBio);
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - Test per due biografie esistenti (urlRequest)")
+    void urlRequestLista() {
+        System.out.println(("4 - Test per due biografie esistenti (urlRequest)"));
+
+        listaPageIds = new ArrayList<>();
+        listaPageIds.add(132555L);
+        listaPageIds.add(134246L);
+        listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIds);
+        assertNotNull(listWrapBio);
+        assertTrue(listWrapBio.size() == 2);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Lista di biografie (%d)", listWrapBio.size()));
+
+        for (WrapBio wrapBio : listWrapBio) {
+            printWrapBio(wrapBio);
+        }
     }
 
     /**

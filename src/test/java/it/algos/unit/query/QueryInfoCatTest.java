@@ -121,7 +121,7 @@ public class QueryInfoCatTest extends WikiTest {
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
         assertTrue(ottenutoRisultato.getWrap() == null);
-        assertEquals(AETypePage.nonEsiste, ottenutoRisultato.getTypePage());
+        assertEquals(AETypePage.contienePipe, ottenutoRisultato.getTypePage());
         assertTrue(ottenutoRisultato.getIntValue() == 0);
 
         System.out.println(VUOTA);

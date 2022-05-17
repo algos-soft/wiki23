@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.json.simple.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
@@ -21,14 +22,25 @@ import java.util.*;
 public class QueryWrapBio extends AQuery {
 
     /**
-     * Wraps di pagine biografica <br>
+     * Wraps di pagine biografiche <br>
      *
-     * @param wikiTitleGrezzo della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param pageids della pagina wiki usato nella urlRequest
      *
-     * @return wrap della pagina
+     * @return lista di wraps delle pagine
      */
-    public List<WrapBio> getWrap(final String wikiTitleGrezzo) {
-        return urlRequest(wikiTitleGrezzo).getLista();
+    public List<WrapBio> getWrap(final Long pageids) {
+        return urlRequest(pageids).getLista();
+    }
+
+    /**
+     * Wraps di pagine biografiche <br>
+     *
+     * @param listaPageids lista dei pageIds delle pagine wiki da controllare
+     *
+     * @return lista di wraps delle pagine
+     */
+    public List<WrapBio> getWrap(final List<Long> listaPageids) {
+        return urlRequest(arrayService.toStringaPipe(listaPageids)).getLista();
     }
 
 
@@ -40,13 +52,22 @@ public class QueryWrapBio extends AQuery {
      * Si invia la request <br>
      * La response viene sempre elaborata per estrarre le informazioni richieste <br>
      *
-     * @param wikiTitleGrezzo della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param pageids della pagina wiki usato nella urlRequest
      *
      * @return wrapper di informazioni
      */
-    public WResult urlRequest(final String wikiTitleGrezzo) {
+    public WResult urlRequest(final Long pageids) {
         queryType = AETypeQuery.get;
-        return requestGetTitle(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzo);
+        return requestGetTitle(WIKI_QUERY_BASE_PAGE, pageids.toString());
+    }
+
+    public WResult urlRequest(final String wikiTitleGrezzoBio) {
+        queryType = AETypeQuery.get;
+        return requestGetTitle(WIKI_QUERY_BASE_PAGE, wikiTitleGrezzoBio);
+    }
+
+    protected WResult checkInizialePipe(WResult result, final String wikiTitleGrezzo) {
+        return result;
     }
 
     @Override
@@ -55,6 +76,16 @@ public class QueryWrapBio extends AQuery {
         String tmplBio;
         String wikiTitle = result.getWikiTitle();
         long pageId = result.getPageid();
+        List<WrapBio> listaWrap;
+        WrapBio wrapBio;
+
+        //--controllo del missing e leggera modifica delle informazioni di errore
+        if (result.getErrorCode().equals(KEY_JSON_MISSING_TRUE)) {
+            result.setErrorMessage(String.format("La pagina bio '%s' non esiste", result.getWikiTitle()));
+            result.typePage(AETypePage.nonEsiste);
+            result.setWrap(new WrapBio().valida(false).title(wikiTitle).pageid(pageId).type(AETypePage.nonEsiste));
+            return result;
+        }
 
         if (mappaUrlResponse.get(KEY_JSON_NUM_PAGES) instanceof Integer numPages) {
             if (numPages == 0) {
@@ -64,10 +95,22 @@ public class QueryWrapBio extends AQuery {
             }
 
             if (numPages == 1) {
-            }
-            if (numPages > 1) {
+                listaWrap = new ArrayList<>();
+                listaWrap.add(result.getWrap());
+                result.setLista(listaWrap);
             }
 
+            if (numPages > 1) {
+                if (mappaUrlResponse.get(KEY_JSON_PAGES) instanceof JSONArray pages) {
+                    listaWrap = new ArrayList<>();
+                    for (Object obj : pages) {
+                        JSONObject pagina = (JSONObject) obj;
+                        wrapBio = getWrap(pagina);
+                        listaWrap.add(wrapBio);
+                    }
+                    result.setLista(listaWrap);
+                }
+            }
         }
 
         return result;

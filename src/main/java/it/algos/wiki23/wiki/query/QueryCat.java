@@ -81,8 +81,8 @@ public class QueryCat extends AQuery {
         if (result.isErrato()) {
             return result;
         }
-        if (wikiTitoloGrezzoPaginaCategoria==null) {
-            return  result.errato("Il wikiTitle è nullo");
+        if (wikiTitoloGrezzoPaginaCategoria == null) {
+            return result.errato("Il wikiTitle è nullo");
         }
 
         String urlDomain = VUOTA;
@@ -98,7 +98,7 @@ public class QueryCat extends AQuery {
             return result;
         }
         else {
-            if (botLogin!=null) {
+            if (botLogin != null) {
                 result.setUserType(botLogin.getUserType());
                 result.setLimit(botLogin.getUserType().getLimit());
             }
@@ -168,9 +168,9 @@ public class QueryCat extends AQuery {
         return result;
     }
 
-//    private String fixUrlCat(final String catTitle) {
-//        return fixUrlCat(catTitle, VUOTA);
-//    }
+    //    private String fixUrlCat(final String catTitle) {
+    //        return fixUrlCat(catTitle, VUOTA);
+    //    }
 
     /**
      * Costruisce un url come user/admin/bot <br>
