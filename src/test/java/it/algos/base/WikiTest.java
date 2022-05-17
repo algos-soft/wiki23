@@ -222,6 +222,7 @@ public abstract class WikiTest extends AlgosTest {
         bio = null;
         listaPageIds = null;
         listWrapBio = null;
+        botLogin.reset();
     }
 
     protected void printRisultato(WResult result) {

@@ -381,7 +381,9 @@ public class QueryLogin extends AQuery {
         //--controllo finale tramite una query GET coi cookies che controlla assert=bot
         if (valido) {
             //--controlla l'esistenza e la validità del collegamento come bot
-            result = checkBot(result);
+            if (typeUser == AETypeUser.bot) {
+                result = checkBot(result);
+            }
         }
 
         return result;

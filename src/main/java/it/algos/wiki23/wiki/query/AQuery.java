@@ -200,6 +200,29 @@ public abstract class AQuery {
     }
 
 
+    /**
+     * Inserisce eventualmente una affermazione di controllo <br>
+     *
+     * @param urlDomain della richiesta
+     *
+     * @return urlDomain integrato
+     */
+    protected String fixAssert(String urlDomain) {
+        AETypeUser type = null;
+
+        if (botLogin != null && botLogin.isValido()) {
+            type = botLogin.getUserType();
+        }
+
+        if (type != null) {
+            if (type == AETypeUser.user || type == AETypeUser.bot) {
+                urlDomain += type.affermazione();
+            }
+        }
+
+        return urlDomain;
+    }
+
     private WResult checkInizialeBase(final String pathQuery, final Object wikiTitlePageid) {
         WResult result = WResult.valido().queryType(queryType).typePage(AETypePage.indeterminata);
         String message;
@@ -317,9 +340,10 @@ public abstract class AQuery {
      *
      * @return wrapper di informazioni
      */
-    protected WResult requestGet(WResult result, final String urlDomain) {
+    protected WResult requestGet(WResult result, String urlDomain) {
         URLConnection urlConn;
         String urlResponse;
+        urlDomain = fixAssert(urlDomain);
         result.setUrlRequest(urlDomain);
 
         if (result.isErrato()) {
@@ -528,7 +552,11 @@ public abstract class AQuery {
             if (jsonError != null && jsonError.get(KEY_JSON_INFO) != null && jsonError.get(KEY_JSON_INFO) instanceof String infoMessage) {
                 result.setErrorMessage(infoMessage);
             }
+            mappaUrlResponse.put(KEY_JSON_ERROR, true);
             return result.typePage(AETypePage.nonEsiste);
+        }
+        else {
+            mappaUrlResponse.put(KEY_JSON_ERROR, false);
         }
 
         //--regola il token per le categorie
@@ -544,12 +572,15 @@ public abstract class AQuery {
         //--controllo del missing
         if (mappaUrlResponse.get(KEY_JSON_ZERO) != null && ((JSONObject) mappaUrlResponse.get(KEY_JSON_ZERO)).get(KEY_JSON_MISSING) != null) {
             if ((boolean) ((JSONObject) mappaUrlResponse.get(KEY_JSON_ZERO)).get(KEY_JSON_MISSING)) {
-                mappaUrlResponse.put(KEY_JSON_MISSING, true);
                 result.setValido(false);
                 result.setErrorCode(KEY_JSON_MISSING_TRUE);
                 result.setErrorMessage(String.format("La pagina wiki '%s' non esiste", result.getWikiTitle()));
                 result.setTypePage(AETypePage.nonEsiste);
+                mappaUrlResponse.put(KEY_JSON_MISSING, true);
                 return result;
+            }
+            else {
+                mappaUrlResponse.put(KEY_JSON_MISSING, false);
             }
         }
 

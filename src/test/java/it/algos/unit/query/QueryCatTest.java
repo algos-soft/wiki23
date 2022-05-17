@@ -136,8 +136,6 @@ public class QueryCatTest extends WikiTest {
     @Order(30)
     @DisplayName("30 - Obbligatorio PRIMA del 31 per regolare il botLogin")
     void nonCollegato() {
-        botLogin.reset();
-
         assertNotNull(botLogin);
         assertTrue(botLogin.getUserType().name().equals(AETypeUser.anonymous.name()));
     }
@@ -166,8 +164,6 @@ public class QueryCatTest extends WikiTest {
     @Order(40)
     @DisplayName("40 - Obbligatorio PRIMA del 41 per regolare il botLogin")
     void collegatoUser() {
-        botLogin.reset();
-
         appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.user);
         assertNotNull(botLogin);
         assertTrue(botLogin.isValido());
@@ -198,8 +194,6 @@ public class QueryCatTest extends WikiTest {
     @Order(50)
     @DisplayName("50 - Obbligatorio PRIMA del 51 per regolare il botLogin")
     void collegatoAdmin() {
-        botLogin.reset();
-
         appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.admin);
         assertNotNull(botLogin);
         assertTrue(botLogin.isValido());
@@ -231,8 +225,6 @@ public class QueryCatTest extends WikiTest {
     @Order(60)
     @DisplayName("60 - Obbligatorio PRIMA del 61 per regolare il botLogin")
     void collegatoBot() {
-        botLogin.reset();
-
         appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.bot);
         assertNotNull(botLogin);
         assertTrue(botLogin.isValido());
@@ -270,7 +262,6 @@ public class QueryCatTest extends WikiTest {
     void getLista(final String wikiCategoria, final boolean categoriaEsistente) {
         System.out.println("70 - Recupera direttamente la lista di pageids");
         System.out.println("Il botLogin viene resettato per collegarsi come anonymous");
-        botLogin.reset();
 
         listaPageIds = appContext.getBean(QueryCat.class).getListaPageIds(wikiCategoria);
         if (categoriaEsistente) {

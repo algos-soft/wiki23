@@ -111,11 +111,12 @@ public class QueryAssert extends AQuery {
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
 
-        if ((boolean) mappaUrlResponse.get(KEY_JSON_BATCH)) {
-            result.setCodeMessage(KEY_JSON_BATCH);
-            result.setValidMessage("Collegato come bot");
-            result.setResponse(mappaUrlResponse.get(KEY_JSON_ALL).toString());
-            return result;
+        if ((boolean) mappaUrlResponse.get(KEY_JSON_MISSING)) {
+            result.setValido(false);
+        }
+
+        if ((boolean) mappaUrlResponse.get(KEY_JSON_ERROR)) {
+            result.setValido(false);
         }
 
         return result;

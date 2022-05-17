@@ -79,7 +79,6 @@ public class QueryLoginTest extends WikiTest {
     protected void setUpEach() {
         super.setUpEach();
         istanza = null;
-        botLogin.reset();
     }
 
 
@@ -175,6 +174,7 @@ public class QueryLoginTest extends WikiTest {
         assertEquals(previsto, ottenutoRisultato.getCodeMessage());
         assertEquals("lguserid: 124123, lgusername: Biobot", ottenutoRisultato.getValidMessage());
         printRisultato(ottenutoRisultato);
+        printBotLogin();
     }
 
     @Test
