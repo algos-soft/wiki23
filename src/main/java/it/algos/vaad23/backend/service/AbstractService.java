@@ -1,6 +1,8 @@
 package it.algos.vaad23.backend.service;
 
+import it.algos.wiki23.backend.login.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
 
 /**
  * Project vaadin23
@@ -14,6 +16,14 @@ import org.springframework.beans.factory.annotation.*;
  * I riferimenti sono 'public' (e non protected) per poterli usare con TestUnit <br>
  */
 public abstract class AbstractService {
+
+    /**
+     * Istanza di una interfaccia SpringBoot <br>
+     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ApplicationContext appContext;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -56,6 +66,13 @@ public abstract class AbstractService {
      */
     @Autowired
     public MailService mailService;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public BotLogin botLogin;
 
 
     /**

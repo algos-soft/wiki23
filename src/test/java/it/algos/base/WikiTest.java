@@ -50,6 +50,9 @@ public abstract class WikiTest extends AlgosTest {
     public DidascaliaService didascaliaService;
 
     @Autowired
+    public QueryService queryService;
+
+    @Autowired
     public BioService bioService;
 
     @Autowired
@@ -88,6 +91,8 @@ public abstract class WikiTest extends AlgosTest {
     protected List<WrapBio> listWrapBio;
 
     protected List<MiniWrap> listMiniWrap;
+
+    protected AETypeUser typeUser;
 
     protected static final String PAGINA_UNO = "Roman Protasevič";
 
@@ -196,6 +201,8 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(bioService);
         assertNotNull(bioBackend);
         assertNotNull(botLogin);
+        assertNotNull(queryService);
+
     }
 
     /**
@@ -226,6 +233,7 @@ public abstract class WikiTest extends AlgosTest {
         listWrapBio = null;
         listMiniWrap = null;
         botLogin.reset();
+        typeUser = null;
     }
 
     protected void printRisultato(WResult result) {
@@ -273,13 +281,24 @@ public abstract class WikiTest extends AlgosTest {
         }
     }
 
-    protected void printMiniWrap(List<MiniWrap> listaWraprap) {
-        if (listaWraprap != null) {
+    protected void printMiniWrap(List<MiniWrap> listaMiniWrap) {
+        if (listaMiniWrap != null) {
             System.out.println(VUOTA);
             System.out.println(String.format("Wrap pageid, wikiTitle and last timestamp"));
             System.out.println(VUOTA);
-            for (MiniWrap wrap : listaWraprap) {
+            for (MiniWrap wrap : listaMiniWrap) {
                 System.out.println(String.format("%s (%s)%s%s", wrap.getPageid(), wrap.getWikiTitle(), FORWARD, wrap.getLastModifica()));
+            }
+        }
+    }
+
+    protected void printWrapBio(List<WrapBio> listaWrapBio) {
+        if (listaWrapBio != null) {
+            System.out.println(VUOTA);
+            System.out.println(String.format("Wrap pageid e wikiTitle"));
+            System.out.println(VUOTA);
+            for (WrapBio wrap : listaWrapBio) {
+                System.out.println(String.format("%s (%s)", wrap.getPageid(), wrap.getTitle()));
             }
         }
     }

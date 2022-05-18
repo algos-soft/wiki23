@@ -374,6 +374,7 @@ public class QueryLogin extends AQuery {
             botLogin.setLgusername(lgusername);
             botLogin.setUserType(typeUser);
             botLogin.setResult(result);
+            result.setUserType(typeUser);
             result.setResponse(jsonLogin.toString());
             result.setValidMessage(String.format("%s: %d, %s: %s", LOGIN_USER_ID, lguserid, LOGIN_USER_NAME, lgusername));
         }

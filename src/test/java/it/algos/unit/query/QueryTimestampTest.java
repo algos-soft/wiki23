@@ -93,7 +93,7 @@ public class QueryTimestampTest extends WikiTest {
         assertTrue(ottenutoRisultato.isValido());
 
         listMiniWrap = istanza.getWrap(listaPageIds);
-        assertNull(listWrapBio);
+        assertNotNull(listMiniWrap);
 
         System.out.println(VUOTA);
         printRisultato(ottenutoRisultato);
