@@ -1,4 +1,5 @@
 package it.algos.wiki23.backend.service;    
+import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -25,16 +26,17 @@ import org.springframework.stereotype.Service;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class DownloadService extends WAbstractService {
 
-    /**
-     * Ciclo di download <br>
-     * Parte dalla lista di tutti i (long) pageIds della categoria <br>
-     * Usa la lista di pageIds e si recupera una lista (stessa lunghezza) di miniWrap <br>
-     * Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere <br>
-     *
-     * @return true se l'azione è stata eseguita
-     */
     public void ciclo() {
-        String catTitle = WikiVar.categoriaBio;
+        ciclo(WPref.categoriaBio.getStr());
+    }
+
+        /**
+           * Ciclo di download <br>
+           * Parte dalla lista di tutti i (long) pageIds della categoria <br>
+           * Usa la lista di pageIds e si recupera una lista (stessa lunghezza) di miniWrap <br>
+           * Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere <br>
+           */
+    public void ciclo(String catTitle) {
 
         List<Long> listaPageIds = null;
         List<MiniWrap> listaMiniWrap = null;
