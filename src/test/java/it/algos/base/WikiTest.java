@@ -87,6 +87,8 @@ public abstract class WikiTest extends AlgosTest {
 
     protected List<WrapBio> listWrapBio;
 
+    protected List<MiniWrap> listMiniWrap;
+
     protected static final String PAGINA_UNO = "Roman Protasevič";
 
     protected static final String PAGINA_DUE = "Aldelmo di Malmesbury";
@@ -222,6 +224,7 @@ public abstract class WikiTest extends AlgosTest {
         bio = null;
         listaPageIds = null;
         listWrapBio = null;
+        listMiniWrap = null;
         botLogin.reset();
     }
 
@@ -266,6 +269,17 @@ public abstract class WikiTest extends AlgosTest {
             System.out.println(String.format("Wrap templBio: %s", textService.isValid(wrap.getTemplBio()) ? "valido" : "non esiste"));
             if (textService.isValid(wrap.getTemplBio())) {
                 System.out.println(String.format("templBio: %s", getMax(wrap.getTemplBio())));
+            }
+        }
+    }
+
+    protected void printMiniWrap(List<MiniWrap> listaWraprap) {
+        if (listaWraprap != null) {
+            System.out.println(VUOTA);
+            System.out.println(String.format("Wrap pageid, wikiTitle and last timestamp"));
+            System.out.println(VUOTA);
+            for (MiniWrap wrap : listaWraprap) {
+                System.out.println(String.format("%s (%s)%s%s", wrap.getPageid(), wrap.getWikiTitle(), FORWARD, wrap.getLastModifica()));
             }
         }
     }

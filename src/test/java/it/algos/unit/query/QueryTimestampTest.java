@@ -3,8 +3,6 @@ package it.algos.unit.query;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,8 +19,8 @@ import java.util.*;
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: dom, 15-mag-2022
- * Time: 08:49
+ * Date: mar, 17-mag-2022
+ * Time: 19:07
  * Unit test di una classe service o backend o query <br>
  * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
  * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -32,15 +30,15 @@ import java.util.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("query")
-@DisplayName("Test QueryWrapBio")
+@DisplayName("Test QueryTimestamp")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class QueryWrapBioTest extends WikiTest {
+public class QueryTimestampTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private QueryWrapBio istanza;
+    private QueryTimestamp istanza;
 
 
     /**
@@ -71,7 +69,7 @@ public class QueryWrapBioTest extends WikiTest {
     @Order(1)
     @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new QueryWrapBio();
+        istanza = new QueryTimestamp();
         assertNotNull(istanza);
         System.out.println(("1- Costruttore base senza parametri"));
         System.out.println(VUOTA);
@@ -80,62 +78,26 @@ public class QueryWrapBioTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2- Test per una pagina inesistente")
+    @DisplayName("2- Test per due pagine")
     void nonEsiste() {
-        System.out.println(("2- Test per una pagina inesistente"));
+        System.out.println(("2- Test per due pagine"));
         assertTrue(istanza == null);
-        istanza = appContext.getBean(QueryWrapBio.class);
+        istanza = appContext.getBean(QueryTimestamp.class);
         assertNotNull(istanza);
-
-        sorgenteLong = 13257755L;
-        ottenutoRisultato = istanza.urlRequest(List.of(sorgenteLong));
-        assertNotNull(ottenutoRisultato);
-        assertFalse(ottenutoRisultato.isValido());
-
-        listWrapBio = istanza.getWrap(List.of(sorgenteLong));
-        assertNull(listWrapBio);
-
-        System.out.println(VUOTA);
-        System.out.println(String.format("La pagina [[%d]] non esiste su wikipedia", sorgenteLong));
-        printRisultato(ottenutoRisultato);
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("3- Test per una singola biografia esistente (urlRequest)")
-    void urlRequest() {
-        System.out.println(("3- Test per una singola biografia esistente (urlRequest)"));
-
-        listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(List.of(132555L));
-        assertNotNull(listWrapBio);
-        assertTrue(listWrapBio.size() > 0);
-
-        wrapBio = listWrapBio.get(0);
-        System.out.println(VUOTA);
-        System.out.println(String.format("Trovata 1 biografia (%s) su wikipedia", sorgente));
-        printWrapBio(wrapBio);
-    }
-
-
-    @Test
-    @Order(4)
-    @DisplayName("4 - Test per due biografie esistenti (urlRequest)")
-    void urlRequestLista() {
-        System.out.println(("4 - Test per due biografie esistenti (urlRequest)"));
 
         listaPageIds = new ArrayList<>();
         listaPageIds.add(132555L);
         listaPageIds.add(134246L);
-        listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIds);
-        assertNotNull(listWrapBio);
-        assertTrue(listWrapBio.size() == 2);
+        ottenutoRisultato = istanza.urlRequest(listaPageIds);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        listMiniWrap = istanza.getWrap(listaPageIds);
+        assertNull(listWrapBio);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("Lista di biografie (%d)", listWrapBio.size()));
-
-        for (WrapBio wrapBio : listWrapBio) {
-            printWrapBio(wrapBio);
-        }
+        printRisultato(ottenutoRisultato);
+        printMiniWrap(listMiniWrap);
     }
 
     /**

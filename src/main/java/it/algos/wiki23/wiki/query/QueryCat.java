@@ -168,10 +168,6 @@ public class QueryCat extends AQuery {
         return result;
     }
 
-    //    private String fixUrlCat(final String catTitle) {
-    //        return fixUrlCat(catTitle, VUOTA);
-    //    }
-
     /**
      * Costruisce un url come user/admin/bot <br>
      * Come 'anonymous' tira 500 pagine

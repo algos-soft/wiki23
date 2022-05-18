@@ -18,19 +18,9 @@ import java.util.*;
  * Time: 07:19
  */
 @SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class QueryWrapBio extends AQuery {
 
-    /**
-     * Wraps di pagine biografiche <br>
-     *
-     * @param pageids della pagina wiki usato nella urlRequest
-     *
-     * @return lista di wraps delle pagine
-     */
-    public List<WrapBio> getWrap(final Long pageids) {
-        return urlRequest(pageids).getLista();
-    }
 
     /**
      * Wraps di pagine biografiche <br>
@@ -40,7 +30,7 @@ public class QueryWrapBio extends AQuery {
      * @return lista di wraps delle pagine
      */
     public List<WrapBio> getWrap(final List<Long> listaPageids) {
-        return urlRequest(arrayService.toStringaPipe(listaPageids)).getLista();
+        return urlRequest(listaPageids).getLista();
     }
 
 
@@ -52,19 +42,15 @@ public class QueryWrapBio extends AQuery {
      * Si invia la request <br>
      * La response viene sempre elaborata per estrarre le informazioni richieste <br>
      *
-     * @param pageids della pagina wiki usato nella urlRequest
+     * @param listaPageids lista dei pageIds delle pagine wiki da controllare
      *
      * @return wrapper di informazioni
      */
-    public WResult urlRequest(final Long pageids) {
+    public WResult urlRequest(final List<Long> listaPageids) {
         queryType = AETypeQuery.get;
-        return requestGetTitle(WIKI_QUERY_BASE_PAGE, pageids.toString());
+        return requestGetTitle(WIKI_QUERY_BASE_PAGE, arrayService.toStringaPipe(listaPageids));
     }
 
-    public WResult urlRequest(final String wikiTitleGrezzoBio) {
-        queryType = AETypeQuery.get;
-        return requestGetTitle(WIKI_QUERY_BASE_PAGE, wikiTitleGrezzoBio);
-    }
 
     protected WResult checkInizialePipe(WResult result, final String wikiTitleGrezzo) {
         return result;

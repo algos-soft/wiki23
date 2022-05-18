@@ -62,7 +62,9 @@ public class Wiki23Cost {
 
     public static final String WIKI_QUERY_PAGEIDS = ACTION_QUERY + API_PAGEIDS;
 
-    public static final String QUERY_INFO = "&rvslots=main&prop=revisions&rvprop=content|ids|timestamp";
+    public static final String QUERY_TIMESTAMP = "&rvslots=main&prop=revisions&rvprop=ids|timestamp";
+
+    public static final String QUERY_INFO = QUERY_TIMESTAMP + "|content";
 
     public static final String QUERY_INFO_ALL = "&rvslots=main&prop=info|revisions&rvprop=content|ids|flags|timestamp|user|userid|comment|size";
 
@@ -73,6 +75,8 @@ public class Wiki23Cost {
     public static final String WIKI_QUERY_BASE_TITLE = ACTION_QUERY + QUERY_INFO + API_TITLES;
 
     public static final String WIKI_QUERY_BASE_PAGE = ACTION_QUERY + QUERY_INFO + API_PAGEIDS;
+
+    public static final String WIKI_QUERY_TIMESTAMP = ACTION_QUERY + QUERY_TIMESTAMP + API_PAGEIDS;
 
     public static final String WIKI_QUERY_ALL = ACTION_QUERY + QUERY_INFO_ALL + API_TITLES;
 
@@ -152,6 +156,7 @@ public class Wiki23Cost {
     public static final String KEY_JSON_ALL = "all";
 
     public static final String KEY_JSON_PAGES = "pages";
+
     public static final String KEY_JSON_NUM_PAGES = "numpages";
 
     public static final String KEY_JSON_PAGE_ID = "pageid";
