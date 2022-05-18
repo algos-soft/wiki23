@@ -54,6 +54,8 @@ public abstract class WikiTest extends AlgosTest {
 
     @Autowired
     public BioService bioService;
+    @Autowired
+    public DownloadService downloadService;
 
     @Autowired
     public BioBackend bioBackend;
@@ -202,7 +204,7 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(bioBackend);
         assertNotNull(botLogin);
         assertNotNull(queryService);
-
+        assertNotNull(downloadService);
     }
 
     /**

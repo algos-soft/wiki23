@@ -61,9 +61,9 @@ public class QueryExistTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1- Costruttore base senza parametri")
+    @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
-        System.out.println(("1- Costruttore base senza parametri"));
+        System.out.println(("1 - Costruttore base senza parametri"));
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
@@ -74,9 +74,9 @@ public class QueryExistTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2- Test per una pagina inesistente")
+    @DisplayName("2 - Test per una pagina inesistente")
     void nonEsiste() {
-        System.out.println(("2- Test per una pagina inesistente"));
+        System.out.println(("2 - Test per una pagina inesistente"));
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
@@ -99,9 +99,9 @@ public class QueryExistTest extends WikiTest {
 
     @Test
     @Order(3)
-    @DisplayName("3- Test per una pagina inesistente come pageid")
+    @DisplayName("3 - Test per una pagina inesistente come pageid")
     void nonEsistePageid() {
-        System.out.println(("3- Test per una pagina inesistente come pageid"));
+        System.out.println(("3 - Test per una pagina inesistente come pageid"));
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
@@ -124,9 +124,9 @@ public class QueryExistTest extends WikiTest {
 
     @Test
     @Order(4)
-    @DisplayName("4- Test per una pagina esistente (urlRequest)")
+    @DisplayName("4 - Test per una pagina esistente (urlRequest)")
     void urlRequest() {
-        System.out.println(("4- Test per una pagina esistente (urlRequest)"));
+        System.out.println(("4 - Test per una pagina esistente (urlRequest)"));
 
         sorgente = PAGINA_ESISTENTE_UNO;
         ottenutoRisultato = appContext.getBean(QueryExist.class).urlRequest(sorgente);
@@ -142,9 +142,9 @@ public class QueryExistTest extends WikiTest {
 
     @Test
     @Order(5)
-    @DisplayName("5- Test per una pagina esistente come pageid")
+    @DisplayName("5 - Test per una pagina esistente come pageid")
     void esistePageid() {
-        System.out.println(("5- Test per una pagina esistente come pageid"));
+        System.out.println(("5 - Test per una pagina esistente come pageid"));
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
@@ -168,11 +168,11 @@ public class QueryExistTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "PAGINE_E_CATEGORIE")
     @Order(6)
-    @DisplayName("6- Test per pagine e categorie (isEsiste)")
+    @DisplayName("6 - Test per pagine e categorie (isEsiste)")
         //--titolo
         //--pagina esistente
     void isEsiste(final String wikiTitleVoceOCategoria, final boolean paginaEsistente) {
-        System.out.println(("6- Test per pagine e categorie (isEsiste)"));
+        System.out.println(("6 - Test per pagine e categorie (isEsiste)"));
 
         sorgente = wikiTitleVoceOCategoria;
         ottenutoBooleano = appContext.getBean(QueryExist.class).isEsiste(sorgente);
