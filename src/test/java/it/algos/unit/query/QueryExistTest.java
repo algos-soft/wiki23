@@ -3,6 +3,7 @@ package it.algos.unit.query;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
@@ -133,18 +134,35 @@ public class QueryExistTest extends WikiTest {
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         assertTrue(ottenutoRisultato.getWrap() == null);
-        assertEquals(AETypePage.indeterminata, ottenutoRisultato.getTypePage());
+        assertEquals(AETypePage.pagina, ottenutoRisultato.getTypePage());
 
         System.out.println(VUOTA); System.out.println(String.format("Trovata la pagina [[%s]] su wikipedia", sorgente));
         printRisultato(ottenutoRisultato);
     }
 
-
     @Test
     @Order(5)
-    @DisplayName("5 - Test per una pagina esistente come pageid")
+    @DisplayName("5 - Test per una categoria esistente (urlRequest)")
+    void urlRequest2() {
+        System.out.println(("5 - Test per una categoria esistente (urlRequest)"));
+
+        sorgente = CAT+CATEGORIA_ESISTENTE_QUATTRO;
+        ottenutoRisultato = appContext.getBean(QueryExist.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.getWrap() == null);
+        assertEquals(AETypePage.categoria, ottenutoRisultato.getTypePage());
+
+        System.out.println(VUOTA); System.out.println(String.format("Trovata la categoria [[%s]] su wikipedia", sorgente));
+        printRisultato(ottenutoRisultato);
+    }
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Test per una pagina esistente come pageid")
     void esistePageid() {
-        System.out.println(("5 - Test per una pagina esistente come pageid"));
+        System.out.println(("6 - Test per una pagina esistente come pageid"));
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryExist.class);
         assertNotNull(istanza);
@@ -154,7 +172,7 @@ public class QueryExistTest extends WikiTest {
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         assertTrue(ottenutoRisultato.getWrap() == null);
-        assertEquals(AETypePage.indeterminata, ottenutoRisultato.getTypePage());
+        assertEquals(AETypePage.pagina, ottenutoRisultato.getTypePage());
 
         ottenutoBooleano = istanza.isEsiste(sorgenteLong);
         assertTrue(ottenutoBooleano);
@@ -167,12 +185,12 @@ public class QueryExistTest extends WikiTest {
 
     @ParameterizedTest
     @MethodSource(value = "PAGINE_E_CATEGORIE")
-    @Order(6)
-    @DisplayName("6 - Test per pagine e categorie (isEsiste)")
+    @Order(7)
+    @DisplayName("7 - Test per pagine e categorie (isEsiste)")
         //--titolo
         //--pagina esistente
     void isEsiste(final String wikiTitleVoceOCategoria, final boolean paginaEsistente) {
-        System.out.println(("6 - Test per pagine e categorie (isEsiste)"));
+        System.out.println(("7 - Test per pagine e categorie (isEsiste)"));
 
         sorgente = wikiTitleVoceOCategoria;
         ottenutoBooleano = appContext.getBean(QueryExist.class).isEsiste(sorgente);

@@ -250,6 +250,8 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Status: %s", result.isValido() ? "true" : "false"));
         System.out.println(String.format("Query: %s", result.getQueryType()));
         System.out.println(String.format("Title: %s", result.getWikiTitle()));
+        System.out.println(String.format("PageId: %s", result.getPageid()));
+        System.out.println(String.format("Namespace: %s", result.getNameSpace()));
         System.out.println(String.format("Type: %s", result.getTypePage()));
         System.out.println(String.format("User: %s", result.getUserType()));
         System.out.println(String.format("Limit: %d", result.getLimit()));

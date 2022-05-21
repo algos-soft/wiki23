@@ -92,6 +92,8 @@ public abstract class AQuery {
 
     protected AETypeQuery queryType;
 
+    protected String wikiCategory;
+
     //    /**
     //     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
     //     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -658,6 +660,11 @@ public abstract class AQuery {
         long pageId;
 
         if (mappaUrlResponse.get(KEY_JSON_ZERO) instanceof JSONObject jsonPageZero) {
+            if (jsonPageZero.get(KEY_JSON_NS) instanceof Long nameSpace) {
+                result.setNameSpace(nameSpace);
+                mappaUrlResponse.put(KEY_JSON_NS, nameSpace);
+            }
+
             if (jsonPageZero.get(KEY_JSON_PAGE_ID) instanceof Long pageid) {
                 pageId = pageid;
                 result.pageid(pageId);

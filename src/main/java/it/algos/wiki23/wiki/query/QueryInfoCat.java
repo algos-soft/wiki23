@@ -25,7 +25,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class QueryInfoCat extends AQuery {
 
-    private String wikiCategory;
 
     /**
      * Request principale <br>
@@ -83,9 +82,9 @@ public class QueryInfoCat extends AQuery {
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
         JSONObject jsonCategoryInfo = null;
-        String wikiTitle;
         Long pagine = 0L;
         String message;
+        result.setResponse(rispostaDellaQuery);
 
         //--controllo del missing e leggera modifica delle informazioni di errore
         if (result.getErrorCode().equals(KEY_JSON_MISSING_TRUE)) {

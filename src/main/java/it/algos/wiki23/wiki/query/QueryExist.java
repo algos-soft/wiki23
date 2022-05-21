@@ -120,9 +120,9 @@ public class QueryExist extends AQuery {
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
         String message;
+        result.setResponse(rispostaDellaQuery);
 
         if ((boolean) mappaUrlResponse.get(KEY_JSON_BATCH)) {
-            return result;
         }
         else {
             result.setErrorCode("batchcomplete=false");
@@ -131,6 +131,20 @@ public class QueryExist extends AQuery {
             return result;
         }
 
+        if (result.isValido()) {
+            if (result.getNameSpace() == 0L) {
+                message = String.format("La pagina [[%s]] esiste", result.getWikiTitle());
+                result.setValidMessage(message);
+                result.typePage(AETypePage.pagina);
+            }
+            if (result.getNameSpace() == 14) {
+                message = String.format("La categoria [[%s]] esiste", result.getWikiTitle());
+                result.setValidMessage(message);
+                result.typePage(AETypePage.categoria);
+            }
+        }
+
+        return result;
     }
 
 }

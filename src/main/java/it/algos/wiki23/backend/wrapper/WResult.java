@@ -56,6 +56,8 @@ public class WResult extends AResult {
 
     private long newrevid = 0;
 
+    private long nameSpace = 0L;
+
     private long inizio;
 
     private long fine;
@@ -87,10 +89,12 @@ public class WResult extends AResult {
         this.wikiTitle = wikiTitle;
         return this;
     }
+
     public WResult getRequest(final String getRequest) {
         this.getRequest = getRequest;
         return this;
     }
+
     public WResult cookies(final Map<String, String> cookies) {
         this.cookies = cookies;
         return this;
@@ -290,6 +294,7 @@ public class WResult extends AResult {
         this.preliminaryResponse = preliminaryResponse;
     }
 
+
     public String getToken() {
         return token;
     }
@@ -320,6 +325,14 @@ public class WResult extends AResult {
 
     public void setPageid(long pageid) {
         this.pageid = pageid;
+    }
+
+    public long getNameSpace() {
+        return nameSpace;
+    }
+
+    public void setNameSpace(long nameSpace) {
+        this.nameSpace = nameSpace;
     }
 
     public AETypeUser getUserType() {

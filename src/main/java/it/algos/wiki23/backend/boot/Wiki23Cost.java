@@ -161,6 +161,8 @@ public class Wiki23Cost {
 
     public static final String KEY_JSON_PAGE_ID = "pageid";
 
+    public static final String KEY_JSON_NS = "ns";
+
     public static final String KEY_JSON_TITLE = "title";
 
     public static final String KEY_JSON_MISSING = "missing";
