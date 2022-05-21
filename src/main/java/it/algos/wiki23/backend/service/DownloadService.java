@@ -4,6 +4,7 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
+import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -50,23 +51,22 @@ public class DownloadService extends WAbstractService {
         String bio = "bio";
 
         //--Controlla quante pagine ci sono nella categoria
-        //--Si collega come anonymous; non serve essere loggati <br>
         checkCategoria(categoryTitle);
 
         //--Controlla il collegamento come bot
         checkBot();
 
-        //--Parte dalla lista di tutti i (long) pageIds della categoria
-        //--Deve riuscire a gestire una lista di circa 500.000 long per la category BioBot
-        //--Tempo medio previsto = circa 1 minuto (come bot la categoria legge 5.000 pagine per volta)
-        //--Nella listaPageIds possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo
-        listaPageIds = queryService.getListaPageIds(categoryTitle);
+        //--Crea la lista di tutti i (long) pageIds della categoria
+        listaPageIds = getListaPageIds(categoryTitle);
 
-                //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
-                //--Deve riuscire a gestire una lista di circa 435.000 long per la category BioBot
-                //--Tempo medio previsto = circa 20 minuti  (come bot la query legge 500 pagine per volta
-                listaMiniWrap = appContext.getBean(QueryTimestamp.class).urlRequest(listaPageIds).getLista();
-                //--Nella listaMiniWrap possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo
+        //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
+        listaMiniWrap = getListaMiniWrap(listaPageIds);
+
+        //        //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
+//        //--Deve riuscire a gestire una lista di circa 435.000 long per la category BioBot
+//        //--Tempo medio previsto = circa 20 minuti  (come bot la query legge 500 pagine per volta
+//        listaMiniWrap = queryService.getMiniWrap(listaPageIds);
+//        //--Nella listaMiniWrap possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo
 
         //        //--Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere
         //        //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
@@ -97,6 +97,8 @@ public class DownloadService extends WAbstractService {
 
     /**
      * Legge (anche come anonymous) il numero di pagine di una categoria wiki <br>
+     * Si collega come anonymous; non serve essere loggati <br>
+     * Serve però per le operazioni successive <br>
      *
      * @param categoryTitle da controllare
      *
@@ -143,6 +145,58 @@ public class DownloadService extends WAbstractService {
         }
         logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.download));
         return status;
+    }
+
+
+    /**
+     * Crea la lista di tutti i (long) pageIds della categoria <br>
+     * Deve riuscire a gestire una lista di circa 500.000 long per la category BioBot <br>
+     * Tempo medio previsto = circa 1 minuto (come bot la categoria legge 5.000 pagine per volta) <br>
+     * Nella listaPageIds possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo <br>
+     *
+     * @param categoryTitle da controllare
+     *
+     * @return lista di tutti i (long) pageIds
+     */
+    public List<Long> getListaPageIds(final String categoryTitle) {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+
+        List<Long> listaPageIds = queryService.getListaPageIds(categoryTitle);
+
+        size = textService.format(listaPageIds.size());
+        time = dateService.deltaTextEsatto(inizio);
+        String message = String.format("Recuperati %s pageIds dalla categoria '%s' in %s", size, categoryTitle, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.download));
+
+        return listaPageIds;
+    }
+
+
+    /**
+     * Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap <br>
+     * Deve riuscire a gestire una lista di circa 500.000 long per la category BioBot <br>
+     * Tempo medio previsto = circa 20 minuti (come bot la query legge 500 pagine per volta) <br>
+     * Nella listaMiniWrap possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo <br>
+     *
+     * @param listaPageIds di tutti i (long) pageIds
+     *
+     * @return lista di tutti i miniWraps
+     */
+    public List<MiniWrap> getListaMiniWrap(final List<Long> listaPageIds) {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+
+        List<MiniWrap> listaMiniWrap = queryService.getMiniWrap(listaPageIds);
+
+        size = textService.format(listaPageIds.size());
+        time = dateService.deltaTextEsatto(inizio);
+        String message = String.format("Creati %s miniWrap dai corrispondenti pageIds in %s", size, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.download));
+
+        return listaMiniWrap;
     }
 
 }

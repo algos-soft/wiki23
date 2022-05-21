@@ -54,6 +54,7 @@ public abstract class WikiTest extends AlgosTest {
 
     @Autowired
     public BioService bioService;
+
     @Autowired
     public DownloadService downloadService;
 
@@ -79,6 +80,8 @@ public abstract class WikiTest extends AlgosTest {
     protected final static String CATEGORIA_ESISTENTE_DUE = "BioBot";
 
     protected final static String CATEGORIA_ESISTENTE_TRE = "Ambasciatori britannici in Brasile";
+
+    protected final static String CATEGORIA_ESISTENTE_QUATTRO = "Nati nel 1938";
 
     protected WResult previstoRisultato;
 
@@ -234,7 +237,7 @@ public abstract class WikiTest extends AlgosTest {
         listaPageIds = null;
         listWrapBio = null;
         listMiniWrap = null;
-        botLogin.reset();
+//        botLogin.reset();
         typeUser = null;
     }
 
@@ -247,10 +250,13 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Status: %s", result.isValido() ? "true" : "false"));
         System.out.println(String.format("Query: %s", result.getQueryType()));
         System.out.println(String.format("Title: %s", result.getWikiTitle()));
+        System.out.println(String.format("Type: %s", result.getTypePage()));
         System.out.println(String.format("User: %s", result.getUserType()));
         System.out.println(String.format("Limit: %d", result.getLimit()));
         System.out.println(String.format("Preliminary url: %s", result.getUrlPreliminary()));
         System.out.println(String.format("Secondary url: %s", result.getUrlRequest()));
+        System.out.println(String.format("Get request url: %s", result.getGetRequest()));
+        System.out.println(String.format("Cookies: %s", result.getCookies()));
         System.out.println(String.format("Preliminary response: %s", result.getPreliminaryResponse()));
         System.out.println(String.format("Token: %s", result.getToken()));
         System.out.println(String.format("Secondary response: %s", result.getResponse()));
@@ -311,6 +317,16 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Nome: %s", sorgente2));
         System.out.println(String.format("Cognome: %s", sorgente3));
         System.out.println(String.format("Didascalia: %s", ottenuto));
+    }
+
+    protected void printBotLogin() {
+        System.out.println(VUOTA);
+        System.out.println("Valori attuali del singleton BotLogin");
+        System.out.println(String.format("Valido: %s", botLogin.isValido() ? "true" : "false"));
+        System.out.println(String.format("Bot: %s", botLogin.isBot() ? "true" : "false"));
+        System.out.println(String.format("Userid: %d", botLogin.getUserid()));
+        System.out.println(String.format("Username: %s", botLogin.getUsername()));
+        System.out.println(String.format("UserType: %s", botLogin.getUserType()));
     }
 
     protected String getMax(String message) {

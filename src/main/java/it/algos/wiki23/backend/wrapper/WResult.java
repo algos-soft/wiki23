@@ -5,6 +5,8 @@ import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.stereotype.*;
 
+import java.util.*;
+
 /**
  * Project vaadwiki
  * Created by Algos
@@ -25,6 +27,8 @@ public class WResult extends AResult {
     private String urlPreliminary = VUOTA;
 
     private String urlRequest = VUOTA;
+
+    private String getRequest = VUOTA;
 
     private String preliminaryResponse = VUOTA;
 
@@ -62,6 +66,8 @@ public class WResult extends AResult {
 
     private AETypePage typePage;
 
+    private Map<String, String> cookies;
+
     private WResult() {
         this(null);
     }
@@ -79,6 +85,14 @@ public class WResult extends AResult {
 
     public WResult wikiTitle(final String wikiTitle) {
         this.wikiTitle = wikiTitle;
+        return this;
+    }
+    public WResult getRequest(final String getRequest) {
+        this.getRequest = getRequest;
+        return this;
+    }
+    public WResult cookies(final Map<String, String> cookies) {
+        this.cookies = cookies;
         return this;
     }
 
@@ -113,6 +127,7 @@ public class WResult extends AResult {
         this.userType = userType;
         return this;
     }
+
     public WResult typePage(final AETypePage typePage) {
         this.typePage = typePage;
         return this;
@@ -203,6 +218,21 @@ public class WResult extends AResult {
         this.newtext = newtext;
     }
 
+    public String getGetRequest() {
+        return getRequest;
+    }
+
+    public void setGetRequest(String getRequest) {
+        this.getRequest = getRequest;
+    }
+
+    public Map<String, String> getCookies() {
+        return cookies;
+    }
+
+    public void setCookies(Map<String, String> cookies) {
+        this.cookies = cookies;
+    }
 
     public void setFine() {
         this.fine = System.currentTimeMillis();

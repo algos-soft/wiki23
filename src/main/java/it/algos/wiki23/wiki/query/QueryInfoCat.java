@@ -25,6 +25,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class QueryInfoCat extends AQuery {
 
+    private String wikiCategory;
 
     /**
      * Request principale <br>
@@ -67,7 +68,8 @@ public class QueryInfoCat extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final String wikiTitoloGrezzoPaginaCategoria) {
-        queryType = AETypeQuery.get;
+        queryType = AETypeQuery.getSenzaLoginSenzaCookies;
+        wikiCategory = wikiTitoloGrezzoPaginaCategoria;
         return requestGetTitle(WIKI_QUERY_CAT_INFO, CAT + wikiTitoloGrezzoPaginaCategoria);
     }
 
@@ -81,7 +83,9 @@ public class QueryInfoCat extends AQuery {
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
         JSONObject jsonCategoryInfo = null;
-        Long pagine;
+        String wikiTitle;
+        Long pagine = 0L;
+        String message;
 
         //--controllo del missing e leggera modifica delle informazioni di errore
         if (result.getErrorCode().equals(KEY_JSON_MISSING_TRUE)) {
@@ -89,19 +93,18 @@ public class QueryInfoCat extends AQuery {
         }
 
         if (result.isValido()) {
+            if (mappaUrlResponse.get(KEY_JSON_ZERO) instanceof JSONObject queryPageZero) {
+                jsonCategoryInfo = (JSONObject) queryPageZero.get(KEY_JSON_CATEGORY_INFO);
+            }
+
+            if (jsonCategoryInfo != null && jsonCategoryInfo.get(KEY_JSON_CATEGORY_SIZE) != null) {
+                pagine = (Long) jsonCategoryInfo.get(KEY_JSON_CATEGORY_SIZE);
+                result.setIntValue(pagine.intValue());
+            }
+
             result.typePage(AETypePage.categoria);
-        }
-        else {
-            return result;
-        }
-
-        if (mappaUrlResponse.get(KEY_JSON_ZERO) instanceof JSONObject queryPageZero) {
-            jsonCategoryInfo = (JSONObject) queryPageZero.get(KEY_JSON_CATEGORY_INFO);
-        }
-
-        if (jsonCategoryInfo != null && jsonCategoryInfo.get(KEY_JSON_CATEGORY_SIZE) != null) {
-            pagine = (Long) jsonCategoryInfo.get(KEY_JSON_CATEGORY_SIZE);
-            result.setIntValue(pagine.intValue());
+            message = String.format("La categoria [%s] ha %s pagine", wikiCategory, textService.format(pagine.intValue()));
+            result.validMessage(message);
         }
 
         return result;

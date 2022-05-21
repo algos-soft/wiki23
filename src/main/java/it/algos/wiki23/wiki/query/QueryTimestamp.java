@@ -4,13 +4,11 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import static it.algos.wiki23.backend.service.WikiApiService.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.json.simple.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
-import java.time.*;
 import java.util.*;
 
 /**
@@ -76,7 +74,7 @@ public class QueryTimestamp extends AQuery {
      */
     public WResult urlRequest(final List<Long> listaPageids) {
         String strisciaIds;
-        queryType = AETypeQuery.getCookies;
+        queryType = AETypeQuery.getLoggatoConCookies;
 
         strisciaIds = array.toStringaPipe(listaPageids);
         return requestGetTitle(WIKI_QUERY_TIMESTAMP, strisciaIds);

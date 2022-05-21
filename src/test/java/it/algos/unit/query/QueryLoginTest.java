@@ -226,15 +226,6 @@ public class QueryLoginTest extends WikiTest {
         printBotLogin();
     }
 
-    protected void printBotLogin() {
-        System.out.println(VUOTA);
-        System.out.println("Valori attuali del singleton BotLogin");
-        System.out.println(String.format("Valido: %s", botLogin.isValido() ? "true" : "false"));
-        System.out.println(String.format("Bot: %s", botLogin.isBot() ? "true" : "false"));
-        System.out.println(String.format("Userid: %d", botLogin.getUserid()));
-        System.out.println(String.format("Username: %s", botLogin.getUsername()));
-        System.out.println(String.format("UserType: %s", botLogin.getUserType()));
-    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

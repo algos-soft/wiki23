@@ -1,11 +1,9 @@
 package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
-import org.json.simple.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
@@ -71,7 +69,7 @@ public class QueryBio extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final String wikiTitleGrezzoBio) {
-        queryType = AETypeQuery.get;
+        queryType = AETypeQuery.getSenzaLoginSenzaCookies;
         WResult result = requestGetTitle(WIKI_QUERY_BASE_TITLE, wikiTitleGrezzoBio);
 
         if (result.getTypePage() == AETypePage.contienePipe) {
@@ -105,7 +103,7 @@ public class QueryBio extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final long pageid) {
-        queryType = AETypeQuery.get;
+        queryType = AETypeQuery.getSenzaLoginSenzaCookies;
         return requestGetPage(WIKI_QUERY_BASE_PAGE, pageid);
     }
 

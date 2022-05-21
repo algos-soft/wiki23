@@ -2,6 +2,7 @@ package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -76,7 +77,14 @@ public class QueryCat extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final String wikiTitoloGrezzoPaginaCategoria) {
-        queryType = AETypeQuery.getCookies;
+        queryType = AETypeQuery.getLoggatoConCookies;
+        if (botLogin == null || botLogin.getCookies() == null) {
+            String message;
+            message = "Il botLogin non ha cookies validi";
+            logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
+//            return WResult.errato(message);
+        }
+
         WResult result = checkIniziale(QUERY_CAT_REQUEST, CAT + wikiTitoloGrezzoPaginaCategoria);
         if (result.isErrato()) {
             return result;

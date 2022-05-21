@@ -67,20 +67,20 @@ public class QueryTimestampTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1- Costruttore base senza parametri")
+    @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
         istanza = new QueryTimestamp();
         assertNotNull(istanza);
-        System.out.println(("1- Costruttore base senza parametri"));
+        System.out.println(("1 - Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
     @Test
     @Order(2)
-    @DisplayName("2- Test per due pagine")
-    void nonEsiste() {
-        System.out.println(("2- Test per due pagine"));
+    @DisplayName("2 - Test per due pagine")
+    void duePagine() {
+        System.out.println(("2 - Test per due pagine"));
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryTimestamp.class);
         assertNotNull(istanza);
@@ -93,6 +93,54 @@ public class QueryTimestampTest extends WikiTest {
         assertTrue(ottenutoRisultato.isValido());
 
         listMiniWrap = istanza.getWrap(listaPageIds);
+        assertNotNull(listMiniWrap);
+
+        System.out.println(VUOTA);
+        printRisultato(ottenutoRisultato);
+        printMiniWrap(listMiniWrap);
+    }
+
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - Test per categoria piccola")
+    void categoria() {
+        System.out.println(("3 - Test per categoria piccola"));
+        assertTrue(istanza == null);
+
+        sorgente = CATEGORIA_ESISTENTE_UNO;
+        listaPageIds = queryService.getListaPageIds(sorgente);
+        assertNotNull(listaPageIds);
+
+        ottenutoRisultato = appContext.getBean(QueryTimestamp.class).urlRequest(listaPageIds);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        listMiniWrap = ottenutoRisultato.getLista();
+        assertNotNull(listMiniWrap);
+
+        System.out.println(VUOTA);
+        printRisultato(ottenutoRisultato);
+        printMiniWrap(listMiniWrap);
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - Test per categoria media")
+    void categoria2() {
+        System.out.println(("4 - Test per categoria media"));
+        assertTrue(istanza == null);
+
+        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        listaPageIds = queryService.getListaPageIds(sorgente);
+        assertNotNull(listaPageIds);
+
+        ottenutoRisultato = appContext.getBean(QueryTimestamp.class).urlRequest(listaPageIds);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        listMiniWrap = ottenutoRisultato.getLista();
         assertNotNull(listMiniWrap);
 
         System.out.println(VUOTA);

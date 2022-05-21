@@ -180,6 +180,8 @@ public abstract class AQuery {
 
     protected LinkedHashMap<String, Object> mappaUrlResponse;
 
+    Map<String, String> mappaStringhe = new HashMap<>();
+
     /**
      * Controlla l'esistenza e la validità del collegamento come bot <br>
      *
@@ -344,7 +346,13 @@ public abstract class AQuery {
         URLConnection urlConn;
         String urlResponse;
         urlDomain = fixAssert(urlDomain);
-        result.setUrlRequest(urlDomain);
+        switch (queryType) {
+            case getSenzaLoginSenzaCookies, getLoggatoConCookies -> {
+                result.setGetRequest(urlDomain);
+                result.setCookies(botLogin != null ? botLogin.getCookies() : null);
+            }
+            default -> {}
+        }
 
         if (result.isErrato()) {
             return result;
@@ -385,7 +393,7 @@ public abstract class AQuery {
      *
      * @param urlConn connessione
      */
-    protected void uploadCookies(final URLConnection urlConn, final Map<String, Object> cookies) {
+    protected void uploadCookies(final URLConnection urlConn, final Map<String, String> cookies) {
         String cookiesText;
 
         if (cookies != null) {
@@ -399,7 +407,7 @@ public abstract class AQuery {
      *
      * @param cookies mappa dei cookies
      */
-    protected String creaCookiesText(Map<String, Object> cookies) {
+    protected String creaCookiesText(Map<String, String> cookies) {
         String cookiesTxt = VUOTA;
         String sep = UGUALE_SEMPLICE;
         Object valObj;

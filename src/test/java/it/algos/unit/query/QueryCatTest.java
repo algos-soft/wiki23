@@ -159,6 +159,38 @@ public class QueryCatTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
+    //    @Test
+    //    @Order(30)
+    //    @DisplayName("30 - Test per categorie senza collegamento")
+    //    void esisteNonCollegato() {
+    //        System.out.println("30 - Test per categorie senza collegamento");
+    //        System.out.println("Il botLogin viene regolato come 'anonymous'");
+    //        assertNotNull(botLogin);
+    //        assertTrue(botLogin.getUserType().name().equals(AETypeUser.anonymous.name()));
+    //
+    //        //--categoria
+    //        //--esiste
+    //        System.out.println(VUOTA);
+    //        CATEGORIE().forEach(this::esisteNonCollegatoBase);
+    //    }
+    //
+    //
+    //    //--categoria
+    //    //--esiste
+    //    void esisteNonCollegatoBase(Arguments arg) {
+    //        Object[] mat = arg.get();
+    //        sorgente = (String) mat[0];
+    //        previstoBooleano = (boolean) mat[1];
+    //
+    //        ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(sorgente);
+    //        assertNotNull(ottenutoRisultato);
+    //        assertEquals(previstoBooleano, ottenutoRisultato.isValido());
+    //
+    //        System.out.println(VUOTA);
+    //        System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", sorgente));
+    //        printRisultato(ottenutoRisultato);
+    //    }
+
 
     @Test
     @Order(40)
@@ -231,20 +263,20 @@ public class QueryCatTest extends WikiTest {
         assertEquals(botLogin.getUserType(), AETypeUser.bot);
     }
 
-
-//    @Test
+    @ParameterizedTest
+    @MethodSource(value = "CATEGORIE")
     @Order(61)
     @DisplayName("61- Test per categorie collegamento bot")
         //--categoria
         //--esiste
-    void esisteCollegatoBot() {
+    void esisteCollegatoBot(final String wikiCategoria, final boolean categoriaEsistente) {
         System.out.println("61 - Test per categorie collegamento bot");
         System.out.println("Il botLogin è stato regolato nel test '60'");
 
-        sorgente = "BioBot";
+        sorgente = wikiCategoria;
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
-        assertTrue(ottenutoRisultato.isValido());
+        assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come bot", sorgente));
@@ -255,8 +287,8 @@ public class QueryCatTest extends WikiTest {
 
     @ParameterizedTest
     @MethodSource(value = "CATEGORIE")
-        //--categoria
-        //--esiste
+    //--categoria
+    //--esiste
     @Order(70)
     @DisplayName("70 - Recupera direttamente la lista di pageids")
     void getLista(final String wikiCategoria, final boolean categoriaEsistente) {
@@ -266,14 +298,15 @@ public class QueryCatTest extends WikiTest {
         listaPageIds = appContext.getBean(QueryCat.class).getListaPageIds(wikiCategoria);
         if (categoriaEsistente) {
             assertNotNull(listaPageIds);
-            assertEquals(categoriaEsistente, listaPageIds.size()>0);
+            assertEquals(categoriaEsistente, listaPageIds.size() > 0);
 
             System.out.println(VUOTA);
             System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
             System.out.println(VUOTA);
             System.out.println(String.format("La categoria [[%s]] contiene %d elementi. Ne stampo SOLO i primi 10 (se ci sono)", sorgente,
-                    listaPageIds.size()));
-            printLista(listaPageIds.subList(0,Math.min(10,listaPageIds.size())));
+                    listaPageIds.size()
+            ));
+            printLista(listaPageIds.subList(0, Math.min(10, listaPageIds.size())));
         }
         else {
             System.out.println(VUOTA);

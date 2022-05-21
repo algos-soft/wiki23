@@ -47,7 +47,7 @@ public class QueryWrapBio extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final List<Long> listaPageids) {
-        queryType = AETypeQuery.get;
+        queryType = AETypeQuery.getLoggatoConCookies;
         return requestGetTitle(WIKI_QUERY_BASE_PAGE, arrayService.toStringaPipe(listaPageids));
     }
 

@@ -100,19 +100,48 @@ public class DownloadServiceTest extends WikiTest {
         service.checkCategoria(sorgente);
         service.checkBot();
     }
+
     @Test
     @Order(3)
     @DisplayName("3 - Ciclo (parziale) con categoria specifica")
     void ciclo3() {
-        System.out.println(("2 - Ciclo (parziale) con categoria specifica"));
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        System.out.println(("3 - Ciclo (parziale) con categoria specifica"));
 
-        //--collegato come admin
+        sorgente = CATEGORIA_ESISTENTE_UNO;
         System.out.println((VUOTA));
-        queryService.logAsBot();
         service.checkCategoria(sorgente);
         service.checkBot();
-        listaPageIds = queryService.getListaPageIds(sorgente);
+        listaPageIds = service.getListaPageIds(sorgente);
+
+        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        System.out.println((VUOTA));
+        service.checkCategoria(sorgente);
+        service.checkBot();
+        listaPageIds = service.getListaPageIds(sorgente);
+
+        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        System.out.println((VUOTA));
+        service.checkCategoria(sorgente);
+        queryService.logAsBot();
+        service.checkBot();
+        listaPageIds = service.getListaPageIds(sorgente);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - Ciclo (parziale) collegato come bot")
+    void ciclo4() {
+        System.out.println(("4 - Ciclo (parziale) collegato come bot"));
+        queryService.logAsBot();
+
+        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        System.out.println((VUOTA));
+        service.checkCategoria(sorgente);
+        queryService.logAsBot();
+        service.checkBot();
+        listaPageIds = service.getListaPageIds(sorgente);
+//        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+
     }
 
 

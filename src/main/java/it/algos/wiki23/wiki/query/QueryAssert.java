@@ -5,7 +5,6 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
-import org.json.simple.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
@@ -50,13 +49,13 @@ public class QueryAssert extends AQuery {
      */
     public WResult urlRequest() {
         WResult result = WResult.valido();
-        Map<String, Object> cookies;
+        Map<String, String> cookies;
         String urlDomain = TAG_REQUEST_ASSERT;
         String urlResponse = VUOTA;
         URLConnection urlConn;
 
         result.setUrlRequest(TAG_REQUEST_ASSERT);
-        result.setQueryType(AETypeQuery.getCookies);
+        result.setQueryType(AETypeQuery.getLoggatoConCookies);
 
         //--se manca il botLogin
         if (botLogin == null) {

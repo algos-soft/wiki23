@@ -57,7 +57,7 @@ public class BotLogin {
         return userType;
     }
 
-    public Map<String, Object> getCookies() {
+    public Map<String, String> getCookies() {
         return result != null ? result.getMappa() : null;
     }
 

@@ -215,7 +215,7 @@ public class QueryLogin extends AQuery {
         try {
             urlConn = this.creaGetConnection(urlDomain);
             urlResponse = sendRequest(urlConn);
-            result.setMappa(downlodCookies(urlConn));
+            result.setCookies(downlodCookies(urlConn));
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }

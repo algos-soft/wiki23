@@ -61,7 +61,7 @@ public class QueryExist extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final String wikiTitoloGrezzoPaginaCategoria) {
-        queryType = AETypeQuery.get;
+        queryType = AETypeQuery.getSenzaLoginSenzaCookies;
         return requestGetTitle(WIKI_QUERY, wikiTitoloGrezzoPaginaCategoria);
     }
 
@@ -78,7 +78,7 @@ public class QueryExist extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final long pageid) {
-        queryType = AETypeQuery.get;
+        queryType = AETypeQuery.getSenzaLoginSenzaCookies;
         return requestGetPage(WIKI_QUERY_PAGEIDS, pageid);
     }
 
