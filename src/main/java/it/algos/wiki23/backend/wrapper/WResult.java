@@ -146,6 +146,10 @@ public class WResult extends AResult {
         this.cicli = cicli;
         return this;
     }
+    public WResult fine() {
+        this.setFine();
+        return this;
+    }
 
     public WResult wikiText(final String wikiText) {
         this.wikiText = wikiText;

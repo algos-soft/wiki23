@@ -78,24 +78,66 @@ public class QueryCat extends AQuery {
      */
     public WResult urlRequest(final String wikiTitoloGrezzoPaginaCategoria) {
         queryType = AETypeQuery.getLoggatoConCookies;
+        String message = VUOTA;
+        int num = 0;
+        int limit = 0;
+        AETypeUser type;
+
         if (botLogin == null || botLogin.getCookies() == null) {
-            String message;
             message = "Il botLogin non ha cookies validi";
             logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
-//            return WResult.errato(message);
+        }
+
+        if (wikiTitoloGrezzoPaginaCategoria == null) {
+            message = String.format("Il titolo della categoria è nullo");
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies);
+        }
+
+        if (textService.isEmpty(wikiTitoloGrezzoPaginaCategoria)) {
+            message = String.format("Manca il titolo della categoria");
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies);
         }
 
         WResult result = checkIniziale(QUERY_CAT_REQUEST, CAT + wikiTitoloGrezzoPaginaCategoria);
         if (result.isErrato()) {
-            return result;
+            return result.queryType(AETypeQuery.getLoggatoConCookies);
         }
-        if (wikiTitoloGrezzoPaginaCategoria == null) {
-            return result.errato("Il wikiTitle è nullo");
+
+        WResult infoResult = appContext.getBean(QueryInfoCat.class).urlRequest(wikiTitoloGrezzoPaginaCategoria);
+        if (infoResult.isValido()) {
+            result.setPageid(infoResult.getPageid());
+            type = botLogin != null ? botLogin.getUserType() : null;
+            num = infoResult.getIntValue();
+            limit = type != null ? type.getLimit() : 0;
+            result.limit(limit);
+
+            switch (type) {
+                case anonymous -> {
+                    if (num > AETypeUser.user.getLimit()) {
+                        message = String.format("Sei collegato come %s e nella categoria ci sono %s voci", type, textService.format(num));
+                        logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
+                        return (WResult) result.errorMessage(message);
+                    }
+                }
+                case user, admin -> {
+                    if (num > AETypeUser.bot.getLimit()) {
+                        message = String.format("Sei collegato come %s e nella categoria ci sono %s voci", type, textService.format(num));
+                        logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
+                        return (WResult) result.errorMessage(message);
+                    }
+                }
+                case bot -> {}
+                default -> {}
+            }
+        }
+        else {
+            return infoResult.queryType(AETypeQuery.getLoggatoConCookies);
         }
 
         String urlDomain = VUOTA;
         String tokenContinue = VUOTA;
-        String message = VUOTA;
         URLConnection urlConn;
         String urlResponse = VUOTA;
         int pageIdsRecuperati = 0;
@@ -113,15 +155,19 @@ public class QueryCat extends AQuery {
         }
 
         urlDomain = fixUrlCat(wikiTitoloGrezzoPaginaCategoria, VUOTA);
-        result.setUrlPreliminary(urlDomain);
+        result.setCookies(botLogin != null ? botLogin.getCookies() : null);
+        result.setGetRequest(urlDomain);
+
         try {
             do {
                 urlDomain = fixUrlCat(wikiTitoloGrezzoPaginaCategoria, tokenContinue);
                 urlConn = this.creaGetConnection(urlDomain);
-                uploadCookies(urlConn, botLogin != null ? botLogin.getCookies() : null);
+                uploadCookies(urlConn, result.getCookies());
                 urlResponse = sendRequest(urlConn);
                 result = elaboraResponse(result, urlResponse);
-                result.setCicli(++cicli);
+                if (result.isValido()) {
+                    result.setCicli(++cicli);
+                }
                 tokenContinue = result.getToken();
             }
             while (textService.isValid(tokenContinue));
@@ -129,10 +175,15 @@ public class QueryCat extends AQuery {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }
 
-        pageIdsRecuperati = result.getIntValue();
-        result.setUrlRequest(urlDomain);
-        message = String.format("Recuperati %s pageIds dalla categoria '%s' in %d cicli", textService.format(pageIdsRecuperati), wikiTitoloGrezzoPaginaCategoria, cicli);
-        result.setMessage(message);
+        if (result.isValido()) {
+            pageIdsRecuperati = result.getIntValue();
+            message = String.format("Recuperati %s pageIds dalla categoria '%s' in %d cicli", textService.format(pageIdsRecuperati), wikiTitoloGrezzoPaginaCategoria, cicli);
+            result.setMessage(message);
+        }
+        else {
+            message = String.format("Nessun pageIds dalla categoria '%s'", wikiTitoloGrezzoPaginaCategoria);
+            result.setMessage(message);
+        }
 
         return result;
     }

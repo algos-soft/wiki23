@@ -81,10 +81,10 @@ public class QueryInfoCat extends AQuery {
      */
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
+        result.setResponse(rispostaDellaQuery);
         JSONObject jsonCategoryInfo = null;
         Long pagine = 0L;
         String message;
-        result.setResponse(rispostaDellaQuery);
 
         //--controllo del missing e leggera modifica delle informazioni di errore
         if (result.getErrorCode().equals(KEY_JSON_MISSING_TRUE)) {

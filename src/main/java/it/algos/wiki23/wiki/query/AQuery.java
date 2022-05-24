@@ -227,8 +227,12 @@ public abstract class AQuery {
         return urlDomain;
     }
 
-    private WResult checkInizialeBase(final String pathQuery, final Object wikiTitlePageid) {
-        WResult result = WResult.valido().queryType(queryType).typePage(AETypePage.indeterminata);
+    protected WResult checkInizialeBase(final String pathQuery, final Object wikiTitlePageid) {
+        WResult result = WResult.valido()
+                .queryType(queryType)
+                .typePage(AETypePage.indeterminata)
+                .userType(AETypeUser.anonymous)
+                .limit(AETypeUser.anonymous.getLimit());
         String message;
 
         if (textService.isEmpty(pathQuery)) {
@@ -347,14 +351,14 @@ public abstract class AQuery {
     protected WResult requestGet(WResult result, String urlDomain) {
         URLConnection urlConn;
         String urlResponse;
-        urlDomain = fixAssert(urlDomain);
         switch (queryType) {
-            case getSenzaLoginSenzaCookies, getLoggatoConCookies -> {
-                result.setGetRequest(urlDomain);
+            case getLoggatoConCookies -> {
+                urlDomain = fixAssert(urlDomain);
                 result.setCookies(botLogin != null ? botLogin.getCookies() : null);
             }
             default -> {}
         }
+        result.setGetRequest(urlDomain);
 
         if (result.isErrato()) {
             return result;
@@ -782,6 +786,7 @@ public abstract class AQuery {
                 result.setErrorCode(VUOTA);
                 result.setErrorMessage(VUOTA);
                 result.setCodeMessage("valida");
+                result.typePage(AETypePage.pagina);
                 result.setValidMessage(String.format("La pagina wiki '%s' è una biografia", wikiTitle));
                 result.setWrap(new WrapBio().valida(true).title(wikiTitle).pageid(pageId).type(AETypePage.testoConTmpl).templBio(tmplBio));
             }

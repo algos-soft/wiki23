@@ -2,6 +2,8 @@ package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -73,11 +75,39 @@ public class QueryTimestamp extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final List<Long> listaPageids) {
-        String strisciaIds;
+        WResult result = WResult.valido()
+                .queryType(AETypeQuery.getLoggatoConCookies)
+                .typePage(AETypePage.indeterminata);
         queryType = AETypeQuery.getLoggatoConCookies;
+        String strisciaIds;
+        String message = VUOTA;
+        AETypeUser type;
+        int num = 0;
+        String urlDomain;
+
+        if (listaPageids == null) {
+            message = "Nessun valore per la lista di pageIds";
+            return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies).fine();
+        }
+        num = listaPageids != null ? listaPageids.size() : 0;
+
+        type = botLogin != null ? botLogin.getUserType() : null;
+        switch (type) {
+            case anonymous,user, admin -> {
+                if (num > type.getLimit()) {
+                    message = String.format("Sei collegato come %s e nella request ci sono %s pageIds", type, textService.format(num));
+                    logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
+                    return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies).fine();
+                }
+            }
+            case bot -> {}
+            default -> {}
+        }
+        result.userType(type).limit(type.getLimit());
 
         strisciaIds = array.toStringaPipe(listaPageids);
-        return requestGetTitle(WIKI_QUERY_TIMESTAMP, strisciaIds);
+        urlDomain = WIKI_QUERY_TIMESTAMP  + strisciaIds;
+        return requestGet(result, urlDomain);
     }
 
 
@@ -94,7 +124,9 @@ public class QueryTimestamp extends AQuery {
         JSONObject revisionZero = null;
         String timeStamp = VUOTA;
         result = super.elaboraResponse(result, rispostaDellaQuery);
+        result.typePage(AETypePage.pageIds);
         result.setWikiTitle(VUOTA);
+        result.setPageid(0L);
 
         if (mappaUrlResponse.get(KEY_JSON_PAGES) instanceof JSONArray jsonPages) {
             result.setIntValue(jsonPages.size());

@@ -54,6 +54,7 @@ public class QueryInfoCatTest extends WikiTest {
     protected void setUpEach() {
         super.setUpEach();
         istanza = null;
+        botLogin.reset();
     }
 
 

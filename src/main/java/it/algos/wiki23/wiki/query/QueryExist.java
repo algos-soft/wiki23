@@ -105,6 +105,10 @@ public class QueryExist extends AQuery {
         return urlRequest(pageid).isValido();
     }
 
+    @Override
+    protected String fixAssert(String urlDomain) {
+        return urlDomain;
+    }
 
     /**
      * Elabora la risposta <br>
@@ -119,8 +123,8 @@ public class QueryExist extends AQuery {
      */
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
-        String message;
         result.setResponse(rispostaDellaQuery);
+        String message;
 
         if ((boolean) mappaUrlResponse.get(KEY_JSON_BATCH)) {
         }

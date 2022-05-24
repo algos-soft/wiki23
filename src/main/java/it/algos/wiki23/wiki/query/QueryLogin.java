@@ -294,7 +294,7 @@ public class QueryLogin extends AQuery {
 
         try {
             urlConn = this.creaGetConnection(urlDomain);
-            uploadCookies(urlConn, result.getMappa());
+            uploadCookies(urlConn, result.getCookies());
             addPostConnection(urlConn);
             urlResponse = sendRequest(urlConn);
             result.setMappa(downlodCookies(urlConn));
@@ -336,6 +336,7 @@ public class QueryLogin extends AQuery {
      */
     protected WResult elaboraSecondaryResponse(WResult result, final String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
+        result.typePage(AETypePage.login);
         JSONObject jsonLogin = (JSONObject) mappaUrlResponse.get(KEY_JSON_LOGIN);
         String jsonResult = null;
 

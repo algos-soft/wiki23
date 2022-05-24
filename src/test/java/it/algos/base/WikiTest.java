@@ -165,16 +165,18 @@ public abstract class WikiTest extends AlgosTest {
     }
 
     //--categoria
-    //--esiste
+    //--esiste come anonymous
+    //--esiste come user, admin
+    //--esiste come bot
     protected static Stream<Arguments> CATEGORIE() {
         return Stream.of(
-                Arguments.of(null, false),
-                Arguments.of(VUOTA, false),
-                Arguments.of("Inesistente", false),
-                Arguments.of("Nati nel 1435", true),
-                Arguments.of("2741616|27416167", false),
-                Arguments.of("Ambasciatori britannici in Brasile", true),
-                Arguments.of("Nati nel 1935", true)
+                Arguments.of(null, false, false, false),
+                Arguments.of(VUOTA, false, false, false),
+                Arguments.of("Inesistente", false, false, false),
+                Arguments.of("Nati nel 1435", true, true, true),
+                Arguments.of("2741616|27416167", false, false, false),
+                Arguments.of("Ambasciatori britannici in Brasile", true, true, true),
+                Arguments.of("Nati nel 1935", false, true, true)
         );
     }
 
@@ -237,7 +239,6 @@ public abstract class WikiTest extends AlgosTest {
         listaPageIds = null;
         listWrapBio = null;
         listMiniWrap = null;
-//        botLogin.reset();
         typeUser = null;
     }
 
@@ -294,7 +295,7 @@ public abstract class WikiTest extends AlgosTest {
     protected void printMiniWrap(List<MiniWrap> listaMiniWrap) {
         if (listaMiniWrap != null) {
             System.out.println(VUOTA);
-            System.out.println(String.format("Wrap pageid, wikiTitle and last timestamp"));
+            System.out.println(String.format("Pageid (wikiTitle) and last timestamp"));
             System.out.println(VUOTA);
             for (MiniWrap wrap : listaMiniWrap) {
                 System.out.println(String.format("%s (%s)%s%s", wrap.getPageid(), wrap.getWikiTitle(), FORWARD, wrap.getLastModifica()));

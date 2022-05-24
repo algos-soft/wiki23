@@ -56,7 +56,9 @@ public class QueryExistTest extends WikiTest {
      */
     @BeforeEach
     protected void setUpEach() {
-        super.setUpEach(); istanza = null;
+        super.setUpEach();
+        istanza = null;
+        botLogin.reset();
     }
 
 

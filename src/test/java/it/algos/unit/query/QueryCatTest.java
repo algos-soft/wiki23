@@ -144,15 +144,16 @@ public class QueryCatTest extends WikiTest {
     @MethodSource(value = "CATEGORIE")
     @Order(31)
     @DisplayName("31- Test per categorie senza collegamento")
-        //--categoria
-        //--esiste
-    void esisteNonCollegato(final String wikiCategoria, final boolean categoriaEsistente) {
+        //--esiste come anonymous
+        //--esiste come user, admin
+        //--esiste come bot
+    void esisteNonCollegato(final String wikiCategoria, final boolean categoriaEsistenteAnonymous) {
         System.out.println("31 - Test per categorie senza collegamento");
         System.out.println("Il botLogin è stato regolato nel test '30'");
 
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
         assertNotNull(ottenutoRisultato);
-        assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
+        assertEquals(categoriaEsistenteAnonymous, ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
@@ -207,15 +208,16 @@ public class QueryCatTest extends WikiTest {
     @MethodSource(value = "CATEGORIE")
     @Order(41)
     @DisplayName("41- Test per categorie collegamento user")
-        //--categoria
-        //--esiste
-    void esisteCollegatoUser(final String wikiCategoria, final boolean categoriaEsistente) {
+        //--esiste come anonymous
+        //--esiste come user, admin
+        //--esiste come bot
+    void esisteCollegatoUser(final String wikiCategoria, final boolean nonUsato, final boolean categoriaEsistenteUser) {
         System.out.println("41 - Test per categorie collegamento user");
         System.out.println("Il botLogin è stato regolato nel test '40'");
 
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
         assertNotNull(ottenutoRisultato);
-        assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
+        assertEquals(categoriaEsistenteUser, ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come user", wikiCategoria));
@@ -237,15 +239,16 @@ public class QueryCatTest extends WikiTest {
     @MethodSource(value = "CATEGORIE")
     @Order(51)
     @DisplayName("51- Test per categorie collegamento admin")
-        //--categoria
-        //--esiste
-    void esisteCollegatoAdmin(final String wikiCategoria, final boolean categoriaEsistente) {
+        //--esiste come anonymous
+        //--esiste come user, admin
+        //--esiste come bot
+    void esisteCollegatoAdmin(final String wikiCategoria, final boolean nonUsato, final boolean categoriaEsistenteAdmin) {
         System.out.println("51 - Test per categorie collegamento admin");
         System.out.println("Il botLogin è stato regolato nel test '50'");
 
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(wikiCategoria);
         assertNotNull(ottenutoRisultato);
-        assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
+        assertEquals(categoriaEsistenteAdmin, ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come admin", wikiCategoria));
@@ -267,16 +270,17 @@ public class QueryCatTest extends WikiTest {
     @MethodSource(value = "CATEGORIE")
     @Order(61)
     @DisplayName("61- Test per categorie collegamento bot")
-        //--categoria
-        //--esiste
-    void esisteCollegatoBot(final String wikiCategoria, final boolean categoriaEsistente) {
+        //--esiste come anonymous
+        //--esiste come user, admin
+        //--esiste come bot
+    void esisteCollegatoBot(final String wikiCategoria, boolean nonUsato, boolean nonUsato2, final boolean categoriaEsistenteBot) {
         System.out.println("61 - Test per categorie collegamento bot");
         System.out.println("Il botLogin è stato regolato nel test '60'");
 
         sorgente = wikiCategoria;
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
-        assertEquals(categoriaEsistente, ottenutoRisultato.isValido());
+        assertEquals(categoriaEsistenteBot, ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come bot", sorgente));
