@@ -367,6 +367,7 @@ public abstract class AQuery {
 
         try {
             urlConn = this.creaGetConnection(urlDomain);
+            uploadCookies(urlConn, result.getCookies());
             urlResponse = sendRequest(urlConn);
             result = elaboraResponse(result, urlResponse);
         } catch (Exception unErrore) {

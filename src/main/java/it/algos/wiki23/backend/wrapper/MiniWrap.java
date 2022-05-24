@@ -18,6 +18,7 @@ public class MiniWrap implements Comparable {
 
     private LocalDateTime lastModifica;
 
+
     public MiniWrap(final long pageid, final String wikiTitle,final String lastModificaString) {
         this.pageid = pageid;
         this.wikiTitle = wikiTitle;

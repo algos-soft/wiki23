@@ -62,7 +62,7 @@ public class Wiki23Cost {
 
     public static final String WIKI_QUERY_PAGEIDS = ACTION_QUERY + API_PAGEIDS;
 
-    public static final String QUERY_TIMESTAMP = "&rvslots=main&prop=revisions&rvprop=ids|timestamp";
+    public static final String QUERY_TIMESTAMP = "&prop=revisions&rvprop=timestamp";
 
     public static final String QUERY_INFO = QUERY_TIMESTAMP + "|content";
 

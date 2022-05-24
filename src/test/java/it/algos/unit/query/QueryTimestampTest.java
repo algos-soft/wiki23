@@ -83,7 +83,7 @@ public class QueryTimestampTest extends WikiTest {
     void errata() {
         System.out.println(("2 - Test per una request errata"));
 
-        ottenutoRisultato =  appContext.getBean(QueryTimestamp.class).urlRequest(null);
+        ottenutoRisultato = appContext.getBean(QueryTimestamp.class).urlRequest(null);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
@@ -247,7 +247,41 @@ public class QueryTimestampTest extends WikiTest {
         assertNotNull(listMiniWrap);
 
         System.out.println(VUOTA);
-        printMiniWrap(listMiniWrap);
+        System.out.println(String.format("Recuperati %s miniWrap",textService.format(listMiniWrap.size())));
+        printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
+    }
+
+
+//    @Test
+    @Order(9)
+    @DisplayName("9 - Test per categoria BioBot")
+    void categoria5() {
+        System.out.println(("9 - Test per categoria BioBot"));
+        assertTrue(istanza == null);
+
+        sorgente = CATEGORIA_ESISTENTE_DUE;
+
+        //--si collega come bot
+        appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.bot);
+        assertNotNull(botLogin);
+        assertTrue(botLogin.isValido());
+        assertEquals(botLogin.getUserType(), AETypeUser.bot);
+
+        //--collegato come bot
+        listaPageIds = queryService.getListaPageIds(sorgente);
+        assertNotNull(listaPageIds);
+
+        ottenutoRisultato = appContext.getBean(QueryTimestamp.class).urlRequest(listaPageIds);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+
+        listMiniWrap = ottenutoRisultato.getLista();
+        assertNotNull(listMiniWrap);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Recuperati %s miniWrap",textService.format(listMiniWrap.size())));
+        printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
     }
 
     /**
