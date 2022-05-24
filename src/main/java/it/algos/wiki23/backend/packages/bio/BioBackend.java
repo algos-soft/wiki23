@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
 import java.time.*;
+import java.util.*;
 
 /**
  * Project wiki
@@ -149,6 +150,10 @@ public class BioBackend extends WikiBackend {
     public int countNazionalita(final String nazionalita) {
         Long nazLong = repository.countBioByNazionalita(nazionalita);
         return nazLong.intValue();
+    }
+
+    public Bio findByKey(final String pageId) {
+        return repository.findFirstByPageId(pageId);
     }
 
 }// end of crud backend class

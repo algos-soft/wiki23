@@ -98,7 +98,7 @@ public class QueryInfoCatTest extends WikiTest {
     void urlRequest() {
         System.out.println(("3 - Test per una categoria esistente"));
 
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
@@ -136,7 +136,7 @@ public class QueryInfoCatTest extends WikiTest {
     void urlRequest2() {
         System.out.println(("5 - Test per la categoria BioBot"));
 
-        sorgente = CATEGORIA_ESISTENTE_DUE;
+        sorgente = CATEGORIA_PRINCIPALE_BIOBOT;
         ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
@@ -156,7 +156,7 @@ public class QueryInfoCatTest extends WikiTest {
     void urlRequest3() {
         System.out.println(("6 - Collegamento senza bot"));
 
-        sorgente = CATEGORIA_ESISTENTE_DUE;
+        sorgente = CATEGORIA_PRINCIPALE_BIOBOT;
         ottenutoRisultato = appContext.getBean(QueryInfoCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());

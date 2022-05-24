@@ -1,7 +1,6 @@
 package it.algos.base;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
 import it.algos.wiki23.backend.packages.bio.*;
@@ -75,13 +74,14 @@ public abstract class WikiTest extends AlgosTest {
 
     protected final static String CATEGORIA_INESISTENTE = "Supercalifragilistichespiralidoso";
 
-    protected final static String CATEGORIA_ESISTENTE_UNO = "Nati nel 1435";
+    protected final static String CATEGORIA_ESISTENTE_BREVE = "Ambasciatori britannici in Brasile";
 
-    protected final static String CATEGORIA_ESISTENTE_DUE = "BioBot";
+    protected final static String CATEGORIA_ESISTENTE_MEDIA = "Nati nel 1435";
 
-    protected final static String CATEGORIA_ESISTENTE_TRE = "Ambasciatori britannici in Brasile";
+    protected final static String CATEGORIA_ESISTENTE_LUNGA = "Nati nel 1938";
 
-    protected final static String CATEGORIA_ESISTENTE_QUATTRO = "Nati nel 1938";
+    protected final static String CATEGORIA_PRINCIPALE_BIOBOT = "BioBot";
+
 
     protected WResult previstoRisultato;
 
@@ -330,6 +330,17 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Userid: %d", botLogin.getUserid()));
         System.out.println(String.format("Username: %s", botLogin.getUsername()));
         System.out.println(String.format("UserType: %s", botLogin.getUserType()));
+    }
+
+    protected void printLong(List<Long> listaLong, int max) {
+        if (listaLong != null) {
+            System.out.println(VUOTA);
+            System.out.println(String.format("Pageid"));
+            System.out.println(VUOTA);
+            for (Long pageId : listaLong.subList(0,Math.min(max,listaLong.size()))) {
+                System.out.println(String.format("%s", pageId));
+            }
+        }
     }
 
     protected String getMax(String message) {

@@ -8,11 +8,7 @@ import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.*;
 
@@ -146,7 +142,7 @@ public class QueryTimestampTest extends WikiTest {
         System.out.println(("5 - Test per categoria piccola"));
         assertTrue(istanza == null);
 
-        sorgente = CATEGORIA_ESISTENTE_TRE;
+        sorgente = CATEGORIA_ESISTENTE_BREVE;
         listaPageIds = queryService.getListaPageIds(sorgente);
         assertNotNull(listaPageIds);
 
@@ -170,7 +166,7 @@ public class QueryTimestampTest extends WikiTest {
         System.out.println(("6 - Test per categoria media"));
         assertTrue(istanza == null);
 
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         listaPageIds = queryService.getListaPageIds(sorgente);
         assertNotNull(listaPageIds);
 
@@ -194,7 +190,7 @@ public class QueryTimestampTest extends WikiTest {
         System.out.println(("7 - Test per categoria grande"));
         assertTrue(istanza == null);
 
-        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        sorgente = CATEGORIA_ESISTENTE_LUNGA;
 
         //--collegato come anonymous - nessun valore per la lista pageIds
         listaPageIds = queryService.getListaPageIds(sorgente);
@@ -226,7 +222,7 @@ public class QueryTimestampTest extends WikiTest {
         System.out.println(("8 - Test per categoria grande come bot"));
         assertTrue(istanza == null);
 
-        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        sorgente = CATEGORIA_ESISTENTE_LUNGA;
 
         //--si collega come bot
         appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.bot);
@@ -259,7 +255,7 @@ public class QueryTimestampTest extends WikiTest {
         System.out.println(("9 - Test per categoria BioBot"));
         assertTrue(istanza == null);
 
-        sorgente = CATEGORIA_ESISTENTE_DUE;
+        sorgente = CATEGORIA_PRINCIPALE_BIOBOT;
 
         //--si collega come bot
         appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.bot);

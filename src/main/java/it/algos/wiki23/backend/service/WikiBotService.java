@@ -1,10 +1,13 @@
 package it.algos.wiki23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import static it.algos.wiki23.backend.service.WikiApiService.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.json.simple.*;
@@ -107,46 +110,46 @@ public class WikiBotService extends WAbstractService {
     //    @Autowired
     //    public BotLogin login;
 
-    //    /**
-    //     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
-    //     */
-    //    protected Predicate<MiniWrap> checkNuovi = wrap -> {
-    //        try {
-    //            return ((MongoService) mongo).isNotEsiste(Bio.class, wrap.getPageid());
-    //        } catch (AlgosException unErrore) {
-    //            logger.warn(unErrore, this.getClass(), "checkNuovi");
-    //            return false;
-    //        }
-    //    };
+    /**
+     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
+     */
+    protected Predicate<MiniWrap> checkNuovi = wrap -> {
+        try {
+            return !bioBackend.isExist(wrap.getPageid());
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+            return false;
+        }
+    };
 
-    //    /**
-    //     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
-    //     */
-    //    protected Predicate<MiniWrap> checkEsistenti = wrap -> {
-    //        try {
-    //            return ((MongoService) mongo).isEsiste(Bio.class, wrap.getPageid());
-    //        } catch (AlgosException unErrore) {
-    //            logger.warn(unErrore, this.getClass(), "checkEsistenti");
-    //        }
-    //        return false;
-    //    };
+    /**
+     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
+     */
+    protected Predicate<MiniWrap> checkEsistenti = wrap -> {
+        try {
+            return bioBackend.isExist(wrap.getPageid());
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+        }
+        return false;
+    };
 
-    //    /**
-    //     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
-    //     */
-    //    protected Predicate<MiniWrap> checkModificati = wrap -> {
-    //        LocalDateTime wrapTime = wrap.getLastModifica();
-    //        String key = wrap.getPageid() + VUOTA;
-    //        Bio bio = null;
-    //        try {
-    //            bio = (Bio) mongo.find(Bio.class, key);
-    //        } catch (AlgosException unErrore) {
-    //            logger.warn(unErrore, this.getClass(), "checkModificati");
-    //        }
-    //        LocalDateTime mongoTime = bio != null ? bio.getLastMongo() : MONGO_TIME_ORIGIN;
-    //
-    //        return wrapTime.isAfter(mongoTime);
-    //    };
+    /**
+     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
+     */
+    protected Predicate<MiniWrap> checkModificati = wrap -> {
+        LocalDateTime wrapTime = wrap.getLastModifica();
+        String key = wrap.getPageid() + VUOTA;
+        Bio bio = null;
+        try {
+            bio = bioBackend.findByKey(key);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+        }
+        LocalDateTime mongoTime = bio != null ? bio.getLastMongo() : MONGO_TIME_ORIGIN;
+
+        return wrapTime.isAfter(mongoTime);
+    };
 
     //    /**
     //     * Legge (come user) una pagina dal server wiki <br>
@@ -301,53 +304,55 @@ public class WikiBotService extends WAbstractService {
     //        return new MiniWrap(pageid, stringTimestamp);
     //    }
 
-    //    /**
-    //     * Elabora la lista di MiniWrap e costruisce una lista di pageIds da leggere <br>
-    //     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
-    //     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
-    //     *
-    //     * @param listaMiniWrap da elaborare
-    //     *
-    //     * @return lista di pageId da leggere dal server
-    //     */
-    //    public List<Long> elaboraMiniWrap(final List<MiniWrap> listaMiniWrap) {
-    //        List<Long> listaPageIdsDaLeggere = new ArrayList<>();
-    //        List<MiniWrap> listaMiniWrapTotali = new ArrayList<>();
-    //        long inizio = System.currentTimeMillis();
-    //        int nuove;
-    //        int modificate;
-    //        int totali;
-    //        String message = VUOTA;
-    //
-    //        //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
-    //        List<MiniWrap> listaMiniWrapNuovi = listaMiniWrap
-    //                .stream()
-    //                .filter(checkNuovi)
-    //                .sorted()
-    //                .collect(Collectors.toList());
-    //        nuove = listaMiniWrapNuovi.size();
-    //        listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
-    //
-    //        //--Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica
-    //        List<MiniWrap> listaMiniWrapModificati = listaMiniWrap
-    //                .stream()
-    //                .filter(checkEsistenti)
-    //                .filter(checkModificati)
-    //                .sorted()
-    //                .collect(Collectors.toList());
-    //        modificate = listaMiniWrapModificati.size();
-    //        listaMiniWrapTotali.addAll(listaMiniWrapModificati);
-    //        totali = nuove + modificate;
-    //
-    //        for (MiniWrap wrap : listaMiniWrapTotali) {
-    //            listaPageIdsDaLeggere.add(wrap.getPageid());
-    //        }
-    //
-    //        message = String.format("Elaborata una lista di miniWrap da leggere: %s nuove e %s modificate (%s totali) in %s", text.format(nuove), text.format(modificate), text.format(totali), date.deltaText(inizio));
-    //        logger.info(AETypeLog.bio, message);
-    //
-    //        return listaPageIdsDaLeggere;
-    //    }
+    /**
+     * Elabora la lista di MiniWrap e costruisce una lista di pageIds da leggere <br>
+     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
+     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
+     *
+     * @param listaMiniWrap da elaborare
+     *
+     * @return lista di pageId da leggere dal server
+     */
+    public List<Long> elaboraMiniWrap(final List<MiniWrap> listaMiniWrap) {
+        List<Long> listaPageIdsDaLeggere = new ArrayList<>();
+        List<MiniWrap> listaMiniWrapTotali = new ArrayList<>();
+        long inizio = System.currentTimeMillis();
+        int nuove;
+        int modificate;
+        int totali;
+        String message;
+
+        //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
+        List<MiniWrap> listaMiniWrapNuovi = listaMiniWrap
+                .stream()
+                .filter(checkNuovi)
+                .sorted()
+                .collect(Collectors.toList());
+        nuove = listaMiniWrapNuovi.size();
+        listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
+
+        //--Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica
+        List<MiniWrap> listaMiniWrapModificati = listaMiniWrap
+                .stream()
+                .filter(checkEsistenti)
+                .filter(checkModificati)
+                .sorted()
+                .collect(Collectors.toList());
+        modificate = listaMiniWrapModificati.size();
+        listaMiniWrapTotali.addAll(listaMiniWrapModificati);
+        totali = nuove + modificate;
+
+        for (MiniWrap wrap : listaMiniWrapTotali) {
+            listaPageIdsDaLeggere.add(wrap.getPageid());
+        }
+
+        message = String.format("Elaborata una lista di miniWrap da leggere: %s nuove e %s modificate (%s totali) in %s",
+                textService.format(nuove), textService.format(modificate), textService.format(totali), dateService.deltaText(inizio)
+        );
+        logger.info(new WrapLog().type(AETypeLog.bio).exception(new AlgosException(message)).usaDb());
+
+        return listaPageIdsDaLeggere;
+    }
 
     /**
      * Legge il testo del template Bio da una voce <br>
@@ -1405,33 +1410,33 @@ public class WikiBotService extends WAbstractService {
         resultWeb = WResult.crea().webTitle(wikiSimplePageCategoryTitle).wikiTitle(wikiTitleElaborato);
 
         //        rispostaDellaQuery = resultWeb.isValido() ? resultWeb.getResponse() : VUOTA;
-//        if (textService.isValid(rispostaDellaQuery)) {
-            objectJson = jSonService.getObjectJSON(rispostaDellaQuery);
-            if (objectJson == null) {
-                return resultWeb;
+        //        if (textService.isValid(rispostaDellaQuery)) {
+        objectJson = jSonService.getObjectJSON(rispostaDellaQuery);
+        if (objectJson == null) {
+            return resultWeb;
+        }
+        else {
+            if (objectJson.get(JSON_ERROR) != null) {
+                resultWiki = WResult.errato(ERROR_WIKI_PAGINA);
+                resultWiki.setUrlRequest(resultWeb.getUrlRequest());
+                resultWiki.setResponse(rispostaDellaQuery);
+                return resultWiki;
             }
             else {
-                if (objectJson.get(JSON_ERROR) != null) {
-                    resultWiki = WResult.errato(ERROR_WIKI_PAGINA);
-                    resultWiki.setUrlRequest(resultWeb.getUrlRequest());
-                    resultWiki.setResponse(rispostaDellaQuery);
-                    return resultWiki;
-                }
-                else {
-                    JSONObject parse = (JSONObject) objectJson.get("parse");
-                    pageId = (Long) parse.get("pageid");
-                    resultWeb.setLongValue(pageId);
-                    wikiText = (String) parse.get("wikitext");
-                    resultWeb.setWikiText(wikiText);
-                    wikiBio = wikiApi.estraeTmpl(wikiText, "Bio");
-                    resultWeb.setWikiBio(wikiBio);
-                    return resultWeb;
-                }
+                JSONObject parse = (JSONObject) objectJson.get("parse");
+                pageId = (Long) parse.get("pageid");
+                resultWeb.setLongValue(pageId);
+                wikiText = (String) parse.get("wikitext");
+                resultWeb.setWikiText(wikiText);
+                wikiBio = wikiApi.estraeTmpl(wikiText, "Bio");
+                resultWeb.setWikiBio(wikiBio);
+                return resultWeb;
             }
-//        }
-//        else {
-//            return resultWeb;
-//        }
+        }
+        //        }
+        //        else {
+        //            return resultWeb;
+        //        }
     }
 
     /**

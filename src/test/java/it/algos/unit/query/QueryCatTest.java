@@ -9,13 +9,9 @@ import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 
 /**
  * Project wiki23
@@ -105,7 +101,7 @@ public class QueryCatTest extends WikiTest {
         istanza = appContext.getBean(QueryCat.class);
         assertNotNull(istanza);
 
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         ottenutoRisultato = istanza.urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
@@ -122,7 +118,7 @@ public class QueryCatTest extends WikiTest {
         System.out.println(("4 - Categoria esistente login come user"));
         appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.user);
 
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         //        assertTrue(ottenutoRisultato.isValido());

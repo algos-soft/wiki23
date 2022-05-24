@@ -7,11 +7,7 @@ import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.*;
 
@@ -63,7 +59,7 @@ public class DownloadTest extends WikiTest {
         System.out.println(("1- Download singolo di 2 (circa) pagine"));
         String message;
 
-        sorgente = CATEGORIA_ESISTENTE_TRE;
+        sorgente = CATEGORIA_ESISTENTE_BREVE;
         List<Long> lista = appContext.getBean(QueryCat.class).getListaPageIds(sorgente);
         assertNotNull(lista);
 
@@ -86,7 +82,7 @@ public class DownloadTest extends WikiTest {
         String message;
         String time;
 
-        sorgente = CATEGORIA_ESISTENTE_TRE;
+        sorgente = CATEGORIA_ESISTENTE_BREVE;
         listaPageIds = appContext.getBean(QueryCat.class).getListaPageIds(sorgente);
         assertNotNull(listaPageIds);
 
@@ -99,7 +95,7 @@ public class DownloadTest extends WikiTest {
         System.out.println(ottenutoRisultato.isValido()?message:VUOTA);
         printRisultato(ottenutoRisultato);
 
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         listaPageIds = appContext.getBean(QueryCat.class).getListaPageIds(sorgente);
         assertNotNull(listaPageIds);
 

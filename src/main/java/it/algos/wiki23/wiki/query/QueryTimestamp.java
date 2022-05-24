@@ -117,7 +117,7 @@ public class QueryTimestamp extends AQuery {
 
         //--type=bot cicli di request
         cicli = size > max ? listaPageids.size() / max : 1;
-        cicli++;
+        cicli = size > max ? cicli + 1 : cicli;
         result.setCicli(cicli);
         for (int k = 0; k < cicli; k++) {
             strisciaIds = array.toStringaPipe(listaPageids.subList(k * max, Math.min((k * max) + max, size)));
@@ -141,7 +141,7 @@ public class QueryTimestamp extends AQuery {
         MiniWrap miniWrap;
         long pageid;
         String wikiTitle;
-        JSONObject revisionZero ;
+        JSONObject revisionZero;
         String timeStamp = VUOTA;
         result = super.elaboraResponse(result, rispostaDellaQuery);
         result.typePage(AETypePage.pageIds);

@@ -197,7 +197,7 @@ public class QueryServiceTest extends WikiTest {
     @Order(9)
     @DisplayName("9 - Size della categoria")
     void getSizeCat() {
-        sorgente = CATEGORIA_ESISTENTE_DUE;
+        sorgente = CATEGORIA_PRINCIPALE_BIOBOT;
         ottenutoIntero = service.getSizeCat(sorgente);
         assertTrue(ottenutoIntero > 0);
         System.out.println(String.format("La categoria '%s' contiene %s pagine", sorgente, textService.format(ottenutoIntero)));
@@ -208,14 +208,14 @@ public class QueryServiceTest extends WikiTest {
     @DisplayName("10 - pageIds della categoria")
     void getListaPageIds() {
         String message;
-        sorgente = CATEGORIA_ESISTENTE_TRE;
+        sorgente = CATEGORIA_ESISTENTE_BREVE;
         listaPageIds = service.getListaPageIds(sorgente);
         message = String.format("La categoria [[%s]] contiene %d elementi. Ne stampo SOLO i primi 10 (se ci sono)", sorgente, listaPageIds.size());
         System.out.println(message);
         printLista(listaPageIds.subList(0, Math.min(10, listaPageIds.size())));
 
         System.out.println(VUOTA);
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         listaPageIds = service.getListaPageIds(sorgente);
         message = String.format("La categoria [[%s]] contiene %d elementi. Ne stampo SOLO i primi 10 (se ci sono)", sorgente, listaPageIds.size());
         System.out.println(message);
@@ -227,7 +227,7 @@ public class QueryServiceTest extends WikiTest {
     @DisplayName("11 - miniWrap dai pageIds")
     void getMiniWrap() {
         String message;
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         listaPageIds = service.getListaPageIds(sorgente);
         listMiniWrap = service.getMiniWrap(listaPageIds);
         assertNotNull(listMiniWrap);
@@ -241,7 +241,7 @@ public class QueryServiceTest extends WikiTest {
     @DisplayName("12 - bioWrap dai pageIds")
     void getBioWrap() {
         String message;
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         listaPageIds = service.getListaPageIds(sorgente);
         listWrapBio = service.getBioWrap(listaPageIds);
         assertNotNull(listWrapBio);

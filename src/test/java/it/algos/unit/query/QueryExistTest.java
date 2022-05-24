@@ -148,7 +148,7 @@ public class QueryExistTest extends WikiTest {
     void urlRequest2() {
         System.out.println(("5 - Test per una categoria esistente (urlRequest)"));
 
-        sorgente = CAT+CATEGORIA_ESISTENTE_QUATTRO;
+        sorgente = CAT+ CATEGORIA_ESISTENTE_LUNGA;
         ottenutoRisultato = appContext.getBean(QueryExist.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());

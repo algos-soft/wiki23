@@ -3,7 +3,6 @@ package it.algos.unit.service;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.*;
@@ -62,20 +61,20 @@ public class DownloadServiceTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1 - Ciclo (parziale)")
+    @DisplayName("1 - Conta la categoria principale")
     void ciclo() {
-        System.out.println(("1 - Ciclo (parziale)"));
+        System.out.println(("1 - Conta la categoria principale"));
         System.out.println((VUOTA));
-        service.checkCategoria(CATEGORIA_ESISTENTE_DUE);
+        service.checkCategoria(CATEGORIA_PRINCIPALE_BIOBOT);
         service.checkBot();
     }
 
     @Test
     @Order(2)
-    @DisplayName("2 - Ciclo (parziale) con categoria specifica")
+    @DisplayName("2 - Diversi collegamenti")
     void ciclo2() {
-        System.out.println(("2 - Ciclo (parziale) con categoria specifica"));
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        System.out.println(("2 - Conta una categoria media in diversi collegamenti"));
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
 
         //--collegato come anonymous
         System.out.println((VUOTA));
@@ -103,47 +102,103 @@ public class DownloadServiceTest extends WikiTest {
 
     @Test
     @Order(3)
-    @DisplayName("3 - Ciclo (parziale) con categoria specifica")
+    @DisplayName("3 - Ciclo cat+pageIds")
     void ciclo3() {
-        System.out.println(("3 - Ciclo (parziale) con categoria specifica"));
+        System.out.println(("3 - Ciclo (parziale) cat+pageIds"));
 
-        sorgente = CATEGORIA_ESISTENTE_UNO;
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
         System.out.println((VUOTA));
         service.checkCategoria(sorgente);
         service.checkBot();
         listaPageIds = service.getListaPageIds(sorgente);
 
-        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        sorgente = CATEGORIA_ESISTENTE_LUNGA;
         System.out.println((VUOTA));
         service.checkCategoria(sorgente);
         service.checkBot();
         listaPageIds = service.getListaPageIds(sorgente);
 
-        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        sorgente = CATEGORIA_ESISTENTE_LUNGA;
         System.out.println((VUOTA));
         service.checkCategoria(sorgente);
         queryService.logAsBot();
         service.checkBot();
         listaPageIds = service.getListaPageIds(sorgente);
+        printLong(listaPageIds,10);
     }
 
     @Test
     @Order(4)
-    @DisplayName("4 - Ciclo (parziale) collegato come bot")
+    @DisplayName("4 - Ciclo cat+pageIds+listMiniWrap")
     void ciclo4() {
-        System.out.println(("4 - Ciclo (parziale) collegato come bot"));
+        System.out.println(("4 - Ciclo (parziale) cat+pageIds+listMiniWrap"));
         queryService.logAsBot();
 
-        sorgente = CATEGORIA_ESISTENTE_QUATTRO;
+        sorgente = CATEGORIA_ESISTENTE_LUNGA;
         System.out.println((VUOTA));
         service.checkCategoria(sorgente);
         queryService.logAsBot();
         service.checkBot();
         listaPageIds = service.getListaPageIds(sorgente);
-//        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        printLong(listaPageIds,10);
 
+        System.out.println((VUOTA));
+        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
     }
 
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - Ciclo cat+pageIds+listMiniWrap+listaPageIdsDaLeggere")
+    void ciclo5() {
+        System.out.println(("5 - Ciclo (parziale) cat+pageIds+listMiniWrap+listaPageIdsDaLeggere"));
+        queryService.logAsBot();
+
+        sorgente = CATEGORIA_ESISTENTE_LUNGA;
+        System.out.println((VUOTA));
+        service.checkCategoria(sorgente);
+        queryService.logAsBot();
+        service.checkBot();
+        listaPageIds = service.getListaPageIds(sorgente);
+        printLong(listaPageIds,10);
+
+        System.out.println((VUOTA));
+        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
+
+        System.out.println((VUOTA));
+        listaPageIds = service.elaboraMiniWrap(listMiniWrap);
+        printLong(listaPageIds,10);
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Ciclo cat+pageIds+listMiniWrap+listaPageIdsDaLeggere+listaWrapBio")
+    void ciclo6() {
+        System.out.println(("6 - Ciclo (parziale) cat+pageIds+listMiniWrap+listaPageIdsDaLeggere+listaWrapBio"));
+        queryService.logAsBot();
+
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
+        System.out.println((VUOTA));
+        service.checkCategoria(sorgente);
+        queryService.logAsBot();
+        service.checkBot();
+        listaPageIds = service.getListaPageIds(sorgente);
+        printLong(listaPageIds,10);
+
+        System.out.println((VUOTA));
+        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
+
+        System.out.println((VUOTA));
+        listaPageIds = service.elaboraMiniWrap(listMiniWrap);
+        printLong(listaPageIds,10);
+
+        System.out.println((VUOTA));
+        listWrapBio = service.getListaWrapBio(listaPageIds);
+        printWrapBio(listWrapBio.subList(0,Math.min(10,listWrapBio.size())));
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

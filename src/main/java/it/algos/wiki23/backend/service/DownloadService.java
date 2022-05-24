@@ -62,29 +62,11 @@ public class DownloadService extends WAbstractService {
         //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
         listaMiniWrap = getListaMiniWrap(listaPageIds);
 
-        //        //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
-//        //--Deve riuscire a gestire una lista di circa 435.000 long per la category BioBot
-//        //--Tempo medio previsto = circa 20 minuti  (come bot la query legge 500 pagine per volta
-//        listaMiniWrap = queryService.getMiniWrap(listaPageIds);
-//        //--Nella listaMiniWrap possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo
+        //--Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere
+        listaPageIdsDaLeggere = elaboraMiniWrap(listaMiniWrap);
 
-        //        //--Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere
-        //        //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
-        //        //--Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica
-        //        //--A regime deve probabilmente gestire una lista di circa 10.000 miniWrap
-        //        //--si tratta delle voci nuove e di quelle modificate nelle ultime 24 ore
-        //        try {
-        //            listaPageIdsDaLeggere = mongo.isExistsCollection(bio) ? wikiBot.elaboraMiniWrap(listaMiniWrap) : listaPageIds;
-        //        } catch (AlgosException unErrore) {
-        //            logger.info(String.format("Manca la collection %s nel database MongoDB", bio));
-        //        }
-        //        //--Nella listaPageIdsDaLeggere possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo
-
-        //        //--Legge tutte le pagine
-        //        //--Recupera i contenuti di tutte le voci biografiche da creare/modificare
-        //        //--Controlla che esiste il tmpl BIO <br>
-        //        listaWrapBio = appContext.getBean(QueryPages.class).urlRequest(listaPageIdsDaLeggere).getLista();
-        //        //--Nella listaWrapBio possono ci sono solo voci CON il tmpl BIO valido
+        //--Legge tutte le pagine
+        listaWrapBio = getListaWrapBio(listaPageIdsDaLeggere);
 
         //        //--Crea/aggiorna le voci biografiche
         //        //--Salva le entities Bio su mongoDB
@@ -114,7 +96,7 @@ public class DownloadService extends WAbstractService {
         else {
             message = String.format("La categoria [%s] non esiste oppure è vuota", categoryTitle);
         }
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.download));
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
         return numPages;
     }
@@ -143,7 +125,7 @@ public class DownloadService extends WAbstractService {
         else {
             message = String.format("Collegato come %s di nick '%s' e NON come bot", botLogin.getUserType(), botLogin.getUsername());
         }
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.download));
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
         return status;
     }
 
@@ -168,7 +150,7 @@ public class DownloadService extends WAbstractService {
         size = textService.format(listaPageIds.size());
         time = dateService.deltaTextEsatto(inizio);
         String message = String.format("Recuperati %s pageIds dalla categoria '%s' in %s", size, categoryTitle, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.download));
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
         return listaPageIds;
     }
@@ -194,9 +176,64 @@ public class DownloadService extends WAbstractService {
         size = textService.format(listaPageIds.size());
         time = dateService.deltaTextEsatto(inizio);
         String message = String.format("Creati %s miniWrap dai corrispondenti pageIds in %s", size, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.download));
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
         return listaMiniWrap;
+    }
+
+
+    /**
+     * Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere <br>
+     * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
+     * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
+     * A regime deve probabilmente gestire una lista di circa 10.000 miniWrap
+     * si tratta delle voci nuove e di quelle modificate nelle ultime 24 ore <br>
+     * Nella listaPageIdsDaLeggere possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo <br>
+     *
+     * @param listaMiniWrap con il pageIds e lastModifica
+     *
+     * @return listaPageIdsDaLeggere
+     */
+    public List<Long> elaboraMiniWrap(final List<MiniWrap> listaMiniWrap) {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+
+        List<Long> listaPageIdsDaLeggere = wikiBotService.elaboraMiniWrap(listaMiniWrap);
+
+        size = textService.format(listaMiniWrap.size());
+        time = dateService.deltaTextEsatto(inizio);
+        String message = String.format("Elaborati %s miniWrap per controllare lastModifica in %s", size, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+
+        return listaPageIdsDaLeggere;
+    }
+
+    //        listaWrapBio = appContext.getBean(QueryPages.class).urlRequest(listaPageIdsDaLeggere).getLista();
+
+    /**
+     * Legge tutte le pagine <br>
+     * Recupera i contenuti di tutte le voci biografiche da creare/modificare <br>
+     * Controlla che esiste il tmpl BIO <br>
+     * Nella listaWrapBio possono ci sono solo voci CON il tmpl BIO valido <br>
+     *
+     * @param listaPageIdsDaLeggere dal server wiki
+     *
+     * @return listaWrapBio
+     */
+    public List<WrapBio> getListaWrapBio(final List<Long> listaPageIdsDaLeggere) {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+
+        List<WrapBio> listaWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIdsDaLeggere);
+
+        size = textService.format(listaPageIdsDaLeggere.size());
+        time = dateService.deltaTextEsatto(inizio);
+        String message = String.format("Scaricati %s wrapBio dal server in %s", size, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+
+        return listaWrapBio;
     }
 
 }
