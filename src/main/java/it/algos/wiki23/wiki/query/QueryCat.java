@@ -78,10 +78,11 @@ public class QueryCat extends AQuery {
      */
     public WResult urlRequest(final String wikiTitoloGrezzoPaginaCategoria) {
         queryType = AETypeQuery.getLoggatoConCookies;
-        String message = VUOTA;
-        int num = 0;
-        int limit = 0;
+        String message;
+        int num;
+        int limit;
         AETypeUser type;
+        String urlDomain;
 
         if (botLogin == null || botLogin.getCookies() == null) {
             message = "Il botLogin non ha cookies validi";
@@ -136,13 +137,6 @@ public class QueryCat extends AQuery {
             return infoResult.queryType(AETypeQuery.getLoggatoConCookies);
         }
 
-        String urlDomain = VUOTA;
-        String tokenContinue = VUOTA;
-        URLConnection urlConn;
-        String urlResponse = VUOTA;
-        int pageIdsRecuperati = 0;
-        int cicli = 0;
-
         if (botLogin == null) {
             result.errorMessage("Manca il botLogin");
             return result;
@@ -158,34 +152,7 @@ public class QueryCat extends AQuery {
         result.setCookies(botLogin != null ? botLogin.getCookies() : null);
         result.setGetRequest(urlDomain);
 
-        try {
-            do {
-                urlDomain = fixUrlCat(wikiTitoloGrezzoPaginaCategoria, tokenContinue);
-                urlConn = this.creaGetConnection(urlDomain);
-                uploadCookies(urlConn, result.getCookies());
-                urlResponse = sendRequest(urlConn);
-                result = elaboraResponse(result, urlResponse);
-                if (result.isValido()) {
-                    result.setCicli(++cicli);
-                }
-                tokenContinue = result.getToken();
-            }
-            while (textService.isValid(tokenContinue));
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(unErrore).usaDb());
-        }
-
-        if (result.isValido()) {
-            pageIdsRecuperati = result.getIntValue();
-            message = String.format("Recuperati %s pageIds dalla categoria '%s' in %d cicli", textService.format(pageIdsRecuperati), wikiTitoloGrezzoPaginaCategoria, cicli);
-            result.setMessage(message);
-        }
-        else {
-            message = String.format("Nessun pageIds dalla categoria '%s'", wikiTitoloGrezzoPaginaCategoria);
-            result.setMessage(message);
-        }
-
-        return result;
+        return urlRequestContinue(result, urlDomain, wikiTitoloGrezzoPaginaCategoria);
     }
 
 
