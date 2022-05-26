@@ -13,6 +13,7 @@ import it.algos.wiki23.backend.packages.doppionome.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.packages.professione.*;
+import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -48,6 +49,14 @@ public class Wiki23Boot extends VaadBoot {
      */
     @Autowired
     public LogService logger;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public QueryService queryService;
 
 
     /**
@@ -146,6 +155,11 @@ public class Wiki23Boot extends VaadBoot {
         VaadVar.menuRouteList.add(ProfessioneView.class);
         VaadVar.menuRouteList.add(DoppionomeView.class);
         VaadVar.menuRouteList.add(BioView.class);
+    }
+
+    @Override
+    public void fixLogin() {
+        queryService.logAsBot();
     }
 
 }

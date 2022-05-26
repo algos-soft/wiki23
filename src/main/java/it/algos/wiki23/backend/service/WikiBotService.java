@@ -139,7 +139,7 @@ public class WikiBotService extends WAbstractService {
      */
     protected Predicate<MiniWrap> checkModificati = wrap -> {
         LocalDateTime wrapTime = wrap.getLastModifica();
-        String key = wrap.getPageid() + VUOTA;
+        long key = wrap.getPageid();
         Bio bio = null;
         try {
             bio = bioBackend.findByKey(key);
@@ -148,6 +148,7 @@ public class WikiBotService extends WAbstractService {
         }
         LocalDateTime mongoTime = bio != null ? bio.getLastMongo() : MONGO_TIME_ORIGIN;
 
+        boolean modificato = wrapTime.isAfter(mongoTime);
         return wrapTime.isAfter(mongoTime);
     };
 
@@ -848,15 +849,17 @@ public class WikiBotService extends WAbstractService {
             return PUNTO_INTERROGATIVO;
         }
 
-        //        valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
-        //        valoreGrezzo = textService.levaDopoRef(valoreGrezzo);
-        //        valoreGrezzo = textService.levaDopoNote(valoreGrezzo);
-        //        valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
-        //        valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
-        //        valoreGrezzo = textService.levaDopoUguale(valoreGrezzo);
-        //        //        valoreGrezzo = text.levaDopoCirca(valoreGrezzo);
-        //        valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
-        //        valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoRef(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoTagRef(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoNote(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoUguale(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoCirca(valoreGrezzo);
+        valoreGrezzo = textService.levaCoda(valoreGrezzo, CIRCA);
+        valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
+        valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
 
         return valoreGrezzo.trim();
     }

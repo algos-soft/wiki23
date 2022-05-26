@@ -118,6 +118,10 @@ public class VaadCost {
 
     public static final String REF_END = "</ref>";
 
+    public static final String CIRCA = "circa";
+
+    public static final String TAG_REF = " {{#tag:ref";
+
     //--codifica dei caratteri
     public static final String INPUT = "UTF8";
 

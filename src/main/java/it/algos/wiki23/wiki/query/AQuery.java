@@ -377,7 +377,7 @@ public abstract class AQuery {
     }
 
 
-    public WResult urlRequestContinue(WResult result, final String urlDomainGrezzo,final String info) {
+    public WResult urlRequestContinue(WResult result, final String urlDomainGrezzo, final String info) {
         String message;
         String urlDomain;
         String tokenContinue = VUOTA;
@@ -759,6 +759,10 @@ public abstract class AQuery {
                         content = (String) jsonMain.get(KEY_JSON_CONTENT);
                         mappaUrlResponse.put(KEY_JSON_CONTENT, content);
                     }
+                }
+                if (jsonRevZero.get(KEY_JSON_CONTENT) instanceof String contenuto) {
+                    content = contenuto;
+                    mappaUrlResponse.put(KEY_JSON_CONTENT, content);
                 }
             }
         }

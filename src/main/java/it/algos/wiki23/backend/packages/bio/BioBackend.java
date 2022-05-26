@@ -116,6 +116,15 @@ public class BioBackend extends WikiBackend {
                 .build();
     }
 
+    public void save(final Bio bio) {
+        if (isExist(bio.pageId)) {
+            repository.save(bio);
+        }
+        else {
+            repository.insert(bio);
+        }
+    }
+
     /**
      * Conta tutte le biografie con una serie di attività. <br>
      *
@@ -152,7 +161,7 @@ public class BioBackend extends WikiBackend {
         return nazLong.intValue();
     }
 
-    public Bio findByKey(final String pageId) {
+    public Bio findByKey(final long pageId) {
         return repository.findFirstByPageId(pageId);
     }
 

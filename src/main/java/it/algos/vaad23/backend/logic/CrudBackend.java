@@ -152,9 +152,6 @@ public abstract class CrudBackend extends AbstractService {
         return ((Long) crudRepository.count()).intValue();
     }
 
-    public AEntity findByKey(final String keyValue) {
-        return null;
-    }
     public List findByDescrizione(final String value) {
         return null;
     }

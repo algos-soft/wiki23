@@ -35,6 +35,13 @@ public abstract class WikiView extends CrudView {
      */
     @Autowired
     public WikiApiService wikiApiService;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public DownloadService downloadService;
 
     protected boolean usaBottoneDownload;
 
@@ -47,6 +54,9 @@ public abstract class WikiView extends CrudView {
     protected boolean usaBottoneUpload;
 
     protected Button buttonUpload;
+
+    protected boolean usaBottoneDeleteAll;
+    protected Button buttonDeleteAll;
 
     //    protected boolean usaBottoneModulo;
     //
@@ -139,6 +149,7 @@ public abstract class WikiView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
+        this.usaBottoneDeleteAll = false;
         super.usaBottoneDeleteReset = false;
         super.usaBottoneNew = false;
         super.usaBottoneEdit = false;
@@ -227,6 +238,15 @@ public abstract class WikiView extends CrudView {
      * Può essere sovrascritto, invocando DOPO il metodo della superclasse <br>
      */
     protected void fixBottoniTopStandard() {
+        if (usaBottoneDeleteAll) {
+            buttonDeleteAll = new Button();
+            buttonDeleteAll.getElement().setAttribute("theme", "error");
+            buttonDeleteAll.getElement().setProperty("title", "Delete: cancella tutta la collectionD");
+            buttonDeleteAll.addClickListener(event -> deleteAll());
+            buttonDeleteAll.setIcon(new Icon(VaadinIcon.TRASH));
+            topPlaceHolder.add(buttonDeleteAll);
+        }
+
         if (usaBottoneDownload) {
             buttonDownload = new Button();
             buttonDownload.getElement().setAttribute("theme", "primary");
@@ -335,6 +355,10 @@ public abstract class WikiView extends CrudView {
 
     protected boolean sincroSelection(SelectionEvent event) {
         boolean singoloSelezionato = super.sincroSelection(event);
+
+        if (buttonDeleteAll != null) {
+            buttonDeleteAll.setEnabled(!singoloSelezionato);
+        }
 
         if (buttonDownload != null) {
             buttonDownload.setEnabled(!singoloSelezionato);

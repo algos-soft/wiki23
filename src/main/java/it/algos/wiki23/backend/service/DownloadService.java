@@ -3,12 +3,14 @@ package it.algos.wiki23.backend.service;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.time.*;
 import java.util.*;
 
 
@@ -44,11 +46,10 @@ public class DownloadService extends WAbstractService {
      * Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere <br>
      */
     public void ciclo(String categoryTitle) {
-        List<Long> listaPageIds = null;
-        List<MiniWrap> listaMiniWrap = null;
-        List<Long> listaPageIdsDaLeggere = null;
-        List<WrapBio> listaWrapBio = null;
-        String bio = "bio";
+        List<Long> listaPageIds;
+        List<MiniWrap> listaMiniWrap;
+        List<Long> listaPageIdsDaLeggere;
+        List<WrapBio> listaWrapBio;
 
         //--Controlla quante pagine ci sono nella categoria
         checkCategoria(categoryTitle);
@@ -68,12 +69,10 @@ public class DownloadService extends WAbstractService {
         //--Legge tutte le pagine
         listaWrapBio = getListaWrapBio(listaPageIdsDaLeggere);
 
-        //        //--Crea/aggiorna le voci biografiche
-        //        //--Salva le entities Bio su mongoDB
-        //        //--Elabora (e salva) le entities Bio
-        //        creaElaboraListaBio(listaWrapBio);
-        //
-        //        super.fixDataDownload();
+        //--Crea/aggiorna le voci biografiche <br>
+        creaElaboraListaBio(listaWrapBio);
+
+        WPref.downloadBio.setValue(LocalDateTime.now());
     }
 
 
@@ -120,12 +119,11 @@ public class DownloadService extends WAbstractService {
         }
 
         if (status) {
-            message = String.format("Regolarmente collegato come %s di nick '%s'", botLogin.getUserType(), botLogin.getUsername());
         }
         else {
             message = String.format("Collegato come %s di nick '%s' e NON come bot", botLogin.getUserType(), botLogin.getUsername());
+            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
         }
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
         return status;
     }
 
@@ -209,7 +207,6 @@ public class DownloadService extends WAbstractService {
         return listaPageIdsDaLeggere;
     }
 
-    //        listaWrapBio = appContext.getBean(QueryPages.class).urlRequest(listaPageIdsDaLeggere).getLista();
 
     /**
      * Legge tutte le pagine <br>
@@ -234,6 +231,55 @@ public class DownloadService extends WAbstractService {
         logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
         return listaWrapBio;
+    }
+
+
+    /**
+     * Crea/aggiorna le voci biografiche <br>
+     * Salva le entities Bio su mongoDB <br>
+     * Elabora (e salva) le entities Bio <br>
+     * Nella listaWrapBio possono ci sono solo voci CON il tmpl BIO valido <br>
+     *
+     * @param listaWrapBio da elaborare e salvare
+     */
+    public void creaElaboraListaBio(final List<WrapBio> listaWrapBio) {
+        long inizio = System.currentTimeMillis();
+        String message;
+        String size;
+        String time;
+        int modificate = 0;
+
+        if (listaWrapBio != null && listaWrapBio.size() > 0) {
+            for (WrapBio wrap : listaWrapBio) {
+                modificate = creaElaboraBio(wrap) ? modificate + 1 : modificate;
+            }
+
+            size = textService.format(modificate);
+            time = dateService.deltaTextEsatto(inizio);
+            message = String.format("Create o aggiornate %s biografie in %s", size, time);
+            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        }
+        else {
+            message = "Nessuna voce da aggiungere/modificare";
+            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        }
+    }
+
+
+    /**
+     * Crea/aggiorna una singola entity <br>
+     */
+    public boolean creaElaboraBio(WrapBio wrap) {
+        Bio bio;
+
+        if (wrap != null && wrap.isValida()) {
+            bio = bioBackend.newEntity(wrap);
+            bio = elaboraService.esegue(bio);
+            bioBackend.save(bio);
+            return true;
+        }
+
+        return false;
     }
 
 }

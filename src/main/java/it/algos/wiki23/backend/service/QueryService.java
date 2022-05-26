@@ -30,7 +30,7 @@ import java.util.*;
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class QueryService extends AbstractService {
+public class QueryService extends WAbstractService {
 
 
     public boolean esisteLogin() {

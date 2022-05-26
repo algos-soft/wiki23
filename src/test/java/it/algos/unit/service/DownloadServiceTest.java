@@ -60,7 +60,7 @@ public class DownloadServiceTest extends WikiTest {
 
 
     @Test
-    @Order(1)
+    @Order(11)
     @DisplayName("1 - Conta la categoria principale")
     void ciclo() {
         System.out.println(("1 - Conta la categoria principale"));
@@ -198,6 +198,50 @@ public class DownloadServiceTest extends WikiTest {
         System.out.println((VUOTA));
         listWrapBio = service.getListaWrapBio(listaPageIds);
         printWrapBio(listWrapBio.subList(0,Math.min(10,listWrapBio.size())));
+    }
+
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - Ciclo cat+pageIds+listMiniWrap+listaPageIdsDaLeggere+listaWrapBio+creaElaboraBio")
+    void ciclo7() {
+        System.out.println(("7 - Ciclo cat+pageIds+listMiniWrap+listaPageIdsDaLeggere+listaWrapBio+creaElaboraBio"));
+        queryService.logAsBot();
+
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
+        System.out.println((VUOTA));
+        service.checkCategoria(sorgente);
+        queryService.logAsBot();
+        service.checkBot();
+        listaPageIds = service.getListaPageIds(sorgente);
+        printLong(listaPageIds,10);
+
+        System.out.println((VUOTA));
+        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
+
+        System.out.println((VUOTA));
+        listaPageIds = service.elaboraMiniWrap(listMiniWrap);
+        printLong(listaPageIds,10);
+
+        System.out.println((VUOTA));
+        listWrapBio = service.getListaWrapBio(listaPageIds);
+        printWrapBio(listWrapBio.subList(0,Math.min(10,listWrapBio.size())));
+
+        System.out.println((VUOTA));
+        service.creaElaboraListaBio(listWrapBio);
+    }
+
+
+    @Test
+    @Order(1)
+    @DisplayName("8 - Ciclo completo")
+    void ciclo8() {
+        System.out.println(("8 - Ciclo completo"));
+        queryService.logAsBot();
+
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
+        service.ciclo(sorgente);
     }
 
     /**

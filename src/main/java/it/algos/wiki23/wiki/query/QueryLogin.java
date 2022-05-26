@@ -2,6 +2,7 @@ package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
@@ -339,6 +340,7 @@ public class QueryLogin extends AQuery {
         result.typePage(AETypePage.login);
         JSONObject jsonLogin = (JSONObject) mappaUrlResponse.get(KEY_JSON_LOGIN);
         String jsonResult = null;
+        String message;
 
         if (jsonLogin != null) {
             result.setResponse(jsonLogin.toString());
@@ -386,6 +388,11 @@ public class QueryLogin extends AQuery {
             if (typeUser == AETypeUser.bot) {
                 result = checkBot(result);
             }
+        }
+
+        if (result.isValido()) {
+            message = String.format("Collegato come %s di nick '%s'", botLogin.getUserType(), botLogin.getUsername());
+            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.login));
         }
 
         return result;

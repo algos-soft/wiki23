@@ -85,6 +85,8 @@ public class BioView extends WikiView {
                 "nazionalita"
         );
 
+        super.lastDownload = WPref.downloadBio;
+        super.usaBottoneDeleteAll = true;
         super.usaBottoneNew = true;
         super.usaBottoneDelete = true;
         super.usaBottoneSearch = false;
@@ -110,7 +112,7 @@ public class BioView extends WikiView {
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
         alertPlaceHolder.add(new Span(anchor));
 
-        addSpanVerde(String.format("Nella categoria %s sono presenti %s biografie", categoria, textService.format(numBio)));
+        addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie", categoria, textService.format(numBio)));
     }
 
     @Override
@@ -140,6 +142,14 @@ public class BioView extends WikiView {
         headerRow.join(giornoMorto, annoMorto).setText("Morte");
         headerRow.join(attivita, attivita2, attivita3).setText("Attività");
         //        headerRow.join(nazionalita,nazionalita2).setText("Nazionalità");
+    }
+    /**
+     * Esegue un azione di download, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void download() {
+        downloadService.ciclo();
+        reload();
     }
 
     /**

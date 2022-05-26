@@ -116,6 +116,7 @@ public abstract class VaadBoot implements ServletContextListener {
         //        this.fixData();
         this.fixMenuRoutes();
         this.fixVersioni();
+        this.fixLogin();
     }
 
     /**
@@ -267,5 +268,13 @@ public abstract class VaadBoot implements ServletContextListener {
     public void fixPreferenze() {
         this.prefInstance.inizia();
     }
+
+    /**
+     * Eventuale collegamento <br>
+     * Sviluppato nelle sottoclassi <br>
+     */
+    public void fixLogin() {
+    }
+
 
 }

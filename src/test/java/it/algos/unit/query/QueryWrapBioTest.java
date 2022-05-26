@@ -137,6 +137,46 @@ public class QueryWrapBioTest extends WikiTest {
             printWrapBio(wrapBio);
         }
     }
+    @Test
+    @Order(5)
+    @DisplayName("5 - Categoria media")
+    void urlRequestListaCat() {
+        System.out.println(("5 - Categoria media"));
+
+        sorgente = CATEGORIA_ESISTENTE_MEDIA;
+        listaPageIds = queryService.getListaPageIds(sorgente);
+
+        listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIds);
+        assertNotNull(listWrapBio);
+        assertTrue(listWrapBio.size() >0);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Lista di biografie (%d)", listWrapBio.size()));
+
+        for (WrapBio wrapBio : listWrapBio.subList(0,Math.min(10,listWrapBio.size()))) {
+            printWrapBio(wrapBio);
+        }
+    }
+    @Test
+    @Order(6)
+    @DisplayName("6 - Categoria lunga")
+    void urlRequestListaCat2() {
+        System.out.println(("6 - Categoria lunga"));
+
+        sorgente = CATEGORIA_ESISTENTE_LUNGA;
+        listaPageIds = queryService.getListaPageIds(sorgente);
+
+        listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIds);
+        assertNotNull(listWrapBio);
+        assertTrue(listWrapBio.size() >0);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Lista di biografie (%d)", listWrapBio.size()));
+
+        for (WrapBio wrapBio : listWrapBio.subList(0,Math.min(10,listWrapBio.size()))) {
+            printWrapBio(wrapBio);
+        }
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>
