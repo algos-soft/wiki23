@@ -137,6 +137,7 @@ public class QueryWrapBioTest extends WikiTest {
             printWrapBio(wrapBio);
         }
     }
+
     @Test
     @Order(5)
     @DisplayName("5 - Categoria media")
@@ -148,32 +149,33 @@ public class QueryWrapBioTest extends WikiTest {
 
         listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIds);
         assertNotNull(listWrapBio);
-        assertTrue(listWrapBio.size() >0);
+        assertTrue(listWrapBio.size() > 0);
 
-        System.out.println(VUOTA);
-        System.out.println(String.format("Lista di biografie (%d)", listWrapBio.size()));
+        message = String.format("Lista di %d biografie della categoria [%s] recuperate in %s", listWrapBio.size(), sorgente, getTime());
+        System.out.println(message);
 
-        for (WrapBio wrapBio : listWrapBio.subList(0,Math.min(10,listWrapBio.size()))) {
+        for (WrapBio wrapBio : listWrapBio.subList(0, Math.min(10, listWrapBio.size()))) {
             printWrapBio(wrapBio);
         }
     }
+
     @Test
     @Order(6)
     @DisplayName("6 - Categoria lunga")
     void urlRequestListaCat2() {
         System.out.println(("6 - Categoria lunga"));
-
         sorgente = CATEGORIA_ESISTENTE_LUNGA;
         listaPageIds = queryService.getListaPageIds(sorgente);
 
         listWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIds);
         assertNotNull(listWrapBio);
-        assertTrue(listWrapBio.size() >0);
+        assertTrue(listWrapBio.size() > 0);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("Lista di biografie (%d)", listWrapBio.size()));
+        message = String.format("Lista di %d biografie della categoria [%s] recuperate in %s", listWrapBio.size(), sorgente, dateService.deltaText(inizio));
+        System.out.println(message);
 
-        for (WrapBio wrapBio : listWrapBio.subList(0,Math.min(10,listWrapBio.size()))) {
+        for (WrapBio wrapBio : listWrapBio.subList(0, Math.min(10, listWrapBio.size()))) {
             printWrapBio(wrapBio);
         }
     }

@@ -140,6 +140,8 @@ public abstract class AlgosTest {
 
     protected Map<String, List<String>> mappa;
 
+    protected String message;
+
     protected byte[] bytes;
 
     protected StreamResource streamResource;
@@ -349,6 +351,7 @@ public abstract class AlgosTest {
         streamResource = null;
         span = null;
         inizio = System.currentTimeMillis();
+        message = VUOTA;
     }
 
 

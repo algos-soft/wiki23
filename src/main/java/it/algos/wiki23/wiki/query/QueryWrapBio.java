@@ -120,42 +120,81 @@ public class QueryWrapBio extends AQuery {
         result = super.elaboraResponse(result, rispostaDellaQuery);
         String tmplBio;
         long pageId = result.getPageid();
-        List<WrapBio> listaWrap;
+        List<WrapBio> listaNew = new ArrayList<>();
+        List<WrapBio> listaOld;
         WrapBio wrapBio;
+        String wikiTitle;
+        JSONObject revisionZero;
+        String timeStamp = VUOTA;
+        result = super.elaboraResponse(result, rispostaDellaQuery);
+        result.typePage(AETypePage.pageIds);
+        result.setWikiTitle(VUOTA);
+        result.setPageid(0L);
 
-        //--controllo del missing e leggera modifica delle informazioni di errore
-        if (result.getErrorCode().equals(KEY_JSON_MISSING_TRUE)) {
-            result.setErrorMessage(String.format("La pagina bio '%s' non esiste", result.getWikiTitle()));
-            result.typePage(AETypePage.nonEsiste);
-            result.setWrap(new WrapBio().valida(false).pageid(pageId).type(AETypePage.nonEsiste));
+        if (result.isErrato()) {
             return result;
         }
 
-        if (mappaUrlResponse.get(KEY_JSON_NUM_PAGES) instanceof Integer numPages) {
-            if (numPages == 0) {
-                result.setErrorMessage("Qualcosa non ha funzionato");
-                result.setWrap(new WrapBio().valida(false).pageid(pageId).type(AETypePage.indeterminata));
+        if (mappaUrlResponse.get(KEY_JSON_PAGES) instanceof JSONArray jsonPages) {
+            if (jsonPages.size() > 0) {
+                for (Object obj : jsonPages) {
+                    wrapBio = getWrap((JSONObject)obj);
+//                    pageId = (long) ((JSONObject) obj).get(KEY_JSON_PAGE_ID);
+//                    wikiTitle = (String) ((JSONObject) obj).get(KEY_JSON_TITLE);
+//                    if (((JSONObject) obj).get(KEY_JSON_REVISIONS) instanceof JSONArray jsonRevisions) {
+//                        if (jsonRevisions != null && jsonRevisions.size() == 1) {
+//                            revisionZero = (JSONObject) jsonRevisions.get(0);
+//                            timeStamp = (String) revisionZero.get(KEY_JSON_TIMESTAMP);
+//                        }
+//                        if (pageId > 0 && textService.isValid(timeStamp)) {
+//                            miniWrap = new MiniWrap(pageid, wikiTitle, timeStamp);
+                            listaNew.add(wrapBio);
+//                        }
+//                    }
+                }
+                result.setCodeMessage(JSON_SUCCESS);
+                listaOld = (List<WrapBio>) result.getLista();
+                if (listaOld != null) {
+                    listaOld.addAll(listaNew);
+                }
+                else {
+                    listaOld = listaNew;
+                }
+                result.setLista(listaOld);
+                result.setIntValue(listaOld.size());
                 return result;
             }
-
-            if (numPages == 1) {
-                listaWrap = new ArrayList<>();
-                listaWrap.add(result.getWrap());
-                result.setLista(listaWrap);
-            }
-
-            if (numPages > 1) {
-                if (mappaUrlResponse.get(KEY_JSON_PAGES) instanceof JSONArray pages) {
-                    listaWrap = new ArrayList<>();
-                    for (Object obj : pages) {
-                        JSONObject pagina = (JSONObject) obj;
-                        wrapBio = getWrap(pagina);
-                        listaWrap.add(wrapBio);
-                    }
-                    result.setLista(listaWrap);
-                }
+            else {
+                result.setErrorMessage("Qualcosa non ha funzionato");
+                result.setWrap(new WrapBio().valida(false).type(AETypePage.indeterminata));
             }
         }
+
+//        if (mappaUrlResponse.get(KEY_JSON_NUM_PAGES) instanceof Integer numPages) {
+//            if (numPages == 0) {
+//                result.setErrorMessage("Qualcosa non ha funzionato");
+//                result.setWrap(new WrapBio().valida(false).pageid(pageId).type(AETypePage.indeterminata));
+//                return result;
+//            }
+//
+//            if (numPages == 1) {
+//                listaWrap = new ArrayList<>();
+//                listaWrap.add(result.getWrap());
+//                result.setLista(listaWrap);
+//            }
+//
+//            if (numPages > 1) {
+//                if (mappaUrlResponse.get(KEY_JSON_PAGES) instanceof JSONArray pages) {
+//                    listaWrap = new ArrayList<>();
+//                    for (Object obj : pages) {
+//                        JSONObject pagina = (JSONObject) obj;
+//                        wrapBio = getWrap(pagina);
+//                        listaWrap.add(wrapBio);
+//                    }
+//                    result.setLista(listaWrap);
+//                }
+//            }
+//        }
 
         return result;
     }

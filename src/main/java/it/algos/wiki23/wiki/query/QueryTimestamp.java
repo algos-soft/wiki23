@@ -178,6 +178,7 @@ public class QueryTimestamp extends AQuery {
             }
             else {
                 result.setErrorMessage("Qualcosa non ha funzionato");
+                result.setWrap(new WrapBio().valida(false).type(AETypePage.indeterminata));
             }
         }
 
