@@ -178,6 +178,9 @@ public class QueryLogin extends AQuery {
         WResult result = fixUserPassword(typeUser);
 
         if (result.isErrato()) {
+            if (botLogin != null) {
+                botLogin.reset();
+            }
             return result;
         }
         this.reset();

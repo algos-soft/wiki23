@@ -75,58 +75,7 @@ public class QueryTimestamp extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final List<Long> listaPageids) {
-        WResult result = WResult.valido()
-                .queryType(AETypeQuery.getLoggatoConCookies)
-                .typePage(AETypePage.indeterminata);
-        queryType = AETypeQuery.getLoggatoConCookies;
-        String strisciaIds;
-        String message;
-        AETypeUser type;
-        int num;
-        String urlDomain;
-        int size = listaPageids != null ? listaPageids.size() : 0;
-        int max = 500; //--come da API mediaWiki
-        int cicli;
-
-        if (listaPageids == null) {
-            message = "Nessun valore per la lista di pageIds";
-            return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies).fine();
-        }
-        num = listaPageids != null ? listaPageids.size() : 0;
-
-        type = botLogin != null ? botLogin.getUserType() : null;
-        result.setCookies(botLogin != null ? botLogin.getCookies() : null);
-        result.limit(max);
-        result.userType(type);
-        switch (type) {
-            case anonymous, user, admin -> {
-                if (num > type.getLimit()) {
-                    message = String.format("Sei collegato come %s e nella request ci sono %s pageIds", type, textService.format(num));
-                    logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
-                    return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies).fine();
-                }
-                else {
-                    strisciaIds = array.toStringaPipe(listaPageids);
-                    urlDomain = WIKI_QUERY_TIMESTAMP + strisciaIds;
-                    return requestGet(result, urlDomain);
-                }
-            }
-            case bot -> {}
-            default -> {}
-        }
-
-        //--type=bot cicli di request
-        cicli = size > max ? listaPageids.size() / max : 1;
-        cicli = size > max ? cicli + 1 : cicli;
-        result.setCicli(cicli);
-        for (int k = 0; k < cicli; k++) {
-            strisciaIds = array.toStringaPipe(listaPageids.subList(k * max, Math.min((k * max) + max, size)));
-            urlDomain = WIKI_QUERY_TIMESTAMP + strisciaIds;
-            result = requestGet(result, urlDomain);
-        }
-
-        result.setGetRequest(VUOTA);
-        return result;
+        return urlRequestCiclica(listaPageids,WIKI_QUERY_TIMESTAMP);
     }
 
 

@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.json.simple.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
@@ -129,9 +130,7 @@ public class QueryBio extends AQuery {
         result = super.elaboraResponse(result, rispostaDellaQuery);
         String wikiTitle = result.getWikiTitle();
         long pageId = result.getPageid();
-
-        //--estrae il tmplBio dal content
-        result = fixQueryTmplBio(result);
+        WrapBio wrap;
 
         //--controllo del missing e leggera modifica delle informazioni di errore
         if ((boolean) mappaUrlResponse.get(KEY_JSON_MISSING)) {
@@ -149,6 +148,14 @@ public class QueryBio extends AQuery {
         if (result.getTypePage() == AETypePage.redirect) {
             result.setWrap(new WrapBio().valida(false).title(wikiTitle).pageid(pageId).type(AETypePage.redirect));
             return result;
+        }
+
+        //--estrae il tmplBio dal content
+        if (mappaUrlResponse.get(KEY_JSON_ZERO) instanceof JSONObject jsonZero) {
+            wrap = getWrap(jsonZero);
+            result.setWrap(wrap);
+            result.setValido(wrap.isValida());
+            result.setTypePage(wrap.getType());
         }
 
         return result;

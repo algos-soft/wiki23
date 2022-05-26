@@ -45,7 +45,8 @@ public class DownloadService extends WAbstractService {
      * Usa la lista di pageIds e si recupera una lista (stessa lunghezza) di miniWrap <br>
      * Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere <br>
      */
-    public void ciclo(String categoryTitle) {
+    public void ciclo(final String categoryTitle) {
+        long inizio=System.currentTimeMillis();
         List<Long> listaPageIds;
         List<MiniWrap> listaMiniWrap;
         List<Long> listaPageIdsDaLeggere;
@@ -73,6 +74,9 @@ public class DownloadService extends WAbstractService {
         creaElaboraListaBio(listaWrapBio);
 
         WPref.downloadBio.setValue(LocalDateTime.now());
+
+        //--durata del ciclo completo
+        fixInfoDurataCiclo(categoryTitle,inizio);
     }
 
 
@@ -146,7 +150,7 @@ public class DownloadService extends WAbstractService {
         List<Long> listaPageIds = queryService.getListaPageIds(categoryTitle);
 
         size = textService.format(listaPageIds.size());
-        time = dateService.deltaTextEsatto(inizio);
+        time = dateService.deltaText(inizio);
         String message = String.format("Recuperati %s pageIds dalla categoria '%s' in %s", size, categoryTitle, time);
         logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
@@ -172,7 +176,7 @@ public class DownloadService extends WAbstractService {
         List<MiniWrap> listaMiniWrap = queryService.getMiniWrap(listaPageIds);
 
         size = textService.format(listaPageIds.size());
-        time = dateService.deltaTextEsatto(inizio);
+        time = dateService.deltaText(inizio);
         String message = String.format("Creati %s miniWrap dai corrispondenti pageIds in %s", size, time);
         logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
@@ -200,7 +204,7 @@ public class DownloadService extends WAbstractService {
         List<Long> listaPageIdsDaLeggere = wikiBotService.elaboraMiniWrap(listaMiniWrap);
 
         size = textService.format(listaMiniWrap.size());
-        time = dateService.deltaTextEsatto(inizio);
+        time = dateService.deltaText(inizio);
         String message = String.format("Elaborati %s miniWrap per controllare lastModifica in %s", size, time);
         logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
@@ -226,7 +230,7 @@ public class DownloadService extends WAbstractService {
         List<WrapBio> listaWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIdsDaLeggere);
 
         size = textService.format(listaPageIdsDaLeggere.size());
-        time = dateService.deltaTextEsatto(inizio);
+        time = dateService.deltaText(inizio);
         String message = String.format("Scaricati %s wrapBio dal server in %s", size, time);
         logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
@@ -255,7 +259,7 @@ public class DownloadService extends WAbstractService {
             }
 
             size = textService.format(modificate);
-            time = dateService.deltaTextEsatto(inizio);
+            time = dateService.deltaText(inizio);
             message = String.format("Create o aggiornate %s biografie in %s", size, time);
             logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
         }
@@ -280,6 +284,15 @@ public class DownloadService extends WAbstractService {
         }
 
         return false;
+    }
+    /**
+     * Durata del ciclo completo <br>
+     */
+    public void fixInfoDurataCiclo(final String categoryTitle,final long inizio) {
+        String message;
+        String time = dateService.deltaText(inizio);
+        message = String.format("Ciclo completo di download della categoria [%s] in %s", categoryTitle, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
     }
 
 }

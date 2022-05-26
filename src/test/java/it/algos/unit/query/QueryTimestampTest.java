@@ -192,6 +192,12 @@ public class QueryTimestampTest extends WikiTest {
 
         sorgente = CATEGORIA_ESISTENTE_LUNGA;
 
+        //--si collega come anonymous
+        appContext.getBean(QueryLogin.class).urlRequest(AETypeUser.anonymous);
+        assertNotNull(botLogin);
+        assertFalse(botLogin.isValido());
+        assertEquals(botLogin.getUserType(), AETypeUser.anonymous);
+
         //--collegato come anonymous - nessun valore per la lista pageIds
         listaPageIds = queryService.getListaPageIds(sorgente);
         assertNull(listaPageIds);

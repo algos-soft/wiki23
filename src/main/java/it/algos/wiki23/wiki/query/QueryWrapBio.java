@@ -50,59 +50,7 @@ public class QueryWrapBio extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequest(final List<Long> listaPageids) {
-        WResult result = WResult.valido()
-                .queryType(AETypeQuery.getLoggatoConCookies)
-                .typePage(AETypePage.indeterminata);
-        queryType = AETypeQuery.getLoggatoConCookies;
-        String strisciaIds;
-        String message;
-        AETypeUser type;
-        int num;
-        String urlDomain;
-        int size = listaPageids != null ? listaPageids.size() : 0;
-        int max = 500; //--come da API mediaWiki
-        int cicli;
-
-        if (listaPageids == null) {
-            message = "Nessun valore per la lista di pageIds";
-            return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies).fine();
-        }
-        num = listaPageids != null ? listaPageids.size() : 0;
-
-        type = botLogin != null ? botLogin.getUserType() : null;
-        result.setCookies(botLogin != null ? botLogin.getCookies() : null);
-        result.limit(max);
-        result.userType(type);
-        switch (type) {
-            case anonymous, user, admin -> {
-                if (num > type.getLimit()) {
-                    message = String.format("Sei collegato come %s e nella request ci sono %s pageIds", type, textService.format(num));
-                    logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
-                    return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies).fine();
-                }
-                else {
-                    strisciaIds = array.toStringaPipe(listaPageids);
-                    urlDomain = WIKI_QUERY_TIMESTAMP + strisciaIds;
-                    return requestGet(result, urlDomain);
-                }
-            }
-            case bot -> {}
-            default -> {}
-        }
-
-        //--type=bot cicli di request
-        cicli = size > max ? listaPageids.size() / max : 1;
-        cicli = size > max ? cicli + 1 : cicli;
-        result.setCicli(cicli);
-        for (int k = 0; k < cicli; k++) {
-            strisciaIds = array.toStringaPipe(listaPageids.subList(k * max, Math.min((k * max) + max, size)));
-            urlDomain = WIKI_QUERY_BASE_PAGE + strisciaIds;
-            result = requestGet(result, urlDomain);
-        }
-
-        result.setGetRequest(VUOTA);
-        return result;
-        //        return requestGetTitle(WIKI_QUERY_BASE_PAGE, arrayService.toStringaPipe(listaPageids));
+        return urlRequestCiclica(listaPageids, WIKI_QUERY_BASE_PAGE);
     }
 
 
@@ -118,14 +66,9 @@ public class QueryWrapBio extends AQuery {
     @Override
     protected WResult elaboraResponse(WResult result, String rispostaDellaQuery) {
         result = super.elaboraResponse(result, rispostaDellaQuery);
-        String tmplBio;
-        long pageId = result.getPageid();
         List<WrapBio> listaNew = new ArrayList<>();
         List<WrapBio> listaOld;
         WrapBio wrapBio;
-        String wikiTitle;
-        JSONObject revisionZero;
-        String timeStamp = VUOTA;
         result = super.elaboraResponse(result, rispostaDellaQuery);
         result.typePage(AETypePage.pageIds);
         result.setWikiTitle(VUOTA);
@@ -138,19 +81,8 @@ public class QueryWrapBio extends AQuery {
         if (mappaUrlResponse.get(KEY_JSON_PAGES) instanceof JSONArray jsonPages) {
             if (jsonPages.size() > 0) {
                 for (Object obj : jsonPages) {
-                    wrapBio = getWrap((JSONObject)obj);
-//                    pageId = (long) ((JSONObject) obj).get(KEY_JSON_PAGE_ID);
-//                    wikiTitle = (String) ((JSONObject) obj).get(KEY_JSON_TITLE);
-//                    if (((JSONObject) obj).get(KEY_JSON_REVISIONS) instanceof JSONArray jsonRevisions) {
-//                        if (jsonRevisions != null && jsonRevisions.size() == 1) {
-//                            revisionZero = (JSONObject) jsonRevisions.get(0);
-//                            timeStamp = (String) revisionZero.get(KEY_JSON_TIMESTAMP);
-//                        }
-//                        if (pageId > 0 && textService.isValid(timeStamp)) {
-//                            miniWrap = new MiniWrap(pageid, wikiTitle, timeStamp);
-                            listaNew.add(wrapBio);
-//                        }
-//                    }
+                    wrapBio = getWrap((JSONObject) obj);
+                    listaNew.add(wrapBio);
                 }
                 result.setCodeMessage(JSON_SUCCESS);
                 listaOld = (List<WrapBio>) result.getLista();
@@ -169,32 +101,6 @@ public class QueryWrapBio extends AQuery {
                 result.setWrap(new WrapBio().valida(false).type(AETypePage.indeterminata));
             }
         }
-
-//        if (mappaUrlResponse.get(KEY_JSON_NUM_PAGES) instanceof Integer numPages) {
-//            if (numPages == 0) {
-//                result.setErrorMessage("Qualcosa non ha funzionato");
-//                result.setWrap(new WrapBio().valida(false).pageid(pageId).type(AETypePage.indeterminata));
-//                return result;
-//            }
-//
-//            if (numPages == 1) {
-//                listaWrap = new ArrayList<>();
-//                listaWrap.add(result.getWrap());
-//                result.setLista(listaWrap);
-//            }
-//
-//            if (numPages > 1) {
-//                if (mappaUrlResponse.get(KEY_JSON_PAGES) instanceof JSONArray pages) {
-//                    listaWrap = new ArrayList<>();
-//                    for (Object obj : pages) {
-//                        JSONObject pagina = (JSONObject) obj;
-//                        wrapBio = getWrap(pagina);
-//                        listaWrap.add(wrapBio);
-//                    }
-//                    result.setLista(listaWrap);
-//                }
-//            }
-//        }
 
         return result;
     }

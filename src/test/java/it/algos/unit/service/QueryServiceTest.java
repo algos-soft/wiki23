@@ -74,9 +74,9 @@ public class QueryServiceTest extends WikiTest {
     @Order(2)
     @DisplayName("2 - Esistenza del botLogin collegato come bot")
     void botLogin() {
-        //--non collegato come bot - controllo
+        //--collegato come bot - controllo
         ottenutoBooleano = service.isBotLogin();
-        assertFalse(ottenutoBooleano);
+        assertTrue(ottenutoBooleano);
 
         //--si collega come bot
         ottenutoBooleano = service.logAsBot();
@@ -143,10 +143,16 @@ public class QueryServiceTest extends WikiTest {
     @Order(7)
     @DisplayName("7 - Si collega secondo il type passato")
     void logAsType() {
-        //--collegato come anonymous - controllo
-        typeUser = service.getLoginUserType();
-        assertNotNull(typeUser);
-        assertEquals(AETypeUser.anonymous, typeUser);
+
+//        //--si collega
+//        typeUser = service.logAsType(AETypeUser.anonymous);
+//        assertNotNull(typeUser);
+//        assertEquals(AETypeUser.anonymous, typeUser);
+//
+//        //--collegato come anonymous - controllo
+//        typeUser = service.getLoginUserType();
+//        assertNotNull(typeUser);
+//        assertEquals(AETypeUser.anonymous, typeUser);
 
         //--si collega
         typeUser = service.logAsType(AETypeUser.user);
