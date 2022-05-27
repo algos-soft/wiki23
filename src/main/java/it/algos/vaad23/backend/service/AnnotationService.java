@@ -548,6 +548,29 @@ public class AnnotationService extends AbstractService {
     }
 
     /**
+     * Get the property for the sort.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the property
+     */
+    public String getSortProperty(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        String sortProperty = VUOTA;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            sortProperty = annotation.sortProperty();
+        }
+
+        if (textService.isEmpty(sortProperty)) {
+            sortProperty = publicFieldName;
+        }
+
+        return sortProperty;
+    }
+
+    /**
      * Get the property.
      *
      * @param entityClazz     the class of type AEntity

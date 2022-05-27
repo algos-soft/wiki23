@@ -28,7 +28,7 @@ public class Giorno extends AEntity {
     @AIField(type = AETypeField.integer, header = "#", widthEM = 3, caption = "Ordinamento da inizio anno")
     public int ordine;
 
-    @AIField(type = AETypeField.text, caption = "Nome corrente")
+    @AIField(type = AETypeField.text, caption = "Nome corrente", sortProperty = "ordine")
     public String nome;
 
     @DBRef

@@ -63,7 +63,7 @@ public class ColumnService extends AbstractService {
      * @param propertyName della property
      */
     public void crea(final Grid grid, Class<? extends AEntity> entityClazz, final String propertyName) {
-        Grid.Column<AEntity> colonna;
+        Grid.Column<AEntity> colonna = null;
         String messageEsterno;
         String width = annotationService.getWidth(entityClazz, propertyName);
         AETypeField type = annotationService.getFormType(entityClazz, propertyName);
@@ -75,58 +75,92 @@ public class ColumnService extends AbstractService {
         VaadinIcon headerIcon = annotationService.getHeaderIcon(entityClazz, propertyName);
         String colorHeaderIcon = annotationService.getHeaderIconColor(entityClazz, propertyName);
         boolean isSearchField = annotationService.isSearch(entityClazz, propertyName);
+        String sortProperty = annotationService.getSortProperty(entityClazz, propertyName);
 
-        colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
-            Field field = null;
-            String message;
-            Icon icona;
-            Object obj = reflectionService.getPropertyValue((AEntity) entity, propertyName);
-
-            if (obj == null) {
-                //                message = String.format("Un valore del parametro %s è nullo", propertyName);
-                //                logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
-                return new Label();
-            }
-
-            try {
-                field = reflectionService.getField(entityClazz, propertyName);
-            } catch (Exception unErrore) {
-                logger.error(new WrapLog().exception(unErrore).usaDb());
-            }
-
-            try {
-                return switch (type) {
-                    case text -> new Label((String) field.get(entity));
-                    case integer -> new Label(field.get(entity) + VUOTA);
-                    case lungo -> new Label(field.get(entity) + VUOTA);
-                    case booleano -> {
+        colonna = switch (type) {
+            case text, integer, lungo, enumeration, link, localDateTime, localDate, localTime ->
+                    grid.addColumn(propertyName).setSortable(true);
+            case booleano -> {
+                yield grid.addColumn(new ComponentRenderer<>(entity -> {
+                    Field field = null;
+                    Icon icona = null;
+                    try {
+                        field = reflectionService.getField(entityClazz, propertyName);
+                    } catch (Exception unErrore) {
+                        logger.error(new WrapLog().exception(unErrore).usaDb());
+                    }
+                    try {
                         icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
                         icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);
-                        yield icona;
+
+                    } catch (Exception unErrore) {
+                        logger.error(new WrapLog().exception(unErrore).usaDb());
                     }
-                    case enumeration -> new Label(obj != null ? obj.toString() : VUOTA);
-                    case link -> new Label(obj != null ? obj.toString() : VUOTA);
-                    case localDateTime -> new Label(formatter.format((LocalDateTime) obj));
-                    case localDate -> new Label(formatter2.format((LocalDate) obj));
-                    case localTime -> new Label(formatter3.format((LocalTime) obj));
-                    default -> {
-                        message = String.format("Default Switch, manca il case %s", type);
-                        logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-                        yield VaadinIcon.ALARM.create();
-                    }
-                };
-            } catch (Exception unErrore) {
-                logger.error(new WrapLog().exception(unErrore).usaDb());
+
+                    return icona;
+                })).setSortable(false);
             }
-            logger.error(new WrapLog().exception(new AlgosException("Lo switch non ha funzionato")).usaDb());
-            return new Label();
-        }));//end of lambda expressions and anonymous inner class
+            default -> null;
+        };
+
+        //        colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+        //            Field field = null;
+        //            String message;
+        //            Icon icona;
+        //            Object obj = reflectionService.getPropertyValue((AEntity) entity, propertyName);
+        //
+        //            if (obj == null) {
+        //                //                message = String.format("Un valore del parametro %s è nullo", propertyName);
+        //                //                logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
+        //                return new Label();
+        //            }
+        //
+        //            try {
+        //                field = reflectionService.getField(entityClazz, propertyName);
+        //            } catch (Exception unErrore) {
+        //                logger.error(new WrapLog().exception(unErrore).usaDb());
+        //            }
+        //
+        //            try {
+        //                return switch (type) {
+        //                    case text -> new Label((String) field.get(entity));
+        //                    case integer -> new Label(field.get(entity) + VUOTA);
+        //                    case lungo -> new Label(field.get(entity) + VUOTA);
+        //                    case booleano -> {
+        //                        icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+        //                        icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);
+        //                        yield icona;
+        //                    }
+        //                    case enumeration -> new Label(obj != null ? obj.toString() : VUOTA);
+        //                    case link -> new Label(obj != null ? obj.toString() : VUOTA);
+        //                    case localDateTime -> new Label(formatter.format((LocalDateTime) obj));
+        //                    case localDate -> new Label(formatter2.format((LocalDate) obj));
+        //                    case localTime -> new Label(formatter3.format((LocalTime) obj));
+        //                    default -> {
+        //                        message = String.format("Default Switch, manca il case %s", type);
+        //                        logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+        //                        yield VaadinIcon.ALARM.create();
+        //                    }
+        //                };
+        //            } catch (Exception unErrore) {
+        //                logger.error(new WrapLog().exception(unErrore).usaDb());
+        //            }
+        //            logger.error(new WrapLog().exception(new AlgosException("Lo switch non ha funzionato")).usaDb());
+        //            return new Label();
+        //        }));//end of lambda expressions and anonymous inner class
 
         if (colonna != null) {
-            colonna.setKey(propertyName).setWidth(width).setFlexGrow(0).setSortable(true).setHeader(textService.primaMaiuscola(header));
+            colonna.setWidth(width).setFlexGrow(0).setHeader(textService.primaMaiuscola(header));
+            if (textService.isEmpty(colonna.getKey())) {
+                colonna.setKey(propertyName);
+            }
             if (flexGrow) {
                 colonna.setFlexGrow(1);
             }
+            if (textService.isValid(sortProperty)) {
+                colonna.setSortProperty(sortProperty);
+            }
+
         }
         else {
             messageEsterno = String.format("La colonna del parametro %s non è stata creata", propertyName);

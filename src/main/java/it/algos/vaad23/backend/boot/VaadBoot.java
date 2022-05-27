@@ -268,7 +268,6 @@ public abstract class VaadBoot implements ServletContextListener {
     public void fixPreferenze() {
         this.prefInstance.inizia();
     }
-
     /**
      * Eventuale collegamento <br>
      * Sviluppato nelle sottoclassi <br>
