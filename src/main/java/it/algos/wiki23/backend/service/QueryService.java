@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.service;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -88,6 +89,13 @@ public class QueryService extends WAbstractService {
 
     public String getBioTmpl(final String wikiTitleGrezzo) {
         return appContext.getBean(QueryBio.class).getWrap(wikiTitleGrezzo).getTemplBio();
+    }
+
+    public Bio getBio(final String wikiTitleGrezzo) {
+        return appContext.getBean(QueryBio.class).getBio(wikiTitleGrezzo);
+    }
+    public Bio getBio(final Long pageId) {
+        return appContext.getBean(QueryBio.class).getBio(pageId);
     }
 
 }

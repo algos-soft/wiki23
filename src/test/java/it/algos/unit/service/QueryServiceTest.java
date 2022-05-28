@@ -260,7 +260,7 @@ public class QueryServiceTest extends WikiTest {
     @Order(13)
     @DisplayName("13 - bioWrap di una singola pagina")
     void getBioWrapSinglePage() {
-        sorgente = PAGINA_ESISTENTE_UNO;
+        sorgente = BIO_SALVINI;
         wrapBio = service.getBioWrap(sorgente);
         assertNotNull(wrapBio);
         System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", wrapBio.getTitle()));
@@ -271,13 +271,22 @@ public class QueryServiceTest extends WikiTest {
     @Order(14)
     @DisplayName("14 - tmpl di una singola biografia")
     void getBioTmpl() {
-        sorgente = PAGINA_ESISTENTE_DUE;
+        sorgente = BIO_RENZI;
         ottenuto = service.getBioTmpl(sorgente);
         assertTrue(textService.isValid(ottenuto));
         System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", sorgente));
         System.out.println(String.format("templBio: %s", getMax(ottenuto)));
     }
 
+    @Test
+    @Order(15)
+    @DisplayName("15 - singola biografia")
+    void getBio() {
+        sorgente = BIO_RENZI;
+        bio = service.getBio(sorgente);
+        assertNotNull(bio);
+        System.out.println(String.format("Trovata la biografia [[%s]] su wikipedia", sorgente));
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

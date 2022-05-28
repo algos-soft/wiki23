@@ -3,6 +3,7 @@ package it.algos.wiki23.wiki.query;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.json.simple.*;
 import org.springframework.context.annotation.Scope;
@@ -117,6 +118,36 @@ public class QueryBio extends AQuery {
      */
     public WrapBio getWrap(final long pageid) {
         return urlRequest(pageid).getWrap();
+    }
+
+    /**
+     * Bio della pagina biografica <br>
+     *
+     * @param pageid della pagina wiki usato nella urlRequest
+     *
+     * @return bio della pagina
+     */
+    public Bio getBio(final long pageid) {
+        Bio bio;
+        WrapBio wrap = getWrap(pageid);
+        bio = bioBackend.newEntity(wrap);
+        bio = elaboraService.esegue(bio);
+        return bio;
+    }
+
+    /**
+     * Bio della pagina biografica <br>
+     *
+     * @param wikiTitleGrezzoBio della pagina biografica wiki (necessita di codifica) usato nella urlRequest. Non accetta il separatore PIPE
+     *
+     * @return bio della pagina
+     */
+    public Bio getBio(final String wikiTitleGrezzoBio) {
+        Bio bio;
+        WrapBio wrap = getWrap(wikiTitleGrezzoBio);
+        bio = bioBackend.newEntity(wrap);
+        bio = elaboraService.esegue(bio);
+        return bio;
     }
 
 

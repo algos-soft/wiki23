@@ -35,13 +35,12 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     @Override
     void delete(Bio entity);
     Bio findFirstByPageId(long pageID);
+    Bio findFirstByWikiTitle(String wikiTitle);
 
     long countBioByAttivita(String attivita);
     long countBioByAttivita2(String attivita);
     long countBioByAttivita3(String attivita);
     long countBioByNazionalita(String nazionalita);
-
-    Bio findFirstByPageId(Long pageId);
 
     @Query(value = "{ 'nome' : ?0 }", fields = "{ 'nome' : 1, 'cognome' : 1 }")
     List<Bio> findByNomeIncludeNomeAndCognomeFields(String nome);

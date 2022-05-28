@@ -7,6 +7,7 @@ import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
 import static it.algos.wiki23.backend.service.WikiApiService.*;
 import static it.algos.wiki23.backend.service.WikiBotService.*;
@@ -175,6 +176,22 @@ public abstract class AQuery {
      */
     @Autowired
     public JSonService jSonService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public BioBackend bioBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ElaboraService elaboraService;
 
     //        public QueryAssert queryAssert;
 
@@ -398,7 +415,7 @@ public abstract class AQuery {
                 }
                 tokenContinue = WIKI_QUERY_CAT_CONTINUE + result.getToken();
             }
-            while (textService.isValid(result.getToken())&&cicli<10);
+            while (textService.isValid(result.getToken()) && cicli < 10);
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }

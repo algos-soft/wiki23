@@ -32,7 +32,7 @@ import java.util.*;
 @Service
 public class BioBackend extends WikiBackend {
 
-    private BioRepository repository;
+    public BioRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -163,6 +163,9 @@ public class BioBackend extends WikiBackend {
 
     public Bio findByKey(final long pageId) {
         return repository.findFirstByPageId(pageId);
+    }
+    public Bio findByTitle(final String wikiTitle) {
+        return repository.findFirstByWikiTitle(wikiTitle);
     }
 
 }// end of crud backend class

@@ -131,7 +131,7 @@ public class QueryExistTest extends WikiTest {
     void urlRequest() {
         System.out.println(("4 - Test per una pagina esistente (urlRequest)"));
 
-        sorgente = PAGINA_ESISTENTE_UNO;
+        sorgente = BIO_SALVINI;
         ottenutoRisultato = appContext.getBean(QueryExist.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());

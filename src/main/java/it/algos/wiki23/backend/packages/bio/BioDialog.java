@@ -99,12 +99,6 @@ public class BioDialog extends CrudDialog {
         this.open(saveHandler, null, annullaHandler);
     }
 
-    protected void elaboraHandler() {
-        currentItem = elaboraService.esegue(currentItem);
-        elaboraHandler.accept(currentItem);
-        close();
-    }
-
     /**
      * Esegue un azione di download <br>
      */
@@ -113,7 +107,14 @@ public class BioDialog extends CrudDialog {
         currentItem = backend.newEntity(wrap);
         elaboraService.esegue(currentItem);
         binder.readBean(currentItem);
-//        elaboraHandler();
+        elaboraHandler();
     }
+
+    protected void elaboraHandler() {
+        currentItem = elaboraService.esegue(currentItem);
+        elaboraHandler.accept(currentItem);
+        close();
+    }
+
 
 }// end of crud Dialog class

@@ -4,6 +4,7 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +36,7 @@ public class QueryBioTest extends WikiTest {
      */
     private QueryBio istanza;
 
+    private Bio bio;
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
@@ -56,6 +58,7 @@ public class QueryBioTest extends WikiTest {
         super.setUpEach();
         istanza = null;
         botLogin.reset();
+        bio=null;
     }
 
 
@@ -102,7 +105,7 @@ public class QueryBioTest extends WikiTest {
     void urlRequest() {
         System.out.println(("3- Test per una biografia esistente (urlRequest)"));
 
-        sorgente = PAGINA_ESISTENTE_UNO;
+        sorgente = BIO_SALVINI;
         ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
@@ -118,7 +121,7 @@ public class QueryBioTest extends WikiTest {
     void getWrap() {
         System.out.println(("4- Test per una biografia esistente (getWrap)"));
 
-        sorgente = PAGINA_ESISTENTE_DUE;
+        sorgente = BIO_RENZI;
         ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
@@ -280,6 +283,21 @@ public class QueryBioTest extends WikiTest {
         System.out.println(VUOTA);
         System.out.println(String.format("La pagina [[%s]] non esiste su wikipedia", sorgente));
         printRisultato(ottenutoRisultato);
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("12- Test per una bio completa")
+    void getBio() {
+        System.out.println(("12- Test per una bio completa"));
+
+        sorgenteLong = BIO_RENZI_PAGEID;
+        bio = appContext.getBean(QueryBio.class).getBio(BIO_RENZI_PAGEID);
+        assertNotNull(bio);
+        assertEquals(sorgenteLong, bio.getPageId());
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Costruita la bio '%s' recuperata dal server wikipedia", bio.getWikiTitle()));
     }
 
     /**

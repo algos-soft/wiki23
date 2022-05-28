@@ -63,12 +63,16 @@ public abstract class WikiTest extends AlgosTest {
     @Autowired
     public BotLogin botLogin;
 
+    protected final static long BIO_SALVINI_PAGEID = 132555;
+
+    protected final static long BIO_RENZI_PAGEID = 134246;
+
 
     protected final static String PAGINA_INESISTENTE = "Pippooz Belloz";
 
-    protected final static String PAGINA_ESISTENTE_UNO = "Matteo Salvini";
+    protected final static String BIO_SALVINI = "Matteo Salvini";
 
-    protected final static String PAGINA_ESISTENTE_DUE = "Matteo Renzi";
+    protected final static String BIO_RENZI = "Matteo Renzi";
 
     protected final static String PAGINA_ESISTENTE_TRE = "Piozzano";
 
@@ -122,6 +126,8 @@ public abstract class WikiTest extends AlgosTest {
     protected static final String PAGINA_DISAMBIGUA = "Rossi";
 
     protected static final String PAGINA_REDIRECT = "Regno di Napoli (1805-1815)";
+
+    protected long pageId;
 
     //--titolo
     //--pagina valida
@@ -240,6 +246,7 @@ public abstract class WikiTest extends AlgosTest {
         listWrapBio = null;
         listMiniWrap = null;
         typeUser = null;
+        pageId = 0L;
     }
 
     protected void printRisultato(WResult result) {
@@ -337,7 +344,7 @@ public abstract class WikiTest extends AlgosTest {
             System.out.println(VUOTA);
             System.out.println(String.format("Pageid"));
             System.out.println(VUOTA);
-            for (Long pageId : listaLong.subList(0,Math.min(max,listaLong.size()))) {
+            for (Long pageId : listaLong.subList(0, Math.min(max, listaLong.size()))) {
                 System.out.println(String.format("%s", pageId));
             }
         }
