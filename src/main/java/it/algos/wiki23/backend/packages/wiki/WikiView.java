@@ -125,6 +125,13 @@ public abstract class WikiView extends CrudView {
     public DateService dateService;
 
     protected TextField searchFieldPlurale;
+    protected TextField searchFieldCognome;
+    protected TextField searchFieldNascita;
+    protected TextField searchFieldMorte;
+
+    protected TextField searchFieldAttivita;
+
+    protected TextField searchFieldNazionalita;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>

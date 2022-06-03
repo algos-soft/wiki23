@@ -211,7 +211,7 @@ public class AttivitaBackendTest extends WikiTest {
     @DisplayName("7 - findBySingolare")
     void findBySingolare(String singolare, boolean esiste) {
         System.out.println("7 - findBySingolare");
-        attivita = backend.findBySingolare(singolare);
+        attivita = backend.findFirstBySingolare(singolare);
         assertEquals(attivita != null, esiste);
         if (esiste) {
             System.out.println(String.format("L'attività '%s' esiste", singolare));

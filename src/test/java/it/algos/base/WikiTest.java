@@ -3,6 +3,7 @@ package it.algos.base;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
+import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -61,6 +62,9 @@ public abstract class WikiTest extends AlgosTest {
     public BioBackend bioBackend;
 
     @Autowired
+    public AttivitaBackend attivitaBackend;
+
+    @Autowired
     public BotLogin botLogin;
 
     protected final static long BIO_SALVINI_PAGEID = 132555;
@@ -98,6 +102,8 @@ public abstract class WikiTest extends AlgosTest {
     protected List<Long> listaPageIds;
 
     protected List<WrapBio> listWrapBio;
+
+    protected List<Bio> listBio;
 
     protected List<MiniWrap> listMiniWrap;
 
@@ -213,6 +219,7 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(didascaliaService);
         assertNotNull(bioService);
         assertNotNull(bioBackend);
+        assertNotNull(attivitaBackend);
         assertNotNull(botLogin);
         assertNotNull(queryService);
         assertNotNull(downloadService);
@@ -244,6 +251,7 @@ public abstract class WikiTest extends AlgosTest {
         bio = null;
         listaPageIds = null;
         listWrapBio = null;
+        listBio = null;
         listMiniWrap = null;
         typeUser = null;
         pageId = 0L;
@@ -319,6 +327,26 @@ public abstract class WikiTest extends AlgosTest {
                 System.out.println(String.format("%s (%s)", wrap.getPageid(), wrap.getTitle()));
             }
         }
+    }
+
+    protected void printBio(List<Bio> listaBio, String titolo) {
+        int cont = 0;
+        String message = textService.isValid(titolo) ? String.format(" di %s", titolo) : VUOTA;
+        if (listaBio != null) {
+            System.out.println(String.format("Nella lista ci sono %d biografie%s", listaBio.size(), message));
+            System.out.println(VUOTA);
+            for (Bio bio : listaBio) {
+                cont++;
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+                System.out.println(bio.wikiTitle);
+            }
+        }
+    }
+
+    protected void printBio(List<Bio> listaBio) {
+        printBio(listaBio,VUOTA);
     }
 
     protected void printDidascalia(final String sorgente, final String sorgente2, final String sorgente3, final String ottenuto) {

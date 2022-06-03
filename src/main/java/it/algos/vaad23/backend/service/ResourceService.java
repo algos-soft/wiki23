@@ -17,7 +17,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Project vaadflow14
+ * Project vaadin23
  * Created by Algos
  * User: gac
  * Date: gio, 24-set-2020
@@ -41,205 +41,6 @@ public class ResourceService extends AbstractService {
 
 
     /**
-     * Legge un file di risorse da {project directory}/config/ <br>
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     *
-     * @return testo completo grezzo del file
-     */
-    public String leggeConfig(final String simpleNameFileToBeRead) {
-        String tag = "config";
-        return fileService.leggeFile(tag + File.separator + simpleNameFileToBeRead);
-    }
-
-
-    /**
-     * Legge una lista di righe di risorse da {project directory}/config/ <br>
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     *
-     * @return lista di righe grezze
-     */
-    public List<String> leggeListaConfig(final String simpleNameFileToBeRead) {
-        return leggeListaConfig(simpleNameFileToBeRead, true);
-    }
-
-
-    /**
-     * Legge una lista di righe di risorse da {project directory}/config/ <br>
-     * La prima riga contiene i titoli
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     * @param compresiTitoli         parte dalla prima riga, altrimenti dalla seconda
-     *
-     * @return lista di righe grezze
-     */
-    public List<String> leggeListaConfig(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
-        String rawText = leggeConfig(simpleNameFileToBeRead);
-        return leggeLista(rawText, compresiTitoli);
-    }
-
-    /**
-     * Legge una lista di righe di risorse <br>
-     * La prima riga contiene i titoli
-     *
-     * @param rawText        testo grezzo del file
-     * @param compresiTitoli parte dalla prima riga, altrimenti dalla seconda
-     *
-     * @return lista di righe grezze
-     */
-    private List<String> leggeLista(final String rawText, final boolean compresiTitoli) {
-        List<String> listaRighe = null;
-        String[] righe;
-
-        if (textService.isValid(rawText)) {
-            listaRighe = new ArrayList<>();
-            righe = rawText.split(CAPO);
-            if (righe != null && righe.length > 0) {
-                for (String riga : righe) {
-                    riga = textService.estrae(riga, DOPPIE_GRAFFE_INI, DOPPIE_GRAFFE_END);
-                    if (textService.isValid(riga)) {
-                        listaRighe.add(riga);
-                    }
-                }
-            }
-        }
-
-        if (listaRighe != null) {
-            if (!compresiTitoli) {
-                listaRighe = listaRighe.subList(1, listaRighe.size());
-            }
-        }
-
-        return listaRighe;
-    }
-
-
-    /**
-     * Legge una mappa di risorse da {project directory}/config/ <br>
-     * La prima riga contiene i titoli
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     *
-     * @return mappa dei titoli più le righe grezze
-     */
-    public Map<String, List<String>> leggeMappaConfig(final String simpleNameFileToBeRead) {
-        return leggeMappaConfig(simpleNameFileToBeRead, true);
-    }
-
-    /**
-     * Legge una mappa di risorse da {project directory}/config/ <br>
-     * La mappa NON contiene i titoli
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     * @param compresiTitoli         parte dalla prima riga, altrimenti dalla seconda
-     *
-     * @return mappa dei titoli più le righe grezze
-     */
-    public Map<String, List<String>> leggeMappaConfig(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
-        String rawText = leggeConfig(simpleNameFileToBeRead);
-        return elaboraMappa(rawText, compresiTitoli);
-    }
-
-
-    /**
-     * Legge una mappa di risorse da {project directory}/config/ <br>
-     * La prima riga contiene i titoli
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     *
-     * @return mappa dei titoli più le righe grezze
-     */
-    public Map<String, List<String>> leggeMappaServer(final String simpleNameFileToBeRead) {
-        return leggeMappaServer(simpleNameFileToBeRead, true);
-    }
-
-    /**
-     * Legge una mappa di risorse da {project directory}/config/ <br>
-     * La mappa NON contiene i titoli
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     * @param compresiTitoli         parte dalla prima riga, altrimenti dalla seconda
-     *
-     * @return mappa dei titoli più le righe grezze
-     */
-    public Map<String, List<String>> leggeMappaServer(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
-        String rawText = leggeServer(simpleNameFileToBeRead);
-        return elaboraMappa(rawText, compresiTitoli);
-    }
-
-    /**
-     * Legge una mappa di risorse <br>
-     * La prima riga contiene i titoli
-     *
-     * @param rawText        testo grezzo del file
-     * @param compresiTitoli parte dalla prima riga, altrimenti dalla seconda
-     *
-     * @return mappa delle righe grezze con eventualmente i titoli
-     */
-    private Map<String, List<String>> elaboraMappa(final String rawText, final boolean compresiTitoli) {
-        Map<String, List<String>> mappa = null;
-        List<String> listaParti;
-        String[] righe;
-        String[] parti;
-        boolean usaId = rawText.startsWith("id,") || rawText.startsWith("ID,");
-        int prima = usaId ? 1 : 0;
-        int numRiga = 0;
-
-        if (textService.isValid(rawText)) {
-            righe = rawText.split(CAPO);
-            if (righe != null && righe.length > 0) {
-                mappa = new LinkedHashMap<>();
-                for (String riga : righe) {
-                    listaParti = new ArrayList<>();
-                    parti = riga.split(VIRGOLA);
-
-                    if (parti != null && parti.length > 1) {
-                        for (int k = prima; k < parti.length; k++) {
-                            listaParti.add(parti[k]);
-                        }
-                    }
-                    if (usaId) {
-                        mappa.put(parti[0], listaParti);
-                    }
-                    else {
-                        mappa.put(numRiga++ + VUOTA, listaParti);
-                    }
-                }
-            }
-        }
-
-        if (mappa != null) {
-            if (!compresiTitoli) {
-                mappa.remove("id");
-                mappa.remove("0");
-
-                //                if (mappa.containsKey("id")) {
-                //                    mappa.remove("id");
-                //                }
-                //                else {
-                //                    logger.error(new WrapLog().exception(new AlgosException("Manca la riga chiave dei titoli")).usaDb());
-                //                }
-            }
-        }
-
-        return mappa;
-    }
-
-    /**
-     * Legge un file di risorse da {project directory}/frontend/ <br>
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     *
-     * @return testo completo grezzo del file
-     */
-    public String leggeFrontend(final String simpleNameFileToBeRead) {
-        String tag = "frontend";
-        return fileService.leggeFile(tag + File.separator + simpleNameFileToBeRead);
-    }
-
-
-    /**
      * Legge un file di risorse da {project directory}/src/main/resources/META-INF/resources/ <br>
      *
      * @param simpleNameFileToBeRead nome del file senza path e senza directory
@@ -257,7 +58,6 @@ public class ResourceService extends AbstractService {
         return fileService.leggeFile(path);
     }
 
-
     /**
      * Legge un file di risorse <br>
      *
@@ -266,10 +66,34 @@ public class ResourceService extends AbstractService {
      * @return testo grezzo del file
      */
     public String leggeRisorsa(final String nameFileToBeRead) {
-        //        File filePath = new File("config" + File.separator + nameFileToBeRead);
         File filePath = new File("META-INF.resources" + File.separator + nameFileToBeRead);
         return fileService.leggeFile(filePath.getAbsolutePath());
     }
+
+
+    /**
+     * Legge un file di risorse da {project directory}/frontend/ <br>
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return testo completo grezzo del file
+     */
+    public String leggeFrontend(final String simpleNameFileToBeRead) {
+        return fileService.leggeFile(FRONTEND + File.separator + simpleNameFileToBeRead);
+    }
+
+
+    /**
+     * Legge un file di risorse da {project directory}/config/ <br>
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return testo completo grezzo del file
+     */
+    public String leggeConfig(final String simpleNameFileToBeRead) {
+        return fileService.leggeFile(CONFIG + File.separator + simpleNameFileToBeRead);
+    }
+
 
     /**
      * Legge un file dal server <br>
@@ -283,6 +107,19 @@ public class ResourceService extends AbstractService {
     }
 
     /**
+     * Legge una lista di righe di risorse da {project directory}/config/ <br>
+     * La prima riga contiene i titoli
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return lista di righe grezze
+     */
+    public List<String> leggeListaConfig(final String simpleNameFileToBeRead) {
+        String rawText = leggeConfig(simpleNameFileToBeRead);
+        return leggeLista(rawText);
+    }
+
+    /**
      * Legge una lista di righe di risorse dal server <br>
      * La prima riga contiene i titoli
      *
@@ -291,22 +128,116 @@ public class ResourceService extends AbstractService {
      * @return lista di righe grezze
      */
     public List<String> leggeListaServer(final String simpleNameFileToBeRead) {
-        return leggeListaServer(simpleNameFileToBeRead, true);
+        String rawText = leggeServer(simpleNameFileToBeRead);
+        return leggeLista(rawText);
     }
 
     /**
-     * Legge una lista di righe di risorse dal server <br>
+     * Legge una lista di righe di risorse <br>
      * La prima riga contiene i titoli
      *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     * @param compresiTitoli         parte dalla prima riga, altrimenti dalla seconda
+     * @param rawText testo grezzo del file
      *
      * @return lista di righe grezze
      */
-    public List<String> leggeListaServer(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
-        String rawText = leggeServer(simpleNameFileToBeRead);
-        return leggeLista(rawText, compresiTitoli);
+    private List<String> leggeLista(final String rawText) {
+        List<String> listaRighe = null;
+        String[] righe;
+
+        if (textService.isValid(rawText)) {
+            listaRighe = new ArrayList<>();
+            righe = rawText.split(CAPO);
+            if (righe != null && righe.length > 0) {
+                for (String riga : righe) {
+                    riga = textService.estrae(riga, DOPPIE_GRAFFE_INI, DOPPIE_GRAFFE_END);
+                    riga = textService.levaCoda(riga, VIRGOLA).trim();
+                    if (textService.isValid(riga)) {
+                        listaRighe.add(riga);
+                    }
+                }
+            }
+        }
+
+        return listaRighe;
     }
+
+
+    /**
+     * Legge una mappa di risorse da {project directory}/config/ <br>
+     * La mappa NON contiene i titoli <br>
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return mappa dei titoli più le righe grezze
+     */
+    public Map<String, List<String>> leggeMappaConfig(final String simpleNameFileToBeRead) {
+        String rawText = leggeConfig(simpleNameFileToBeRead);
+        return elaboraMappa(rawText);
+    }
+
+
+    /**
+     * Legge una mappa di risorse da {project directory}/config/ <br>
+     * La mappa NON contiene i titoli <br>
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return mappa dei titoli più le righe grezze
+     */
+    public Map<String, List<String>> leggeMappaServer(final String simpleNameFileToBeRead) {
+        String rawText = leggeServer(simpleNameFileToBeRead);
+        return elaboraMappa(rawText);
+    }
+
+    /**
+     * Legge una mappa di risorse <br>
+     * La mappa NON contiene i titoli <br>
+     *
+     * @param rawText testo grezzo del file
+     *
+     * @return mappa delle righe grezze con eventualmente i titoli
+     */
+    private Map<String, List<String>> elaboraMappa(String rawText) {
+        Map<String, List<String>> mappa = null;
+        List<String> listaParti;
+        String[] righe;
+        String[] parti;
+        boolean usaId = rawText.startsWith("id,") || rawText.startsWith("ID,");
+        int prima = usaId ? 1 : 0;
+        int numRiga = 0;
+
+        if (textService.isValid(rawText)) {
+            rawText = textService.levaTestoPrimaDi(rawText, CAPO).trim();
+            righe = rawText.split(CAPO);
+            if (righe != null && righe.length > 0) {
+                mappa = new LinkedHashMap<>();
+                for (String riga : righe) {
+                    listaParti = new ArrayList<>();
+                    parti = riga.split(VIRGOLA);
+
+                    if (parti != null && parti.length > 0) {
+                        for (int k = prima; k < parti.length; k++) {
+                            listaParti.add(textService.levaCoda(parti[k], VIRGOLA).trim());
+                        }
+                    }
+                    if (usaId) {
+                        mappa.put(parti[0], listaParti);
+                    }
+                    else {
+                        mappa.put(++numRiga + VUOTA, listaParti);
+                    }
+                }
+            }
+        }
+
+        if (mappa != null) {
+            mappa.remove("id");
+            mappa.remove("0");
+        }
+
+        return mappa;
+    }
+
 
     /**
      * Costruisce un file di risorse, partendo dal nome semplice <br>

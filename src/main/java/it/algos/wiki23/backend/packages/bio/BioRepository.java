@@ -44,4 +44,9 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
     @Query(value = "{ 'nome' : ?0 }", fields = "{ 'nome' : 1, 'cognome' : 1 }")
     List<Bio> findByNomeIncludeNomeAndCognomeFields(String nome);
+
+    List<Bio> findAllByAttivitaOrderByCognome(String attivita);
+    List<Bio> findAllByAttivita2OrderByCognome(String attivita2);
+    List<Bio> findAllByAttivita3OrderByCognome(String attivita2);
+
 }// end of crud repository class

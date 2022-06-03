@@ -40,7 +40,7 @@ public class ContinenteBackend extends CrudBackend {
      * @param crudRepository per la persistenza dei dati
      */
     //@todo registrare eventualmente come costante in VaadCost il valore del Qualifier
-    public ContinenteBackend(@Autowired @Qualifier("Continente") final MongoRepository crudRepository) {
+    public ContinenteBackend(@Autowired @Qualifier(TAG_CONTINENTE) final MongoRepository crudRepository) {
         super(crudRepository, Continente.class);
         this.repository = (ContinenteRepository) crudRepository;
     }
@@ -106,7 +106,7 @@ public class ContinenteBackend extends CrudBackend {
         boolean status = super.reset();
 
         if (status) {
-            mappa = resourceService.leggeMappaServer(nomeFile, false);
+            mappa = resourceService.leggeMappaServer(nomeFile);
             if (mappa != null) {
                 for (String key : mappa.keySet()) {
                     riga = mappa.get(key);

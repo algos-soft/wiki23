@@ -1,12 +1,16 @@
-package it.algos.unit.service;
+package it.algos.integration.service;
 
+import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
+import org.springframework.boot.test.context.*;
+import org.springframework.test.context.junit.jupiter.*;
 
 import java.util.stream.*;
 
@@ -22,8 +26,11 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("quickly")
+@Tag("integration")
+@Tag("service")
 @DisplayName("Resource service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ResourceServiceTest extends AlgosTest {
@@ -85,7 +92,8 @@ public class ResourceServiceTest extends AlgosTest {
                 Arguments.of("regioni", true, false),
                 Arguments.of("continenti", true, true),
                 Arguments.of("mesi", true, true),
-                Arguments.of("secoli", true, true)
+                Arguments.of("secoli", true, true),
+                Arguments.of("vie", true, true)
         );
     }
 
@@ -240,13 +248,9 @@ public class ResourceServiceTest extends AlgosTest {
         if (esiste) {
             assertTrue(listaStr != null && listaStr.size() > 0);
             System.out.println(String.format("%s%s%s", sorgente, FORWARD, "esiste nella cartella config"));
-            listaStr = service.leggeListaConfig(sorgente, true);
-            printVuota(listaStr, "compresi i titoli");
-
+            listaStr = service.leggeListaConfig(sorgente);
             System.out.println(VUOTA);
-            listaStr = service.leggeListaConfig(sorgente, false);
-            assertNotNull(listaStr);
-            printVuota(listaStr, "esclusi i titoli");
+            print(listaStr, String.format("%s più i titoli", sorgente));
         }
         else {
             assertTrue(listaStr == null);
@@ -265,19 +269,12 @@ public class ResourceServiceTest extends AlgosTest {
         System.out.println(String.format("7 - Legge dalla directory 'config' una mappa per il file CSV '%s'", sorgente));
         System.out.println(VUOTA);
 
-        mappa = service.leggeMappaConfig(sorgente);
         if (esiste) {
+            mappa = service.leggeMappaConfig(sorgente);
+            assertNotNull(mappa);
             System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "esiste sul server Algos"));
-
             System.out.println(VUOTA);
-            mappa = service.leggeMappaConfig(sorgente, true);
-            assertNotNull(mappa);
-            printMappa(mappa, "compresi i titoli");
-
-            System.out.println(VUOTA);
-            mappa = service.leggeMappaConfig(sorgente, false);
-            assertNotNull(mappa);
-            printMappa(mappa, "esclusi i titoli");
+            printMappa(mappa, sorgente);
         }
         else {
             assertTrue(mappa == null);
@@ -323,14 +320,10 @@ public class ResourceServiceTest extends AlgosTest {
             System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "esiste sul server Algos"));
 
             System.out.println(VUOTA);
-            listaStr = service.leggeListaServer(sorgente, true);
+            listaStr = service.leggeListaServer(sorgente);
             assertNotNull(listaStr);
-            printVuota(listaStr, "nella lista compresi i titoli");
-
             System.out.println(VUOTA);
-            listaStr = service.leggeListaServer(sorgente, false);
-            assertNotNull(listaStr);
-            printVuota(listaStr, "nella lista esclusi i titoli");
+            print(listaStr, "compresi i titoli");
         }
         else {
             assertNull(listaStr);
@@ -354,14 +347,9 @@ public class ResourceServiceTest extends AlgosTest {
             System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "esiste sul server Algos"));
 
             System.out.println(VUOTA);
-            mappa = service.leggeMappaServer(sorgente, true);
+            mappa = service.leggeMappaServer(sorgente);
             assertNotNull(mappa);
-            printMappa(mappa, "nella mappa compresi i titoli");
-
-            System.out.println(VUOTA);
-            mappa = service.leggeMappaServer(sorgente, false);
-            assertNotNull(mappa);
-            printMappa(mappa, "nella mappa esclusi i titoli");
+            printMappa(mappa, sorgente);
         }
         else {
             assertNull(mappa);

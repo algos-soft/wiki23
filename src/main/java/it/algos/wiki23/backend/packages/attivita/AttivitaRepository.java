@@ -37,6 +37,7 @@ public interface AttivitaRepository extends MongoRepository<Attivita, String> {
     void delete(Attivita entity);
 
     Attivita findFirstBySingolare(String singolare);
+    Attivita findFirstByPlurale(String plurale);
 
     List<Attivita> findByPluraleOrderBySingolareAsc(String plurale);
 

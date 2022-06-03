@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.geografia.continente;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
@@ -21,7 +22,7 @@ import java.util.*;
  * Eventualmente usare una costante di VaadCost come @Qualifier sia qui che nella corrispondente classe xxxBackend <br>
  */
 @Repository
-@Qualifier("Continente")
+@Qualifier(TAG_CONTINENTE)
 public interface ContinenteRepository extends MongoRepository<Continente, String> {
 
     @Override

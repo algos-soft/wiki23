@@ -415,7 +415,7 @@ public abstract class AQuery {
                 }
                 tokenContinue = WIKI_QUERY_CAT_CONTINUE + result.getToken();
             }
-            while (textService.isValid(result.getToken()) && cicli < 10);
+            while (textService.isValid(result.getToken()) );
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }

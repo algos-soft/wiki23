@@ -58,7 +58,7 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.booleano, header = "fix")
     public boolean elaborato;
 
-    @AIField(type = AETypeField.text)
+    @AIField(type = AETypeField.text, search = true)
     public String nome;
 
     @AIField(type = AETypeField.text)
@@ -107,6 +107,14 @@ public class Bio extends AEntity {
     @Override
     public String toString() {
         return wikiTitle;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
 }// end of crud entity class

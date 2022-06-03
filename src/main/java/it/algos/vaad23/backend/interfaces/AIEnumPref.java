@@ -1,9 +1,5 @@
 package it.algos.vaad23.backend.interfaces;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-
 /**
  * Project vaadin23
  * Created by Algos
@@ -12,6 +8,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * Time: 13:42
  */
 public interface AIEnumPref {
+
     /**
      * Executed on container startup <br>
      * Setup non-UI logic here <br>

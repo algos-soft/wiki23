@@ -124,7 +124,7 @@ public class AttivitaBackend extends WikiBackend {
     }
 
     public boolean isExist(final String singolare) {
-        return findBySingolare(singolare) != null;
+        return findFirstBySingolare(singolare) != null;
     }
 
     /**
@@ -134,8 +134,21 @@ public class AttivitaBackend extends WikiBackend {
      *
      * @return istanza della Entity, null se non trovata
      */
-    public Attivita findBySingolare(final String singolare) {
+    public Attivita findFirstBySingolare(final String singolare) {
         return repository.findFirstBySingolare(singolare);
+    }
+
+    /**
+     * Retrieves the first entity by a 'plural' property.
+     * Cerca una singola entity con una query. <br>
+     * Restituisce un valore valido ANCHE se esistono diverse entities <br>
+     *
+     * @param attivitaPlurale  per costruire la query
+     *
+     * @return the FIRST founded entity
+     */
+    public Attivita findFirstByPlurale(final String attivitaPlurale)  {
+        return repository.findFirstByPlurale(attivitaPlurale);
     }
 
 
@@ -143,9 +156,16 @@ public class AttivitaBackend extends WikiBackend {
         return repository.findByPluraleOrderBySingolareAsc(plurale);
     }
 
-    public List<String> findSingolariByPlurale(final String plurale) {
+    /**
+     * Crea una lista di singolari che hanno lo stesso plurale. <br>
+     *
+     * @param attivitaPlurale da selezionare
+     *
+     * @return lista di singolari filtrati
+     */
+    public List<String> findSingolariByPlurale(final String attivitaPlurale) {
         List<String> listaNomi = new ArrayList<>();
-        List<Attivita> listaAttivita = findByPlurale(plurale);
+        List<Attivita> listaAttivita = findByPlurale(attivitaPlurale);
 
         for (Attivita attivita : listaAttivita) {
             listaNomi.add(attivita.singolare);
@@ -153,6 +173,8 @@ public class AttivitaBackend extends WikiBackend {
 
         return listaNomi;
     }
+
+
 
     public LinkedHashMap<String, List<String>> findMappaSingolariByPlurale() {
         LinkedHashMap<String, List<String>> mappa = new LinkedHashMap<>();
@@ -179,6 +201,7 @@ public class AttivitaBackend extends WikiBackend {
 
         return mappa;
     }
+
 
     /**
      * Legge la mappa di valori dal modulo di wiki <br>
@@ -248,7 +271,7 @@ public class AttivitaBackend extends WikiBackend {
                 }
 
                 if (textService.isValid(attivitaSingolare)) {
-                    entity = findBySingolare(attivitaSingolare);
+                    entity = findFirstBySingolare(attivitaSingolare);
                 }
 
                 if (entity != null) {

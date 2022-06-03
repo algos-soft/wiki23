@@ -101,7 +101,7 @@ public class MeseBackend extends CrudBackend {
         String nome;
 
         if (super.reset()) {
-            mappa = resourceService.leggeMappaServer(nomeFile, false);
+            mappa = resourceService.leggeMappaServer(nomeFile);
             if (mappa != null) {
                 for (String key : mappa.keySet()) {
                     riga = mappa.get(key);

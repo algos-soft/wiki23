@@ -390,6 +390,7 @@ public @interface AIField {
      * @return the boolean
      */
     boolean search() default false;
+
     /**
      * (Optional) Flag per la property di ordinamento (potrebbe essere diversa dal campo)
      * Defaults to VUOTA.

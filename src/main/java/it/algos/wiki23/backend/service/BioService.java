@@ -2,14 +2,22 @@ package it.algos.wiki23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 /**
  * Project vaadwiki
@@ -31,6 +39,11 @@ import java.util.*;
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class BioService extends WAbstractService {
+
+    @Autowired
+    public BioRepository repository;
+
+    public static Function<Bio, String> cognome = bio -> bio.getCognome() != null ? bio.getCognome() : VUOTA;
 
 
     /**
@@ -74,6 +87,7 @@ public class BioService extends WAbstractService {
 
         return mappa;
     }
+
     /**
      * Estrae una mappa chiave-valore dal testo del template <br>
      * Presuppone che le righe siano separate da pipe e return
@@ -422,26 +436,26 @@ public class BioService extends WAbstractService {
      * Gestisce l'eccezione per i giorni 7 e 11 di ogni mese <br>
      */
     public String wikiTitleNati(final AEntity entityBean) {
-        return wikiTitle(entityBean,true);
+        return wikiTitle(entityBean, true);
     }
 
     /**
      * Gestisce l'eccezione per i giorni 7 e 11 di ogni mese <br>
      */
     public String wikiTitleMorti(final AEntity entityBean) {
-        return wikiTitle(entityBean,false);
+        return wikiTitle(entityBean, false);
     }
 
     private String wikiTitle(final AEntity entityBean, final boolean natiVsMorti) {
         String wikiTitle = natiVsMorti ? "Nati" : "Morti";
         String titolo = VUOTA;
 
-//        if (entityBean instanceof Giorno giorno) {
-//            titolo = giorno.titolo;
-//        }
-//        if (entityBean instanceof Anno anno) {
-//            titolo = anno.titolo;
-//        }
+        //        if (entityBean instanceof Giorno giorno) {
+        //            titolo = giorno.titolo;
+        //        }
+        //        if (entityBean instanceof Anno anno) {
+        //            titolo = anno.titolo;
+        //        }
 
         if (textService.isValid(titolo)) {
             wikiTitle += (titolo.startsWith("8") || titolo.startsWith("11")) ? " l'" : " il ";
@@ -450,5 +464,48 @@ public class BioService extends WAbstractService {
 
         return wikiTitle;
     }
+
+
+    /**
+     * Cerca tutte le entities di una collection filtrate con una serie di attività. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     *
+     * @param listaNomiAttivitaSingole per costruire la query
+     *
+     * @return lista di entityBeans
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchAttivita(List<String> listaNomiAttivitaSingole) {
+        List<Bio> sortedList;
+        List<Bio> listaNonOrdinata = new ArrayList<>();
+        List<Bio> lista1;
+        List<Bio> lista2;
+        List<Bio> lista3;
+
+        if (listaNomiAttivitaSingole == null) {
+            logger.info(new WrapLog().exception(new AlgosException("Non ci sono attività singole")).usaDb());
+            return null;
+        }
+
+        for (String nomeAttivitaSingola : listaNomiAttivitaSingole) {
+            lista1 = repository.findAllByAttivitaOrderByCognome(nomeAttivitaSingola);
+            listaNonOrdinata.addAll(lista1);
+            if (WPref.usaTreAttivita.is()) {
+                lista2 = repository.findAllByAttivita2OrderByCognome(nomeAttivitaSingola);
+                listaNonOrdinata.addAll(lista2);
+                lista3 = repository.findAllByAttivita3OrderByCognome(nomeAttivitaSingola);
+                listaNonOrdinata.addAll(lista3);
+            }
+        }
+
+        sortedList = listaNonOrdinata
+                .stream()
+                .sorted(Comparator.comparing(cognome))
+                .collect(Collectors.toList());
+
+        return sortedList;
+    }
+
 
 }

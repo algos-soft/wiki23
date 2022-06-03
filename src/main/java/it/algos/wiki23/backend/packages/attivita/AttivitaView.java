@@ -14,6 +14,7 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -72,7 +73,7 @@ public class AttivitaView extends WikiView {
         super.fixPreferenze();
 
         super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "aggiunta", "numBio", "numSingolari", "pagina");
-        super.formPropertyNamesList = Arrays.asList( "plurale",  "numBio");
+        super.formPropertyNamesList = Arrays.asList("plurale", "numBio");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
 
         super.usaBottoneElabora = true;
@@ -238,6 +239,18 @@ public class AttivitaView extends WikiView {
         wikiApiService.openWikiPage(path + attivitaText);
 
         return null;
+    }
+
+
+    /**
+     * Scrive una voce di prova su Utente:Biobot/test <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void testPagina() {
+        ListaAttivita lista = appContext.getBean(ListaAttivita.class, "attore", ListaAttivita.AETypeAttivita.singolare);
+
+        List listaBio= lista.listaBio;
+        reload();
     }
 
     public void updateItem(AEntity entityBean) {

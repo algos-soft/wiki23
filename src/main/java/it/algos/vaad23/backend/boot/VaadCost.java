@@ -88,6 +88,11 @@ public class VaadCost {
     public static final String VIRGOLA_SPAZIO = VIRGOLA + SPAZIO;
 
 
+    public static final String CONFIG = "config";
+
+    public static final String FRONTEND = "frontend";
+
+
     public static final String QUADRA_INI = "[";
 
     public static final String QUADRA_INI_REGEX = "\\[";
@@ -277,11 +282,14 @@ public class VaadCost {
 
     public static final String TAG_VERSIONE = "versione";
 
+    public static final String TAG_CONTINENTE = "continente";
+
+    public static final String TAG_VIA = "via";
+
     public static final String TAG_NOTA = "nota";
 
     public static final String TAG_LOGGER = "logger";
 
-    public static final String TAG_CONTINENTE = "continente";
 
     public static final String TAG_FLOW_DATA = "flowdata";
 

@@ -227,4 +227,11 @@ public class Wiki23Cost {
 
     public static final String SUCCESS_LOGIN_RESPONSE = "lguserid: 124123, lgusername: Biobot";
 
+
+    public static final String ATTIVITA_PROPERTY = "attivita";
+
+    public static final String ATTIVITA_PROPERTY_2 = "attivita2";
+
+    public static final String ATTIVITA_PROPERTY_3 = "attivita3";
+
 }

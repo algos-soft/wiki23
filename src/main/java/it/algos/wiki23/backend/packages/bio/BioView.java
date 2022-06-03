@@ -89,7 +89,7 @@ public class BioView extends WikiView {
         super.usaBottoneDeleteAll = true;
         super.usaBottoneNew = true;
         super.usaBottoneDelete = true;
-        super.usaBottoneSearch = false;
+        super.usaBottoneSearch = true;
         super.usaBottonePaginaWiki = true;
         super.dialogClazz = BioDialog.class;
     }
@@ -143,6 +143,155 @@ public class BioView extends WikiView {
         headerRow.join(attivita, attivita2, attivita3).setText("Attività");
         //        headerRow.join(nazionalita,nazionalita2).setText("Nazionalità");
     }
+
+    /**
+     * Componenti aggiuntivi oltre quelli base <br>
+     * Tipicamente bottoni di selezione/filtro <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixBottoniTopSpecifici() {
+        searchFieldCognome = new TextField();
+        searchFieldCognome.setPlaceholder("Filter by cognome");
+        searchFieldCognome.setClearButtonVisible(true);
+        searchFieldCognome.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(searchFieldCognome);
+
+        searchFieldNascita = new TextField();
+        searchFieldNascita.setPlaceholder("Filter by nato");
+        searchFieldNascita.setClearButtonVisible(true);
+        searchFieldNascita.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(searchFieldNascita);
+
+        searchFieldMorte = new TextField();
+        searchFieldMorte.setPlaceholder("Filter by morto");
+        searchFieldMorte.setClearButtonVisible(true);
+        searchFieldMorte.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(searchFieldMorte);
+
+        searchFieldAttivita = new TextField();
+        searchFieldAttivita.setPlaceholder("Filter by attività");
+        searchFieldAttivita.setClearButtonVisible(true);
+        searchFieldAttivita.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(searchFieldAttivita);
+
+        searchFieldNazionalita = new TextField();
+        searchFieldNazionalita.setPlaceholder("Filter by nazionalità");
+        searchFieldNazionalita.setClearButtonVisible(true);
+        searchFieldNazionalita.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(searchFieldNazionalita);
+    }
+
+    /**
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     */
+    protected void sincroFiltri() {
+        List<Bio> items = backend.findAll(sortOrder);
+
+        final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearch)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.nome != null ? bio.nome.matches("^(?i)" + textSearch + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearch.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.nome == null)
+                        .toList();
+            }
+        }
+
+        final String textSearchCognome = searchFieldCognome != null ? searchFieldCognome.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearchCognome)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.cognome != null ? bio.cognome.matches("^(?i)" + textSearchCognome + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearchCognome.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.cognome == null)
+                        .toList();
+            }
+        }
+
+        final String textSearchNascita = searchFieldNascita != null ? searchFieldNascita.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearchNascita)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.annoNato != null ? bio.annoNato.matches("^(?i)" + textSearchNascita + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearchNascita.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.annoNato == null)
+                        .toList();
+            }
+        }
+
+        final String textSearchMorte = searchFieldMorte != null ? searchFieldMorte.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearchMorte)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.annoMorto != null ? bio.annoMorto.matches("^(?i)" + textSearchMorte + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearchMorte.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.annoMorto == null)
+                        .toList();
+            }
+        }
+
+        final String textSearchAttivita = searchFieldAttivita != null ? searchFieldAttivita.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearchAttivita)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.attivita != null ? bio.attivita.matches("^(?i)" + textSearchAttivita + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearchAttivita.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.attivita == null)
+                        .toList();
+            }
+        }
+
+        final String textSearchNazionalita = searchFieldNazionalita != null ? searchFieldNazionalita.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearchNazionalita)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.nazionalita != null ? bio.nazionalita.matches("^(?i)" + textSearchNazionalita + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearchNazionalita.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.nazionalita == null)
+                        .toList();
+            }
+        }
+
+        if (items != null) {
+            grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
+        }
+
+    }
+
+
     /**
      * Esegue un azione di download, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>

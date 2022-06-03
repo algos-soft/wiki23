@@ -432,7 +432,7 @@ public class ElaboraService extends WAbstractService {
         Attivita attivita = null;
 
         try {
-            attivita = attivitaBackend.findBySingolare(testoValido);
+            attivita = attivitaBackend.findFirstBySingolare(testoValido);
         } catch (Exception unErrore) {
             logger.info(new WrapLog().exception(unErrore));
         }

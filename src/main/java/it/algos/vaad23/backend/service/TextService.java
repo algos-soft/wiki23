@@ -60,6 +60,22 @@ public class TextService extends AbstractService {
         return (obj instanceof String stringa) && !isEmpty(stringa);
     }
 
+    /**
+     * Null-safe, short-circuit evaluation. <br>
+     * Controlla che sia una stringa e che sia valida e che non abbia spazi vuoti.
+     *
+     * @param obj in ingresso da controllare che non sia nullo, che sia una stringa e che non sia vuota
+     *
+     * @return vero se la stringa esiste e non è vuota
+     */
+    public boolean isValidNoSpace(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        return (obj instanceof String stringa) && !isEmpty(stringa) && !stringa.equals(SPAZIO);
+    }
+
 
     /**
      * Forza il primo carattere della stringa (e solo il primo) al carattere maiuscolo <br>
@@ -896,7 +912,7 @@ public class TextService extends AbstractService {
         String tag;
 
         if (this.isValid(testoOut) && this.isValid(tagIniziale)) {
-            tag = tagIniziale.trim();
+            tag = tagIniziale.equals(CAPO) ? tagIniziale : tagIniziale.trim();
             if (testoOut.contains(tag)) {
                 testoOut = testoOut.substring(testoOut.indexOf(tag) + tag.length());
             }

@@ -81,7 +81,7 @@ public class VaadPref implements AIEnumPref, ServletContextListener {
      * Controlla che la entity non esista già <br>
      */
     protected void crea(final Pref pref) {
-        crea(pref.getKeyCode(), pref.getType(), pref.getDefaultValue(), pref.getDescrizione(), false,true);
+        crea(pref.getKeyCode(), pref.getType(), pref.getDefaultValue(), pref.getDescrizione(), false, true);
     }
 
     /**
@@ -89,7 +89,7 @@ public class VaadPref implements AIEnumPref, ServletContextListener {
      * Controlla che la entity non esista già <br>
      */
     protected void crea(final String keyCode, final AETypePref type, final Object value, final String descrizione,
-                        final boolean needRiavvio,final boolean vaad23) {
+                        final boolean needRiavvio, final boolean vaad23) {
         Preferenza preferenza = null;
         String message;
 
@@ -102,12 +102,12 @@ public class VaadPref implements AIEnumPref, ServletContextListener {
             logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
             return;
         }
-        if ( textService.isEmpty(descrizione)) {
+        if (textService.isEmpty(descrizione)) {
             message = String.format("Manca la descrizione nella preferenza %s", keyCode);
             logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
             return;
         }
-        if ( value == null) {
+        if (value == null) {
             message = String.format("Il valore della preferenza %s è nullo", keyCode);
             logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
             return;
