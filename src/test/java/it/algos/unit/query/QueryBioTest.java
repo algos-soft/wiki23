@@ -37,6 +37,7 @@ public class QueryBioTest extends WikiTest {
     private QueryBio istanza;
 
     private Bio bio;
+
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
@@ -58,13 +59,13 @@ public class QueryBioTest extends WikiTest {
         super.setUpEach();
         istanza = null;
         botLogin.reset();
-        bio=null;
+        bio = null;
     }
 
 
     @Test
     @Order(1)
-    @DisplayName("1- Costruttore base senza parametri")
+    @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
         assertTrue(istanza == null);
         istanza = appContext.getBean(QueryBio.class);
@@ -76,7 +77,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2- Test per una pagina inesistente")
+    @DisplayName("2 - Test per una pagina inesistente")
     void nonEsiste() {
         System.out.println(("2- Test per una pagina inesistente"));
         assertTrue(istanza == null);
@@ -101,7 +102,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(3)
-    @DisplayName("3- Test per una biografia esistente (urlRequest)")
+    @DisplayName("3 - Test per una biografia esistente (urlRequest)")
     void urlRequest() {
         System.out.println(("3- Test per una biografia esistente (urlRequest)"));
 
@@ -117,7 +118,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(4)
-    @DisplayName("4- Test per una biografia esistente (getWrap)")
+    @DisplayName("4 - Test per una biografia esistente (getWrap)")
     void getWrap() {
         System.out.println(("4- Test per una biografia esistente (getWrap)"));
 
@@ -139,7 +140,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(5)
-    @DisplayName("5- Test per una pagina esistente ma non bio")
+    @DisplayName("5 - Test per una pagina esistente ma non bio")
     void getWrap2() {
         System.out.println(("5- Test per una pagina esistente ma non bio"));
 
@@ -160,7 +161,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(6)
-    @DisplayName("6- Test tramite pageid per una pagina esistente ma non biografia")
+    @DisplayName("6 - Test tramite pageid per una pagina esistente ma non biografia")
     void getWrapPageids() {
         System.out.println(("6- Test tramite pageid per una pagina esistente ma non biografia"));
 
@@ -182,7 +183,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(7)
-    @DisplayName("7- Test tramite pageid per una biografia esistente")
+    @DisplayName("7 - Test tramite pageid per una biografia esistente")
     void getWrapPageids2() {
         System.out.println(("7- Test tramite pageid per una biografia esistente"));
 
@@ -203,7 +204,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(8)
-    @DisplayName("8- Test per una pagina di disambigua")
+    @DisplayName("8 - Test per una pagina di disambigua")
     void getWrapDisambigua() {
         System.out.println(("8- Test per una pagina di disambigua"));
 
@@ -224,7 +225,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(9)
-    @DisplayName("9- Test per una pagina di redirect")
+    @DisplayName("9 - Test per una pagina di redirect")
     void getWrapRedirect() {
         System.out.println(("9- Test per una pagina di redirect"));
 
@@ -245,7 +246,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(10)
-    @DisplayName("10- Test per una biografia esistente")
+    @DisplayName("10 - Test per una biografia esistente")
     void getWrapEsistente() {
         System.out.println(("10- Test per una biografia esistente"));
 
@@ -266,7 +267,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(11)
-    @DisplayName("11- Test per una pagina inesistente")
+    @DisplayName("11 - Test per una pagina inesistente")
     void getPageIdMultipli() {
         System.out.println(("11 - Test per una pagina inesistente"));
 
@@ -287,7 +288,7 @@ public class QueryBioTest extends WikiTest {
 
     @Test
     @Order(12)
-    @DisplayName("12- Test per una bio completa")
+    @DisplayName("12 - Test per una bio completa")
     void getBio() {
         System.out.println(("12- Test per una bio completa"));
 

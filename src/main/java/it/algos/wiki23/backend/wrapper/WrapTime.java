@@ -9,8 +9,10 @@ import java.time.format.*;
  * User: gac
  * Date: ven, 02-lug-2021
  * Time: 13:48
+ * <p>
+ * Semplice wrapper per gestire 'lastModifica' e 'pageid' di ogni pagina <br>
  */
-public class MiniWrap implements Comparable {
+public class WrapTime implements Comparable {
 
     private long pageid;
 
@@ -19,7 +21,7 @@ public class MiniWrap implements Comparable {
     private LocalDateTime lastModifica;
 
 
-    public MiniWrap(final long pageid, final String wikiTitle,final String lastModificaString) {
+    public WrapTime(final long pageid, final String wikiTitle, final String lastModificaString) {
         this.pageid = pageid;
         this.wikiTitle = wikiTitle;
         this.lastModifica = (lastModificaString != null && lastModificaString.length() > 0) ? LocalDateTime.parse(lastModificaString, DateTimeFormatter.ISO_DATE_TIME) : null;
@@ -81,7 +83,7 @@ public class MiniWrap implements Comparable {
      */
     @Override
     public int compareTo(Object obj) {
-        return ((Long) pageid).compareTo((((MiniWrap) obj).pageid));
+        return ((Long) pageid).compareTo((((WrapTime) obj).pageid));
     }
 
 }

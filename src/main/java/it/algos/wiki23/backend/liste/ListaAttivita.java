@@ -1,16 +1,20 @@
 package it.algos.wiki23.backend.liste;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
+import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 /**
  * Project wiki23
@@ -75,6 +79,7 @@ public class ListaAttivita extends Lista {
 
     private String titoloGrezzo;
 
+    protected LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
 
     /**
      * Costruttore base con parametri <br>
@@ -129,6 +134,11 @@ public class ListaAttivita extends Lista {
     @Override
     protected void regolazioniIniziali() {
         super.regolazioniIniziali();
+
+        if (typeAttivita == null) {
+            logger.info(new WrapLog().exception(new AlgosException("Manca la specifica singolare/plurale")).usaDb());
+            return;
+        }
 
         if (attivita != null) {
             switch (typeAttivita) {
@@ -187,9 +197,59 @@ public class ListaAttivita extends Lista {
             listaBio = bioService.fetchAttivita(listaNomiAttivitaSingole);
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+            return;
         }
+
+        listaWrap = creaWrap(listaBio);
+        Object mappa = creaMappaWrap(listaWrap);
+        //        listaWrap = sortByNazionalita(listaWrap);
     }
 
+    public LinkedHashMap<String, Map> creaMappaWrap(List<WrapDidascalia> listaWrapNonOrdinata) {
+        LinkedHashMap<String, Map> mappa = new LinkedHashMap<>();
+        Map<String, List> mappaUno = new HashMap<>();
+        List lista;
+        String nazionalita = VUOTA;
+
+        if (listaWrapNonOrdinata != null) {
+            for (WrapDidascalia wrap : listaWrapNonOrdinata) {
+                nazionalita = wrap.getNazionalitaParagrafo();
+                if (mappaUno.containsKey(nazionalita)) {
+                    lista = mappaUno.get(nazionalita);
+                }
+                else {
+                    lista = new ArrayList();
+                }
+                lista.add(wrap);
+                mappaUno.put(nazionalita, lista);
+            }
+        }
+
+        return mappa;
+    }
+
+    public List<WrapDidascalia> sortByNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
+        List<WrapDidascalia> sortedList = new ArrayList<>();
+        List<WrapDidascalia> listaConNazionalitaOrdinata = new ArrayList<>(); ;
+        List<WrapDidascalia> listaSenzaNazionalitaOrdinata = new ArrayList<>(); ;
+
+        listaConNazionalitaOrdinata = listaWrapNonOrdinata
+                .stream()
+                .filter(wrap -> textService.isValid(wrap.getNazionalitaSingola()))
+                .sorted(Comparator.comparing(nazionalita))
+                .collect(Collectors.toList());
+
+        listaSenzaNazionalitaOrdinata = listaWrapNonOrdinata
+                .stream()
+                .filter(wrap -> textService.isEmpty(wrap.getNazionalitaSingola()))
+                .collect(Collectors.toList());
+
+        sortedList.addAll(listaConNazionalitaOrdinata);
+        sortedList.addAll(listaSenzaNazionalitaOrdinata);
+        return sortedList;
+    }
+
+    public static Function<WrapDidascalia, String> nazionalita = wrap -> wrap.getNazionalitaSingola() != null ? wrap.getNazionalitaSingola() : VUOTA;
 
     public List<String> getListaNomiAttivitaSingole() {
         return listaNomiAttivitaSingole;
@@ -197,6 +257,10 @@ public class ListaAttivita extends Lista {
 
     public enum AETypeAttivita {
         singolare, plurale
+    }
+
+    public LinkedHashMap<String, List<WrapDidascalia>> getMappaWrap() {
+        return mappaWrap;
     }
 
 }

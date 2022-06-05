@@ -139,7 +139,7 @@ public class QueryCatTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "CATEGORIE")
     @Order(31)
-    @DisplayName("31- Test per categorie senza collegamento")
+    @DisplayName("31 - Test per categorie senza collegamento")
         //--esiste come anonymous
         //--esiste come user, admin
         //--esiste come bot
@@ -203,7 +203,7 @@ public class QueryCatTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "CATEGORIE")
     @Order(41)
-    @DisplayName("41- Test per categorie collegamento user")
+    @DisplayName("41 - Test per categorie collegamento user")
         //--esiste come anonymous
         //--esiste come user, admin
         //--esiste come bot
@@ -234,7 +234,7 @@ public class QueryCatTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "CATEGORIE")
     @Order(51)
-    @DisplayName("51- Test per categorie collegamento admin")
+    @DisplayName("51 - Test per categorie collegamento admin")
         //--esiste come anonymous
         //--esiste come user, admin
         //--esiste come bot
@@ -265,7 +265,7 @@ public class QueryCatTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "CATEGORIE")
     @Order(61)
-    @DisplayName("61- Test per categorie collegamento bot")
+    @DisplayName("61 - Test per categorie collegamento bot")
         //--esiste come anonymous
         //--esiste come user, admin
         //--esiste come bot

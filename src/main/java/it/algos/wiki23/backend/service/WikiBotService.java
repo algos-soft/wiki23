@@ -3,8 +3,6 @@ package it.algos.wiki23.backend.service;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
@@ -113,7 +111,7 @@ public class WikiBotService extends WAbstractService {
     /**
      * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
      */
-    protected Predicate<MiniWrap> checkNuovi = wrap -> {
+    protected Predicate<WrapTime> checkNuovi = wrap -> {
         try {
             return !bioBackend.isExist(wrap.getPageid());
         } catch (Exception unErrore) {
@@ -125,7 +123,7 @@ public class WikiBotService extends WAbstractService {
     /**
      * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
      */
-    protected Predicate<MiniWrap> checkEsistenti = wrap -> {
+    protected Predicate<WrapTime> checkEsistenti = wrap -> {
         try {
             return bioBackend.isExist(wrap.getPageid());
         } catch (Exception unErrore) {
@@ -137,7 +135,7 @@ public class WikiBotService extends WAbstractService {
     /**
      * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
      */
-    protected Predicate<MiniWrap> checkModificati = wrap -> {
+    protected Predicate<WrapTime> checkModificati = wrap -> {
         LocalDateTime wrapTime = wrap.getLastModifica();
         long key = wrap.getPageid();
         Bio bio = null;
@@ -314,9 +312,9 @@ public class WikiBotService extends WAbstractService {
      *
      * @return lista di pageId da leggere dal server
      */
-    public List<Long> elaboraMiniWrap(final List<MiniWrap> listaMiniWrap) {
+    public List<Long> elaboraMiniWrap(final List<WrapTime> listaMiniWrap) {
         List<Long> listaPageIdsDaLeggere = new ArrayList<>();
-        List<MiniWrap> listaMiniWrapTotali = new ArrayList<>();
+        List<WrapTime> listaMiniWrapTotali = new ArrayList<>();
         long inizio = System.currentTimeMillis();
         int nuove;
         int modificate;
@@ -324,7 +322,7 @@ public class WikiBotService extends WAbstractService {
         String message;
 
         //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
-        List<MiniWrap> listaMiniWrapNuovi = listaMiniWrap
+        List<WrapTime> listaMiniWrapNuovi = listaMiniWrap
                 .stream()
                 .filter(checkNuovi)
                 .sorted()
@@ -333,7 +331,7 @@ public class WikiBotService extends WAbstractService {
         listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
 
         //--Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica
-        List<MiniWrap> listaMiniWrapModificati = listaMiniWrap
+        List<WrapTime> listaMiniWrapModificati = listaMiniWrap
                 .stream()
                 .filter(checkEsistenti)
                 .filter(checkModificati)
@@ -343,7 +341,7 @@ public class WikiBotService extends WAbstractService {
         listaMiniWrapTotali.addAll(listaMiniWrapModificati);
         totali = nuove + modificate;
 
-        for (MiniWrap wrap : listaMiniWrapTotali) {
+        for (WrapTime wrap : listaMiniWrapTotali) {
             listaPageIdsDaLeggere.add(wrap.getPageid());
         }
 

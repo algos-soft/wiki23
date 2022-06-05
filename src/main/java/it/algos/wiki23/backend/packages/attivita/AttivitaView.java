@@ -249,7 +249,7 @@ public class AttivitaView extends WikiView {
     public void testPagina() {
         ListaAttivita lista = appContext.getBean(ListaAttivita.class, "attore", ListaAttivita.AETypeAttivita.singolare);
 
-        List listaBio= lista.listaBio;
+        List listaBio= lista.getListaBio();
         reload();
     }
 

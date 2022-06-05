@@ -1,7 +1,5 @@
 package it.algos.wiki23.backend.service;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -75,7 +73,7 @@ public class QueryService extends WAbstractService {
         return appContext.getBean(QueryCat.class).getListaPageIds(catTitleGrezzo);
     }
 
-    public List<MiniWrap> getMiniWrap(final List<Long> listaPageids) {
+    public List<WrapTime> getMiniWrap(final List<Long> listaPageids) {
         return appContext.getBean(QueryTimestamp.class).getWrap(listaPageids);
     }
 

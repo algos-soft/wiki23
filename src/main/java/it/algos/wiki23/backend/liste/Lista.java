@@ -1,11 +1,12 @@
 package it.algos.wiki23.backend.liste;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad23.backend.service.*;
+import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
+import it.algos.wiki23.backend.service.*;
+import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import javax.annotation.*;
 import java.util.*;
@@ -41,6 +42,7 @@ public abstract class Lista {
      */
     @Autowired
     public LogService logger;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -50,11 +52,45 @@ public abstract class Lista {
     public ArrayService arrayService;
 
     /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public TextService textService;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ElaboraService elaboraService;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AttivitaBackend attivitaBackend;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public NazionalitaBackend nazionalitaBackend;
+
+    /**
      * Lista delle biografie che hanno una valore valido per la pagina specifica <br>
      * La lista viene creata nel @PostConstruct dell'istanza <br>
      * La lista è ordinata per cognome <br>
      */
-    public List<Bio> listaBio;
+    protected List<Bio> listaBio;
+
+    /**
+     * Lista dei wrapper per gestire i dati necessari ad una didascalia <br>
+     */
+    protected List<WrapDidascalia> listaWrap;
 
 
     /**
@@ -72,7 +108,9 @@ public abstract class Lista {
      * La mappa viene creata nel @PostConstruct dell'istanza <br>
      */
     protected LinkedHashMap<String, List<String>> mappaUno;
+
     protected Map<String, Map<String, List<String>>> mappaDue;
+
     protected LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>> mappaTre;
 
 
@@ -132,6 +170,50 @@ public abstract class Lista {
      * DEVE essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void fixMappaParagrafi() {
+    }
+
+    /**
+     * Costruisce una lista dei wrapper per gestire i dati necessari ad una didascalia <br>
+     */
+    public List<WrapDidascalia> creaWrap(List<Bio> listaBio) {
+        List<WrapDidascalia> listaWrap = null;
+
+        if (listaBio != null) {
+            listaWrap = new ArrayList<>();
+            for (Bio bio : listaBio) {
+                listaWrap.add(creaWrap(bio));
+            }
+        }
+
+        return listaWrap;
+    }
+
+    public WrapDidascalia creaWrap(Bio bio) {
+        WrapDidascalia wrap = null;
+        wrap = new WrapDidascalia();
+
+        wrap.setAttivitaSingola(bio.attivita);
+        if (textService.isValid(bio.attivita) ) {
+            wrap.setAttivitaParagrafo(attivitaBackend.findFirstBySingolare(bio.attivita).plurale);
+        }
+        wrap.setNazionalitaSingola(bio.nazionalita);
+        if (textService.isValid(bio.nazionalita) ) {
+            wrap.setNazionalitaParagrafo(nazionalitaBackend.findBySingolare(bio.nazionalita).plurale);
+        }
+        wrap.setWikiTitle(bio.wikiTitle);
+        wrap.setNome(bio.nome);
+        wrap.setCognome(bio.cognome);
+        wrap.setPrimoCarattere(textService.isValid(bio.cognome)? bio.cognome.substring(0,1): bio.wikiTitle.substring(0,1));
+
+        return wrap;
+    }
+
+    public List<Bio> getListaBio() {
+        return listaBio;
+    }
+
+    public List<WrapDidascalia> getListaWrap() {
+        return listaWrap;
     }
 
 }

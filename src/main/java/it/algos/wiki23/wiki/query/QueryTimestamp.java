@@ -2,8 +2,6 @@ package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -40,7 +38,7 @@ public class QueryTimestamp extends AQuery {
      *
      * @return lista di wraps delle pagine
      */
-    public List<MiniWrap> getWrap(final List<Long> listaPageids) {
+    public List<WrapTime> getWrap(final List<Long> listaPageids) {
         return urlRequest(listaPageids).getLista();
     }
 
@@ -85,9 +83,9 @@ public class QueryTimestamp extends AQuery {
 
 
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
-        List<MiniWrap> listaNew = new ArrayList<>();
-        List<MiniWrap> listaOld;
-        MiniWrap miniWrap;
+        List<WrapTime> listaNew = new ArrayList<>();
+        List<WrapTime> listaOld;
+        WrapTime miniWrap;
         long pageid;
         String wikiTitle;
         JSONObject revisionZero;
@@ -108,13 +106,13 @@ public class QueryTimestamp extends AQuery {
                             timeStamp = (String) revisionZero.get(KEY_JSON_TIMESTAMP);
                         }
                         if (pageid > 0 && textService.isValid(timeStamp)) {
-                            miniWrap = new MiniWrap(pageid, wikiTitle, timeStamp);
+                            miniWrap = new WrapTime(pageid, wikiTitle, timeStamp);
                             listaNew.add(miniWrap);
                         }
                     }
                 }
                 result.setCodeMessage(JSON_SUCCESS);
-                listaOld = (List<MiniWrap>) result.getLista();
+                listaOld = (List<WrapTime>) result.getLista();
                 if (listaOld != null) {
                     listaOld.addAll(listaNew);
                 }

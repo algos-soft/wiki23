@@ -45,10 +45,14 @@ public class BioService extends WAbstractService {
 
     public static Function<Bio, String> cognome = bio -> bio.getCognome() != null ? bio.getCognome() : VUOTA;
 
+    public static Function<Bio, String> wikiTitle = bio -> bio.getWikiTitle() != null ? bio.getWikiTitle() : VUOTA;
+
+    public static Function<Bio, String> nazionalita = bio -> bio.getNazionalita() != null ? bio.getNazionalita() : VUOTA;
+
 
     /**
      * Estrae una mappa chiave/valore dal testo contenuto tutto in una riga <br>
-     * Presuppone che la riga sia unica ed i parametri siano separati da pipe <br>
+     * Presuppone che la riga sia unica e i parametri siano separati da pipe <br>
      *
      * @param testo
      *
@@ -478,6 +482,7 @@ public class BioService extends WAbstractService {
      */
     public List<Bio> fetchAttivita(List<String> listaNomiAttivitaSingole) {
         List<Bio> sortedList;
+        List<Bio> listaOrdinataPerNazionalita;
         List<Bio> listaNonOrdinata = new ArrayList<>();
         List<Bio> lista1;
         List<Bio> lista2;
@@ -499,13 +504,52 @@ public class BioService extends WAbstractService {
             }
         }
 
-        sortedList = listaNonOrdinata
+//        listaOrdinataPerNazionalita = sortByNazionalita(listaNonOrdinata);
+//        return listaOrdinataPerNazionalita;
+        return listaNonOrdinata;
+    }
+
+    public List<Bio> sortByNazionalita(List<Bio> listaNonOrdinata) {
+        List<Bio> sortedList = new ArrayList<>();
+        List<Bio> listaConNazionalitaOrdinata = new ArrayList<>(); ;
+        List<Bio> listaSenzaNazionalitaOrdinata = new ArrayList<>(); ;
+
+        listaConNazionalitaOrdinata = listaNonOrdinata
                 .stream()
-                .sorted(Comparator.comparing(cognome))
+                .filter(bio -> textService.isValid(bio.nazionalita))
+                .sorted(Comparator.comparing(nazionalita))
                 .collect(Collectors.toList());
 
+        listaSenzaNazionalitaOrdinata = listaNonOrdinata
+                .stream()
+                .filter(bio -> textService.isEmpty(bio.nazionalita))
+                .collect(Collectors.toList());
+
+        sortedList.addAll(listaConNazionalitaOrdinata);
+        sortedList.addAll(listaSenzaNazionalitaOrdinata);
         return sortedList;
     }
 
+    public List<Bio> sortByCognome(List<Bio> listaNonOrdinata) {
+        List<Bio> sortedList = new ArrayList<>();
+        List<Bio> listaConCognomeOrdinata = new ArrayList<>(); ;
+        List<Bio> listaSenzaCognomeOrdinata = new ArrayList<>(); ;
+
+        listaConCognomeOrdinata = listaNonOrdinata
+                .stream()
+                .filter(bio -> bio.getCognome() != null)
+                .sorted(Comparator.comparing(cognome))
+                .collect(Collectors.toList());
+
+        listaSenzaCognomeOrdinata = listaNonOrdinata
+                .stream()
+                .filter(bio -> bio.getCognome() == null)
+                .sorted(Comparator.comparing(wikiTitle))
+                .collect(Collectors.toList());
+
+        sortedList.addAll(listaConCognomeOrdinata);
+        sortedList.addAll(listaSenzaCognomeOrdinata);
+        return sortedList;
+    }
 
 }

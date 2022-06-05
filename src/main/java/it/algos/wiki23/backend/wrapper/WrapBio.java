@@ -11,7 +11,8 @@ import java.time.format.*;
  * User: gac
  * Date: ven, 30-lug-2021
  * Time: 21:48
- * Semplice wrapper per i dati essenziali di una pagina biografica recuperata da MediaWiki <br>
+ * <p>
+ * Semplice wrapper per i dati essenziali (tutti) di una pagina biografica recuperata da MediaWiki <br>
  */
 public class WrapBio {
 

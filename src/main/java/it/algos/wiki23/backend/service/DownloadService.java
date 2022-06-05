@@ -48,7 +48,7 @@ public class DownloadService extends WAbstractService {
     public void ciclo(final String categoryTitle) {
         long inizio=System.currentTimeMillis();
         List<Long> listaPageIds;
-        List<MiniWrap> listaMiniWrap;
+        List<WrapTime> listaMiniWrap;
         List<Long> listaPageIdsDaLeggere;
         List<WrapBio> listaWrapBio;
 
@@ -168,12 +168,12 @@ public class DownloadService extends WAbstractService {
      *
      * @return lista di tutti i miniWraps
      */
-    public List<MiniWrap> getListaMiniWrap(final List<Long> listaPageIds) {
+    public List<WrapTime> getListaMiniWrap(final List<Long> listaPageIds) {
         long inizio = System.currentTimeMillis();
         String size;
         String time;
 
-        List<MiniWrap> listaMiniWrap = queryService.getMiniWrap(listaPageIds);
+        List<WrapTime> listaMiniWrap = queryService.getMiniWrap(listaPageIds);
 
         size = textService.format(listaPageIds.size());
         time = dateService.deltaText(inizio);
@@ -196,7 +196,7 @@ public class DownloadService extends WAbstractService {
      *
      * @return listaPageIdsDaLeggere
      */
-    public List<Long> elaboraMiniWrap(final List<MiniWrap> listaMiniWrap) {
+    public List<Long> elaboraMiniWrap(final List<WrapTime> listaMiniWrap) {
         long inizio = System.currentTimeMillis();
         String size;
         String time;

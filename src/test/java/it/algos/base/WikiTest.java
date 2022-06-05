@@ -2,9 +2,11 @@ package it.algos.base;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.login.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,6 +67,9 @@ public abstract class WikiTest extends AlgosTest {
     public AttivitaBackend attivitaBackend;
 
     @Autowired
+    public NazionalitaBackend nazionalitaBackend;
+
+    @Autowired
     public BotLogin botLogin;
 
     protected final static long BIO_SALVINI_PAGEID = 132555;
@@ -105,7 +110,9 @@ public abstract class WikiTest extends AlgosTest {
 
     protected List<Bio> listBio;
 
-    protected List<MiniWrap> listMiniWrap;
+    protected List<WrapDidascalia> listWrap;
+
+    protected List<WrapTime> listMiniWrap;
 
     protected AETypeUser typeUser;
 
@@ -192,6 +199,24 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
+    //--attivita
+    //--tipologia attivita singola/plurale
+    protected static Stream<Arguments> ATTIVITA() {
+        return Stream.of(
+                Arguments.of(VUOTA, null),
+                Arguments.of("attore", ListaAttivita.AETypeAttivita.singolare),
+                Arguments.of("badessa", ListaAttivita.AETypeAttivita.singolare),
+                Arguments.of("ciclista", ListaAttivita.AETypeAttivita.singolare),
+                Arguments.of("politico", ListaAttivita.AETypeAttivita.singolare),
+                Arguments.of("attori", ListaAttivita.AETypeAttivita.plurale),
+                Arguments.of("politici", ListaAttivita.AETypeAttivita.plurale),
+                Arguments.of("satrapo", ListaAttivita.AETypeAttivita.singolare),
+                Arguments.of("attrice", ListaAttivita.AETypeAttivita.singolare),
+                Arguments.of("cestisti", ListaAttivita.AETypeAttivita.plurale),
+                Arguments.of("ciclisti", ListaAttivita.AETypeAttivita.plurale)
+        );
+    }
+
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
@@ -252,6 +277,7 @@ public abstract class WikiTest extends AlgosTest {
         listaPageIds = null;
         listWrapBio = null;
         listBio = null;
+        listWrap = null;
         listMiniWrap = null;
         typeUser = null;
         pageId = 0L;
@@ -307,12 +333,12 @@ public abstract class WikiTest extends AlgosTest {
         }
     }
 
-    protected void printMiniWrap(List<MiniWrap> listaMiniWrap) {
+    protected void printMiniWrap(List<WrapTime> listaMiniWrap) {
         if (listaMiniWrap != null) {
             System.out.println(VUOTA);
             System.out.println(String.format("Pageid (wikiTitle) and last timestamp"));
             System.out.println(VUOTA);
-            for (MiniWrap wrap : listaMiniWrap) {
+            for (WrapTime wrap : listaMiniWrap) {
                 System.out.println(String.format("%s (%s)%s%s", wrap.getPageid(), wrap.getWikiTitle(), FORWARD, wrap.getLastModifica()));
             }
         }
@@ -346,7 +372,80 @@ public abstract class WikiTest extends AlgosTest {
     }
 
     protected void printBio(List<Bio> listaBio) {
-        printBio(listaBio,VUOTA);
+        printBio(listaBio, VUOTA);
+    }
+
+
+    protected void printWrapListaAttivita(List<WrapDidascalia> wrapLista) {
+        String message;
+        int max = 20;
+        int tot = wrapLista.size();
+        int iniA = 0;
+        int endA = Math.min(max, tot);
+        int iniB = tot - max > 0 ? tot - max : 0;
+        int endB = tot;
+
+        if (wrapLista != null) {
+            message = String.format("Faccio vedere le prime e le ultime %d biografie", max);
+            System.out.println(message);
+            message = "Parametri di ordinamento (nell'ordine):";
+            System.out.println(message);
+            message = "Nazione, primo carattere, cognome (se manca per wikiTitle)";
+            System.out.println(message);
+            System.out.println(VUOTA);
+
+            printWrapListaBaseAttivita(wrapLista.subList(iniA, endA));
+            System.out.println(TRE_PUNTI);
+            printWrapListaBaseAttivita(wrapLista.subList(iniB, endB));
+        }
+    }
+
+    protected void printWrapListaBaseAttivita(List<WrapDidascalia> wrapLista) {
+        int cont = 0;
+
+        for (WrapDidascalia wrap : wrapLista) {
+            cont++;
+            System.out.print(cont);
+            System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+
+//            System.out.print("[");
+//            System.out.print(wrap.getAttivitaSingola());
+//            System.out.print("]");
+//            System.out.print(SPAZIO);
+
+//            System.out.print("[");
+//            System.out.print(wrap.getAttivitaParagrafo());
+//            System.out.print("]");
+//            System.out.print(SPAZIO);
+
+            System.out.print("[");
+            System.out.print(wrap.getNazionalitaParagrafo());
+            System.out.print("]");
+            System.out.print(SPAZIO);
+
+            System.out.print("[");
+            System.out.print(wrap.getPrimoCarattere());
+            System.out.print("]");
+            System.out.print(SPAZIO);
+
+            System.out.print("[");
+            System.out.print(wrap.getCognome());
+            System.out.print("]");
+            System.out.print(SPAZIO);
+
+            System.out.print("[");
+            System.out.print(wrap.getWikiTitle());
+            System.out.print("]");
+            System.out.print(SPAZIO);
+
+//            System.out.print("[");
+//            System.out.print(wrap.getNome());
+//            System.out.print("]");
+
+
+            System.out.println(SPAZIO);
+        }
     }
 
     protected void printDidascalia(final String sorgente, final String sorgente2, final String sorgente3, final String ottenuto) {
