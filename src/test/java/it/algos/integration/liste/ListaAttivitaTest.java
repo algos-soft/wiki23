@@ -38,7 +38,7 @@ public class ListaAttivitaTest extends WikiTest {
     private ListaAttivita istanza;
 
     LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
-
+    Map<String, Map<String, List>>mappaLista;
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
@@ -59,6 +59,7 @@ public class ListaAttivitaTest extends WikiTest {
     protected void setUpEach() {
         super.setUpEach();
         istanza = null;
+        mappaLista=null;
     }
 
 
@@ -112,16 +113,16 @@ public class ListaAttivitaTest extends WikiTest {
         assertNotNull(istanza);
 
         listWrap = istanza.getListaWrap();
-        mappaWrap = istanza.getMappaWrap();
+        mappaLista = istanza.getMappaDue();
 
-        if (mappaWrap != null) {
-            message = String.format("Ci sono %d biografie che implementano l'attività %s", mappaWrap.size(), sorgente);
+        if (mappaLista != null) {
+            message = String.format("Ci sono %d biografie che implementano l'attività %s", mappaLista.size(), sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
             //                    printWrapListaAttivita(listWrap);
         }
         else {
-            message = "La mappaWrap è nulla";
+            message = "La mappa è nulla";
             System.out.println(message);
         }
         //        if (listWrap != null) {

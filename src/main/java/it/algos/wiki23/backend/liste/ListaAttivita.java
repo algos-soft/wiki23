@@ -201,31 +201,61 @@ public class ListaAttivita extends Lista {
         }
 
         listaWrap = creaWrap(listaBio);
-        Object mappa = creaMappaWrap(listaWrap);
-        //        listaWrap = sortByNazionalita(listaWrap);
+        Map<String, List> mappa = creaMappaNazionalita(listaWrap);
+        mappaDue = new HashMap<>();
+        Map<String, List> lista;
+        if (mappa != null) {
+            for (String key : mappa.keySet()) {
+                lista = creaMappaCarattere(mappa.get(key));
+                mappaDue.put(key, lista);
+            }
+        }
+        mappaDue = arrayService.sort(mappaDue);
     }
 
-    public LinkedHashMap<String, Map> creaMappaWrap(List<WrapDidascalia> listaWrapNonOrdinata) {
-        LinkedHashMap<String, Map> mappa = new LinkedHashMap<>();
-        Map<String, List> mappaUno = new HashMap<>();
+    public Map<String, List> creaMappaNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
+        Map<String, List> mappa = new HashMap<>();
         List lista;
         String nazionalita = VUOTA;
 
         if (listaWrapNonOrdinata != null) {
             for (WrapDidascalia wrap : listaWrapNonOrdinata) {
                 nazionalita = wrap.getNazionalitaParagrafo();
-                if (mappaUno.containsKey(nazionalita)) {
-                    lista = mappaUno.get(nazionalita);
+                if (mappa.containsKey(nazionalita)) {
+                    lista = mappa.get(nazionalita);
                 }
                 else {
                     lista = new ArrayList();
                 }
                 lista.add(wrap);
-                mappaUno.put(nazionalita, lista);
+                mappa.put(nazionalita, lista);
             }
         }
 
-        return mappa;
+        return arrayService.sort(mappa);
+    }
+
+
+    public Map<String, List> creaMappaCarattere(List<WrapDidascalia> listaWrapNonOrdinata) {
+        Map<String, List> mappa = new HashMap<>();
+        List lista;
+        String primoCarattere = VUOTA;
+
+        if (listaWrapNonOrdinata != null) {
+            for (WrapDidascalia wrap : listaWrapNonOrdinata) {
+                primoCarattere = wrap.getPrimoCarattere();
+                if (mappa.containsKey(primoCarattere)) {
+                    lista = mappa.get(primoCarattere);
+                }
+                else {
+                    lista = new ArrayList();
+                }
+                lista.add(wrap);
+                mappa.put(primoCarattere, lista);
+            }
+        }
+
+        return arrayService.sort(mappa);
     }
 
     public List<WrapDidascalia> sortByNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {

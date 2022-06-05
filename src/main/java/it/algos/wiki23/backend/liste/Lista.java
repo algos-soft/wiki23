@@ -109,7 +109,7 @@ public abstract class Lista {
      */
     protected LinkedHashMap<String, List<String>> mappaUno;
 
-    protected Map<String, Map<String, List<String>>> mappaDue;
+    protected Map<String, Map<String, List>> mappaDue;
 
     protected LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>> mappaTre;
 
@@ -214,6 +214,10 @@ public abstract class Lista {
 
     public List<WrapDidascalia> getListaWrap() {
         return listaWrap;
+    }
+
+    public Map<String, Map<String, List>> getMappaDue() {
+        return mappaDue;
     }
 
 }

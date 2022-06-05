@@ -1,7 +1,9 @@
 package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.functional.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -275,6 +277,36 @@ public class ArrayService extends AbstractService {
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * Ordina la mappa secondo la chiave
+     *
+     * @param mappaDisordinata in ingresso
+     *
+     * @return mappa ordinata, null se mappaDisordinata è null
+     */
+    public Map sort(final Map mappaDisordinata) {
+        LinkedHashMap mappaOrdinata = new LinkedHashMap();
+        Object[] listaChiavi;
+
+        if (!isAllValid(mappaDisordinata)) {
+            return mappaDisordinata;
+        }
+
+        listaChiavi = mappaDisordinata.keySet().toArray();
+
+        try {
+            Arrays.sort(listaChiavi);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        for (Object chiave : listaChiavi) {
+            mappaOrdinata.put(chiave, mappaDisordinata.get(chiave));
+        }
+
+        return mappaOrdinata;
     }
 
 }
