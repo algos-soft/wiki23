@@ -109,9 +109,10 @@ public abstract class Lista {
      */
     protected LinkedHashMap<String, List<String>> mappaUno;
 
-    protected Map<String, Map<String, List>> mappaDue;
+    protected TreeMap<String, TreeMap<String, List>> mappaDue;
+    protected TreeMap<String, TreeMap<String, List<String>>> mappa;
 
-    protected LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>> mappaTre;
+//    protected LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>> mappaTre;
 
 
     /**
@@ -216,8 +217,11 @@ public abstract class Lista {
         return listaWrap;
     }
 
-    public Map<String, Map<String, List>> getMappaDue() {
+    public TreeMap<String, TreeMap<String, List>> getMappaDue() {
         return mappaDue;
+    }
+    public TreeMap<String, TreeMap<String, List<String>>> getMappa() {
+        return mappa;
     }
 
 }

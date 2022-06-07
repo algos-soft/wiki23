@@ -203,7 +203,7 @@ public abstract class WikiTest extends AlgosTest {
     //--tipologia attivita singola/plurale
     protected static Stream<Arguments> ATTIVITA() {
         return Stream.of(
-                Arguments.of(VUOTA, null),
+//                Arguments.of(VUOTA, null),
                 Arguments.of("attore", ListaAttivita.AETypeAttivita.singolare),
                 Arguments.of("badessa", ListaAttivita.AETypeAttivita.singolare),
                 Arguments.of("ciclista", ListaAttivita.AETypeAttivita.singolare),
@@ -214,6 +214,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("attrice", ListaAttivita.AETypeAttivita.singolare),
                 Arguments.of("cestisti", ListaAttivita.AETypeAttivita.plurale),
                 Arguments.of("ciclisti", ListaAttivita.AETypeAttivita.plurale)
+
         );
     }
 

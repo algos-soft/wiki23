@@ -308,5 +308,34 @@ public class ArrayService extends AbstractService {
 
         return mappaOrdinata;
     }
+    /**
+     * Ordina la mappa secondo la chiave
+     *
+     * @param mappaDisordinata in ingresso
+     *
+     * @return mappa ordinata, null se mappaDisordinata è null
+     */
+    public TreeMap sort(final TreeMap mappaDisordinata) {
+        TreeMap mappaOrdinata = new TreeMap();
+        Object[] listaChiavi;
+
+        if (!isAllValid(mappaDisordinata)) {
+            return mappaDisordinata;
+        }
+
+        listaChiavi = mappaDisordinata.keySet().toArray();
+
+        try {
+            Arrays.sort(listaChiavi);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        for (Object chiave : listaChiavi) {
+            mappaOrdinata.put(chiave, mappaDisordinata.get(chiave));
+        }
+
+        return mappaOrdinata;
+    }
 
 }

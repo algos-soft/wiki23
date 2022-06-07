@@ -201,9 +201,9 @@ public class ListaAttivita extends Lista {
         }
 
         listaWrap = creaWrap(listaBio);
-        Map<String, List> mappa = creaMappaNazionalita(listaWrap);
-        mappaDue = new HashMap<>();
-        Map<String, List> lista;
+        TreeMap<String, List> mappa = creaMappaNazionalita(listaWrap);
+        mappaDue = new TreeMap<>();
+        TreeMap<String, List> lista;
         if (mappa != null) {
             for (String key : mappa.keySet()) {
                 lista = creaMappaCarattere(mappa.get(key));
@@ -211,16 +211,19 @@ public class ListaAttivita extends Lista {
             }
         }
         mappaDue = arrayService.sort(mappaDue);
+        creaMappaTre(mappaDue);
     }
 
-    public Map<String, List> creaMappaNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
-        Map<String, List> mappa = new HashMap<>();
+    public TreeMap<String, List> creaMappaNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
+        TreeMap<String, List> mappa = new TreeMap<>();
         List lista;
         String nazionalita = VUOTA;
 
         if (listaWrapNonOrdinata != null) {
             for (WrapDidascalia wrap : listaWrapNonOrdinata) {
                 nazionalita = wrap.getNazionalitaParagrafo();
+                nazionalita = nazionalita != null ? nazionalita : VUOTA;
+
                 if (mappa.containsKey(nazionalita)) {
                     lista = mappa.get(nazionalita);
                 }
@@ -236,8 +239,8 @@ public class ListaAttivita extends Lista {
     }
 
 
-    public Map<String, List> creaMappaCarattere(List<WrapDidascalia> listaWrapNonOrdinata) {
-        Map<String, List> mappa = new HashMap<>();
+    public TreeMap<String, List> creaMappaCarattere(List<WrapDidascalia> listaWrapNonOrdinata) {
+        TreeMap<String, List> mappa = new TreeMap<>();
         List lista;
         String primoCarattere = VUOTA;
 
@@ -255,7 +258,66 @@ public class ListaAttivita extends Lista {
             }
         }
 
+        for (String key : mappa.keySet()) {
+            lista = mappa.get(key);
+            lista = sortByCognome(lista);
+            mappa.put(key, lista);
+        }
+
         return arrayService.sort(mappa);
+    }
+
+    public static Function<WrapDidascalia, String> cognome = wrap -> wrap.getCognome() != null ? wrap.getCognome() : VUOTA;
+
+    public static Function<WrapDidascalia, String> wikiTitle = wrap -> wrap.getWikiTitle() != null ? wrap.getWikiTitle() : VUOTA;
+
+    public TreeMap<String, TreeMap<String, List<String>>> creaMappaTre(TreeMap<String, TreeMap<String, List>> mappaDue) {
+        TreeMap<String, TreeMap<String, List<String>>> mappa = new TreeMap<>();
+        TreeMap<String, List> mappaSub;
+        List<WrapDidascalia> listaWrap;
+        List<String> listaDidascalia;
+        String didascalia;
+
+        if (mappaDue != null) {
+            for (String key1 : mappaDue.keySet()) {
+                mappaSub = mappaDue.get(key1);
+                mappa.put(key1, new TreeMap<>());
+
+                for (String key2 : mappaSub.keySet()) {
+                    listaWrap = mappaSub.get(key2);
+                    listaDidascalia = new ArrayList<>();
+                    for (WrapDidascalia wrap : listaWrap) {
+                        didascalia = elaboraService.fixNazionalita("australiana");
+                        listaDidascalia.add(didascalia);
+                    }
+                    mappa.get(key1).put(key2, listaDidascalia);
+                }
+            }
+        }
+        this.mappa = mappa;
+        return mappa;
+    }
+
+    public List<WrapDidascalia> sortByCognome(List<WrapDidascalia> listaWrapNonOrdinata) {
+        List<WrapDidascalia> sortedList = new ArrayList<>();
+        List<WrapDidascalia> listaConCognomeOrdinata = new ArrayList<>(); ;
+        List<WrapDidascalia> listaSenzaCognomeOrdinata = new ArrayList<>(); ;
+
+        listaConCognomeOrdinata = listaWrapNonOrdinata
+                .stream()
+                .filter(wrap -> wrap.getCognome() != null)
+                .sorted(Comparator.comparing(cognome))
+                .collect(Collectors.toList());
+
+        listaSenzaCognomeOrdinata = listaWrapNonOrdinata
+                .stream()
+                .filter(wrap -> wrap.getCognome() == null)
+                .sorted(Comparator.comparing(wikiTitle))
+                .collect(Collectors.toList());
+
+        sortedList.addAll(listaConCognomeOrdinata);
+        sortedList.addAll(listaSenzaCognomeOrdinata);
+        return sortedList;
     }
 
     public List<WrapDidascalia> sortByNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {

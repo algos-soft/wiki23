@@ -37,8 +37,11 @@ public class ListaAttivitaTest extends WikiTest {
      */
     private ListaAttivita istanza;
 
-    LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
-    Map<String, Map<String, List>>mappaLista;
+    private  LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
+
+    private TreeMap<String, TreeMap<String, List>> mappaLista;
+    private  TreeMap<String, TreeMap<String, List<String>>> treeMap;
+
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
@@ -59,7 +62,7 @@ public class ListaAttivitaTest extends WikiTest {
     protected void setUpEach() {
         super.setUpEach();
         istanza = null;
-        mappaLista=null;
+        mappaLista = null;
     }
 
 
@@ -119,22 +122,175 @@ public class ListaAttivitaTest extends WikiTest {
             message = String.format("Ci sono %d biografie che implementano l'attività %s", mappaLista.size(), sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
-            //                    printWrapListaAttivita(listWrap);
+            printMappaLista(sorgente, mappaLista);
         }
         else {
             message = "La mappa è nulla";
             System.out.println(message);
         }
-        //        if (listWrap != null) {
-        //            message = String.format("Ci sono %d biografie che implementano l'attività %s", listWrap.size(), sorgente);
-        //            System.out.println(message);
-        //            System.out.println(VUOTA);
-        //            printWrapListaAttivita(listWrap);
-        //        }
-        //        else {
-        //            message = "La listWrap è nulla";
-        //            System.out.println(message);
-        //        }
+    }
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA")
+    @Order(4)
+    @DisplayName("4 - Lista didascalie di varie attivita")
+        //--attivita singola
+    void getListaDidascalie(final String attività, final ListaAttivita.AETypeAttivita type) {
+        System.out.println("4 - Lista didascalie di varie attivita");
+        sorgente = attività;
+        istanza = appContext.getBean(ListaAttivita.class, sorgente, type);
+        assertNotNull(istanza);
+
+        treeMap = istanza.getMappa();
+
+        if (treeMap != null) {
+            message = String.format("Ci sono %d biografie che implementano l'attività %s", treeMap.size(), sorgente);
+            System.out.println(message);
+            System.out.println(VUOTA);
+            printTreeMap(sorgente, treeMap);
+        }
+        else {
+            message = "La mappa è nulla";
+            System.out.println(message);
+        }
+    }
+
+
+
+    protected void printMappaLista(String attivita, TreeMap<String, TreeMap<String, List>> mappaLista) {
+        int cont = 0;
+        TreeMap<String, List> mappaSub;
+
+        if (mappaLista != null) {
+            message = String.format("WrapDidascalie per l'attività %s", attivita);
+            System.out.println(message);
+            System.out.println(VUOTA);
+
+            for (String key : mappaLista.keySet()) {
+                mappaSub = mappaLista.get(key);
+                cont++;
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print("[");
+                System.out.print(key);
+                System.out.print("]");
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printMappaSub(mappaSub);
+            }
+        }
+    }
+
+
+    protected void printMappaSub(TreeMap<String, List> mappaSub) {
+        int cont = 0;
+        List lista;
+
+        if (mappaSub != null) {
+            for (String key : mappaSub.keySet()) {
+                lista = mappaSub.get(key);
+                cont++;
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print("[");
+                System.out.print(key);
+                System.out.print("]");
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printWrapDidascalia(lista);
+            }
+        }
+    }
+
+    protected void printTreeMap(String attivita, TreeMap<String, TreeMap<String, List<String>>> treeMap) {
+        int cont = 0;
+        TreeMap<String, List<String>> mappaSub;
+
+        if (treeMap != null) {
+            message = String.format("WrapDidascalie per l'attività %s", attivita);
+            System.out.println(message);
+            System.out.println(VUOTA);
+
+            for (String key : treeMap.keySet()) {
+                mappaSub = treeMap.get(key);
+                cont++;
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print("[");
+                System.out.print(key);
+                System.out.print("]");
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printTreeMapSub(mappaSub);
+            }
+        }
+    }
+
+    protected void printTreeMapSub(TreeMap<String, List<String>> mappaSub) {
+        int cont = 0;
+        List lista;
+
+        if (mappaSub != null) {
+            for (String key : mappaSub.keySet()) {
+                lista = mappaSub.get(key);
+                cont++;
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print("[");
+                System.out.print(key);
+                System.out.print("]");
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printWrapDidascalia(lista);
+            }
+        }
+    }
+
+
+    protected void printWrapDidascalia(List lista) {
+        int cont = 0;
+        String value;
+
+        if (lista != null) {
+            for (Object obj : lista) {
+                cont++;
+
+                value = obj.toString();
+                if (obj instanceof WrapDidascalia wrap) {
+                    value = wrap.getWikiTitle();
+                }
+
+                System.out.print(TAB);
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print("[");
+                System.out.print(value);
+                System.out.print("]");
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+            }
+        }
     }
 
     protected void printBioAttivita(List<Bio> listaBio) {
