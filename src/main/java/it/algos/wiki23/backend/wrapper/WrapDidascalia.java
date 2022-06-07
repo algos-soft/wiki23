@@ -1,5 +1,7 @@
 package it.algos.wiki23.backend.wrapper;
 
+import it.algos.wiki23.backend.packages.bio.*;
+
 /**
  * Project wiki23
  * Created by Algos
@@ -29,6 +31,7 @@ public class WrapDidascalia {
     public String luogoMortoLink;
     public String attivita2;
     public String attivita3;
+    public Bio bio;
 
     public String getAttivitaSingola() {
         return attivitaSingola;
@@ -172,6 +175,14 @@ public class WrapDidascalia {
 
     public void setAttivita3(String attivita3) {
         this.attivita3 = attivita3;
+    }
+
+    public Bio getBio() {
+        return bio;
+    }
+
+    public void setBio(Bio bio) {
+        this.bio = bio;
     }
 
 }

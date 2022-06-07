@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.stereotype.*;
 
+import java.time.*;
 import java.util.*;
 
 /**
@@ -54,6 +55,8 @@ public class WResult extends AResult {
 
     private String newtext = VUOTA;
 
+    private String post = VUOTA;
+
     private long newrevid = 0;
 
     private long nameSpace = 0L;
@@ -69,6 +72,7 @@ public class WResult extends AResult {
     private AETypePage typePage;
 
     private Map<String, String> cookies;
+
 
     private WResult() {
         this(null);
@@ -146,6 +150,7 @@ public class WResult extends AResult {
         this.cicli = cicli;
         return this;
     }
+
     public WResult fine() {
         this.setFine();
         return this;
@@ -154,6 +159,14 @@ public class WResult extends AResult {
     public WResult wikiText(final String wikiText) {
         this.wikiText = wikiText;
         return this;
+    }
+    public WResult post(final String post) {
+        this.post = post;
+        return this;
+    }
+
+    public String getPost() {
+        return post;
     }
 
     public WResult setValido() {

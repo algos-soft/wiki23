@@ -245,7 +245,7 @@ public abstract class AQuery {
         return urlDomain;
     }
 
-    protected WResult checkInizialeBase(final String pathQuery, final Object wikiTitlePageid) {
+    protected WResult checkInizialeBase(final String pathQuery) {
         WResult result = WResult.valido()
                 .queryType(queryType)
                 .typePage(AETypePage.indeterminata)
@@ -293,7 +293,7 @@ public abstract class AQuery {
     }
 
     protected WResult checkIniziale(final String pathQuery, final String wikiTitleGrezzo) {
-        WResult result = checkInizialeBase(pathQuery, wikiTitleGrezzo);
+        WResult result = checkInizialeBase(pathQuery);
         result = checkInizialePipe(result, wikiTitleGrezzo);
 
         if (textService.isEmpty(wikiTitleGrezzo)) {
@@ -313,7 +313,7 @@ public abstract class AQuery {
 
 
     protected WResult checkIniziale(final String pathQuery, final long pageid) {
-        WResult result = checkInizialeBase(pathQuery, pageid);
+        WResult result = checkInizialeBase(pathQuery);
 
         result.setPageid(pageid);
         if (pageid < 1) {

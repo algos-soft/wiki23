@@ -291,6 +291,7 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(VUOTA);
         System.out.println("Risultato");
         System.out.println(String.format("Status: %s", result.isValido() ? "true" : "false"));
+        System.out.println(String.format("Modificata: %s", result.isModificata() ? "true" : "false"));
         System.out.println(String.format("Query: %s", result.getQueryType()));
         System.out.println(String.format("Title: %s", result.getWikiTitle()));
         System.out.println(String.format("PageId: %s", result.getPageid()));
@@ -304,12 +305,15 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Cookies: %s", result.getCookies()));
         System.out.println(String.format("Preliminary response: %s", result.getPreliminaryResponse()));
         System.out.println(String.format("Token: %s", result.getToken()));
+        System.out.println(String.format("Post: %s", result.getPost()));
+        System.out.println(String.format("New text: %s", result.getNewtext()));
         System.out.println(String.format("Secondary response: %s", result.getResponse()));
         System.out.println(String.format("Message code: %s", result.getCodeMessage()));
         System.out.println(String.format("Message: %s", result.getMessage()));
         System.out.println(String.format("Error code: %s", result.getErrorCode()));
         System.out.println(String.format("Error message: %s", result.getErrorMessage()));
         System.out.println(String.format("Valid message: %s", result.getValidMessage()));
+        System.out.println(String.format("NewTimeStamp: %s", result.getNewtimestamp()));
         System.out.println(String.format("Numeric value: %s", textService.format(result.getIntValue())));
         System.out.println(String.format("Cicli: %d", result.getCicli())); ;
         System.out.println(String.format("List value: %s", lista));

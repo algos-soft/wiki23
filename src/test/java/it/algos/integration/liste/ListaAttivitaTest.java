@@ -137,10 +137,8 @@ public class ListaAttivitaTest extends WikiTest {
     void getListaDidascalie(final String attività, final ListaAttivita.AETypeAttivita type) {
         System.out.println("4 - Lista didascalie di varie attivita");
         sorgente = attività;
-        istanza = appContext.getBean(ListaAttivita.class, sorgente, type);
-        assertNotNull(istanza);
 
-        treeMap = istanza.getMappa();
+        treeMap = appContext.getBean(ListaAttivita.class, sorgente, type).getMappa();
 
         if (treeMap != null) {
             message = String.format("Ci sono %d biografie che implementano l'attività %s", treeMap.size(), sorgente);

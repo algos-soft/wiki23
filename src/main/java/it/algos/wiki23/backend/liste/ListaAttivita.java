@@ -287,7 +287,7 @@ public class ListaAttivita extends Lista {
                     listaWrap = mappaSub.get(key2);
                     listaDidascalia = new ArrayList<>();
                     for (WrapDidascalia wrap : listaWrap) {
-                        didascalia = elaboraService.fixNazionalita("australiana");
+                        didascalia = didascaliaService.getLista(wrap.getBio());
                         listaDidascalia.add(didascalia);
                     }
                     mappa.get(key1).put(key2, listaDidascalia);

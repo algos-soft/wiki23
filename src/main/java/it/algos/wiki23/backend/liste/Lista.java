@@ -58,6 +58,7 @@ public abstract class Lista {
      */
     @Autowired
     public TextService textService;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -65,6 +66,7 @@ public abstract class Lista {
      */
     @Autowired
     public ElaboraService elaboraService;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -72,6 +74,14 @@ public abstract class Lista {
      */
     @Autowired
     public AttivitaBackend attivitaBackend;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public DidascaliaService didascaliaService;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -110,9 +120,10 @@ public abstract class Lista {
     protected LinkedHashMap<String, List<String>> mappaUno;
 
     protected TreeMap<String, TreeMap<String, List>> mappaDue;
+
     protected TreeMap<String, TreeMap<String, List<String>>> mappa;
 
-//    protected LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>> mappaTre;
+    //    protected LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<String>>>> mappaTre;
 
 
     /**
@@ -194,18 +205,19 @@ public abstract class Lista {
         wrap = new WrapDidascalia();
 
         wrap.setAttivitaSingola(bio.attivita);
-        if (textService.isValid(bio.attivita) ) {
+        if (textService.isValid(bio.attivita)) {
             wrap.setAttivitaParagrafo(attivitaBackend.findFirstBySingolare(bio.attivita).plurale);
         }
         wrap.setNazionalitaSingola(bio.nazionalita);
-        if (textService.isValid(bio.nazionalita) ) {
+        if (textService.isValid(bio.nazionalita)) {
             wrap.setNazionalitaParagrafo(nazionalitaBackend.findBySingolare(bio.nazionalita).plurale);
         }
         wrap.setWikiTitle(bio.wikiTitle);
         wrap.setNome(bio.nome);
         wrap.setCognome(bio.cognome);
-        wrap.setPrimoCarattere(textService.isValid(bio.cognome)? bio.cognome.substring(0,1): bio.wikiTitle.substring(0,1));
+        wrap.setPrimoCarattere(textService.isValid(bio.cognome) ? bio.cognome.substring(0, 1) : bio.wikiTitle.substring(0, 1));
 
+        wrap.setBio(bio); //@todo meglio eliminarlo
         return wrap;
     }
 
@@ -220,6 +232,7 @@ public abstract class Lista {
     public TreeMap<String, TreeMap<String, List>> getMappaDue() {
         return mappaDue;
     }
+
     public TreeMap<String, TreeMap<String, List<String>>> getMappa() {
         return mappa;
     }
