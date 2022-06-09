@@ -454,7 +454,7 @@ public class ElaboraService extends WAbstractService {
         String testoValido = wikiBotService.estraeValoreInizialeGrezzoPuntoEscluso(testoGrezzo);
 
         //--minuscola
-        testoValido = testoValido.toLowerCase();
+        testoValido = textService.primaMinuscola(testoValido);
 
         //--eventuali quadre rimaste (può succedere per le attività ex-)
         testoValido = testoValido.replaceAll(QUADRA_INI_REGEX, VUOTA);
@@ -501,7 +501,7 @@ public class ElaboraService extends WAbstractService {
         String testoValido = wikiBotService.estraeValoreInizialeGrezzoPuntoEscluso(testoGrezzo);
 
         //--minuscola
-        testoValido = testoValido.toLowerCase();
+        testoValido = textService.primaMinuscola(testoValido);
 
         //        //--eventuali quadre rimaste (può succedere per le attività ex-)
         //        testoValido = testoValido.replaceAll(QUADRA_INI_REGEX,VUOTA);

@@ -137,7 +137,7 @@ public abstract class Lista {
      * Se hanno la stessa firma, chiama prima @PostConstruct della sottoclasse <br>
      * Se hanno firme diverse, chiama prima @PostConstruct della superclasse <br>
      */
-    @PostConstruct
+//    @PostConstruct
     public void inizia() {
         this.fixPreferenze();
         this.regolazioniIniziali();

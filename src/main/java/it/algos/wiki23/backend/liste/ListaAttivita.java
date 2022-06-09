@@ -77,53 +77,16 @@ public class ListaAttivita extends Lista {
     //--property
     private AETypeAttivita typeAttivita;
 
-    private String titoloGrezzo;
-
     protected LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
 
     /**
-     * Costruttore base con parametri <br>
+     * Costruttore base senza parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
      * Uso: appContext.getBean(ListaAttivita.class, attivita) per usare tutte le attività che hanno la stessa attivita.plurale <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune properties. <br>
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
-     *
-     * @param attivita di cui recuperare le liste di tutte le singole attività di biografie
      */
-    public ListaAttivita(final Attivita attivita) {
-        this(attivita, AETypeAttivita.plurale);
-    }// end of constructor
-
-
-    /**
-     * Costruttore alternativo con parametri <br>
-     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(ListaAttivita.class, attivita, AETypeAttivita.singolare) per usare solo una singola attività <br>
-     * Non rimanda al costruttore della superclasse. Regola qui solo alcune properties. <br>
-     * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
-     *
-     * @param attivita     di cui recuperare la lista di biografie
-     * @param typeAttivita singolare o plurale
-     */
-    public ListaAttivita(final Attivita attivita, final AETypeAttivita typeAttivita) {
-        this.attivita = attivita;
-        this.typeAttivita = typeAttivita;
-    }// end of constructor
-
-    /**
-     * Costruttore alternativo con parametri <br>
-     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(ListaAttivita.class, nomeAttivitaPlurale, AETypeAttivita.plurale) per usare tutte le singole attività <br>
-     * Uso: appContext.getBean(ListaAttivita.class, nomeAttivitaSingolare, AETypeAttivita.singolare) per usare solo una singola attività <br>
-     * Non rimanda al costruttore della superclasse. Regola qui solo alcune properties. <br>
-     * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
-     *
-     * @param nomeAttivita singolare o plurale in funzione del flag
-     * @param typeAttivita singola o plurale
-     */
-    public ListaAttivita(final String nomeAttivita, final AETypeAttivita typeAttivita) {
-        this.nomeAttivita = nomeAttivita;
-        this.typeAttivita = typeAttivita;
+    public ListaAttivita() {
     }// end of constructor
 
 
@@ -143,12 +106,10 @@ public class ListaAttivita extends Lista {
         if (attivita != null) {
             switch (typeAttivita) {
                 case singolare -> {
-                    this.titoloGrezzo = attivita.singolare;
                     listaNomiAttivitaSingole = arrayService.creaArraySingolo(attivita.singolare);
                 }
                 case plurale -> {
                     try {
-                        this.titoloGrezzo = attivita.plurale;
                         listaNomiAttivitaSingole = attivitaBackend.findSingolariByPlurale(attivita.plurale);
                     } catch (Exception unErrore) {
                         logger.error(new WrapLog().exception((unErrore)).usaDb());
@@ -163,7 +124,6 @@ public class ListaAttivita extends Lista {
                 case singolare -> {
                     try {
                         attivita = attivitaBackend.findFirstBySingolare(nomeAttivita);
-                        this.titoloGrezzo = attivita.singolare;
                     } catch (Exception unErrore) {
                         logger.error(new WrapLog().exception((unErrore)).usaDb());
                     }
@@ -172,7 +132,6 @@ public class ListaAttivita extends Lista {
                 case plurale -> {
                     try {
                         attivita = attivitaBackend.findFirstByPlurale(nomeAttivita);
-                        this.titoloGrezzo = attivita.plurale;
                         listaNomiAttivitaSingole = attivitaBackend.findSingolariByPlurale(nomeAttivita);
                     } catch (Exception unErrore) {
                         logger.error(new WrapLog().exception((unErrore)).usaDb());
@@ -184,6 +143,27 @@ public class ListaAttivita extends Lista {
         }
     }
 
+    public ListaAttivita attivita(final Attivita attivita) {
+        this.nomeAttivita = attivita.plurale;
+        this.typeAttivita = AETypeAttivita.plurale;
+        this.regolazioniIniziali();
+        this.fixListaBio();
+        return this;
+    }
+    public ListaAttivita singolare(final String attivitaSingolare) {
+        this.nomeAttivita = attivitaSingolare;
+        this.typeAttivita = AETypeAttivita.singolare;
+        this.regolazioniIniziali();
+        this.fixListaBio();
+        return this;
+    }
+    public ListaAttivita plurale(final String attivitaPlurale) {
+        this.nomeAttivita = attivitaPlurale;
+        this.typeAttivita = AETypeAttivita.plurale;
+        this.regolazioniIniziali();
+        this.fixListaBio();
+        return this;
+    }
 
     /**
      * Costruisce una lista di biografie (Bio) che hanno una valore valido per la pagina specifica <br>

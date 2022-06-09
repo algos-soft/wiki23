@@ -37,10 +37,11 @@ public class ListaAttivitaTest extends WikiTest {
      */
     private ListaAttivita istanza;
 
-    private  LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
+    private LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
 
     private TreeMap<String, TreeMap<String, List>> mappaLista;
-    private  TreeMap<String, TreeMap<String, List<String>>> treeMap;
+
+    private TreeMap<String, TreeMap<String, List<String>>> treeMap;
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -71,7 +72,8 @@ public class ListaAttivitaTest extends WikiTest {
     @DisplayName("1 - Costruttore base")
     void costruttore() {
         sorgente = "attore";
-        istanza = appContext.getBean(ListaAttivita.class, sorgente, ListaAttivita.AETypeAttivita.singolare);
+        //        istanza = appContext.getBean(ListaAttivita.class, sorgente, ListaAttivita.AETypeAttivita.singolare);
+        istanza = appContext.getBean(ListaAttivita.class);
         assertNotNull(istanza);
 
         System.out.println(VUOTA);
@@ -87,10 +89,14 @@ public class ListaAttivitaTest extends WikiTest {
     void getListaBio(final String attività, final ListaAttivita.AETypeAttivita type) {
         System.out.println("2 - Lista bio di varie attivita");
         sorgente = attività;
-        istanza = appContext.getBean(ListaAttivita.class, sorgente, type);
-        assertNotNull(istanza);
 
-        listBio = istanza.getListaBio();
+        if (type == ListaAttivita.AETypeAttivita.singolare) {
+            listBio = appContext.getBean(ListaAttivita.class).singolare(sorgente).getListaBio();
+        }
+        if (type == ListaAttivita.AETypeAttivita.plurale) {
+            listBio = appContext.getBean(ListaAttivita.class).plurale(sorgente).getListaBio();
+        }
+
         if (listBio != null) {
             message = String.format("Ci sono %d biografie che implementano l'attività %s", listBio.size(), sorgente);
             System.out.println(message);
@@ -112,11 +118,13 @@ public class ListaAttivitaTest extends WikiTest {
     void getListaWrap(final String attività, final ListaAttivita.AETypeAttivita type) {
         System.out.println("3 - Lista wrap di varie attivita");
         sorgente = attività;
-        istanza = appContext.getBean(ListaAttivita.class, sorgente, type);
-        assertNotNull(istanza);
 
-        listWrap = istanza.getListaWrap();
-        mappaLista = istanza.getMappaDue();
+        if (type == ListaAttivita.AETypeAttivita.singolare) {
+            mappaLista = appContext.getBean(ListaAttivita.class).singolare(sorgente).getMappaDue();
+        }
+        if (type == ListaAttivita.AETypeAttivita.plurale) {
+            mappaLista = appContext.getBean(ListaAttivita.class).plurale(sorgente).getMappaDue();
+        }
 
         if (mappaLista != null) {
             message = String.format("Ci sono %d biografie che implementano l'attività %s", mappaLista.size(), sorgente);
@@ -129,6 +137,7 @@ public class ListaAttivitaTest extends WikiTest {
             System.out.println(message);
         }
     }
+
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA")
     @Order(4)
@@ -138,7 +147,12 @@ public class ListaAttivitaTest extends WikiTest {
         System.out.println("4 - Lista didascalie di varie attivita");
         sorgente = attività;
 
-        treeMap = appContext.getBean(ListaAttivita.class, sorgente, type).getMappa();
+        if (type == ListaAttivita.AETypeAttivita.singolare) {
+            treeMap = appContext.getBean(ListaAttivita.class).singolare(sorgente).getMappa();
+        }
+        if (type == ListaAttivita.AETypeAttivita.plurale) {
+            treeMap = appContext.getBean(ListaAttivita.class).plurale(sorgente).getMappa();
+        }
 
         if (treeMap != null) {
             message = String.format("Ci sono %d biografie che implementano l'attività %s", treeMap.size(), sorgente);
@@ -151,7 +165,6 @@ public class ListaAttivitaTest extends WikiTest {
             System.out.println(message);
         }
     }
-
 
 
     protected void printMappaLista(String attivita, TreeMap<String, TreeMap<String, List>> mappaLista) {
