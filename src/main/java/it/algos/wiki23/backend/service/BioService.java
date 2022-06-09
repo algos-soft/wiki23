@@ -476,13 +476,11 @@ public class BioService extends WAbstractService {
      *
      * @param listaNomiAttivitaSingole per costruire la query
      *
-     * @return lista di entityBeans
+     * @return lista di entityBeans ordinata per cognome
      *
      * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
      */
     public List<Bio> fetchAttivita(List<String> listaNomiAttivitaSingole) {
-        List<Bio> sortedList;
-        List<Bio> listaOrdinataPerNazionalita;
         List<Bio> listaNonOrdinata = new ArrayList<>();
         List<Bio> lista1;
         List<Bio> lista2;
@@ -504,9 +502,7 @@ public class BioService extends WAbstractService {
             }
         }
 
-//        listaOrdinataPerNazionalita = sortByNazionalita(listaNonOrdinata);
-//        return listaOrdinataPerNazionalita;
-        return listaNonOrdinata;
+        return sortByCognome(listaNonOrdinata);
     }
 
     public List<Bio> sortByNazionalita(List<Bio> listaNonOrdinata) {

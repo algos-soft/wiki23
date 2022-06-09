@@ -110,7 +110,7 @@ public abstract class WikiTest extends AlgosTest {
 
     protected List<Bio> listBio;
 
-    protected List<WrapDidascalia> listWrap;
+    protected List<WrapDidascalia> listWrapDidascalia;
 
     protected List<WrapTime> listMiniWrap;
 
@@ -199,21 +199,21 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
-    //--attivita
-    //--tipologia attivita singola/plurale
+    //--nome attivita
+    //--flag singolare versus plurale
     protected static Stream<Arguments> ATTIVITA() {
         return Stream.of(
 //                Arguments.of(VUOTA, null),
-                Arguments.of("attore", ListaAttivita.AETypeAttivita.singolare),
-                Arguments.of("badessa", ListaAttivita.AETypeAttivita.singolare),
-                Arguments.of("ciclista", ListaAttivita.AETypeAttivita.singolare),
-                Arguments.of("politico", ListaAttivita.AETypeAttivita.singolare),
-                Arguments.of("attori", ListaAttivita.AETypeAttivita.plurale),
-                Arguments.of("politici", ListaAttivita.AETypeAttivita.plurale),
-                Arguments.of("satrapo", ListaAttivita.AETypeAttivita.singolare),
-                Arguments.of("attrice", ListaAttivita.AETypeAttivita.singolare),
-                Arguments.of("cestisti", ListaAttivita.AETypeAttivita.plurale),
-                Arguments.of("ciclisti", ListaAttivita.AETypeAttivita.plurale)
+                Arguments.of("attore", true),
+                Arguments.of("badessa", true),
+                Arguments.of("ciclista", true),
+                Arguments.of("politico", true),
+                Arguments.of("attori", false),
+                Arguments.of("politici", false),
+                Arguments.of("satrapo", true),
+                Arguments.of("attrice", true),
+                Arguments.of("cestisti", false),
+                Arguments.of("ciclisti", false)
 
         );
     }
@@ -278,7 +278,7 @@ public abstract class WikiTest extends AlgosTest {
         listaPageIds = null;
         listWrapBio = null;
         listBio = null;
-        listWrap = null;
+        listWrapDidascalia = null;
         listMiniWrap = null;
         typeUser = null;
         pageId = 0L;
@@ -383,7 +383,7 @@ public abstract class WikiTest extends AlgosTest {
 
     protected void printWrapListaAttivita(List<WrapDidascalia> wrapLista) {
         String message;
-        int max = 20;
+        int max = 10;
         int tot = wrapLista.size();
         int iniA = 0;
         int endA = Math.min(max, tot);
@@ -391,7 +391,7 @@ public abstract class WikiTest extends AlgosTest {
         int endB = tot;
 
         if (wrapLista != null) {
-            message = String.format("Faccio vedere le prime e le ultime %d biografie", max);
+            message = String.format("Faccio vedere le prime e le ultime %d wrapDidascalie", max);
             System.out.println(message);
             message = "Parametri di ordinamento (nell'ordine):";
             System.out.println(message);
@@ -414,16 +414,6 @@ public abstract class WikiTest extends AlgosTest {
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
 
-//            System.out.print("[");
-//            System.out.print(wrap.getAttivitaSingola());
-//            System.out.print("]");
-//            System.out.print(SPAZIO);
-
-//            System.out.print("[");
-//            System.out.print(wrap.getAttivitaParagrafo());
-//            System.out.print("]");
-//            System.out.print(SPAZIO);
-
             System.out.print("[");
             System.out.print(wrap.getNazionalitaParagrafo());
             System.out.print("]");
@@ -443,11 +433,6 @@ public abstract class WikiTest extends AlgosTest {
             System.out.print(wrap.getWikiTitle());
             System.out.print("]");
             System.out.print(SPAZIO);
-
-//            System.out.print("[");
-//            System.out.print(wrap.getNome());
-//            System.out.print("]");
-
 
             System.out.println(SPAZIO);
         }

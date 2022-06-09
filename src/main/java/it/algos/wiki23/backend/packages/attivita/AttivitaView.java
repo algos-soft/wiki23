@@ -16,6 +16,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.upload.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
@@ -247,9 +248,8 @@ public class AttivitaView extends WikiView {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void testPagina() {
-        ListaAttivita lista = appContext.getBean(ListaAttivita.class, "attore", ListaAttivita.AETypeAttivita.singolare);
-
-        List listaBio= lista.getListaBio();
+        String nomeAttivitaPlurale = "politici";
+        appContext.getBean(UploadAttivita.class, nomeAttivitaPlurale).uploadTest();
         reload();
     }
 
