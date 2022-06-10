@@ -309,4 +309,35 @@ public class ArrayService extends AbstractService {
         return mappaOrdinata;
     }
 
+
+    /**
+     * Ordina la mappa secondo la chiave
+     *
+     * @param mappaDisordinata in ingresso
+     *
+     * @return mappa ordinata, null se mappaDisordinata è null
+     */
+    public Map sortVuota(final Map mappaDisordinata) {
+        LinkedHashMap mappaOrdinata = new LinkedHashMap();
+        Set listaChiaviDisordinata;
+        List<String> listaChiaviOrdinata = null;
+
+        listaChiaviDisordinata = mappaDisordinata.keySet();
+        try {
+            listaChiaviOrdinata = listaChiaviDisordinata.stream().filter(c -> textService.isValid(c)).sorted().toList();
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        for (Object chiave : listaChiaviOrdinata) {
+            mappaOrdinata.put(chiave, mappaDisordinata.get(chiave));
+        }
+
+        if (mappaDisordinata.keySet().contains(VUOTA)) {
+            mappaOrdinata.put(VUOTA, mappaDisordinata.get(VUOTA));
+        }
+
+        return mappaOrdinata;
+    }
+
 }

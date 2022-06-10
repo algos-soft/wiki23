@@ -1,6 +1,7 @@
 package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.wiki.query.*;
@@ -47,7 +48,13 @@ public class UploadAttivita extends Upload {
      * Esegue la scrittura della pagina <br>
      */
     public void uploadTest() {
-        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaParagrafiDimensionati();
+        if (WPref.usaParagrafiDimensionati.is()) {
+            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaParagrafiDimensionati();
+        }
+        else {
+            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaParagrafi();
+        }
+
         newText = mappaToText(mappaDidascalie);
         appContext.getBean(QueryWrite.class).urlRequest(WIKI_TITLE_DEBUG, newText);
     }

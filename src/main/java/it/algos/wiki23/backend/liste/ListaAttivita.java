@@ -178,12 +178,18 @@ public class ListaAttivita extends Lista {
     public String fixTitolo(String titoloGrezzo) {
         String paragrafoVisibile = VUOTA;
 
-        paragrafoVisibile += titoloParagrafo;
-        paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-        paragrafoVisibile += PIPE;
-        paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-        paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
-        paragrafoVisibile = PARAGRAFO + paragrafoVisibile + PARAGRAFO;
+        if (textService.isValid(titoloGrezzo)) {
+            paragrafoVisibile = titoloParagrafo;
+            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            paragrafoVisibile += PIPE;
+            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+            paragrafoVisibile = PARAGRAFO + paragrafoVisibile + PARAGRAFO;
+        }
+        else {
+            paragrafoVisibile = "Altre...";
+            paragrafoVisibile = wikiUtility.setParagrafo(paragrafoVisibile);
+        }
 
         return paragrafoVisibile;
     }
@@ -218,12 +224,18 @@ public class ListaAttivita extends Lista {
     public String fixTitoloDimensionato(String titoloGrezzo, int numVoci) {
         String paragrafoVisibile = VUOTA;
 
-        paragrafoVisibile += titoloParagrafo;
-        paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-        paragrafoVisibile += PIPE;
-        paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-        paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
-        paragrafoVisibile = wikiUtility.setParagrafo(paragrafoVisibile, numVoci);
+        if (textService.isValid(titoloGrezzo)) {
+            paragrafoVisibile = titoloParagrafo;
+            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            paragrafoVisibile += PIPE;
+            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+            paragrafoVisibile = wikiUtility.setParagrafo(paragrafoVisibile, numVoci);
+        }
+        else {
+            paragrafoVisibile = "Altre...";
+            paragrafoVisibile = wikiUtility.setParagrafo(paragrafoVisibile, numVoci);
+        }
 
         return paragrafoVisibile;
     }
@@ -249,7 +261,7 @@ public class ListaAttivita extends Lista {
             }
         }
 
-        return (LinkedHashMap) arrayService.sort(mappa);
+        return (LinkedHashMap) arrayService.sortVuota(mappa);
     }
 
 

@@ -203,16 +203,17 @@ public abstract class WikiTest extends AlgosTest {
     //--flag singolare versus plurale
     protected static Stream<Arguments> ATTIVITA() {
         return Stream.of(
-                //                Arguments.of(VUOTA, null),
-                Arguments.of("attore", true),
-                Arguments.of("badessa", true),
-                Arguments.of("ciclista", true),
-                Arguments.of("politico", true),
-                Arguments.of("attori", false),
-                Arguments.of("politici", false),
-                Arguments.of("satrapo", true),
-                Arguments.of("attrice", true),
-                Arguments.of("cestisti", false),
+//                Arguments.of("attore", true),
+//                Arguments.of("badessa", true),
+//                Arguments.of("ciclista", true),
+//                Arguments.of("politico", true),
+//                Arguments.of("attori", false),
+//                Arguments.of("politici", false),
+//                Arguments.of("satrapo", true),
+//                Arguments.of("attrice", true),
+//                Arguments.of("cestisti", false),
+//                Arguments.of("principi", false),
+                Arguments.of("economisti", false),
                 Arguments.of("ciclisti", false)
 
         );
@@ -414,13 +415,13 @@ public abstract class WikiTest extends AlgosTest {
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
 
-            System.out.print(textService.setQuadre(wrap.getNazionalitaParagrafo()));
+            System.out.print(textService.setQuadre(textService.isValid(wrap.getNazionalitaParagrafo()) ? wrap.getNazionalitaParagrafo() : NULL));
             System.out.print(SPAZIO);
 
             System.out.print(textService.setQuadre(wrap.getPrimoCarattere()));
             System.out.print(SPAZIO);
 
-            System.out.print(textService.setQuadre(wrap.getCognome()));
+            System.out.print(textService.setQuadre(textService.isValid(wrap.getCognome()) ? wrap.getCognome() : NULL));
             System.out.print(SPAZIO);
 
             System.out.println(SPAZIO);

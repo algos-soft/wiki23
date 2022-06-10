@@ -1120,7 +1120,7 @@ public class TextService extends AbstractService {
             }
         }
 
-        return stringaOut.trim();
+        return isValid(stringaOut) ? stringaOut.trim() : VUOTA;
     }
 
 
@@ -1157,7 +1157,7 @@ public class TextService extends AbstractService {
             }
         }
 
-        return stringaOut.trim();
+        return isValid(stringaOut) ? stringaOut.trim() : VUOTA;
     }
 
 
@@ -1182,7 +1182,7 @@ public class TextService extends AbstractService {
             stringaOut = stringaOut + PARENTESI_TONDA_END;
         }
 
-        return stringaOut.trim();
+        return isValid(stringaOut) ? stringaOut.trim() : VUOTA;
     }
 
 }
