@@ -233,7 +233,7 @@ public class DidascaliaServiceTest extends WikiTest {
 
             nomeCognome = service.getNomeCognome(bio);
             attivitaNazionalita = service.getAttivitaNazionalita(bio);
-            lista = service.getLista(bio);
+            lista = service.getDidascaliaLista(bio);
             natoMorto = service.getNatoMorto(bio);
 
             System.out.println(VUOTA);

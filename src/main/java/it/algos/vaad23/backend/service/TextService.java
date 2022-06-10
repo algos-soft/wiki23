@@ -1095,6 +1095,36 @@ public class TextService extends AbstractService {
 
 
     /**
+     * Aggiunge parentesi quadre in testa e coda alla stringa. <br>
+     * Aggiunge SOLO se gia non esistono (ne doppie, ne singole) <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     * Elimina eventuali quadre già presenti, per evitare di metterle doppie <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con parentesi quadre aggiunte
+     */
+    public String setQuadre(final String stringaIn) {
+        String stringaOut = stringaIn;
+
+        if (stringaIn != null && stringaIn.length() > 0) {
+            stringaOut = this.setNoQuadre(stringaOut);
+            if (this.isValid(stringaOut)) {
+                if (!stringaOut.startsWith(QUADRA_INI)) {
+                    stringaOut = QUADRA_INI + stringaOut;
+                }
+                if (!stringaOut.endsWith(QUADRA_END)) {
+                    stringaOut = stringaOut + QUADRA_END;
+                }
+            }
+        }
+
+        return stringaOut.trim();
+    }
+
+
+    /**
      * Aggiunge parentesi quadre doppie in testa e coda alla stringa. <br>
      * Aggiunge SOLO se gia non esistono (ne doppie, ne singole) <br>
      * Se arriva una stringa vuota, restituisce una stringa vuota <br>

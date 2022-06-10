@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Wiki23Cost {
+    public static final String TAG_BOLD = "'''";
+
+    public static final String TAG_ITALIC = "''";
 
     public static final String TAG_WIKI23_VERSION = "wikiversion";
 

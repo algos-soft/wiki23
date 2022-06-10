@@ -203,7 +203,7 @@ public abstract class WikiTest extends AlgosTest {
     //--flag singolare versus plurale
     protected static Stream<Arguments> ATTIVITA() {
         return Stream.of(
-//                Arguments.of(VUOTA, null),
+                //                Arguments.of(VUOTA, null),
                 Arguments.of("attore", true),
                 Arguments.of("badessa", true),
                 Arguments.of("ciclista", true),
@@ -395,18 +395,18 @@ public abstract class WikiTest extends AlgosTest {
             System.out.println(message);
             message = "Parametri di ordinamento (nell'ordine):";
             System.out.println(message);
-            message = "Nazione, primo carattere, cognome (se manca per wikiTitle)";
+            message = "Nazione, primo carattere, cognome";
             System.out.println(message);
             System.out.println(VUOTA);
 
-            printWrapListaBaseAttivita(wrapLista.subList(iniA, endA));
+            printWrapListaBaseAttivita(wrapLista.subList(iniA, endA), iniA);
             System.out.println(TRE_PUNTI);
-            printWrapListaBaseAttivita(wrapLista.subList(iniB, endB));
+            printWrapListaBaseAttivita(wrapLista.subList(iniB, endB), iniB);
         }
     }
 
-    protected void printWrapListaBaseAttivita(List<WrapDidascalia> wrapLista) {
-        int cont = 0;
+    protected void printWrapListaBaseAttivita(List<WrapDidascalia> wrapLista, final int inizio) {
+        int cont = inizio;
 
         for (WrapDidascalia wrap : wrapLista) {
             cont++;
@@ -414,24 +414,13 @@ public abstract class WikiTest extends AlgosTest {
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
 
-            System.out.print("[");
-            System.out.print(wrap.getNazionalitaParagrafo());
-            System.out.print("]");
+            System.out.print(textService.setQuadre(wrap.getNazionalitaParagrafo()));
             System.out.print(SPAZIO);
 
-            System.out.print("[");
-            System.out.print(wrap.getPrimoCarattere());
-            System.out.print("]");
+            System.out.print(textService.setQuadre(wrap.getPrimoCarattere()));
             System.out.print(SPAZIO);
 
-            System.out.print("[");
-            System.out.print(wrap.getCognome());
-            System.out.print("]");
-            System.out.print(SPAZIO);
-
-            System.out.print("[");
-            System.out.print(wrap.getWikiTitle());
-            System.out.print("]");
+            System.out.print(textService.setQuadre(wrap.getCognome()));
             System.out.print(SPAZIO);
 
             System.out.println(SPAZIO);

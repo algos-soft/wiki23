@@ -48,6 +48,7 @@ public class ListaAttivita extends Lista {
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
     public ListaAttivita() {
+        super.titoloParagrafo = "Progetto:Biografie/Nazionalità/";
     }// end of constructor
 
 
@@ -140,7 +141,7 @@ public class ListaAttivita extends Lista {
                 listaWrap = mappaWrap.get(key2);
                 listaDidascalia = new ArrayList<>();
                 for (WrapDidascalia wrap : listaWrap) {
-                    didascalia = didascaliaService.getLista(wrap.getBio());
+                    didascalia = didascaliaService.getDidascaliaLista(wrap.getBio());
                     listaDidascalia.add(didascalia);
                 }
                 mappaDidascalie.get(key1).put(key2, listaDidascalia);
@@ -150,9 +151,85 @@ public class ListaAttivita extends Lista {
         return mappaDidascalie;
     }
 
+    /**
+     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
+     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+     */
+    @Override
+    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi() {
+        super.mappaParagrafi();
+
+        LinkedHashMap<String, List<String>> mappaSub;
+        String paragrafo;
+
+        for (String key : mappaDidascalie.keySet()) {
+            paragrafo = key;
+            mappaSub = mappaDidascalie.get(key);
+            paragrafo = fixTitolo(paragrafo);
+
+            mappaParagrafi.put(paragrafo, mappaSub);
+        }
+
+        return mappaParagrafi;
+    }
+
+    public String fixTitolo(String titoloGrezzo) {
+        String paragrafoVisibile = VUOTA;
+
+        paragrafoVisibile += titoloParagrafo;
+        paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+        paragrafoVisibile += PIPE;
+        paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+        paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+        paragrafoVisibile = PARAGRAFO + paragrafoVisibile + PARAGRAFO;
+
+        return paragrafoVisibile;
+    }
+
+
+    /**
+     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
+     * Nel titolo visibile del paragrafo viene riportato il numero di voci biografiche presenti <br>
+     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+     */
+    @Override
+    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati() {
+        super.mappaParagrafiDimensionati();
+
+        LinkedHashMap<String, List<String>> mappaSub;
+        String paragrafoDimensionato;
+
+        for (String key : mappaDidascalie.keySet()) {
+            paragrafoDimensionato = key;
+            mappaSub = mappaDidascalie.get(key);
+            paragrafoDimensionato = fixTitoloDimensionato(paragrafoDimensionato, getSize(mappaSub));
+
+            mappaParagrafiDimensionati.put(paragrafoDimensionato, mappaSub);
+        }
+
+        return mappaParagrafiDimensionati;
+    }
+
+
+    public String fixTitoloDimensionato(String titoloGrezzo, int numVoci) {
+        String paragrafoVisibile = VUOTA;
+
+        paragrafoVisibile += titoloParagrafo;
+        paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+        paragrafoVisibile += PIPE;
+        paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+        paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+        paragrafoVisibile = wikiUtility.setParagrafo(paragrafoVisibile, numVoci);
+
+        return paragrafoVisibile;
+    }
 
     public LinkedHashMap<String, List<WrapDidascalia>> creaMappaNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
-        LinkedHashMap<String, List<WrapDidascalia>> mappa = new LinkedHashMap<>();
+        LinkedHashMap<String, List> mappa = new LinkedHashMap<>();
         List lista;
         String nazionalita;
 
@@ -172,7 +249,7 @@ public class ListaAttivita extends Lista {
             }
         }
 
-        return arrayService.sort(mappa);
+        return (LinkedHashMap) arrayService.sort(mappa);
     }
 
 
@@ -253,6 +330,20 @@ public class ListaAttivita extends Lista {
         sortedList.addAll(listaSenzaNazionalitaOrdinata);
         return sortedList;
     }
+
+
+    public int getSize(LinkedHashMap<String, List<String>> mappa) {
+        int size = 0;
+
+        if (mappa != null) {
+            for (String key : mappa.keySet()) {
+                size += mappa.get(key).size();
+            }
+        }
+
+        return size;
+    }
+
 
     public static Function<WrapDidascalia, String> nazionalita = wrap -> wrap.getNazionalitaSingola() != null ? wrap.getNazionalitaSingola() : VUOTA;
 

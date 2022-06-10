@@ -47,7 +47,7 @@ public class UploadAttivita extends Upload {
      * Esegue la scrittura della pagina <br>
      */
     public void uploadTest() {
-        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaDidascalie();
+        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaParagrafiDimensionati();
         newText = mappaToText(mappaDidascalie);
         appContext.getBean(QueryWrite.class).urlRequest(WIKI_TITLE_DEBUG, newText);
     }

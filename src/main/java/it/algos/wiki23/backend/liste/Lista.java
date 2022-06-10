@@ -118,6 +118,15 @@ public abstract class Lista {
     @Autowired
     public BioBackend bioBackend;
 
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WikiUtility wikiUtility;
+
     /**
      * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
      * La lista è ordinata per cognome <br>
@@ -136,17 +145,34 @@ public abstract class Lista {
 
     /**
      * Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
-     * La mappa è composta da una chiave (ordinata) che corrisponde al titolo del paragrafo <br>
+     * La mappa è composta da una chiave (ordinata) che corrisponde al futuro titolo del paragrafo <br>
      * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
      * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
      */
     protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
 
+    /**
+     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
+     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+     */
+    protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi;
+
+    /**
+     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
+     * Nel titolo visibile del paragrafo viene riportato il numero di voci biografiche presenti <br>
+     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+     */
+    protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
 
     public static Function<WrapDidascalia, String> cognome = wrap -> wrap.getCognome() != null ? wrap.getCognome() : VUOTA;
 
     public static Function<WrapDidascalia, String> wikiTitle = wrap -> wrap.getWikiTitle() != null ? wrap.getWikiTitle() : VUOTA;
 
+    protected String titoloParagrafo;
 
     /**
      * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
@@ -186,7 +212,6 @@ public abstract class Lista {
     }
 
 
-
     /**
      * Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
      * La mappa è composta da una chiave (ordinata) che corrisponde al titolo del paragrafo <br>
@@ -199,6 +224,31 @@ public abstract class Lista {
         return mappaDidascalie;
     }
 
+    /**
+     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
+     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+     */
+    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi() {
+        this.mappaDidascalie();
+        mappaParagrafi = new LinkedHashMap<>();
+        return mappaParagrafi;
+    }
+
+
+    /**
+     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
+     * Nel titolo visibile del paragrafo viene riportato il numero di voci biografiche presenti <br>
+     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+     */
+    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati() {
+        this.mappaDidascalie();
+        mappaParagrafiDimensionati = new LinkedHashMap<>();
+        return mappaParagrafiDimensionati;
+    }
 
 
     protected WrapDidascalia creaWrapDidascalia(Bio bio) {
@@ -216,7 +266,7 @@ public abstract class Lista {
         wrap.setWikiTitle(bio.wikiTitle);
         wrap.setNome(bio.nome);
         wrap.setCognome(bio.cognome);
-        wrap.setPrimoCarattere(textService.isValid(bio.cognome) ? bio.cognome.substring(0, 1) : bio.wikiTitle.substring(0, 1));
+        wrap.setPrimoCarattere(bio.ordinamento.substring(0, 1));
 
         wrap.setBio(bio); //@todo meglio eliminarlo
         return wrap;
@@ -245,9 +295,8 @@ public abstract class Lista {
         return sortedList;
     }
 
-
-//    public TreeMap<String, TreeMap<String, List<String>>> getMappa() {
-//        return mappa;
-//    }
+    //    public TreeMap<String, TreeMap<String, List<String>>> getMappa() {
+    //        return mappa;
+    //    }
 
 }

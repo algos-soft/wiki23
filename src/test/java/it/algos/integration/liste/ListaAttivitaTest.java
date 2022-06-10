@@ -123,7 +123,7 @@ public class ListaAttivitaTest extends WikiTest {
     @DisplayName("3 - Lista wrapDidascalia di varie attivita")
         //--nome attivita
         //--flag singolare versus plurale
-    void listaWrap(final String attività, final boolean flagSingola) {
+    void listaWrapDidascalie(final String attività, final boolean flagSingola) {
         System.out.println("3 - Lista wrapDidascalia di varie attivita");
         sorgente = attività;
         String flag;
@@ -158,7 +158,7 @@ public class ListaAttivitaTest extends WikiTest {
     @DisplayName("4 - Mappa wrapDidascalia di varie attivita")
         //--nome attivita
         //--flag singolare versus plurale
-    void getListaDidascalie(final String attività, final boolean flagSingola) {
+    void mappaWrapDidascalie(final String attività, final boolean flagSingola) {
         System.out.println("4 - Mappa wrapDidascalia di varie attivita");
         sorgente = attività;
         String flag;
@@ -174,7 +174,7 @@ public class ListaAttivitaTest extends WikiTest {
         }
 
         if (mappaWrapDidascalie != null) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano l'attività %s %s", mappaWrapDidascalie.size(), sorgente, flag);
+            message = String.format("WrapDidascalie che implementano l'attività %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
                 System.out.println(attivitaBackend.findByPlurale(sorgente));
@@ -189,30 +189,142 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
 
-    protected void printMappaWrapDidascalia(String attivita, LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaLista) {
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA")
+    @Order(5)
+    @DisplayName("5 - Mappa didascalie di varie attivita")
+        //--nome attivita
+        //--flag singolare versus plurale
+    void mappaDidascalie(final String attività, final boolean flagSingola) {
+        System.out.println("5 - Mappa didascalie di varie attivita");
+        sorgente = attività;
+        String flag;
+        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+
+        if (flagSingola) {
+            mappaDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaDidascalie();
+            flag = "(singolare)";
+        }
+        else {
+            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaDidascalie();
+            flag = "(plurale)";
+        }
+
+        if (mappaDidascalie != null) {
+            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+            System.out.println(message);
+            if (!flagSingola) {
+                System.out.println(attivitaBackend.findByPlurale(sorgente));
+            }
+            System.out.println(VUOTA);
+            printMappaDidascalia(sorgente, mappaDidascalie);
+        }
+        else {
+            message = "La mappa è nulla";
+            System.out.println(message);
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA")
+    @Order(6)
+    @DisplayName("6 - Mappa paragrafi di varie attivita")
+        //--nome attivita
+        //--flag singolare versus plurale
+    void mappaParagrafi(final String attività, final boolean flagSingola) {
+        System.out.println("6 - Mappa paragrafi di varie attivita");
+        sorgente = attività;
+        String flag;
+        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi;
+
+        if (flagSingola) {
+            mappaParagrafi = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaParagrafi();
+            flag = "(singolare)";
+        }
+        else {
+            mappaParagrafi = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaParagrafi();
+            flag = "(plurale)";
+        }
+
+        if (mappaParagrafi != null) {
+            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+            System.out.println(message);
+            if (!flagSingola) {
+                System.out.println(attivitaBackend.findByPlurale(sorgente));
+            }
+            System.out.println(VUOTA);
+            printMappaDidascalia(sorgente, mappaParagrafi);
+        }
+        else {
+            message = "La mappa è nulla";
+            System.out.println(message);
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA")
+    @Order(7)
+    @DisplayName("7 - Mappa paragrafi dimensionati di varie attivita")
+        //--nome attivita
+        //--flag singolare versus plurale
+    void mappaParagrafiDimensionati(final String attività, final boolean flagSingola) {
+        System.out.println("7 - Mappa paragrafi dimensionati di varie attivita");
+        sorgente = attività;
+        String flag;
+        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
+
+        if (flagSingola) {
+            mappaParagrafiDimensionati = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaParagrafiDimensionati();
+            flag = "(singolare)";
+        }
+        else {
+            mappaParagrafiDimensionati = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaParagrafiDimensionati();
+            flag = "(plurale)";
+        }
+
+        if (mappaParagrafiDimensionati != null) {
+            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+            System.out.println(message);
+            if (!flagSingola) {
+                System.out.println(attivitaBackend.findByPlurale(sorgente));
+            }
+            System.out.println(VUOTA);
+            printMappaDidascalia(sorgente, mappaParagrafiDimensionati);
+        }
+        else {
+            message = "La mappa è nulla";
+            System.out.println(message);
+        }
+    }
+
+
+    protected void printMappaWrapDidascalia(String attivita, LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrap) {
         int cont = 0;
         LinkedHashMap<String, List<WrapDidascalia>> mappaSub;
 
-        if (mappaLista != null) {
+        if (mappaWrap != null) {
             message = String.format("WrapDidascalie per l'attività %s", attivita);
+            System.out.println(message);
+            message = "Nazionalità, primoCarattere, wikiTitle";
             System.out.println(message);
             System.out.println(VUOTA);
 
-            for (String key : mappaLista.keySet()) {
-                mappaSub = mappaLista.get(key);
+            for (String key : mappaWrap.keySet()) {
+                mappaSub = mappaWrap.get(key);
                 cont++;
                 System.out.print(cont);
                 System.out.print(PARENTESI_TONDA_END);
                 System.out.print(SPAZIO);
 
-                System.out.print("[");
-                System.out.print(key);
-                System.out.print("]");
+                System.out.print(textService.setQuadre(key));
                 System.out.print(SPAZIO);
 
                 System.out.println(VUOTA);
 
                 printMappaSub(mappaSub);
+                System.out.println(VUOTA);
             }
         }
     }
@@ -231,14 +343,87 @@ public class ListaAttivitaTest extends WikiTest {
                 System.out.print(PARENTESI_TONDA_END);
                 System.out.print(SPAZIO);
 
-                System.out.print("[");
-                System.out.print(key);
-                System.out.print("]");
+                System.out.print(textService.setQuadre(key));
                 System.out.print(SPAZIO);
 
                 System.out.println(VUOTA);
 
                 printWrapDidascalia(lista);
+            }
+        }
+    }
+
+
+    protected void printMappaDidascalia(String attivita, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
+        int cont = 0;
+        LinkedHashMap<String, List<String>> mappaSub;
+
+        if (mappaDidascalie != null) {
+            message = String.format("Didascalie per l'attività %s", attivita);
+            System.out.println(message);
+            message = "Nazionalità, primoCarattere, didascalia";
+            System.out.println(message);
+            System.out.println(VUOTA);
+
+            for (String key : mappaDidascalie.keySet()) {
+                mappaSub = mappaDidascalie.get(key);
+                cont++;
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print(key);
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printMappaSubDidascalie(mappaSub);
+                System.out.println(VUOTA);
+            }
+        }
+    }
+
+
+    protected void printMappaSubDidascalie(LinkedHashMap<String, List<String>> mappaSub) {
+        int cont = 0;
+        List lista;
+
+        if (mappaSub != null) {
+            for (String key : mappaSub.keySet()) {
+                lista = mappaSub.get(key);
+                cont++;
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print(key);
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printDidascalia(lista);
+            }
+        }
+    }
+
+    protected void printDidascalia(List<String> lista) {
+        int cont = 0;
+
+        if (lista != null) {
+            for (String didascalia : lista) {
+                cont++;
+
+                System.out.print(TAB);
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print(didascalia);
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
             }
         }
     }
@@ -259,9 +444,7 @@ public class ListaAttivitaTest extends WikiTest {
                 System.out.print(PARENTESI_TONDA_END);
                 System.out.print(SPAZIO);
 
-                System.out.print("[");
-                System.out.print(key);
-                System.out.print("]");
+                System.out.print(textService.setQuadre(key));
                 System.out.print(SPAZIO);
 
                 System.out.println(VUOTA);
@@ -284,9 +467,7 @@ public class ListaAttivitaTest extends WikiTest {
                 System.out.print(PARENTESI_TONDA_END);
                 System.out.print(SPAZIO);
 
-                System.out.print("[");
-                System.out.print(key);
-                System.out.print("]");
+                System.out.print(textService.setQuadre(key));
                 System.out.print(SPAZIO);
 
                 System.out.println(VUOTA);
@@ -312,9 +493,7 @@ public class ListaAttivitaTest extends WikiTest {
                 System.out.print(PARENTESI_TONDA_END);
                 System.out.print(SPAZIO);
 
-                System.out.print("[");
-                System.out.print(value);
-                System.out.print("]");
+                System.out.print(textService.setQuadre(value));
                 System.out.print(SPAZIO);
 
                 System.out.println(VUOTA);
@@ -336,16 +515,18 @@ public class ListaAttivitaTest extends WikiTest {
             System.out.println(message);
             message = "Ordinate per forzaOrdinamento";
             System.out.println(message);
+            message = "Ordinamento, wikiTitle, nome, cognome";
+            System.out.println(message);
             System.out.println(VUOTA);
 
-            printBioBase(listaBio.subList(iniA, endA));
+            printBioBase(listaBio.subList(iniA, endA), iniA);
             System.out.println(TRE_PUNTI);
-            printBioBase(listaBio.subList(iniB, endB));
+            printBioBase(listaBio.subList(iniB, endB), iniB);
         }
     }
 
-    protected void printBioBase(List<Bio> listaBio) {
-        int cont = 0;
+    protected void printBioBase(List<Bio> listaBio, final int inizio) {
+        int cont = inizio;
 
         for (Bio bio : listaBio) {
             cont++;
@@ -353,22 +534,19 @@ public class ListaAttivitaTest extends WikiTest {
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
 
-            System.out.print("[");
-            System.out.print(bio.cognome);
-            System.out.print("]");
+            System.out.print(textService.setQuadre(bio.ordinamento));
             System.out.print(SPAZIO);
 
-            System.out.print("[");
-            System.out.print(textService.isValid(bio.cognome) ? bio.cognome.substring(0, 1) : VUOTA);
-            System.out.print("]");
+            System.out.print(textService.setQuadre(bio.wikiTitle));
             System.out.print(SPAZIO);
 
-            System.out.print("[");
-            System.out.print(textService.isValid(bio.nazionalita) ? nazionalitaBackend.findBySingolare(bio.nazionalita).plurale : VUOTA);
-            System.out.print("]");
+            System.out.print(textService.setQuadre(textService.isValid(bio.nome) ? bio.nome : KEY_NULL));
             System.out.print(SPAZIO);
 
-            System.out.println(bio.wikiTitle);
+            System.out.print(textService.setQuadre(textService.isValid(bio.cognome) ? bio.cognome : KEY_NULL));
+            System.out.print(SPAZIO);
+
+            System.out.println(SPAZIO);
         }
     }
 

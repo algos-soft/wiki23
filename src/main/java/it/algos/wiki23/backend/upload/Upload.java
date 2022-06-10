@@ -52,23 +52,25 @@ public abstract class Upload {
      * La mappa viene creata nel @PostConstruct dell'istanza <br>
      */
     protected TreeMap<String, TreeMap<String, List<String>>> mappa;
+
     protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
 
     protected String newText;
 
-    protected String mappaToText(LinkedHashMap<String, LinkedHashMap<String, List<String>>> treeMap) {
+    protected String mappaToText(LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaTxt) {
         String text = VUOTA;
         StringBuffer buffer = new StringBuffer();
         LinkedHashMap<String, List<String>> mappaSub;
 
-        if (treeMap != null) {
+        if (mappaTxt != null) {
             System.out.println(VUOTA);
 
-            for (String key : treeMap.keySet()) {
-                mappaSub = treeMap.get(key);
-                buffer.append(setParagrafo(key, mappaSub.size()));
+            for (String key : mappaTxt.keySet()) {
+                mappaSub = mappaTxt.get(key);
+                buffer.append(key);
                 buffer.append(CAPO);
                 buffer.append(mappaSubToText(mappaSub));
+                buffer.append(CAPO);
             }
         }
 
@@ -90,7 +92,7 @@ public abstract class Upload {
                 }
                 else {
                     for (String didascalia : lista) {
-                        buffer.append(didascalia+ CAPO);
+                        buffer.append(didascalia + CAPO);
                     }
                 }
             }

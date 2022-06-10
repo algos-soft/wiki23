@@ -46,7 +46,7 @@ public class DidascaliaService extends AbstractService {
         if (listaBio != null) {
             listaDidascalie = new ArrayList<>();
             for (Bio bio : listaBio) {
-                didascalia = getLista(bio);
+                didascalia = getDidascaliaLista(bio);
                 if (textService.isValid(didascalia)) {
                     listaDidascalie.add(didascalia);
                 }
@@ -63,12 +63,12 @@ public class DidascaliaService extends AbstractService {
      *
      * @return didascalia completa
      */
-    public String getLista(final Bio bio) {
+    public String getDidascaliaLista(final Bio bio) {
         String nomeCognome = this.getNomeCognome(bio);
         String attivitaNazionalita = this.getAttivitaNazionalita(bio);
         String natoMorto = this.getNatoMorto(bio);
 
-        return String.format("%s%s%s%s%s", nomeCognome, VIRGOLA_SPAZIO, attivitaNazionalita, SPAZIO, natoMorto);
+        return String.format("%s%s%s%s%s%s", ASTERISCO, nomeCognome, VIRGOLA_SPAZIO, attivitaNazionalita, SPAZIO, natoMorto);
     }
 
     /**
