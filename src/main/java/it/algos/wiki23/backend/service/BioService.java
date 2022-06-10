@@ -43,6 +43,8 @@ public class BioService extends WAbstractService {
     @Autowired
     public BioRepository repository;
 
+    public static Function<Bio, String> forzaOrdinamento = bio -> bio.getOrdinamento() != null ? bio.getOrdinamento() : VUOTA;
+
     public static Function<Bio, String> cognome = bio -> bio.getCognome() != null ? bio.getCognome() : VUOTA;
 
     public static Function<Bio, String> wikiTitle = bio -> bio.getWikiTitle() != null ? bio.getWikiTitle() : VUOTA;
@@ -502,7 +504,7 @@ public class BioService extends WAbstractService {
             }
         }
 
-        return sortByCognome(listaNonOrdinata);
+        return sortByForzaOrdinamento(listaNonOrdinata);
     }
 
     public List<Bio> sortByNazionalita(List<Bio> listaNonOrdinata) {
@@ -525,6 +527,14 @@ public class BioService extends WAbstractService {
         sortedList.addAll(listaSenzaNazionalitaOrdinata);
         return sortedList;
     }
+
+    public List<Bio> sortByForzaOrdinamento(List<Bio> listaNonOrdinata) {
+       return listaNonOrdinata
+                .stream()
+                .sorted(Comparator.comparing(forzaOrdinamento))
+                .collect(Collectors.toList());
+    }
+
 
     public List<Bio> sortByCognome(List<Bio> listaNonOrdinata) {
         List<Bio> sortedList = new ArrayList<>();

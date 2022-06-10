@@ -334,15 +334,13 @@ public class ListaAttivitaTest extends WikiTest {
         if (listaBio != null) {
             message = String.format("Faccio vedere una lista delle prime e delle ultime %d biografie", max);
             System.out.println(message);
-            message = "Ordinate per cognome (se manca per wikiTitle)";
+            message = "Ordinate per forzaOrdinamento";
             System.out.println(message);
             System.out.println(VUOTA);
 
-            //            printBioBase(listaBio.subList(iniA, endA));
-            //            System.out.println(TRE_PUNTI);
-            //            printBioBase(listaBio.subList(iniB, endB));
-            printBioBase(listaBio);
-
+            printBioBase(listaBio.subList(iniA, endA));
+            System.out.println(TRE_PUNTI);
+            printBioBase(listaBio.subList(iniB, endB));
         }
     }
 
