@@ -164,10 +164,23 @@ public class BioBackend extends WikiBackend {
     public Bio findByKey(final long pageId) {
         return repository.findFirstByPageId(pageId);
     }
+
     public Bio findByTitle(final String wikiTitle) {
         return repository.findFirstByWikiTitle(wikiTitle);
     }
 
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void elabora() {
+        List<Bio> lista = findAll();
 
+        for (Bio bio : lista) {
+            bio = elaboraService.esegue(bio);
+            save(bio);
+        }
+    }
 
 }// end of crud backend class

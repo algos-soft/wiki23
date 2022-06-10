@@ -72,16 +72,13 @@ public class ElaboraService extends WAbstractService {
         if (bio != null) {
             for (ParBio par : ParBio.values()) {
                 value = mappa.get(par.getTag());
-                if (value != null) {
-
-                    try {
-                        par.setValue(bio, value);
-                    } catch (AlgosException unErrore) {
-                        message = String.format("Exception %s nel ParBio %s della bio %s", unErrore.getMessage(), par.getTag(), bio.wikiTitle);
-                        //                        logger.info(message, this.getClass(), "setValue");
-                    } catch (Exception unErrore) {
-                        //                        logger.info(String.format("%s nel ParBio %s", unErrore.toString(), par.getTag()), this.getClass(), "setValue");
-                    }
+                try {
+                    par.setValue(bio, value);
+                } catch (AlgosException unErrore) {
+                    message = String.format("Exception %s nel ParBio %s della bio %s", unErrore.getMessage(), par.getTag(), bio.wikiTitle);
+                    //                        logger.info(message, this.getClass(), "setValue");
+                } catch (Exception unErrore) {
+                    //                        logger.info(String.format("%s nel ParBio %s", unErrore.toString(), par.getTag()), this.getClass(), "setValue");
                 }
             }
         }

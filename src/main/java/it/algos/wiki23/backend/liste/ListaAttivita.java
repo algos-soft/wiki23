@@ -53,29 +53,18 @@ public class ListaAttivita extends Lista {
 
     public ListaAttivita attivita(final Attivita attivita) {
         listaNomiAttivitaSingole = attivitaBackend.findSingolariByPlurale(attivita.plurale);
-//        this.esegue();
         return this;
     }
 
     public ListaAttivita singolare(final String attivitaSingolare) {
         listaNomiAttivitaSingole = arrayService.creaArraySingolo(attivitaSingolare);
-//        this.esegue();
         return this;
     }
 
     public ListaAttivita plurale(final String attivitaPlurale) {
         listaNomiAttivitaSingole = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
-//        this.esegue();
         return this;
     }
-
-//    /**
-//     * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
-//     */
-//    protected void esegue() {
-//        listaBio();
-//        listaWrapDidascalie();
-//    }
 
 
     /**
@@ -128,28 +117,39 @@ public class ListaAttivita extends Lista {
         return mappaWrapDidascalie;
     }
 
-    public void prosegue2() {
-        //        mappaWrap = new LinkedHashMap<>();
-        LinkedHashMap<String, List<WrapDidascalia>> mappaLista;
-        //
-        //        try {
-        //            listaBio = bioService.fetchAttivita(listaNomiAttivitaSingole);
-        //        } catch (Exception unErrore) {
-        //            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-        //            return;
-        //        }
-        //
-        LinkedHashMap<String, List<WrapDidascalia>> mappaNaz = creaMappaNazionalita(listaWrapDidascalie);
+    /**
+     * Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * La mappa è composta da una chiave (ordinata) che corrisponde al titolo del paragrafo <br>
+     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+     */
+    @Override
+    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie() {
+        super.mappaDidascalie();
 
-        if (mappaNaz != null) {
-            for (String key : mappaNaz.keySet()) {
-                mappaLista = creaMappaCarattere(mappaNaz.get(key));
-                //                mappaWrap.put(key, mappaLista);
+        LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
+        List<WrapDidascalia> listaWrap;
+        List<String> listaDidascalia;
+        String didascalia;
+
+        for (String key1 : mappaWrapDidascalie.keySet()) {
+            mappaWrap = mappaWrapDidascalie.get(key1);
+            mappaDidascalie.put(key1, new LinkedHashMap<>());
+
+            for (String key2 : mappaWrap.keySet()) {
+                listaWrap = mappaWrap.get(key2);
+                listaDidascalia = new ArrayList<>();
+                for (WrapDidascalia wrap : listaWrap) {
+                    didascalia = didascaliaService.getLista(wrap.getBio());
+                    listaDidascalia.add(didascalia);
+                }
+                mappaDidascalie.get(key1).put(key2, listaDidascalia);
             }
         }
-        //        this.mappaWrap = arrayService.sort(mappaWrap);
-        creaMappa();
+
+        return mappaDidascalie;
     }
+
 
     public LinkedHashMap<String, List<WrapDidascalia>> creaMappaNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
         LinkedHashMap<String, List<WrapDidascalia>> mappa = new LinkedHashMap<>();
@@ -172,8 +172,7 @@ public class ListaAttivita extends Lista {
             }
         }
 
-        //        return arrayService.sort(mappa);
-        return mappa;
+        return arrayService.sort(mappa);
     }
 
 
@@ -206,33 +205,32 @@ public class ListaAttivita extends Lista {
         return mappa;
     }
 
-
-    public TreeMap<String, TreeMap<String, List<String>>> creaMappa() {
-        TreeMap<String, TreeMap<String, List<String>>> mappa = new TreeMap<>();
-        LinkedHashMap<String, List<WrapDidascalia>> mappaSub;
-        List<WrapDidascalia> listaWrap;
-        List<String> listaDidascalia;
-        String didascalia;
-
-        if (mappaWrapDidascalie != null) {
-            for (String key1 : mappaWrapDidascalie.keySet()) {
-                mappaSub = mappaWrapDidascalie.get(key1);
-                mappa.put(key1, new TreeMap<>());
-
-                for (String key2 : mappaSub.keySet()) {
-                    listaWrap = mappaSub.get(key2);
-                    listaDidascalia = new ArrayList<>();
-                    for (WrapDidascalia wrap : listaWrap) {
-                        didascalia = didascaliaService.getLista(wrap.getBio());
-                        listaDidascalia.add(didascalia);
-                    }
-                    mappa.get(key1).put(key2, listaDidascalia);
-                }
-            }
-        }
-        this.mappa = mappa;
-        return mappa;
-    }
+    //    public TreeMap<String, TreeMap<String, List<String>>> creaMappa() {
+    //        TreeMap<String, TreeMap<String, List<String>>> mappa = new TreeMap<>();
+    //        LinkedHashMap<String, List<WrapDidascalia>> mappaSub;
+    //        List<WrapDidascalia> listaWrap;
+    //        List<String> listaDidascalia;
+    //        String didascalia;
+    //
+    //        if (mappaWrapDidascalie != null) {
+    //            for (String key1 : mappaWrapDidascalie.keySet()) {
+    //                mappaSub = mappaWrapDidascalie.get(key1);
+    //                mappa.put(key1, new TreeMap<>());
+    //
+    //                for (String key2 : mappaSub.keySet()) {
+    //                    listaWrap = mappaSub.get(key2);
+    //                    listaDidascalia = new ArrayList<>();
+    //                    for (WrapDidascalia wrap : listaWrap) {
+    //                        didascalia = didascaliaService.getLista(wrap.getBio());
+    //                        listaDidascalia.add(didascalia);
+    //                    }
+    //                    mappa.get(key1).put(key2, listaDidascalia);
+    //                }
+    //            }
+    //        }
+    //        this.mappa = mappa;
+    //        return mappa;
+    //    }
 
 
     public List<WrapDidascalia> sortByNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {

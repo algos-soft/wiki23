@@ -286,7 +286,7 @@ public class ArrayService extends AbstractService {
      *
      * @return mappa ordinata, null se mappaDisordinata è null
      */
-    public Map sort(final Map mappaDisordinata) {
+    public LinkedHashMap sort(final LinkedHashMap mappaDisordinata) {
         LinkedHashMap mappaOrdinata = new LinkedHashMap();
         Object[] listaChiavi;
 

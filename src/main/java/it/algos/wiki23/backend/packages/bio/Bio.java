@@ -64,6 +64,9 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.text)
     public String cognome;
 
+    @AIField(type = AETypeField.text)
+    public String ordinamento;
+
     @AIField(type = AETypeField.text, header = "XY", widthEM = 3)
     public String sesso;
 

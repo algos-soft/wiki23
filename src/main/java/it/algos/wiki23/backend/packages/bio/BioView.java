@@ -74,18 +74,22 @@ public class BioView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "sesso", "nome", "cognome", "giornoNato",
+        super.gridPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "ordinamento", "sesso", "nome", "cognome",
+                "giornoNato",
                 "annoNato",
                 "giornoMorto", "annoMorto",
                 "attivita", "attivita2", "attivita3",
                 "nazionalita"
         );
-        super.formPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "sesso", "nome", "cognome", "giornoNato", "annoNato", "giornoMorto", "annoMorto",
+        super.formPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "sesso", "nome", "cognome", "ordinamento",
+                "giornoNato",
+                "annoNato", "giornoMorto", "annoMorto",
                 "attivita", "attivita2", "attivita3",
                 "nazionalita"
         );
 
         super.lastDownload = WPref.downloadBio;
+        super.usaBottoneElabora = true;
         super.usaBottoneDeleteAll = true;
         super.usaBottoneNew = true;
         super.usaBottoneDelete = true;

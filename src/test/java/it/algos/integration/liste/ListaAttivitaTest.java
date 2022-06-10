@@ -162,25 +162,25 @@ public class ListaAttivitaTest extends WikiTest {
         System.out.println("4 - Mappa wrapDidascalia di varie attivita");
         sorgente = attività;
         String flag;
-        LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalia;
+        LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie;
 
         if (flagSingola) {
-            mappaWrapDidascalia = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaWrapDidascalie();
+            mappaWrapDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaWrapDidascalie();
             flag = "(singolare)";
         }
         else {
-            mappaWrapDidascalia = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaWrapDidascalie();
+            mappaWrapDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaWrapDidascalie();
             flag = "(plurale)";
         }
 
-        if (mappaWrapDidascalia != null) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano l'attività %s %s", mappaWrapDidascalia.size(), sorgente, flag);
+        if (mappaWrapDidascalie != null) {
+            message = String.format("Ci sono %d wrapDidascalia che implementano l'attività %s %s", mappaWrapDidascalie.size(), sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
                 System.out.println(attivitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
-            printTreeMap(sorgente, treeMap);
+            printMappaWrapDidascalia(sorgente, mappaWrapDidascalie);
         }
         else {
             message = "La mappa è nulla";
@@ -189,7 +189,7 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
 
-    protected void printMappaLista(String attivita, LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaLista) {
+    protected void printMappaWrapDidascalia(String attivita, LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaLista) {
         int cont = 0;
         LinkedHashMap<String, List<WrapDidascalia>> mappaSub;
 

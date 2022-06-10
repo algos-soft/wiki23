@@ -38,8 +38,8 @@ import java.util.stream.*;
  * In uscita sono disponibili i metodi:
  * listaBio() -> Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
  * listaWrapDidascalia() -> Lista ordinata dei wrapper (WrapDidascalia) per gestire i dati necessari ad una didascalia <br>
- * mappaWrapDidascalia() -> Mappa ordinata dei wrapper (WrapDidascalia) per gestire i dati necessari ad una didascalia <br>
- * mappa() <br>
+ * mappaWrapDidascalie() -> Mappa ordinata dei wrapper (WrapDidascalia) per gestire i dati necessari ad una didascalia <br>
+ * mappaDidascalie() -> Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
  * mappaParagrafi() <br>
  */
 public abstract class Lista {
@@ -135,13 +135,12 @@ public abstract class Lista {
     protected LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie;
 
     /**
-     * Mappa delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
      * La mappa è composta da una chiave (ordinata) che corrisponde al titolo del paragrafo <br>
      * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
      * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
-     * La mappa viene creata nel @PostConstruct dell'istanza <br>
      */
-    protected TreeMap<String, TreeMap<String, List<String>>> mappa;
+    protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
 
 
     public static Function<WrapDidascalia, String> cognome = wrap -> wrap.getCognome() != null ? wrap.getCognome() : VUOTA;
@@ -185,6 +184,22 @@ public abstract class Lista {
         mappaWrapDidascalie = new LinkedHashMap<>();
         return mappaWrapDidascalie;
     }
+
+
+
+    /**
+     * Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
+     * La mappa è composta da una chiave (ordinata) che corrisponde al titolo del paragrafo <br>
+     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+     */
+    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie() {
+        this.mappaWrapDidascalie();
+        mappaDidascalie = new LinkedHashMap<>();
+        return mappaDidascalie;
+    }
+
+
 
     protected WrapDidascalia creaWrapDidascalia(Bio bio) {
         WrapDidascalia wrap = null;
@@ -231,8 +246,8 @@ public abstract class Lista {
     }
 
 
-    public TreeMap<String, TreeMap<String, List<String>>> getMappa() {
-        return mappa;
-    }
+//    public TreeMap<String, TreeMap<String, List<String>>> getMappa() {
+//        return mappa;
+//    }
 
 }

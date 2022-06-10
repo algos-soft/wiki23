@@ -40,15 +40,15 @@ public class UploadAttivita extends Upload {
      * Esegue la scrittura della pagina <br>
      */
     public void upload() {
-        mappa = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).getMappa();
+        appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaDidascalie();
     }
 
     /**
      * Esegue la scrittura della pagina <br>
      */
     public void uploadTest() {
-        mappa = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).getMappa();
-        newText = mappaToText(mappa);
+        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaDidascalie();
+        newText = mappaToText(mappaDidascalie);
         appContext.getBean(QueryWrite.class).urlRequest(WIKI_TITLE_DEBUG, newText);
     }
 

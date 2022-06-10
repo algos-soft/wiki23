@@ -63,6 +63,23 @@ public enum ParBio {
     },// end of single enumeration
 
     forzaOrdinamento("ForzaOrdinamento", "ForzaOrdinamento", false, false, false, false, false) {
+        @Override
+        public void setValue(Bio bio, String value) throws AlgosException {
+            if (textService.isValid(value)) {
+                bio.ordinamento = elaboraService.fixCognome(value);
+                return;
+            }
+            if (textService.isValid(bio.cognome)) {
+                bio.ordinamento = elaboraService.fixCognome(bio.cognome);
+                return;
+            }
+            bio.ordinamento = elaboraService.fixCognome(bio.wikiTitle);
+        }
+
+        @Override
+        public String getValue(final Bio bio) {
+            return bio != null ? bio.ordinamento : VUOTA;
+        }
     },// end of single enumeration
 
     preData("PreData", "PreData", false, false, false, false, false) {
@@ -202,8 +219,9 @@ public enum ParBio {
     attivita("Attività", "attivita", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-            bio.attivita = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
+            bio.attivita = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida(value);
         }
+
         @Override
         public String getValue(Bio bio) {
             return bio != null ? bio.attivita : VUOTA;
@@ -213,7 +231,7 @@ public enum ParBio {
     attivita2("Attività2", "attivita2", true, false, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-            bio.attivita2 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
+            bio.attivita2 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida(value);
         }
 
         @Override
@@ -225,7 +243,7 @@ public enum ParBio {
     attivita3("Attività3", "attivita3", true, false, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-            bio.attivita3 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida( value);
+            bio.attivita3 = value.equals(VUOTA) ? null : elaboraService.fixAttivitaValida(value);
         }
 
         @Override
@@ -827,6 +845,7 @@ public enum ParBio {
                 parBio.setElabora(elaboraService);
             }
         }
+
     }
 
 }// end of enumeration
