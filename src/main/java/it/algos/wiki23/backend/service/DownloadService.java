@@ -46,8 +46,9 @@ public class DownloadService extends WAbstractService {
      * Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere <br>
      */
     public void ciclo(final String categoryTitle) {
-        long inizio=System.currentTimeMillis();
+        long inizio = System.currentTimeMillis();
         List<Long> listaPageIds;
+        List<Long> listaMongoIds;
         List<WrapTime> listaMiniWrap;
         List<Long> listaPageIdsDaLeggere;
         List<WrapBio> listaWrapBio;
@@ -60,6 +61,9 @@ public class DownloadService extends WAbstractService {
 
         //--Crea la lista di tutti i (long) pageIds della categoria
         listaPageIds = getListaPageIds(categoryTitle);
+
+        //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
+//        listaMongoIds = getListaMongoIds();
 
         //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
         listaMiniWrap = getListaMiniWrap(listaPageIds);
@@ -76,7 +80,7 @@ public class DownloadService extends WAbstractService {
         WPref.downloadBio.setValue(LocalDateTime.now());
 
         //--durata del ciclo completo
-        fixInfoDurataCiclo(categoryTitle,inizio);
+        fixInfoDurataCiclo(categoryTitle, inizio);
     }
 
 
@@ -123,6 +127,8 @@ public class DownloadService extends WAbstractService {
         }
 
         if (status) {
+            message = String.format("Regolarmente collegato come %s di nick '%s'", botLogin.getUserType(), botLogin.getUsername());
+            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
         }
         else {
             message = String.format("Collegato come %s di nick '%s' e NON come bot", botLogin.getUserType(), botLogin.getUsername());
@@ -133,28 +139,14 @@ public class DownloadService extends WAbstractService {
 
 
     /**
-     * Crea la lista di tutti i (long) pageIds della categoria <br>
-     * Deve riuscire a gestire una lista di circa 500.000 long per la category BioBot <br>
-     * Tempo medio previsto = circa 1 minuto (come bot la categoria legge 5.000 pagine per volta) <br>
-     * Nella listaPageIds possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo <br>
+     * Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale <br>
      *
-     * @param categoryTitle da controllare
-     *
-     * @return lista di tutti i (long) pageIds
+     * @return lista di tutti i (long) pageId del database (mongo) locale
      */
     public List<Long> getListaPageIds(final String categoryTitle) {
-        long inizio = System.currentTimeMillis();
-        String size;
-        String time;
+        List<Long> listaMongoIds = null;
 
-        List<Long> listaPageIds = queryService.getListaPageIds(categoryTitle);
-
-        size = textService.format(listaPageIds.size());
-        time = dateService.deltaText(inizio);
-        String message = String.format("Recuperati %s pageIds dalla categoria '%s' in %s", size, categoryTitle, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-
-        return listaPageIds;
+        return listaMongoIds;
     }
 
 
@@ -285,10 +277,11 @@ public class DownloadService extends WAbstractService {
 
         return false;
     }
+
     /**
      * Durata del ciclo completo <br>
      */
-    public void fixInfoDurataCiclo(final String categoryTitle,final long inizio) {
+    public void fixInfoDurataCiclo(final String categoryTitle, final long inizio) {
         String message;
         String time = dateService.deltaText(inizio);
         message = String.format("Ciclo completo di download della categoria [%s] in %s", categoryTitle, time);

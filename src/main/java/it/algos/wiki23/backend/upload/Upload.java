@@ -171,13 +171,12 @@ public abstract class Upload {
         message = String.format("La lista è suddivisa in paragrafi per ogni nazionalità individuata. Se il numero di voci biografiche nel" +
                 " paragrafo supera le '''%s''' unità, viene creata una sottopagina.", maxSottoPagina);
         buffer.append(textService.setRef(message));
-        buffer.append(" per nazionalità");
+        buffer.append(" per nazionalità.");
         message = "Le nazionalità sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla comunità ed [[Modulo:Bio/Plurale nazionalità|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
         buffer.append(textService.setRef(message));
         message = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il parametro " +
                 "''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
         buffer.append(textService.setRef(message));
-        buffer.append(".");
 
         return buffer.toString();
     }

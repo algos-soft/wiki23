@@ -45,8 +45,7 @@ public enum WPref {
     categoriaBio("categoriaBio", AETypePref.string, "Categoria di riferimento per le Biografie", "BioBot"),
     sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, "Soglia minima per creare la pagina di una attività o nazionalità sul server wiki", 50),
     sogliaSottoPagina("sogliaSottoPagina", AETypePref.integer, "Soglia minima per creare una sottopagina di una attività o nazionalità " +
-            "sul " +
-            "server wiki", 50),
+            "sul server wiki", 50),
     usaTreAttivita("usaTreAttivita", AETypePref.bool, "Considera tutte le attività (tre) nelle liste di attività", false),
     usaParagrafiDimensionati("usaParagrafiDimensionati", AETypePref.bool, "Nel titolo del paragrafo aggiunge la dimensione delle voci " +
             "elencate", true),

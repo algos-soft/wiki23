@@ -83,9 +83,9 @@ public class BioBackendTest extends WikiTest {
     protected void setUpAll() {
         super.setUpAll();
 
-        MockitoAnnotations.initMocks(this);
-        MockitoAnnotations.initMocks(backend);
-        Assertions.assertNotNull(backend);
+//        MockitoAnnotations.initMocks(this);
+//        MockitoAnnotations.initMocks(backend);
+//        Assertions.assertNotNull(backend);
 
         backend.repository = repository;
         backend.crudRepository = repository;
@@ -280,6 +280,16 @@ public class BioBackendTest extends WikiTest {
         backend.delete(bio);
         assertFalse(backend.isExist(pageId));
         System.out.println(String.format("Adesso sono tornate %s (dopo un delete)", textService.format(backend.count())));
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - Only one property")
+    void find8() {
+        System.out.println("8 - Only one property");
+
+//        listaBeans = backend.findOnlyPageId();
+        int a=87;
     }
 
     /**

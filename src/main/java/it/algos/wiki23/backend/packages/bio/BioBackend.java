@@ -196,6 +196,9 @@ public class BioBackend extends WikiBackend {
     public Bio findByTitle(final String wikiTitle) {
         return repository.findFirstByWikiTitle(wikiTitle);
     }
+//    public List<Bio> findOnlyPageId() {
+//        return repository.findAllIncludePageIdFields();
+//    }
 
     /**
      * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
