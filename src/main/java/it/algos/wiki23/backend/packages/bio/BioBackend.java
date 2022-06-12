@@ -1,6 +1,7 @@
 package it.algos.wiki23.backend.packages.bio;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -8,6 +9,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.bson.types.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
@@ -63,6 +65,11 @@ public class BioBackend extends WikiBackend {
         return repository.findFirstByPageId(pageId) != null;
     }
 
+    public Bio fixWrap(final String keyID, final WrapBio wrap) {
+        Bio bio = newEntity(wrap);
+        bio.setId(keyID);
+        return bio;
+    }
 
     public Bio newEntity() {
         return newEntity(0, VUOTA, VUOTA, null);
@@ -116,13 +123,34 @@ public class BioBackend extends WikiBackend {
                 .build();
     }
 
-    public void save(final Bio bio) {
-        if (isExist(bio.pageId)) {
-            repository.save(bio);
+    @Override
+    public Bio save(final Object entity) {
+        if (entity instanceof Bio bio) {
+            if (isExist(bio.pageId)) {
+                repository.save(bio);
+            }
+            else {
+                repository.insert(bio);
+            }
+            return bio;
         }
-        else {
-            repository.insert(bio);
+
+        return null;
+    }
+
+    @Override
+    public Bio update(Object entity) {
+        if (entity instanceof Bio bio) {
+            if (isExist(bio.pageId)) {
+                repository.save(bio);
+            }
+            else {
+                repository.insert(bio);
+            }
+            return bio;
         }
+
+        return null;
     }
 
     /**

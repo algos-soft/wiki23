@@ -167,31 +167,12 @@ public class ListaAttivita extends Lista {
         for (String key : mappaDidascalie.keySet()) {
             paragrafo = key;
             mappaSub = mappaDidascalie.get(key);
-            paragrafo = fixTitolo(paragrafo);
+            paragrafo = wikiUtility.fixTitolo(titoloParagrafo, paragrafo);
 
             mappaParagrafi.put(paragrafo, mappaSub);
         }
 
         return mappaParagrafi;
-    }
-
-    public String fixTitolo(String titoloGrezzo) {
-        String paragrafoVisibile = VUOTA;
-
-        if (textService.isValid(titoloGrezzo)) {
-            paragrafoVisibile = titoloParagrafo;
-            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-            paragrafoVisibile += PIPE;
-            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-            paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
-            paragrafoVisibile = PARAGRAFO + paragrafoVisibile + PARAGRAFO;
-        }
-        else {
-            paragrafoVisibile = "Altre...";
-            paragrafoVisibile = wikiUtility.setParagrafo(paragrafoVisibile);
-        }
-
-        return paragrafoVisibile;
     }
 
 
@@ -212,7 +193,7 @@ public class ListaAttivita extends Lista {
         for (String key : mappaDidascalie.keySet()) {
             paragrafoDimensionato = key;
             mappaSub = mappaDidascalie.get(key);
-            paragrafoDimensionato = fixTitoloDimensionato(paragrafoDimensionato, getSize(mappaSub));
+            paragrafoDimensionato = wikiUtility.fixTitoloDimensionato(titoloParagrafo, paragrafoDimensionato,mappaSub.size());
 
             mappaParagrafiDimensionati.put(paragrafoDimensionato, mappaSub);
         }
@@ -220,25 +201,6 @@ public class ListaAttivita extends Lista {
         return mappaParagrafiDimensionati;
     }
 
-
-    public String fixTitoloDimensionato(String titoloGrezzo, int numVoci) {
-        String paragrafoVisibile = VUOTA;
-
-        if (textService.isValid(titoloGrezzo)) {
-            paragrafoVisibile = titoloParagrafo;
-            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-            paragrafoVisibile += PIPE;
-            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-            paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
-            paragrafoVisibile = wikiUtility.setParagrafo(paragrafoVisibile, numVoci);
-        }
-        else {
-            paragrafoVisibile = "Altre...";
-            paragrafoVisibile = wikiUtility.setParagrafo(paragrafoVisibile, numVoci);
-        }
-
-        return paragrafoVisibile;
-    }
 
     public LinkedHashMap<String, List<WrapDidascalia>> creaMappaNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
         LinkedHashMap<String, List> mappa = new LinkedHashMap<>();
@@ -344,17 +306,6 @@ public class ListaAttivita extends Lista {
     }
 
 
-    public int getSize(LinkedHashMap<String, List<String>> mappa) {
-        int size = 0;
-
-        if (mappa != null) {
-            for (String key : mappa.keySet()) {
-                size += mappa.get(key).size();
-            }
-        }
-
-        return size;
-    }
 
 
     public static Function<WrapDidascalia, String> nazionalita = wrap -> wrap.getNazionalitaSingola() != null ? wrap.getNazionalitaSingola() : VUOTA;

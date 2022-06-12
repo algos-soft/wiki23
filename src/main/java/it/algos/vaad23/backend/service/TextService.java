@@ -1185,4 +1185,17 @@ public class TextService extends AbstractService {
         return isValid(stringaOut) ? stringaOut.trim() : VUOTA;
     }
 
+    /**
+     * Aggiunge i tag '<ref></ref>' in testa e coda alla stringa. <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con <ref></ref> aggiunti
+     */
+    public String setRef(final String stringaIn) {
+        String stringaOut = REF + stringaIn.trim() + REF_END;
+        return stringaOut.trim();
+    }
+
 }

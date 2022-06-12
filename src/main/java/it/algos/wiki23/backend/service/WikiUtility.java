@@ -6,6 +6,8 @@ import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
+import java.util.*;
+
 /**
  * Project vaadwiki
  * Created by Algos
@@ -16,6 +18,53 @@ import org.springframework.stereotype.*;
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class WikiUtility extends WAbstractService {
+
+    public String fixTitolo(String wikiTitleBase, String titoloGrezzo) {
+        String paragrafoVisibile = VUOTA;
+
+        if (!wikiTitleBase.endsWith(SLASH)) {
+            wikiTitleBase += SLASH;
+        }
+
+        if (textService.isValid(titoloGrezzo)) {
+            paragrafoVisibile = wikiTitleBase;
+            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            paragrafoVisibile += PIPE;
+            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+            paragrafoVisibile = PARAGRAFO + paragrafoVisibile + PARAGRAFO;
+        }
+        else {
+            paragrafoVisibile = "Altre...";
+            paragrafoVisibile = setParagrafo(paragrafoVisibile);
+        }
+
+        return paragrafoVisibile;
+    }
+
+
+    public String fixTitoloDimensionato(String wikiTitleBase, String titoloGrezzo, int numVoci) {
+        String paragrafoVisibile = VUOTA;
+
+        if (!wikiTitleBase.endsWith(SLASH)) {
+            wikiTitleBase += SLASH;
+        }
+
+        if (textService.isValid(titoloGrezzo)) {
+            paragrafoVisibile = wikiTitleBase;
+            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            paragrafoVisibile += PIPE;
+            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+            paragrafoVisibile = setParagrafo(paragrafoVisibile, numVoci);
+        }
+        else {
+            paragrafoVisibile = "Altre...";
+            paragrafoVisibile = setParagrafo(paragrafoVisibile, numVoci);
+        }
+
+        return paragrafoVisibile;
+    }
 
     /**
      * Inserisce un numero in caratteri ridotti <br>
@@ -92,6 +141,31 @@ public class WikiUtility extends WAbstractService {
         }
 
         return stringaOut.trim();
+    }
+
+
+    public int getSizeAll(LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappa) {
+        int size = 0;
+
+        if (mappa != null) {
+            for (String key : mappa.keySet()) {
+                size += getSize(mappa.get(key));
+            }
+        }
+
+        return size;
+    }
+
+    public int getSize(LinkedHashMap<String, List<String>> mappa) {
+        int size = 0;
+
+        if (mappa != null) {
+            for (String key : mappa.keySet()) {
+                size += mappa.get(key).size();
+            }
+        }
+
+        return size;
     }
 
 }

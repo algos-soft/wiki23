@@ -33,8 +33,7 @@ public class UploadAttivita extends Upload {
      *
      * @param nomeAttivitaPlurale in funzione del flag
      */
-    public UploadAttivita(final String nomeAttivitaPlurale) {
-        this.nomeAttivitaPlurale = nomeAttivitaPlurale;
+    public UploadAttivita() {
     }// end of constructor
 
     /**
@@ -47,16 +46,18 @@ public class UploadAttivita extends Upload {
     /**
      * Esegue la scrittura della pagina <br>
      */
-    public void uploadTest() {
-        if (WPref.usaParagrafiDimensionati.is()) {
-            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaParagrafiDimensionati();
-        }
-        else {
-            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaParagrafi();
-        }
+    public void uploadTest(String nomeAttivitaPlurale) {
+        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaDidascalie();
+        super.esegue(WIKI_TITLE_DEBUG, mappaDidascalie);
+    }
 
-        newText = mappaToText(mappaDidascalie);
-        appContext.getBean(QueryWrite.class).urlRequest(WIKI_TITLE_DEBUG, newText);
+    /**
+     * Esegue la scrittura della sotto-pagina <br>
+     */
+    public void uploadSottoPagina(String wikiTitlePaginaPrincipale, String nomeAttivitaPlurale) {
+        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaDidascalie();
+        //        newText = mappaToText(WIKI_TITLE_DEBUG,mappaDidascalie);
+        //        appContext.getBean(QueryWrite.class).urlRequest(WIKI_TITLE_DEBUG, newText);
     }
 
 }

@@ -295,8 +295,4 @@ public abstract class Lista {
         return sortedList;
     }
 
-    //    public TreeMap<String, TreeMap<String, List<String>>> getMappa() {
-    //        return mappa;
-    //    }
-
 }

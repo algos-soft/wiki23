@@ -208,11 +208,11 @@ public abstract class WikiTest extends AlgosTest {
 //                Arguments.of("ciclista", true),
 //                Arguments.of("politico", true),
 //                Arguments.of("attori", false),
-//                Arguments.of("politici", false),
-//                Arguments.of("satrapo", true),
-//                Arguments.of("attrice", true),
-//                Arguments.of("cestisti", false),
-//                Arguments.of("principi", false),
+                Arguments.of("politici", false),
+                Arguments.of("satrapo", true),
+                Arguments.of("attrice", true),
+                Arguments.of("cestisti", false),
+                Arguments.of("principi", false),
                 Arguments.of("economisti", false),
                 Arguments.of("ciclisti", false)
 

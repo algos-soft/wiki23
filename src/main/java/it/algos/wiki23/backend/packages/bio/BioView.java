@@ -331,7 +331,12 @@ public class BioView extends WikiView {
      */
     public void updateItem(AEntity entityBeanDaRegistrare) {
         dialog = appContext.getBean(BioDialog.class, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
-        dialog.openBio(this::saveHandler, this::annullaHandler, this::elaboraHandler);
+        dialog.openBio(this::saveHandler, this::annullaHandler, this::downloadHandler,this::elaboraHandler);
+    }
+
+    public void downloadHandler(final Bio bio) {
+        grid.setItems(crudBackend.findAll(sortOrder));
+        Avviso.show(String.format("%s successfully downloaded", bio)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     }
 
     public void elaboraHandler(final Bio bio) {

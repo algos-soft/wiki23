@@ -126,6 +126,9 @@ public abstract class CrudBackend extends AbstractService {
         return (AEntity) crudRepository.insert(entity);
     }
 
+    public AEntity save(Object entity) {
+        return (AEntity) crudRepository.save(entity);
+    }
     public AEntity update(Object entity) {
         return (AEntity) crudRepository.save(entity);
     }

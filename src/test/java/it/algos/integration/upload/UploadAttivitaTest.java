@@ -70,7 +70,7 @@ public class UploadAttivitaTest extends WikiTest {
     @Order(1)
     @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new UploadAttivita(VUOTA);
+        istanza = new UploadAttivita();
         assertNotNull(istanza);
         System.out.println(("1- Costruttore base senza parametri"));
         System.out.println(VUOTA);
@@ -83,8 +83,8 @@ public class UploadAttivitaTest extends WikiTest {
     @DisplayName("2 - Upload di una attivita plurale")
     void getListaDidascalie() {
         System.out.println("2 - Upload di una attivita plurale");
-        sorgente = "economisti";
-        appContext.getBean(UploadAttivita.class,sorgente).uploadTest();
+        sorgente = "generali";
+        appContext.getBean(UploadAttivita.class).uploadTest(sorgente);
     }
 
     /**

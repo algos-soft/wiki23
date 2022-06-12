@@ -249,7 +249,7 @@ public class AttivitaView extends WikiView {
      */
     public void testPagina() {
         String nomeAttivitaPlurale = "politici";
-        appContext.getBean(UploadAttivita.class, nomeAttivitaPlurale).uploadTest();
+        appContext.getBean(UploadAttivita.class).uploadTest(nomeAttivitaPlurale);
         reload();
     }
 

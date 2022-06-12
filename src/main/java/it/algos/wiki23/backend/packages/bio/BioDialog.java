@@ -5,7 +5,9 @@ import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.views.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -40,6 +42,7 @@ public class BioDialog extends CrudDialog {
 
     private Bio currentItem;
 
+    private Consumer<Bio> downloadHandler;
     private Consumer<Bio> elaboraHandler;
 
     protected Button buttonDownload;
@@ -82,7 +85,7 @@ public class BioDialog extends CrudDialog {
         buttonDownload.getElement().setAttribute("theme", "primary");
         buttonDownload.getElement().setProperty("title", "Download: ricarica tutti i valori dal server wiki");
         buttonDownload.setIcon(new Icon(VaadinIcon.DOWNLOAD));
-        buttonDownload.addClickListener(event -> download());
+        buttonDownload.addClickListener(event -> downloadHandler());
         bottomPlaceHolder.add(buttonDownload);
 
         Button elaboraButton = new Button();
@@ -94,7 +97,9 @@ public class BioDialog extends CrudDialog {
 
     }
 
-    public void openBio(final BiConsumer<AEntity, CrudOperation> saveHandler, final Consumer<AEntity> annullaHandler, final Consumer<Bio> elaboraHandler) {
+    public void openBio(final BiConsumer<AEntity, CrudOperation> saveHandler, final Consumer<AEntity> annullaHandler,
+                        final Consumer<Bio> downloadHandler, final Consumer<Bio> elaboraHandler) {
+        this.downloadHandler = downloadHandler;
         this.elaboraHandler = elaboraHandler;
         this.open(saveHandler, null, annullaHandler);
     }
@@ -102,17 +107,22 @@ public class BioDialog extends CrudDialog {
     /**
      * Esegue un azione di download <br>
      */
-    public void download() {
+    public void downloadHandler() {
         WrapBio wrap = appContext.getBean(QueryBio.class).getWrap(currentItem.pageId);
-        currentItem = backend.newEntity(wrap);
+        currentItem = backend.fixWrap(currentItem.id, wrap);
         elaboraService.esegue(currentItem);
-        binder.readBean(currentItem);
-        elaboraHandler();
+        backend.update(currentItem);
+        if (downloadHandler != null) {
+            downloadHandler.accept(currentItem);
+        }
+        close();
     }
 
     protected void elaboraHandler() {
         currentItem = elaboraService.esegue(currentItem);
-        elaboraHandler.accept(currentItem);
+        if (elaboraHandler != null) {
+            elaboraHandler.accept(currentItem);
+        }
         close();
     }
 
