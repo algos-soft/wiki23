@@ -49,8 +49,8 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     List<Bio> findAllByAttivita2OrderByCognome(String attivita2);
     List<Bio> findAllByAttivita3OrderByCognome(String attivita2);
 
-    @Query( fields = "{ 'pageId' : 1 }")
-    List<Bio> findIncludePageIdFields();
+//    @Query( fields = "{ 'pageId' : 1 }")
+//    List<Bio> findIncludePageIdFields();
 
 //    @Query(value = "{ 'status' : ?0 }", fields = "{ 'item' : 1, 'status' : 1 }")
 //    List<Inventory> findByStatusIncludeItemAndStatusFields(String status);

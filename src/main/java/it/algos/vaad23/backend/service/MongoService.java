@@ -2,11 +2,13 @@ package it.algos.vaad23.backend.service;
 
 import com.mongodb.*;
 import com.mongodb.client.*;
+import com.mongodb.client.model.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.bson.*;
+import org.bson.conversions.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -242,4 +244,38 @@ public class MongoService<capture> extends AbstractService {
         this.dataBase = dataBase;
     }
 
+    public List<AEntity> query(Class<? extends AEntity> entityClazz) {
+        List<AEntity> listaEntities;
+        Query query = new Query();
+
+        listaEntities = (List<AEntity>) mongoOp.find(query, entityClazz);
+
+        return listaEntities;
+    }
+
+    public List<String> projectionString(Class<? extends AEntity> entityClazz, String property) {
+        List<String> listaProperty = new ArrayList();
+        collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
+
+        Bson projection = Projections.fields(Projections.include(property), Projections.excludeId());
+        FindIterable<Document> documents = collection.find().projection(projection);
+
+        for (var singolo : documents) {
+            listaProperty.add(singolo.get(property, String.class));
+        }
+        return listaProperty;
+    }
+
+    public List<Long> projectionLong(Class<? extends AEntity> entityClazz, String property) {
+        List<Long> listaProperty = new ArrayList();
+        collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
+
+        Bson projection = Projections.fields(Projections.include(property), Projections.excludeId());
+        FindIterable<Document> documents = collection.find().projection(projection);
+
+        for (var singolo : documents) {
+            listaProperty.add(singolo.get(property, Long.class));
+        }
+        return listaProperty;
+    }
 }
