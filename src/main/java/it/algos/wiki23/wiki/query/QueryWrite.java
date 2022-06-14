@@ -222,7 +222,7 @@ public class QueryWrite extends AQuery {
      *
      * @return true se il collegamento come bot è confermato
      */
-    public WResult secondaryRequestPost( WResult result) {
+    public WResult secondaryRequestPost(WResult result) {
         String urlDomain = TAG_SECONDARY_REQUEST_POST + wikiTitle;
         String urlResponse = VUOTA;
         URLConnection urlConn;
@@ -384,7 +384,7 @@ public class QueryWrite extends AQuery {
         if (objectAll != null && objectAll.get(EDIT) != null && objectAll.get(EDIT) instanceof JSONObject) {
             objectEdit = (JSONObject) objectAll.get(EDIT);
         }
-        if (objectEdit.get(PAGE_ID) != null && objectEdit.get(PAGE_ID) instanceof Long) {
+        if (objectEdit != null && objectEdit.get(PAGE_ID) != null && objectEdit.get(PAGE_ID) instanceof Long) {
             pageid = (Long) objectEdit.get(PAGE_ID);
         }
 

@@ -4,6 +4,7 @@ import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
@@ -11,6 +12,9 @@ import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
+import it.algos.vaad23.ui.dialog.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -21,6 +25,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
+import javax.management.*;
 import java.util.*;
 
 /**
@@ -248,9 +253,24 @@ public class AttivitaView extends WikiView {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void testPagina() {
-        String nomeAttivitaPlurale = "politici";
-        appContext.getBean(UploadAttivita.class).uploadTest(nomeAttivitaPlurale);
-        reload();
+        Attivita attivita;
+        String message;
+
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            attivita = (Attivita) entityBean.get();
+            if (attivita.numBio > WPref.sogliaAttNazWiki.getInt()) {
+                appContext.getBean(UploadAttivita.class).uploadTest(attivita.plurale);
+            }
+            else {
+                message = String.format("L'attività %s non raggiunge il necessario numero di voci biografiche", attivita.singolare);
+                Avviso.show3000(message).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            }
+        }
+
+//        String nomeAttivitaPlurale = "politici";
+//        appContext.getBean(UploadAttivita.class).uploadTest(nomeAttivitaPlurale);
+//        reload();
     }
 
     public void updateItem(AEntity entityBean) {

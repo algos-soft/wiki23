@@ -6,6 +6,8 @@ import com.mongodb.client.model.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.logic.*;
+import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.bson.*;
 import org.bson.conversions.*;
@@ -278,4 +280,23 @@ public class MongoService<capture> extends AbstractService {
         }
         return listaProperty;
     }
+
+    public List<AEntity> projectionExclude(Class<? extends AEntity> entityClazz, CrudBackend backend, String property) {
+        List<AEntity> listaExcluded = new ArrayList();
+        collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
+        AEntity entityBean;
+
+        Bson projection = Projections.fields(Projections.exclude(property), Projections.excludeId());
+        FindIterable<Document> documents = collection.find().projection(projection);
+
+        for (var singolo : documents) {
+            entityBean = backend.newEntity(singolo);
+            if (entityBean != null) {
+                listaExcluded.add(entityBean);
+            }
+        }
+
+        return listaExcluded;
+    }
+
 }

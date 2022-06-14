@@ -127,6 +127,9 @@ public abstract class Lista {
     @Autowired
     public WikiUtility wikiUtility;
 
+    //--property
+    protected List<String> listaNomiSingoli;
+
     /**
      * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
      * La lista è ordinata per cognome <br>
@@ -168,9 +171,14 @@ public abstract class Lista {
      */
     protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
 
-    public static Function<WrapDidascalia, String> cognome = wrap -> wrap.getCognome() != null ? wrap.getCognome() : VUOTA;
+    public static Function<WrapDidascalia, String> funCognome = wrap -> wrap.getCognome() != null ? wrap.getCognome() : VUOTA;
 
-    public static Function<WrapDidascalia, String> wikiTitle = wrap -> wrap.getWikiTitle() != null ? wrap.getWikiTitle() : VUOTA;
+    public static Function<WrapDidascalia, String> funWikiTitle = wrap -> wrap.getWikiTitle() != null ? wrap.getWikiTitle() : VUOTA;
+
+    public static Function<WrapDidascalia, String> funNazionalita = wrap -> wrap.getNazionalitaSingola() != null ? wrap.getNazionalitaSingola() : VUOTA;
+
+    public static Function<WrapDidascalia, String> funAttivita = wrap -> wrap.getAttivitaSingola() != null ? wrap.getAttivitaSingola() :
+            VUOTA;
 
     protected String titoloParagrafo;
 
@@ -273,6 +281,35 @@ public abstract class Lista {
     }
 
 
+
+    public LinkedHashMap<String, List<WrapDidascalia>> creaMappaCarattere(List<WrapDidascalia> listaWrapNonOrdinata) {
+        LinkedHashMap<String, List<WrapDidascalia>> mappa = new LinkedHashMap<>();
+        List lista;
+        String primoCarattere;
+
+        if (listaWrapNonOrdinata != null) {
+            for (WrapDidascalia wrap : listaWrapNonOrdinata) {
+                primoCarattere = wrap.getPrimoCarattere();
+                if (mappa.containsKey(primoCarattere)) {
+                    lista = mappa.get(primoCarattere);
+                }
+                else {
+                    lista = new ArrayList();
+                }
+                lista.add(wrap);
+                mappa.put(primoCarattere, lista);
+            }
+        }
+
+        for (String key : mappa.keySet()) {
+            lista = mappa.get(key);
+            lista = sortByCognome(lista);
+            mappa.put(key, lista);
+        }
+
+        return mappa;
+    }
+
     public List<WrapDidascalia> sortByCognome(List<WrapDidascalia> listaWrapNonOrdinata) {
         List<WrapDidascalia> sortedList = new ArrayList<>();
         List<WrapDidascalia> listaConCognomeOrdinata = new ArrayList<>(); ;
@@ -281,13 +318,13 @@ public abstract class Lista {
         listaConCognomeOrdinata = listaWrapNonOrdinata
                 .stream()
                 .filter(wrap -> wrap.getCognome() != null)
-                .sorted(Comparator.comparing(cognome))
+                .sorted(Comparator.comparing(funCognome))
                 .collect(Collectors.toList());
 
         listaSenzaCognomeOrdinata = listaWrapNonOrdinata
                 .stream()
                 .filter(wrap -> wrap.getCognome() == null)
-                .sorted(Comparator.comparing(wikiTitle))
+                .sorted(Comparator.comparing(funWikiTitle))
                 .collect(Collectors.toList());
 
         sortedList.addAll(listaConCognomeOrdinata);

@@ -331,12 +331,44 @@ public class BioView extends WikiView {
      */
     public void updateItem(AEntity entityBeanDaRegistrare) {
         dialog = appContext.getBean(BioDialog.class, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
-        dialog.openBio(this::saveHandler, this::annullaHandler, this::downloadHandler,this::elaboraHandler);
+        dialog.openBio(this::saveHandler, this::annullaHandler, this::downloadHandler, this::elaboraHandler);
     }
 
     public void downloadHandler(final Bio bio) {
         grid.setItems(crudBackend.findAll(sortOrder));
         Avviso.show(String.format("%s successfully downloaded", bio)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
+    @Override
+    public void annullaHandler(AEntity entityBean) {
+//        long inizio = System.currentTimeMillis();
+//        String size;
+//        String time;
+//        size = textService.format(backend.count());
+//
+//        backend.findOnlyPageId();
+//        time = dateService.deltaTextEsatto(inizio);
+//        message = String.format("Tempo di ricarica a video di %s records ridotti, in %s", size, time);
+//        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+//
+//        inizio = System.currentTimeMillis();
+//        backend.findAll(sortOrder);
+//        time = dateService.deltaTextEsatto(inizio);
+//        String message = String.format("Tempo di ricarica a video di %s records completi, in %s", size, time);
+//        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+//
+//        inizio = System.currentTimeMillis();
+//        backend.findSenzaTmpl();
+//        time = dateService.deltaTextEsatto(inizio);
+//        message = String.format("Tempo di ricarica a video di %s records senza tmpl, in %s", size, time);
+//        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+
+//        inizio = System.currentTimeMillis();
+//        grid.setItems(backend.findAll(sortOrder));
+//        time = dateService.deltaTextEsatto(inizio);
+//        message = String.format("Tempo di ricarica a video di %s records completi con Grid.setItems(), in %s", size, time);
+//        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+
     }
 
     public void elaboraHandler(final Bio bio) {

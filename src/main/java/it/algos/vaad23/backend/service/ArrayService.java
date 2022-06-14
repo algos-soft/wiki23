@@ -340,4 +340,28 @@ public class ArrayService extends AbstractService {
         return mappaOrdinata;
     }
 
+    /**
+     * Differenza di due array <br>
+     *
+     * @param arrayA lista di valori A
+     * @param arrayB lista di valori B
+     *
+     * @return lista dei valori mancanti
+     */
+    public List<Integer> differenzaInt(final List<Integer> arrayA, final List<Integer> arrayB) {
+        return arrayA.stream().filter(a -> !arrayB.contains(a)).toList();
+    }
+
+    /**
+     * Differenza di due array <br>
+     *
+     * @param arrayA lista di valori A
+     * @param arrayB lista di valori B
+     *
+     * @return lista dei valori mancanti
+     */
+    public List<Long> differenzaLong(final List<Long> arrayA, final List<Long> arrayB) {
+        return arrayA.stream().filter(a -> !arrayB.contains(a)).toList();
+    }
+
 }

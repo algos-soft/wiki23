@@ -476,24 +476,24 @@ public class BioService extends WAbstractService {
      * Cerca tutte le entities di una collection filtrate con una serie di attività. <br>
      * Selects documents in a collection or view and returns a list of the selected documents. <br>
      *
-     * @param listaNomiAttivitaSingole per costruire la query
+     * @param listaNomiSingoli per costruire la query
      *
      * @return lista di entityBeans ordinata per cognome
      *
      * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
      */
-    public List<Bio> fetchAttivita(List<String> listaNomiAttivitaSingole) {
+    public List<Bio> fetchAttivita(List<String> listaNomiSingoli) {
         List<Bio> listaNonOrdinata = new ArrayList<>();
         List<Bio> lista1;
         List<Bio> lista2;
         List<Bio> lista3;
 
-        if (listaNomiAttivitaSingole == null) {
+        if (listaNomiSingoli == null) {
             logger.info(new WrapLog().exception(new AlgosException("Non ci sono attività singole")).usaDb());
             return null;
         }
 
-        for (String nomeAttivitaSingola : listaNomiAttivitaSingole) {
+        for (String nomeAttivitaSingola : listaNomiSingoli) {
             lista1 = repository.findAllByAttivitaOrderByCognome(nomeAttivitaSingola);
             listaNonOrdinata.addAll(lista1);
             if (WPref.usaTreAttivita.is()) {
@@ -506,6 +506,33 @@ public class BioService extends WAbstractService {
 
         return sortByForzaOrdinamento(listaNonOrdinata);
     }
+
+
+    /**
+     * Cerca tutte le entities di una collection filtrate con una serie di nazionalità. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     *
+     * @param listaNomiSingoli per costruire la query
+     *
+     * @return lista di entityBeans ordinata per cognome
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchNazionalita(List<String> listaNomiSingoli) {
+        List<Bio> listaNonOrdinata = new ArrayList<>();
+
+        if (listaNomiSingoli == null) {
+            logger.info(new WrapLog().exception(new AlgosException("Non ci sono nazionalità singole")).usaDb());
+            return null;
+        }
+
+        for (String nomeNazionalitaSingola : listaNomiSingoli) {
+            listaNonOrdinata.addAll(repository.findAllByNazionalitaOrderByCognome(nomeNazionalitaSingola));
+        }
+
+        return sortByForzaOrdinamento(listaNonOrdinata);
+    }
+
 
     public List<Bio> sortByNazionalita(List<Bio> listaNonOrdinata) {
         List<Bio> sortedList = new ArrayList<>();
@@ -529,7 +556,7 @@ public class BioService extends WAbstractService {
     }
 
     public List<Bio> sortByForzaOrdinamento(List<Bio> listaNonOrdinata) {
-       return listaNonOrdinata
+        return listaNonOrdinata
                 .stream()
                 .sorted(Comparator.comparing(forzaOrdinamento))
                 .collect(Collectors.toList());

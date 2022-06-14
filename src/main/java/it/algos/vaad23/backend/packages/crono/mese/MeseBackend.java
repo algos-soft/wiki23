@@ -4,6 +4,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
+import org.bson.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
@@ -58,6 +59,10 @@ public class MeseBackend extends CrudBackend {
      */
     public Mese newEntity() {
         return newEntity(0, VUOTA, VUOTA);
+    }
+
+    public Mese newEntity(Document doc) {
+        return newEntity(27, doc.getString("breve"), doc.getString("nome"));
     }
 
     /**

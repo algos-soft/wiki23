@@ -242,7 +242,7 @@ public class ElaboraServiceTest extends WikiTest {
         return new String[]{ATT_1, ATT_2, ATT_3, ATT_4, ATT_5, ATT_6, ATT_7, ATT_8, ATT_9, ATT_10, ATT_11, ATT_12, ATT_13};
     }
 
-    public static String[] NAZIONALITA() {
+    public static String[] NAZIONALITA_ELABORA() {
         return new String[]{NAZ_1, NAZ_2, NAZ_3, NAZ_4, NAZ_5, NAZ_6, NAZ_7, NAZ_8, NAZ_9, NAZ_10};
     }
 
@@ -456,7 +456,7 @@ public class ElaboraServiceTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "NAZIONALITA")
+    @MethodSource(value = "NAZIONALITA_ELABORA")
     @Order(13)
     @DisplayName("13 - fixNazionalita (come stringa)")
     void fixNazionalita(String nazionalita) {
@@ -469,7 +469,7 @@ public class ElaboraServiceTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "NAZIONALITA")
+    @MethodSource(value = "NAZIONALITA_ELABORA")
     @Order(14)
     @DisplayName("14 - fixNazionalitaLink (come Nazionalita esistente)")
     void fixNazionalitaLink(String nazionalita) {
@@ -486,7 +486,7 @@ public class ElaboraServiceTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "NAZIONALITA")
+    @MethodSource(value = "NAZIONALITA_ELABORA")
     @Order(15)
     @DisplayName("15 - fixNazionalitaValida (come stringa)")
     void fixNazionalitaValida(String nazionalita) {

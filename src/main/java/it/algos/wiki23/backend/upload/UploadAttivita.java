@@ -20,7 +20,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UploadAttivita extends Upload {
 
-    protected String nomeAttivitaPlurale;
 
     protected Lista lista;
 
@@ -47,6 +46,7 @@ public class UploadAttivita extends Upload {
      * Esegue la scrittura della pagina <br>
      */
     public void uploadTest(String nomeAttivitaPlurale) {
+        this.nomeAttivitaPlurale = nomeAttivitaPlurale;
         mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).mappaDidascalie();
         super.esegue(WIKI_TITLE_DEBUG, mappaDidascalie);
     }

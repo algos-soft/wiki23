@@ -114,6 +114,8 @@ public abstract class WikiTest extends AlgosTest {
 
     protected List<WrapTime> listMiniWrap;
 
+    protected LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaLista;
+
     protected AETypeUser typeUser;
 
     protected static final String PAGINA_UNO = "Roman Protasevič";
@@ -199,15 +201,15 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
-    //--nome attivita
+    //--nome attività
     //--flag singolare versus plurale
     protected static Stream<Arguments> ATTIVITA() {
         return Stream.of(
-//                Arguments.of("attore", true),
-//                Arguments.of("badessa", true),
-//                Arguments.of("ciclista", true),
-//                Arguments.of("politico", true),
-//                Arguments.of("attori", false),
+                Arguments.of("attore", true),
+                Arguments.of("badessa", true),
+                Arguments.of("ciclista", true),
+                Arguments.of("politico", true),
+                Arguments.of("attori", false),
                 Arguments.of("politici", false),
                 Arguments.of("satrapo", true),
                 Arguments.of("attrice", true),
@@ -215,6 +217,22 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("principi", false),
                 Arguments.of("economisti", false),
                 Arguments.of("ciclisti", false)
+
+        );
+    }
+
+
+    //--nome nazionalità
+    //--flag singolare versus plurale
+    protected static Stream<Arguments> NAZIONALITA() {
+        return Stream.of(
+                Arguments.of("croati", false),
+                Arguments.of("tedesco", true),
+                Arguments.of("tedesca", true),
+                Arguments.of("inglese", true),
+                Arguments.of("britannico", true),
+                Arguments.of("nordirlandese", true),
+                Arguments.of("britannici", false)
 
         );
     }
@@ -281,6 +299,7 @@ public abstract class WikiTest extends AlgosTest {
         listBio = null;
         listWrapDidascalia = null;
         listMiniWrap = null;
+        mappaLista = null;
         typeUser = null;
         pageId = 0L;
     }
@@ -382,52 +401,6 @@ public abstract class WikiTest extends AlgosTest {
     }
 
 
-    protected void printWrapListaAttivita(List<WrapDidascalia> wrapLista) {
-        String message;
-        int max = 10;
-        int tot = wrapLista.size();
-        int iniA = 0;
-        int endA = Math.min(max, tot);
-        int iniB = tot - max > 0 ? tot - max : 0;
-        int endB = tot;
-
-        if (wrapLista != null) {
-            message = String.format("Faccio vedere le prime e le ultime %d wrapDidascalie", max);
-            System.out.println(message);
-            message = "Parametri di ordinamento (nell'ordine):";
-            System.out.println(message);
-            message = "Nazione, primo carattere, cognome";
-            System.out.println(message);
-            System.out.println(VUOTA);
-
-            printWrapListaBaseAttivita(wrapLista.subList(iniA, endA), iniA);
-            System.out.println(TRE_PUNTI);
-            printWrapListaBaseAttivita(wrapLista.subList(iniB, endB), iniB);
-        }
-    }
-
-    protected void printWrapListaBaseAttivita(List<WrapDidascalia> wrapLista, final int inizio) {
-        int cont = inizio;
-
-        for (WrapDidascalia wrap : wrapLista) {
-            cont++;
-            System.out.print(cont);
-            System.out.print(PARENTESI_TONDA_END);
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getNazionalitaParagrafo()) ? wrap.getNazionalitaParagrafo() : NULL));
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(wrap.getPrimoCarattere()));
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getCognome()) ? wrap.getCognome() : NULL));
-            System.out.print(SPAZIO);
-
-            System.out.println(SPAZIO);
-        }
-    }
-
     protected void printDidascalia(final String sorgente, final String sorgente2, final String sorgente3, final String ottenuto) {
         System.out.println(VUOTA);
         System.out.println(String.format("Titolo effettivo della voce: %s", sorgente));
@@ -464,6 +437,155 @@ public abstract class WikiTest extends AlgosTest {
         }
 
         return message;
+    }
+
+
+    protected void printBioLista(List<Bio> listaBio) {
+        String message;
+        int max = 10;
+        int tot = listaBio.size();
+        int iniA = 0;
+        int endA = Math.min(max, tot);
+        int iniB = tot - max > 0 ? tot - max : 0;
+        int endB = tot;
+
+        if (listaBio != null) {
+            message = String.format("Faccio vedere una lista delle prime e delle ultime %d biografie", max);
+            System.out.println(message);
+            message = "Ordinate per forzaOrdinamento";
+            System.out.println(message);
+            message = "Ordinamento, wikiTitle, nome, cognome";
+            System.out.println(message);
+            System.out.println(VUOTA);
+
+            printBioBase(listaBio.subList(iniA, endA), iniA);
+            System.out.println(TRE_PUNTI);
+            printBioBase(listaBio.subList(iniB, endB), iniB);
+        }
+    }
+
+    protected void printBioBase(List<Bio> listaBio, final int inizio) {
+        int cont = inizio;
+
+        for (Bio bio : listaBio) {
+            cont++;
+            System.out.print(cont);
+            System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+
+            System.out.print(textService.setQuadre(bio.ordinamento));
+            System.out.print(SPAZIO);
+
+            System.out.print(textService.setQuadre(bio.wikiTitle));
+            System.out.print(SPAZIO);
+
+            System.out.print(textService.setQuadre(textService.isValid(bio.nome) ? bio.nome : KEY_NULL));
+            System.out.print(SPAZIO);
+
+            System.out.print(textService.setQuadre(textService.isValid(bio.cognome) ? bio.cognome : KEY_NULL));
+            System.out.print(SPAZIO);
+
+            System.out.println(SPAZIO);
+        }
+    }
+
+
+    protected void printWrapDidascalia(List<WrapDidascalia> lista) {
+        int cont = 0;
+        String value;
+
+        if (lista != null) {
+            for (WrapDidascalia wrap : lista) {
+                cont++;
+                value = wrap.getWikiTitle();
+
+                System.out.print(TAB);
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print(textService.setQuadre(value));
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+            }
+        }
+    }
+
+
+    protected void printMappaDidascalia(String tag, String attivita, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
+        int cont = 0;
+        LinkedHashMap<String, List<String>> mappaSub;
+
+        if (mappaDidascalie != null) {
+            message = String.format("Didascalie per %s %s", tag, attivita);
+            System.out.println(message);
+            message = "Nazionalità/Attività, primoCarattere, didascalia";
+            System.out.println(message);
+            System.out.println(VUOTA);
+
+            for (String key : mappaDidascalie.keySet()) {
+                mappaSub = mappaDidascalie.get(key);
+                cont++;
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print(key);
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printMappaSubDidascalie(mappaSub);
+                System.out.println(VUOTA);
+            }
+        }
+    }
+
+
+    protected void printMappaSubDidascalie(LinkedHashMap<String, List<String>> mappaSub) {
+        int cont = 0;
+        List lista;
+
+        if (mappaSub != null) {
+            for (String key : mappaSub.keySet()) {
+                lista = mappaSub.get(key);
+                cont++;
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print(key);
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printDidascalia(lista);
+            }
+        }
+    }
+
+    protected void printDidascalia(List<String> lista) {
+        int cont = 0;
+
+        if (lista != null) {
+            for (String didascalia : lista) {
+                cont++;
+
+                System.out.print(TAB);
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print(didascalia);
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+            }
+        }
     }
 
 }

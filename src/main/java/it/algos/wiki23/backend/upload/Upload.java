@@ -87,6 +87,8 @@ public abstract class Upload {
 
     protected String newText2;
 
+    protected String nomeAttivitaPlurale;
+
     protected WResult esegue(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = wikiUtility.getSizeAll(mappaDidascalie);
@@ -143,37 +145,58 @@ public abstract class Upload {
         int maxSottoPagina = WPref.sogliaSottoPagina.getInt();
         String prog = "Attività";
         String mod = "Bio/Plurale attività";
-        String pack = "Abati e badesse";
+        String pack = nomeAttivitaPlurale;
 
         buffer.append("Questa è una lista");
         message = "Le didascalie delle voci sono quelle previste nel [[Progetto:Biografie/Didascalie|progetto biografie]]";
         buffer.append(textService.setRef(message));
+
         message = "Le voci, all'interno di ogni paragrafo, sono in ordine alfabetico per '''cognome'''; se questo manca si utilizza il '''titolo''' della pagina.";
         buffer.append(textService.setRef(message));
+
         buffer.append(" di persone");
         message = "La lista non è esaustiva e contiene solo le persone che sono citate nell'enciclopedia e per le quali è stato " +
                 "implementato correttamente il [[template:Bio|template Bio]]";
         buffer.append(textService.setRef(message));
+
         buffer.append(" presenti");
         message = String.format("La pagina di una singola attività viene creata se le relative voci biografiche superano le '''%d''' unità.", maxPagina);
         buffer.append(textService.setRef(message));
-        buffer.append(" nell'enciclopedia che hanno come attività");
+
+        if (WPref.usaTreAttivita.is()) {
+            buffer.append(" nell'enciclopedia che hanno tra le attività");
+        }
+        else {
+            buffer.append(" nell'enciclopedia che hanno come attività");
+        }
         message = String.format("Le attività sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
-                        "comunità ed [[Modulo:%s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]", prog, mod);
+                "comunità ed [[Modulo:%s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]", prog, mod);
         buffer.append(textService.setRef(message));
-        buffer.append(" principale");
-        message = "Ogni persona è presente in una sola [[Progetto:Biografie/Attività|lista]], in base a quanto riportato " +
-                "nel parametro ''attività'' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona";
+
+        if (WPref.usaTreAttivita.is()) {
+            message = "Ogni persona è presente in diverse [[Progetto:Biografie/Attività|liste]], in base a quanto riportato in " +
+                    "uno dei 3 parametri ''attività, attività2 e attività3'' del [[template:Bio|template Bio]] presente nella voce " +
+                    "biografica specifica della persona";
+        }
+        else {
+            buffer.append(" principale");
+            message = "Ogni persona è presente in una sola [[Progetto:Biografie/Attività|lista]], in base a quanto riportato " +
+                    "nel (primo) parametro ''attività'' del [[template:Bio|template Bio]] presente nella voce biografica specifica della " +
+                    "persona";
+        }
         buffer.append(textService.setRef(message));
+
         message = String.format(" quella di '''%s'''.", pack);
         buffer.append(message);
         buffer.append(" Le persone sono suddivise");
         message = String.format("La lista è suddivisa in paragrafi per ogni nazionalità individuata. Se il numero di voci biografiche nel" +
                 " paragrafo supera le '''%s''' unità, viene creata una sottopagina.", maxSottoPagina);
         buffer.append(textService.setRef(message));
+
         buffer.append(" per nazionalità.");
         message = "Le nazionalità sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla comunità ed [[Modulo:Bio/Plurale nazionalità|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
         buffer.append(textService.setRef(message));
+
         message = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il parametro " +
                 "''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
         buffer.append(textService.setRef(message));
@@ -190,7 +213,8 @@ public abstract class Upload {
     }
 
     protected String correlate() {
-        return "==Voci correlate==" + CAPO + "*[[:Categoria:Fiamminghi]]" + CAPO + "*[[Progetto:Biografie/Nazionalità]]" + CAPO;
+        String cat = textService.primaMaiuscola(nomeAttivitaPlurale);
+        return "==Voci correlate==" + CAPO + String.format("*[[:Categoria:%s]]", cat) + CAPO + "*[[Progetto:Biografie/Attività]]" + CAPO;
     }
 
     protected String portale() {
@@ -199,7 +223,8 @@ public abstract class Upload {
 
 
     protected String categorie() {
-        return "[[Categoria:Bio nazionalità|Fiamminghi]]";
+        String cat = textService.primaMaiuscola(nomeAttivitaPlurale);
+        return String.format("[[Categoria:Bio attività|%s]]",cat);
     }
 
 

@@ -4,38 +4,34 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
-import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import java.util.*;
-import java.util.function.*;
 import java.util.stream.*;
 
 /**
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Fri, 03-Jun-2022
- * Time: 16:08
- * <p>
- * Lista delle biografie per attività <br>
+ * Date: Tue, 14-Jun-2022
+ * Time: 07:06
+ * Lista delle biografie per nazionalità <br>
  * <p>
  * La lista è un semplice testo (formattato secondo i possibili tipi di raggruppamento) <br>
- * Usata fondamentalmente da UploadAttivita con appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaPlurale).xxx() <br>
+ * Usata fondamentalmente da UploadNazionalita con appContext.getBean(ListaNazionalita.class).plurale(nomeNazionalitaPlurale).xxx() <br>
  * Il costruttore è senza parametri e serve solo per preparare l'istanza che viene ''attivata'' con 3 diversi metodi,
  * ognuno col suo parametro:
- * attivita(final Attivita attivita) <br>
- * singolare(final String nomeAttivitaSingolare) <br>
- * plurale(final String nomeAttivitaPlurale) <br>
+ * nazionalita(final Nazionalita nazionalita) <br>
+ * singolare(final String nomeNazionalitaSingolare) <br>
+ * plurale(final String nomeNazionalitaPlurale) <br>
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ListaAttivita extends Lista {
-
-
+public class ListaNazionalita extends Lista {
 
 
     /**
@@ -45,23 +41,23 @@ public class ListaAttivita extends Lista {
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune properties. <br>
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
-    public ListaAttivita() {
-        super.titoloParagrafo = "Progetto:Biografie/Nazionalità/";
+    public ListaNazionalita() {
+        super.titoloParagrafo = "Progetto:Biografie/Attività/";
     }// end of constructor
 
 
-    public ListaAttivita attivita(final Attivita attivita) {
-        listaNomiSingoli = attivitaBackend.findSingolariByPlurale(attivita.plurale);
+    public ListaNazionalita nazionalita(final Nazionalita nazionalita) {
+        listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(nazionalita.plurale);
         return this;
     }
 
-    public ListaAttivita singolare(final String nomeAttivitaSingolare) {
-        listaNomiSingoli = arrayService.creaArraySingolo(nomeAttivitaSingolare);
+    public ListaNazionalita singolare(final String nomeNazionalitaSingolare) {
+        listaNomiSingoli = arrayService.creaArraySingolo(nomeNazionalitaSingolare);
         return this;
     }
 
-    public ListaAttivita plurale(final String nomeAttivitaPlurale) {
-        listaNomiSingoli = attivitaBackend.findSingolariByPlurale(nomeAttivitaPlurale);
+    public ListaNazionalita plurale(final String nomeNazionalitaPlurale) {
+        listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(nomeNazionalitaPlurale);
         return this;
     }
 
@@ -74,7 +70,7 @@ public class ListaAttivita extends Lista {
         super.listaBio();
 
         try {
-            listaBio = bioService.fetchAttivita(listaNomiSingoli);
+            listaBio = bioService.fetchNazionalita(listaNomiSingoli);
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
             return null;
@@ -82,7 +78,6 @@ public class ListaAttivita extends Lista {
 
         return listaBio;
     }
-
 
     /**
      * Costruisce una lista dei wrapper per gestire i dati necessari ad una didascalia <br>
@@ -92,7 +87,7 @@ public class ListaAttivita extends Lista {
     @Override
     public List<WrapDidascalia> listaWrapDidascalie() {
         listaWrapDidascalie = super.listaWrapDidascalie();
-        return sortByNazionalita(listaWrapDidascalie);
+        return sortByAttivita(listaWrapDidascalie);
     }
 
     /**
@@ -103,7 +98,7 @@ public class ListaAttivita extends Lista {
     public LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie() {
         super.mappaWrapDidascalie();
 
-        LinkedHashMap<String, List<WrapDidascalia>> mappaNaz = creaMappaNazionalita(listaWrapDidascalie);
+        LinkedHashMap<String, List<WrapDidascalia>> mappaNaz = creaMappaAttivita(listaWrapDidascalie);
         LinkedHashMap<String, List<WrapDidascalia>> mappaLista;
 
         if (mappaNaz != null) {
@@ -115,6 +110,7 @@ public class ListaAttivita extends Lista {
 
         return mappaWrapDidascalie;
     }
+
 
     /**
      * Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
@@ -149,6 +145,7 @@ public class ListaAttivita extends Lista {
         return mappaDidascalie;
     }
 
+
     /**
      * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
      * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
@@ -173,51 +170,24 @@ public class ListaAttivita extends Lista {
         return mappaParagrafi;
     }
 
-
-    /**
-     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
-     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
-     * Nel titolo visibile del paragrafo viene riportato il numero di voci biografiche presenti <br>
-     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
-     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
-     */
-    @Override
-    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati() {
-        super.mappaParagrafiDimensionati();
-
-        LinkedHashMap<String, List<String>> mappaSub;
-        String paragrafoDimensionato;
-
-        for (String key : mappaDidascalie.keySet()) {
-            paragrafoDimensionato = key;
-            mappaSub = mappaDidascalie.get(key);
-            paragrafoDimensionato = wikiUtility.fixTitoloDimensionato(titoloParagrafo, paragrafoDimensionato,mappaSub.size());
-
-            mappaParagrafiDimensionati.put(paragrafoDimensionato, mappaSub);
-        }
-
-        return mappaParagrafiDimensionati;
-    }
-
-
-    public LinkedHashMap<String, List<WrapDidascalia>> creaMappaNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
+    public LinkedHashMap<String, List<WrapDidascalia>> creaMappaAttivita(List<WrapDidascalia> listaWrapNonOrdinata) {
         LinkedHashMap<String, List> mappa = new LinkedHashMap<>();
         List lista;
-        String nazionalita;
+        String attivita;
 
         if (listaWrapNonOrdinata != null) {
             for (WrapDidascalia wrap : listaWrapNonOrdinata) {
-                nazionalita = wrap.getNazionalitaParagrafo();
-                nazionalita = nazionalita != null ? nazionalita : VUOTA;
+                attivita = wrap.getAttivitaParagrafo();
+                attivita = attivita != null ? attivita : VUOTA;
 
-                if (mappa.containsKey(nazionalita)) {
-                    lista = mappa.get(nazionalita);
+                if (mappa.containsKey(attivita)) {
+                    lista = mappa.get(attivita);
                 }
                 else {
                     lista = new ArrayList();
                 }
                 lista.add(wrap);
-                mappa.put(nazionalita, lista);
+                mappa.put(attivita, lista);
             }
         }
 
@@ -225,58 +195,25 @@ public class ListaAttivita extends Lista {
     }
 
 
-
-    //    public TreeMap<String, TreeMap<String, List<String>>> creaMappa() {
-    //        TreeMap<String, TreeMap<String, List<String>>> mappa = new TreeMap<>();
-    //        LinkedHashMap<String, List<WrapDidascalia>> mappaSub;
-    //        List<WrapDidascalia> listaWrap;
-    //        List<String> listaDidascalia;
-    //        String didascalia;
-    //
-    //        if (mappaWrapDidascalie != null) {
-    //            for (String key1 : mappaWrapDidascalie.keySet()) {
-    //                mappaSub = mappaWrapDidascalie.get(key1);
-    //                mappa.put(key1, new TreeMap<>());
-    //
-    //                for (String key2 : mappaSub.keySet()) {
-    //                    listaWrap = mappaSub.get(key2);
-    //                    listaDidascalia = new ArrayList<>();
-    //                    for (WrapDidascalia wrap : listaWrap) {
-    //                        didascalia = didascaliaService.getLista(wrap.getBio());
-    //                        listaDidascalia.add(didascalia);
-    //                    }
-    //                    mappa.get(key1).put(key2, listaDidascalia);
-    //                }
-    //            }
-    //        }
-    //        this.mappa = mappa;
-    //        return mappa;
-    //    }
-
-
-    public List<WrapDidascalia> sortByNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
+    public List<WrapDidascalia> sortByAttivita(List<WrapDidascalia> listaWrapNonOrdinata) {
         List<WrapDidascalia> sortedList = new ArrayList<>();
-        List<WrapDidascalia> listaConNazionalitaOrdinata = new ArrayList<>(); ;
-        List<WrapDidascalia> listaSenzaNazionalitaOrdinata = new ArrayList<>(); ;
+        List<WrapDidascalia> listaConAttivitaOrdinata = new ArrayList<>(); ;
+        List<WrapDidascalia> listaSenzaAttivitaOrdinata = new ArrayList<>(); ;
 
-        listaConNazionalitaOrdinata = listaWrapNonOrdinata
+        listaConAttivitaOrdinata = listaWrapNonOrdinata
                 .stream()
                 .filter(wrap -> textService.isValid(wrap.getNazionalitaSingola()))
-                .sorted(Comparator.comparing(funNazionalita))
+                .sorted(Comparator.comparing(funAttivita))
                 .collect(Collectors.toList());
 
-        listaSenzaNazionalitaOrdinata = listaWrapNonOrdinata
+        listaSenzaAttivitaOrdinata = listaWrapNonOrdinata
                 .stream()
                 .filter(wrap -> textService.isEmpty(wrap.getNazionalitaSingola()))
                 .collect(Collectors.toList());
 
-        sortedList.addAll(listaConNazionalitaOrdinata);
-        sortedList.addAll(listaSenzaNazionalitaOrdinata);
+        sortedList.addAll(listaConAttivitaOrdinata);
+        sortedList.addAll(listaSenzaAttivitaOrdinata);
         return sortedList;
     }
-
-
-
-
 
 }

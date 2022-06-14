@@ -49,6 +49,8 @@ public class DownloadService extends WAbstractService {
         long inizio = System.currentTimeMillis();
         List<Long> listaPageIds;
         List<Long> listaMongoIds;
+        List<Long> listaMongoIdsDaCancellare;
+        List<Long> listaPageIdsDaCreare;
         List<WrapTime> listaMiniWrap;
         List<Long> listaPageIdsDaLeggere;
         List<WrapBio> listaWrapBio;
@@ -59,23 +61,35 @@ public class DownloadService extends WAbstractService {
         //--Controlla il collegamento come bot
         checkBot();
 
-        //--Crea la lista di tutti i (long) pageIds della categoria
+        //--Crea la lista di tutti i (long) pageIds della category
         listaPageIds = getListaPageIds(categoryTitle);
 
         //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
-//        listaMongoIds = getListaMongoIds();
+        listaMongoIds = getListaMongoIds();
 
-        //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
-        listaMiniWrap = getListaMiniWrap(listaPageIds);
+        //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
+        listaMongoIdsDaCancellare = getEntitiesDaCancellare(listaMongoIds, listaPageIds);
 
-        //--Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere
-        listaPageIdsDaLeggere = elaboraMiniWrap(listaMiniWrap);
+        //--Cancella dal database (mongo) locale le entities non più presenti nella category <br>
+        cancellaEntitiesNonInCategory(listaMongoIdsDaCancellare);
 
-        //--Legge tutte le pagine
-        listaWrapBio = getListaWrapBio(listaPageIdsDaLeggere);
+        //--Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare
+        listaPageIdsDaCreare = getNewEntitiesDaCreare(listaPageIds, listaMongoIds);
 
-        //--Crea/aggiorna le voci biografiche <br>
-        creaElaboraListaBio(listaWrapBio);
+        //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
+        creaNewEntities(listaPageIdsDaCreare);
+
+        //        //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
+        //        listaMiniWrap = getListaMiniWrap(listaPageIds);
+        //
+        //        //--Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere
+        //        listaPageIdsDaLeggere = elaboraMiniWrap(listaMiniWrap);
+        //
+        //        //--Legge tutte le pagine
+        //        listaWrapBio = getListaWrapBio(listaPageIdsDaLeggere);
+        //
+        //        //--Crea/aggiorna le voci biografiche <br>
+        //        creaElaboraListaBio(listaWrapBio);
 
         WPref.downloadBio.setValue(LocalDateTime.now());
 
@@ -137,16 +151,153 @@ public class DownloadService extends WAbstractService {
         return status;
     }
 
+    /**
+     * Crea la lista di tutti i (long) pageIds della categoria <br>
+     * Deve riuscire a gestire una lista di circa 500.000 long per la category BioBot <br>
+     * Tempo medio previsto = circa 1 minuto (come bot la categoria legge 5.000 pagine per volta) <br>
+     * Nella listaPageIds possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo <br>
+     *
+     * @param categoryTitle da controllare
+     *
+     * @return lista di tutti i (long) pageIds
+     */
+    public List<Long> getListaPageIds(final String categoryTitle) {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+
+        List<Long> listaPageIds = queryService.getListaPageIds(categoryTitle);
+
+        size = textService.format(listaPageIds.size());
+        time = dateService.deltaText(inizio);
+        String message = String.format("Recuperati %s pageIds (long) dalla categoria '%s', in %s", size, categoryTitle, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+
+        return listaPageIds;
+    }
 
     /**
      * Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale <br>
      *
      * @return lista di tutti i (long) pageId del database (mongo) locale
      */
-    public List<Long> getListaPageIds(final String categoryTitle) {
-        List<Long> listaMongoIds = null;
+    public List<Long> getListaMongoIds() {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+        List<Long> lista;
 
-        return listaMongoIds;
+        lista = bioBackend.findOnlyPageId();
+
+        size = textService.format(lista.size());
+        time = dateService.deltaText(inizio);
+        String message = String.format("Recuperata da mongoDb una lista di %s pageIds esistenti nel database, in %s", size, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+
+        return lista;
+    }
+
+
+    /**
+     * Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale <br>
+     *
+     * @param listaMongoIds tutti i (long) pageIds presenti nel database mongo locale
+     * @param listaPageIds  tutti i (long) pageIds presenti sul server wiki
+     *
+     * @return lista di tutti i (long) pageId da cancellare dal database (mongo) locale
+     */
+    public List<Long> getEntitiesDaCancellare(List<Long> listaMongoIds, List<Long> listaPageIds) {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+        List<Long> listaMongoIdsDaCancellare;
+
+        listaMongoIdsDaCancellare = arrayService.differenzaLong(listaMongoIds, listaPageIds);
+
+        size = textService.format(listaMongoIdsDaCancellare.size());
+        time = dateService.deltaText(inizio);
+        String message = String.format("Elaborata una lista di %s pageIds esistenti nel database e da cancellare, in %s", size, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+
+        return listaMongoIdsDaCancellare;
+    }
+
+
+    /**
+     * Cancella dal database (mongo) locale le entities non più presenti nella category <br>
+     *
+     * @param listaMongoIdsDaCancellare dal database mongo locale
+     */
+    public void cancellaEntitiesNonInCategory(List<Long> listaMongoIdsDaCancellare) {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+        Bio bio;
+
+        for (Long pageId : listaMongoIdsDaCancellare) {
+            bio = bioBackend.findByKey(pageId);
+            if (bio != null) {
+                bioBackend.delete(bio);
+            }
+        }
+
+        size = textService.format(listaMongoIdsDaCancellare.size());
+        time = dateService.deltaText(inizio);
+        String message = String.format("Cancellate dal database (mongo) locale le %s entities non più presenti nella category, in %s", size, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+    }
+
+
+    /**
+     * Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare <br>
+     *
+     * @param listaPageIds  tutti i (long) pageIds presenti sul server wiki
+     * @param listaMongoIds tutti i (long) pageIds presenti nel database mongo locale
+     *
+     * @return lista di tutti i nuovi (long) pageId da inserire nel database (mongo) locale
+     */
+    public List<Long> getNewEntitiesDaCreare(List<Long> listaPageIds, List<Long> listaMongoIds) {
+        long inizio = System.currentTimeMillis();
+        String size;
+        String time;
+        List<Long> listaPageIdsDaCreare;
+
+        listaPageIdsDaCreare = arrayService.differenzaLong(listaPageIds, listaMongoIds);
+
+        size = textService.format(listaPageIdsDaCreare.size());
+        time = dateService.deltaText(inizio);
+        String message = String.format("Elaborata una lista di %s pageIds esistenti nella category e da creare, in %s", size, time);
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+
+        return listaPageIdsDaCreare;
+    }
+
+
+    /**
+     * Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale <br>
+     *
+     * @param listaPageIdsDaCreare tutti i (long) pageIds presenti sul server wiki e da creare
+     */
+    public void creaNewEntities(List<Long> listaPageIdsDaCreare) {
+        WrapBio wrap;
+        Bio bio;
+        int max = 500; //--come da API mediaWiki
+        int soglia = 100;
+        List<WrapBio> listWrapBio = new ArrayList<>();
+
+        if (listaPageIdsDaCreare.size() > soglia) {
+            for (int k = 0; k < listaPageIdsDaCreare.size(); k += max) {
+                listWrapBio = getListaWrapBio(listaPageIdsDaCreare.subList(k, k + max - 1));
+                creaElaboraListaBio(listWrapBio);
+            }
+        }
+        else
+            for (Long pageId : listaPageIdsDaCreare) {
+                wrap = appContext.getBean(QueryBio.class).getWrap(pageId);
+                bio = bioBackend.newEntity(wrap);
+                elaboraService.esegue(bio);
+                bioBackend.save(bio);
+            }
     }
 
 

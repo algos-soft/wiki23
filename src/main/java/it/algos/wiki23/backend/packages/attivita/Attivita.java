@@ -34,7 +34,7 @@ public class Attivita extends AEntity {
     @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.ADD_DOCK, caption = "aggiunta (ex-attività)", usaCheckBox3Vie = true)
     public boolean aggiunta;
 
-    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste attività singolari")
+    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste attività singolari", widthEM = 5)
     public int numBio;
 
     @AIField(type = AETypeField.integer, header = "sin")

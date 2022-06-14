@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
+import org.bson.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
@@ -45,6 +46,15 @@ public abstract class CrudBackend extends AbstractService {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
+    public MongoService mongoService;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
     public TextService textService;
 
     public MongoRepository crudRepository;
@@ -61,6 +71,11 @@ public abstract class CrudBackend extends AbstractService {
         this.crudRepository = crudRepository;
         this.entityClazz = entityClazz;
     }// end of constructor with @Autowired
+
+
+    public AEntity newEntity(Document doc) {
+        return null;
+    }
 
 
     /**
@@ -81,6 +96,7 @@ public abstract class CrudBackend extends AbstractService {
 
         return newEntityBean;
     }
+
 
     public List findAll() {
         return crudRepository.findAll();
@@ -129,6 +145,7 @@ public abstract class CrudBackend extends AbstractService {
     public AEntity save(Object entity) {
         return (AEntity) crudRepository.save(entity);
     }
+
     public AEntity update(Object entity) {
         return (AEntity) crudRepository.save(entity);
     }

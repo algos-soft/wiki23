@@ -9,8 +9,10 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.bson.*;
 import org.bson.types.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -95,6 +97,30 @@ public class BioBackend extends WikiBackend {
 
     public Bio newEntity(final long pageId, final String wikiTitle, final String tmplBio) {
         return newEntity(pageId, wikiTitle, tmplBio, null);
+    }
+
+    public Bio newEntity(final Document doc) {
+        return Bio.builder()
+                .pageId(doc.getLong("pageId"))
+                .tmplBio(doc.getString("wikiTitle"))
+                .elaborato(doc.getBoolean("elaborato"))
+                .nome(doc.getString("nome"))
+                .cognome(doc.getString("cognome"))
+                .ordinamento(doc.getString("ordinamento"))
+                .sesso(doc.getString("sesso"))
+                .giornoNato(doc.getString("giornoNato"))
+                .annoNato(doc.getString("annoNato"))
+                .luogoNato(doc.getString("luogoNato"))
+                .luogoNatoLink(doc.getString("luogoNatoLink"))
+                .giornoMorto(doc.getString("giornoMorto"))
+                .annoMorto(doc.getString("annoMorto"))
+                .luogoMorto(doc.getString("luogoMorto"))
+                .luogoMortoLink(doc.getString("luogoMortoLink"))
+                .attivita(doc.getString("attivita"))
+                .attivita2(doc.getString("attivita2"))
+                .attivita3(doc.getString("attivita3"))
+                .nazionalita(doc.getString("nazionalita"))
+                .build();
     }
 
     /**
@@ -196,9 +222,38 @@ public class BioBackend extends WikiBackend {
     public Bio findByTitle(final String wikiTitle) {
         return repository.findFirstByWikiTitle(wikiTitle);
     }
-//    public List<Bio> findOnlyPageId() {
-//        return repository.findAllIncludePageIdFields();
-//    }
+
+    public List<Long> findOnlyPageId() {
+        return mongoService.projectionLong(Bio.class, "pageId");
+    }
+
+    @Override
+    public List<Bio> findAll() {
+        return findSenzaTmpl();
+    }
+
+    /**
+     * Controlla l'esistenza della property <br>
+     * La lista funziona anche se la property del sort è errata <br>
+     * Ma ovviamente il sort non viene effettuato <br>
+     *
+     * @param sort
+     */
+    @Override
+    public List<Bio> findAll(Sort sort) {
+        if (sort == null) {
+            return findSenzaTmpl();
+        }
+        else {
+            return findSenzaTmpl();
+            //            return super.findAll();
+        }
+
+    }
+
+    public List<Bio> findSenzaTmpl() {
+        return mongoService.projectionExclude(Bio.class, bioBackend, "tmplBio");
+    }
 
     /**
      * Esegue un azione di elaborazione, specifica del programma/package in corso <br>

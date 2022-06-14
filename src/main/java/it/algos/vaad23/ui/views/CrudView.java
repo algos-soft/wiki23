@@ -27,6 +27,7 @@ import org.springframework.core.env.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
+import javax.sql.*;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -71,6 +72,14 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      */
     @Autowired
     public HtmlService htmlService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public DateService dateService;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -747,7 +756,6 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     public void annullaHandler(final AEntity entityBean) {
-        //        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
     }
 
 

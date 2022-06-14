@@ -4,16 +4,19 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.liste.*;
-import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.test.context.junit.jupiter.*;
 
 import java.util.*;
 
@@ -21,23 +24,27 @@ import java.util.*;
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Fri, 03-Jun-2022
- * Time: 20:06
+ * Date: Tue, 14-Jun-2022
+ * Time: 07:27
+ * Unit test di una classe service o backend o query <br>
+ * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
+ * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
+ * Nella superclasse AlgosTest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("liste")
-@DisplayName("Attività lista")
+@DisplayName("Nazionalità lista")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ListaAttivitaTest extends WikiTest {
+public class ListaNazionalitaTest extends WikiTest {
+
 
     /**
      * Classe principale di riferimento <br>
      */
-    private ListaAttivita istanza;
-
+    private ListaNazionalita istanza;
 
 
     /**
@@ -53,7 +60,7 @@ public class ListaAttivitaTest extends WikiTest {
 
 
     /**
-     * Qui passa a ogni test delle sottoclassi <br>
+     * Qui passa prima di ogni test delle sottoclassi <br>
      * Invocare PRIMA il metodo setUp() della superclasse <br>
      * Si possono aggiungere regolazioni specifiche <br>
      */
@@ -67,40 +74,40 @@ public class ListaAttivitaTest extends WikiTest {
     @Test
     @Order(1)
     @DisplayName("1- Costruttore base senza parametri")
-    void costruttore() {
-        istanza = appContext.getBean(ListaAttivita.class);
+    void costruttoreBase() {
+        istanza = new ListaNazionalita();
         assertNotNull(istanza);
-
+        System.out.println(("1- Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
 
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
+    @MethodSource(value = "NAZIONALITA")
     @Order(2)
-    @DisplayName("2 - Lista bio di varie attivita")
-        //--nome attivita
+    @DisplayName("2 - Lista bio di varie nazionalità")
+        //--nome nazionalità
         //--flag singolare versus plurale
-    void listaBio(final String attività, final boolean flagSingola) {
-        System.out.println("2 - Lista bio di varie attivita");
-        sorgente = attività;
+    void listaBio(final String nazionalità, final boolean flagSingola) {
+        System.out.println("2 - Lista bio di varie nazionalità");
+        sorgente = nazionalità;
         String flag;
 
         if (flagSingola) {
-            listBio = appContext.getBean(ListaAttivita.class).singolare(sorgente).listaBio();
-            flag = "(singolare)";
+            listBio = appContext.getBean(ListaNazionalita.class).singolare(sorgente).listaBio();
+            flag = " (singolare)";
         }
         else {
-            listBio = appContext.getBean(ListaAttivita.class).plurale(sorgente).listaBio();
-            flag = "(plurale)";
+            listBio = appContext.getBean(ListaNazionalita.class).plurale(sorgente).listaBio();
+            flag = " (plurale)";
         }
 
         if (listBio != null && listBio.size() > 0) {
-            message = String.format("Ci sono %d biografie che implementano l'attività %s %s", listBio.size(), sorgente, flag);
+            message = String.format("Ci sono %d biografie che implementano la nazionalità %s%s", listBio.size(), sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printBioLista(listBio);
@@ -111,35 +118,34 @@ public class ListaAttivitaTest extends WikiTest {
         }
     }
 
-
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
+    @MethodSource(value = "NAZIONALITA")
     @Order(3)
-    @DisplayName("3 - Lista wrapDidascalia di varie attivita")
-        //--nome attivita
+    @DisplayName("3 - Lista wrapDidascalia di varie nazionalità")
+        //--nome nazionalità
         //--flag singolare versus plurale
-    void listaWrapDidascalie(final String attività, final boolean flagSingola) {
-        System.out.println("3 - Lista wrapDidascalia di varie attivita");
-        sorgente = attività;
+    void listaWrapDidascalie(final String nazionalità, final boolean flagSingola) {
+        System.out.println("3 - Lista wrapDidascalia di varie nazionalità");
+        sorgente = nazionalità;
         String flag;
 
         if (flagSingola) {
-            listWrapDidascalia = appContext.getBean(ListaAttivita.class).singolare(sorgente).listaWrapDidascalie();
+            listWrapDidascalia = appContext.getBean(ListaNazionalita.class).singolare(sorgente).listaWrapDidascalie();
             flag = "(singolare)";
         }
         else {
-            listWrapDidascalia = appContext.getBean(ListaAttivita.class).plurale(sorgente).listaWrapDidascalie();
+            listWrapDidascalia = appContext.getBean(ListaNazionalita.class).plurale(sorgente).listaWrapDidascalie();
             flag = "(plurale)";
         }
 
         if (listWrapDidascalia != null) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano l'attività %s %s", listWrapDidascalia.size(), sorgente, flag);
+            message = String.format("Ci sono %d wrapDidascalia che implementano la nazionalità %s %s", listWrapDidascalia.size(), sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
-            printWrapListaAttivita(listWrapDidascalia);
+            printWrapListaNazionalita(listWrapDidascalia);
         }
         else {
             message = "La mappa è nulla";
@@ -148,31 +154,31 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
+    @MethodSource(value = "NAZIONALITA")
     @Order(4)
-    @DisplayName("4 - Mappa wrapDidascalia di varie attivita")
-        //--nome attivita
+    @DisplayName("4 - Mappa wrapDidascalia di varie nazionalità")
+        //--nome nazionalità
         //--flag singolare versus plurale
-    void mappaWrapDidascalie(final String attività, final boolean flagSingola) {
-        System.out.println("4 - Mappa wrapDidascalia di varie attivita");
-        sorgente = attività;
+    void mappaWrapDidascalie(final String nazionalità, final boolean flagSingola) {
+        System.out.println("4 - Mappa wrapDidascalia di varie nazionalità");
+        sorgente = nazionalità;
         String flag;
         LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie;
 
         if (flagSingola) {
-            mappaWrapDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaWrapDidascalie();
+            mappaWrapDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaWrapDidascalie();
             flag = "(singolare)";
         }
         else {
-            mappaWrapDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaWrapDidascalie();
+            mappaWrapDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaWrapDidascalie();
             flag = "(plurale)";
         }
 
         if (mappaWrapDidascalie != null) {
-            message = String.format("WrapDidascalie che implementano l'attività %s %s", sorgente, flag);
+            message = String.format("WrapDidascalie che implementano la nazionalità %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaWrapDidascalia(sorgente, mappaWrapDidascalie);
@@ -184,35 +190,36 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
 
+
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
+    @MethodSource(value = "NAZIONALITA")
     @Order(5)
-    @DisplayName("5 - Mappa didascalie di varie attivita")
-        //--nome attivita
+    @DisplayName("5 - Mappa didascalie di varie nazionalità")
+        //--nome nazionalità
         //--flag singolare versus plurale
-    void mappaDidascalie(final String attività, final boolean flagSingola) {
-        System.out.println("5 - Mappa didascalie di varie attivita");
-        sorgente = attività;
+    void mappaDidascalie(final String nazionalità, final boolean flagSingola) {
+        System.out.println("5 - Mappa didascalie di varie nazionalità");
+        sorgente = nazionalità;
         String flag;
         LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
 
         if (flagSingola) {
-            mappaDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaDidascalie();
+            mappaDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaDidascalie();
             flag = "(singolare)";
         }
         else {
-            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaDidascalie();
+            mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaDidascalie();
             flag = "(plurale)";
         }
 
         if (mappaDidascalie != null) {
-            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
-            printMappaDidascalia("l'attività",sorgente, mappaDidascalie);
+            printMappaDidascalia("la nazionalità",sorgente, mappaDidascalie);
         }
         else {
             message = "La mappa è nulla";
@@ -222,34 +229,34 @@ public class ListaAttivitaTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
+    @MethodSource(value = "NAZIONALITA")
     @Order(6)
-    @DisplayName("6 - Mappa paragrafi di varie attivita")
-        //--nome attivita
+    @DisplayName("6 - Mappa paragrafi di varie nazionalità")
+        //--nome nazionalità
         //--flag singolare versus plurale
-    void mappaParagrafi(final String attività, final boolean flagSingola) {
-        System.out.println("6 - Mappa paragrafi di varie attivita");
-        sorgente = attività;
+    void mappaParagrafi(final String nazionalità, final boolean flagSingola) {
+        System.out.println("6 - Mappa paragrafi di varie nazionalità");
+        sorgente = nazionalità;
         String flag;
         LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi;
 
         if (flagSingola) {
-            mappaParagrafi = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaParagrafi();
+            mappaParagrafi = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaParagrafi();
             flag = "(singolare)";
         }
         else {
-            mappaParagrafi = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaParagrafi();
+            mappaParagrafi = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaParagrafi();
             flag = "(plurale)";
         }
 
         if (mappaParagrafi != null) {
-            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
-            printMappaDidascalia("l'attività",sorgente, mappaParagrafi);
+            printMappaDidascalia("la nazionalità",sorgente, mappaParagrafi);
         }
         else {
             message = "La mappa è nulla";
@@ -259,34 +266,34 @@ public class ListaAttivitaTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
+    @MethodSource(value = "NAZIONALITA")
     @Order(7)
-    @DisplayName("7 - Mappa paragrafi dimensionati di varie attivita")
-        //--nome attivita
+    @DisplayName("7 - Mappa paragrafi dimensionati di varie nazionalità")
+        //--nome nazionalità
         //--flag singolare versus plurale
-    void mappaParagrafiDimensionati(final String attività, final boolean flagSingola) {
-        System.out.println("7 - Mappa paragrafi dimensionati di varie attivita");
-        sorgente = attività;
+    void mappaParagrafiDimensionati(final String nazionalità, final boolean flagSingola) {
+        System.out.println("7 - Mappa paragrafi dimensionati di varie nazionalità");
+        sorgente = nazionalità;
         String flag;
         LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
 
         if (flagSingola) {
-            mappaParagrafiDimensionati = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaParagrafiDimensionati();
+            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaParagrafiDimensionati();
             flag = "(singolare)";
         }
         else {
-            mappaParagrafiDimensionati = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaParagrafiDimensionati();
+            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaParagrafiDimensionati();
             flag = "(plurale)";
         }
 
         if (mappaParagrafiDimensionati != null) {
-            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
-            printMappaDidascalia("l'attività",sorgente, mappaParagrafiDimensionati);
+            printMappaDidascalia("la nazionalità",sorgente, mappaParagrafiDimensionati);
         }
         else {
             message = "La mappa è nulla";
@@ -295,8 +302,7 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
 
-
-    protected void printWrapListaAttivita(List<WrapDidascalia> wrapLista) {
+    protected void printWrapListaNazionalita(List<WrapDidascalia> wrapLista) {
         String message;
         int max = 10;
         int tot = wrapLista.size();
@@ -310,17 +316,17 @@ public class ListaAttivitaTest extends WikiTest {
             System.out.println(message);
             message = "Parametri di ordinamento (nell'ordine):";
             System.out.println(message);
-            message = "Nazione, primo carattere, cognome";
+            message = "Attività, primo carattere, cognome";
             System.out.println(message);
             System.out.println(VUOTA);
 
-            printWrapListaBaseAttivita(wrapLista.subList(iniA, endA), iniA);
+            printWrapListaBaseNazionalita(wrapLista.subList(iniA, endA), iniA);
             System.out.println(TRE_PUNTI);
-            printWrapListaBaseAttivita(wrapLista.subList(iniB, endB), iniB);
+            printWrapListaBaseNazionalita(wrapLista.subList(iniB, endB), iniB);
         }
     }
 
-    protected void printWrapListaBaseAttivita(List<WrapDidascalia> wrapLista, final int inizio) {
+    protected void printWrapListaBaseNazionalita(List<WrapDidascalia> wrapLista, final int inizio) {
         int cont = inizio;
 
         for (WrapDidascalia wrap : wrapLista) {
@@ -329,7 +335,7 @@ public class ListaAttivitaTest extends WikiTest {
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
 
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getNazionalitaParagrafo()) ? wrap.getNazionalitaParagrafo() : NULL));
+            System.out.print(textService.setQuadre(textService.isValid(wrap.getAttivitaParagrafo()) ? wrap.getAttivitaParagrafo() : NULL));
             System.out.print(SPAZIO);
 
             System.out.print(textService.setQuadre(wrap.getPrimoCarattere()));
@@ -343,15 +349,14 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
 
-
-    protected void printMappaWrapDidascalia(String attivita, LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrap) {
+    protected void printMappaWrapDidascalia(String nazionalità, LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrap) {
         int cont = 0;
         LinkedHashMap<String, List<WrapDidascalia>> mappaSub;
 
         if (mappaWrap != null) {
-            message = String.format("WrapDidascalie per l'attività %s", attivita);
+            message = String.format("WrapDidascalie per la nazionalità %s", nazionalità);
             System.out.println(message);
-            message = "Nazionalità, primoCarattere, wikiTitle";
+            message = "Attività, primoCarattere, wikiTitle";
             System.out.println(message);
             System.out.println(VUOTA);
 
@@ -373,59 +378,7 @@ public class ListaAttivitaTest extends WikiTest {
         }
     }
 
-
     protected void printMappaSub(LinkedHashMap<String, List<WrapDidascalia>> mappaSub) {
-        int cont = 0;
-        List lista;
-
-        if (mappaSub != null) {
-            for (String key : mappaSub.keySet()) {
-                lista = mappaSub.get(key);
-                cont++;
-                System.out.print(TAB);
-                System.out.print(cont);
-                System.out.print(PARENTESI_TONDA_END);
-                System.out.print(SPAZIO);
-
-                System.out.print(textService.setQuadre(key));
-                System.out.print(SPAZIO);
-
-                System.out.println(VUOTA);
-
-                printWrapDidascalia(lista);
-            }
-        }
-    }
-
-
-
-    protected void printTreeMap(String attivita, TreeMap<String, TreeMap<String, List<String>>> treeMap) {
-        int cont = 0;
-        TreeMap<String, List<String>> mappaSub;
-
-        if (treeMap != null) {
-            message = String.format("WrapDidascalie per l'attività %s", attivita);
-            System.out.println(message);
-            System.out.println(VUOTA);
-
-            for (String key : treeMap.keySet()) {
-                mappaSub = treeMap.get(key);
-                cont++;
-                System.out.print(cont);
-                System.out.print(PARENTESI_TONDA_END);
-                System.out.print(SPAZIO);
-
-                System.out.print(textService.setQuadre(key));
-                System.out.print(SPAZIO);
-
-                System.out.println(VUOTA);
-
-                printTreeMapSub(mappaSub);
-            }
-        }
-    }
-
-    protected void printTreeMapSub(TreeMap<String, List<String>> mappaSub) {
         int cont = 0;
         List lista;
 
@@ -457,6 +410,7 @@ public class ListaAttivitaTest extends WikiTest {
     @AfterEach
     void tearDown() {
     }
+
 
     /**
      * Qui passa una volta sola, chiamato alla fine di tutti i tests <br>

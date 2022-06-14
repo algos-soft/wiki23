@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.service;
 
+import it.algos.vaad23.backend.logic.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 
@@ -39,6 +40,13 @@ public abstract class AbstractService {
      */
     @Autowired
     public HtmlService htmlService;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MongoService mongoService;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
