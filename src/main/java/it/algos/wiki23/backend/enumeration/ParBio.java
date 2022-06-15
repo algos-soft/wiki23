@@ -64,13 +64,18 @@ public enum ParBio {
 
     forzaOrdinamento("ForzaOrdinamento", "ForzaOrdinamento", false, false, false, false, false) {
         @Override
-        public void setValue(Bio bio, String value) throws AlgosException {
-            if (textService.isValid(value)) {
-                bio.ordinamento = elaboraService.fixCognome(value);
+        public void setValue(Bio bio, String valuePropertyForzaOrdinamento) throws AlgosException {
+            String valueTmp = VUOTA;
+            if (textService.isValid(valuePropertyForzaOrdinamento)) {
+                bio.ordinamento = elaboraService.fixCognome(valuePropertyForzaOrdinamento);
                 return;
             }
             if (textService.isValid(bio.cognome)) {
-                bio.ordinamento = elaboraService.fixCognome(bio.cognome);
+                valueTmp = elaboraService.fixCognome(bio.cognome).trim();
+                if (textService.isValid(bio.nome)) {
+                    valueTmp += String.format(", %s", elaboraService.fixNome(bio.nome));
+                }
+                bio.ordinamento = valueTmp;
                 return;
             }
             bio.ordinamento = elaboraService.fixCognome(bio.wikiTitle);

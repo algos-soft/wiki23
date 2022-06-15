@@ -8,9 +8,7 @@ import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
-import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -21,7 +19,6 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
-import it.algos.wiki23.ui.dialog.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.annotation.*;
 import org.vaadin.crudui.crud.*;
@@ -327,11 +324,20 @@ public class BioView extends WikiView {
      * Proveniente da un doppio click su una riga della Grid <br>
      * Passa al dialogo gli handler per annullare e modificare <br>
      *
-     * @param entityBeanDaRegistrare (nuova o esistente)
+     * @param entityBeanSenzaTempl (nuova o esistente)
      */
-    public void updateItem(AEntity entityBeanDaRegistrare) {
-        dialog = appContext.getBean(BioDialog.class, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
-        dialog.openBio(this::saveHandler, this::annullaHandler, this::downloadHandler, this::elaboraHandler);
+    @Override
+    public void updateItem(AEntity entityBeanSenzaTempl) {
+        Bio bioMongoCompleto = null;
+
+        if (entityBeanSenzaTempl instanceof Bio bioSenzaTempl) {
+            bioMongoCompleto = backend.findByKey(bioSenzaTempl.pageId);
+        }
+
+        if (bioMongoCompleto != null) {
+            dialog = appContext.getBean(BioDialog.class, bioMongoCompleto, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
+            dialog.openBio(this::saveHandler, this::annullaHandler, this::downloadHandler, this::elaboraHandler);
+        }
     }
 
     public void downloadHandler(final Bio bio) {
@@ -341,34 +347,6 @@ public class BioView extends WikiView {
 
     @Override
     public void annullaHandler(AEntity entityBean) {
-//        long inizio = System.currentTimeMillis();
-//        String size;
-//        String time;
-//        size = textService.format(backend.count());
-//
-//        backend.findOnlyPageId();
-//        time = dateService.deltaTextEsatto(inizio);
-//        message = String.format("Tempo di ricarica a video di %s records ridotti, in %s", size, time);
-//        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-//
-//        inizio = System.currentTimeMillis();
-//        backend.findAll(sortOrder);
-//        time = dateService.deltaTextEsatto(inizio);
-//        String message = String.format("Tempo di ricarica a video di %s records completi, in %s", size, time);
-//        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-//
-//        inizio = System.currentTimeMillis();
-//        backend.findSenzaTmpl();
-//        time = dateService.deltaTextEsatto(inizio);
-//        message = String.format("Tempo di ricarica a video di %s records senza tmpl, in %s", size, time);
-//        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-
-//        inizio = System.currentTimeMillis();
-//        grid.setItems(backend.findAll(sortOrder));
-//        time = dateService.deltaTextEsatto(inizio);
-//        message = String.format("Tempo di ricarica a video di %s records completi con Grid.setItems(), in %s", size, time);
-//        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-
     }
 
     public void elaboraHandler(final Bio bio) {
@@ -418,7 +396,7 @@ public class BioView extends WikiView {
      * Già controllato che la pagina esista e che sia una biografia (ha il templBio) <br>
      */
     protected void downloadBio(WrapBio wrap) {
-        backend.creaIfNotExist(wrap);
+        Bio bio = backend.creaIfNotExist(wrap);
         refresh();
     }
 

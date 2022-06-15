@@ -286,6 +286,19 @@ public abstract class Lista {
     public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati() {
         this.mappaDidascalie();
         mappaParagrafiDimensionati = new LinkedHashMap<>();
+        LinkedHashMap<String, List<String>> mappaSub;
+        String paragrafoDimensionato;
+        int size;
+
+        for (String key : mappaDidascalie.keySet()) {
+            paragrafoDimensionato = key;
+            mappaSub = mappaDidascalie.get(key);
+            size = wikiUtility.getSize(mappaSub);
+            paragrafoDimensionato = wikiUtility.fixTitoloDimensionato(titoloParagrafo, paragrafoDimensionato, size);
+
+            mappaParagrafiDimensionati.put(paragrafoDimensionato, mappaSub);
+        }
+
         return mappaParagrafiDimensionati;
     }
 

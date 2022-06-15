@@ -19,8 +19,8 @@ import org.springframework.test.context.junit.jupiter.*;
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Thu, 09-Jun-2022
- * Time: 14:22
+ * Date: Tue, 14-Jun-2022
+ * Time: 18:48
  * Unit test di una classe service o backend o query <br>
  * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
  * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -31,15 +31,15 @@ import org.springframework.test.context.junit.jupiter.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("upload")
-@DisplayName("Attività upload")
+@DisplayName("Nazionalità upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UploadAttivitaTest extends WikiTest {
+public class UploadNazionalitaTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private UploadAttivita istanza;
+    private UploadNazionalita istanza;
 
 
     /**
@@ -70,21 +70,20 @@ public class UploadAttivitaTest extends WikiTest {
     @Order(1)
     @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new UploadAttivita();
+        istanza = new UploadNazionalita();
         assertNotNull(istanza);
         System.out.println(("1- Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-
     @Test
     @Order(2)
-    @DisplayName("2 - Upload di una attività plurale")
+    @DisplayName("2 - Upload di una nazionalità plurale")
     void getListaDidascalie() {
-        System.out.println("2 - Upload di una attività plurale");
-        sorgente = "allevatori";
-        appContext.getBean(UploadAttivita.class).uploadTest(sorgente);
+        System.out.println("2 - Upload di una nazionalità plurale");
+        sorgente = "libanesi";
+        appContext.getBean(UploadNazionalita.class).uploadTest(sorgente);
     }
 
     /**

@@ -205,18 +205,13 @@ public abstract class WikiTest extends AlgosTest {
     //--flag singolare versus plurale
     protected static Stream<Arguments> ATTIVITA() {
         return Stream.of(
-                Arguments.of("attore", true),
-                Arguments.of("badessa", true),
-                Arguments.of("ciclista", true),
-                Arguments.of("politico", true),
-                Arguments.of("attori", false),
-                Arguments.of("politici", false),
-                Arguments.of("satrapo", true),
-                Arguments.of("attrice", true),
-                Arguments.of("cestisti", false),
-                Arguments.of("principi", false),
-                Arguments.of("economisti", false),
-                Arguments.of("ciclisti", false)
+                Arguments.of("abate", true),
+                Arguments.of("bassisti", false),
+                Arguments.of("allevatori", false),
+                Arguments.of("diplomatici", false),
+                Arguments.of("soprano", true),
+                Arguments.of("romanziere", true),
+                Arguments.of("accademici", false)
 
         );
     }
@@ -226,13 +221,12 @@ public abstract class WikiTest extends AlgosTest {
     //--flag singolare versus plurale
     protected static Stream<Arguments> NAZIONALITA() {
         return Stream.of(
-                Arguments.of("croati", false),
-                Arguments.of("tedesco", true),
-                Arguments.of("tedesca", true),
-                Arguments.of("inglese", true),
-                Arguments.of("britannico", true),
-                Arguments.of("nordirlandese", true),
-                Arguments.of("britannici", false)
+                Arguments.of("azeri", false),
+                Arguments.of("libanesi", false),
+                Arguments.of("cingalese", true),
+                Arguments.of("pakistana", true),
+                Arguments.of("mongoli", false),
+                Arguments.of("persiani", false)
 
         );
     }

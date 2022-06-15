@@ -59,8 +59,8 @@ public class BioBackend extends WikiBackend {
     }
 
 
-    public Bio checkAndSave(final Bio bio) {
-        return isExist(bio.pageId) ? null : repository.insert(bio);
+    public Bio checkAndSave(Bio bio) {
+        return isExist(bio.pageId) ? null : repository.insert(elaboraService.esegue(bio));
     }
 
     public boolean isExist(final long pageId) {
@@ -102,7 +102,7 @@ public class BioBackend extends WikiBackend {
     public Bio newEntity(final Document doc) {
         return Bio.builder()
                 .pageId(doc.getLong("pageId"))
-                .tmplBio(doc.getString("wikiTitle"))
+                .wikiTitle(doc.getString("wikiTitle"))
                 .elaborato(doc.getBoolean("elaborato"))
                 .nome(doc.getString("nome"))
                 .cognome(doc.getString("cognome"))
@@ -165,19 +165,21 @@ public class BioBackend extends WikiBackend {
     }
 
     @Override
-    public Bio update(Object entity) {
-        if (entity instanceof Bio bio) {
+    public Bio update(Object entityBean) {
+
+        if (entityBean instanceof Bio bio) {
             if (isExist(bio.pageId)) {
                 repository.save(bio);
             }
             else {
-                repository.insert(bio);
+                //                repository.insert(bio);
             }
-            return bio;
+            return null;
         }
 
         return null;
     }
+
 
     /**
      * Conta tutte le biografie con una serie di attività. <br>

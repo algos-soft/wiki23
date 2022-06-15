@@ -117,31 +117,6 @@ public class ListaAttivita extends Lista {
     }
 
 
-    /**
-     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
-     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
-     * Nel titolo visibile del paragrafo viene riportato il numero di voci biografiche presenti <br>
-     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
-     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
-     */
-    @Override
-    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati() {
-        super.mappaParagrafiDimensionati();
-
-        LinkedHashMap<String, List<String>> mappaSub;
-        String paragrafoDimensionato;
-
-        for (String key : mappaDidascalie.keySet()) {
-            paragrafoDimensionato = key;
-            mappaSub = mappaDidascalie.get(key);
-            paragrafoDimensionato = wikiUtility.fixTitoloDimensionato(titoloParagrafo, paragrafoDimensionato,mappaSub.size());
-
-            mappaParagrafiDimensionati.put(paragrafoDimensionato, mappaSub);
-        }
-
-        return mappaParagrafiDimensionati;
-    }
-
 
     public LinkedHashMap<String, List<WrapDidascalia>> creaMappaNazionalita(List<WrapDidascalia> listaWrapNonOrdinata) {
         LinkedHashMap<String, List> mappa = new LinkedHashMap<>();

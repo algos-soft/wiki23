@@ -111,64 +111,64 @@ public class ListaNazionalita extends Lista {
         return mappaWrapDidascalie;
     }
 
+//
+//    /**
+//     * Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
+//     * La mappa è composta da una chiave (ordinata) che corrisponde al titolo del paragrafo <br>
+//     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+//     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+//     */
+//    @Override
+//    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie() {
+//        super.mappaDidascalie();
+//
+//        LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
+//        List<WrapDidascalia> listaWrap;
+//        List<String> listaDidascalia;
+//        String didascalia;
+//
+//        for (String key1 : mappaWrapDidascalie.keySet()) {
+//            mappaWrap = mappaWrapDidascalie.get(key1);
+//            mappaDidascalie.put(key1, new LinkedHashMap<>());
+//
+//            for (String key2 : mappaWrap.keySet()) {
+//                listaWrap = mappaWrap.get(key2);
+//                listaDidascalia = new ArrayList<>();
+//                for (WrapDidascalia wrap : listaWrap) {
+//                    didascalia = didascaliaService.getDidascaliaLista(wrap.getBio());
+//                    listaDidascalia.add(didascalia);
+//                }
+//                mappaDidascalie.get(key1).put(key2, listaDidascalia);
+//            }
+//        }
+//
+//        return mappaDidascalie;
+//    }
 
-    /**
-     * Mappa ordinata delle didascalie che hanno una valore valido per la pagina specifica <br>
-     * La mappa è composta da una chiave (ordinata) che corrisponde al titolo del paragrafo <br>
-     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
-     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
-     */
-    @Override
-    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie() {
-        super.mappaDidascalie();
 
-        LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
-        List<WrapDidascalia> listaWrap;
-        List<String> listaDidascalia;
-        String didascalia;
-
-        for (String key1 : mappaWrapDidascalie.keySet()) {
-            mappaWrap = mappaWrapDidascalie.get(key1);
-            mappaDidascalie.put(key1, new LinkedHashMap<>());
-
-            for (String key2 : mappaWrap.keySet()) {
-                listaWrap = mappaWrap.get(key2);
-                listaDidascalia = new ArrayList<>();
-                for (WrapDidascalia wrap : listaWrap) {
-                    didascalia = didascaliaService.getDidascaliaLista(wrap.getBio());
-                    listaDidascalia.add(didascalia);
-                }
-                mappaDidascalie.get(key1).put(key2, listaDidascalia);
-            }
-        }
-
-        return mappaDidascalie;
-    }
-
-
-    /**
-     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
-     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
-     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
-     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
-     */
-    @Override
-    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi() {
-        super.mappaParagrafi();
-
-        LinkedHashMap<String, List<String>> mappaSub;
-        String paragrafo;
-
-        for (String key : mappaDidascalie.keySet()) {
-            paragrafo = key;
-            mappaSub = mappaDidascalie.get(key);
-            paragrafo = wikiUtility.fixTitolo(titoloParagrafo, paragrafo);
-
-            mappaParagrafi.put(paragrafo, mappaSub);
-        }
-
-        return mappaParagrafi;
-    }
+//    /**
+//     * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
+//     * La mappa è composta da una chiave (ordinata) che è il titolo visibile del paragrafo <br>
+//     * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
+//     * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
+//     */
+//    @Override
+//    public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi() {
+//        super.mappaParagrafi();
+//
+//        LinkedHashMap<String, List<String>> mappaSub;
+//        String paragrafo;
+//
+//        for (String key : mappaDidascalie.keySet()) {
+//            paragrafo = key;
+//            mappaSub = mappaDidascalie.get(key);
+//            paragrafo = wikiUtility.fixTitolo(titoloParagrafo, paragrafo);
+//
+//            mappaParagrafi.put(paragrafo, mappaSub);
+//        }
+//
+//        return mappaParagrafi;
+//    }
 
     public LinkedHashMap<String, List<WrapDidascalia>> creaMappaAttivita(List<WrapDidascalia> listaWrapNonOrdinata) {
         LinkedHashMap<String, List> mappa = new LinkedHashMap<>();

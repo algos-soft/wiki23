@@ -1,4 +1,4 @@
-package it.algos.wiki23.ui.dialog;
+package it.algos.wiki23.backend.packages.bio;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.*;
