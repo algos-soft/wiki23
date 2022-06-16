@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.index.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.io.*;
 import java.time.*;
 
 /**
@@ -27,8 +28,10 @@ import java.time.*;
 @EqualsAndHashCode(callSuper = false)
 public class Bio extends AEntity {
 
+    @Indexed(unique = true)
     @AIField(type = AETypeField.lungo, enabled = false, widthEM = 7)
     public long pageId;
+
 
     @NotBlank()
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)

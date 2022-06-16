@@ -1,9 +1,12 @@
 package it.algos.integration.backend;
 
+import com.mongodb.client.*;
+import com.mongodb.client.model.*;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import org.bson.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
@@ -16,6 +19,9 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.data.domain.*;
+
+import javax.persistence.*;
 
 /**
  * Project wiki23
@@ -83,9 +89,9 @@ public class BioBackendTest extends WikiTest {
     protected void setUpAll() {
         super.setUpAll();
 
-//        MockitoAnnotations.initMocks(this);
-//        MockitoAnnotations.initMocks(backend);
-//        Assertions.assertNotNull(backend);
+        //        MockitoAnnotations.initMocks(this);
+        //        MockitoAnnotations.initMocks(backend);
+        //        Assertions.assertNotNull(backend);
 
         backend.repository = repository;
         backend.crudRepository = repository;
@@ -113,6 +119,7 @@ public class BioBackendTest extends WikiTest {
      */
     protected void fixRiferimentiIncrociati() {
         super.fixRiferimentiIncrociati();
+        backend.mongoService = mongoService;
     }
 
     @BeforeEach
@@ -158,7 +165,24 @@ public class BioBackendTest extends WikiTest {
         System.out.println("2 - findAll");
         String message;
 
-        listaBeans = backend.findAll();
+        listaBeans = mongoService.query(Bio.class);
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Bio");
+        System.out.println(message);
+        System.out.println(VUOTA);
+        message = String.format("Le %s entities sono stata caricate in %s", textService.format(listaBeans.size()), dateService.deltaTextEsatto(inizio));
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - findAll ridotto")
+    void findAllRidotto() {
+        System.out.println("3 - findAll ridotto");
+        String message;
+
+        listaBeans = backend.findSenzaTmpl();
         assertNotNull(listaBeans);
         message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Bio");
         System.out.println(message);
@@ -168,10 +192,10 @@ public class BioBackendTest extends WikiTest {
     }
 
     @Test
-    @Order(3)
-    @DisplayName("3 - find inesistente")
+    @Order(4)
+    @DisplayName("4 - find inesistente")
     void find() {
-        System.out.println("3 - find inesistente");
+        System.out.println("4 - find inesistente");
         String message;
 
         sorgente = "inesistente";
@@ -181,10 +205,10 @@ public class BioBackendTest extends WikiTest {
     }
 
     @Test
-    @Order(4)
-    @DisplayName("4 - find esistente")
+    @Order(5)
+    @DisplayName("5 - find esistente")
     void find2() {
-        System.out.println("4 - find esistente");
+        System.out.println("5 - find esistente");
 
         sorgente = "Elisabeth Kopp";
         entityBean = backend.findByTitle(sorgente);
@@ -193,10 +217,10 @@ public class BioBackendTest extends WikiTest {
     }
 
     @Test
-    @Order(5)
-    @DisplayName("5 - controllo due biografie")
+    @Order(6)
+    @DisplayName("6 - controllo due biografie")
     void find3() {
-        System.out.println("5 - controllo due biografie");
+        System.out.println("6 - controllo due biografie");
 
         entityBean = backend.findByTitle(BIO_SALVINI);
         assertNotNull(entityBean);
@@ -214,10 +238,10 @@ public class BioBackendTest extends WikiTest {
 
 
     @Test
-    @Order(6)
-    @DisplayName("6 - insert")
+    @Order(7)
+    @DisplayName("7 - insert")
     void insert() {
-        System.out.println("6 - insert");
+        System.out.println("7 - insert");
         System.out.println(String.format("Inizialmente nel mongoDB ci sono %s biografie", textService.format(backend.count())));
         pageId = PAGE_UNO;
         sorgente = TITLE_UNO;
@@ -243,10 +267,10 @@ public class BioBackendTest extends WikiTest {
     }
 
     @Test
-    @Order(7)
-    @DisplayName("7 - save")
+    @Order(8)
+    @DisplayName("8 - save")
     void save() {
-        System.out.println("7 - save");
+        System.out.println("8 - save");
         System.out.println(String.format("Inizialmente nel mongoDB ci sono %s biografie", textService.format(backend.count())));
         Bio bioModificato;
         pageId = PAGE_UNO;
@@ -283,13 +307,29 @@ public class BioBackendTest extends WikiTest {
     }
 
     @Test
-    @Order(8)
-    @DisplayName("8 - Only one property")
+    @Order(9)
+    @DisplayName("9 - Index")
     void find8() {
-        System.out.println("8 - Only one property");
+        System.out.println("9 - Index");
+        MongoCollection<Document> collection;
 
-//        listaBeans = backend.findOnlyPageId();
-        int a=87;
+        sorgente = "bio";
+        sorgente2 = "pageId";
+        collection = mongoService.getCollection(sorgente);
+        assertNotNull(collection);
+
+//        collection.dropIndex(sorgente2);
+        inizio = System.currentTimeMillis();
+        listaBeans = backend.findAll();
+        System.out.println(dateService.deltaTextEsatto(inizio));
+
+        collection.createIndex(Indexes.ascending(sorgente2), new IndexOptions().unique(false));
+        inizio = System.currentTimeMillis();
+        listaBeans = backend.findAll(Sort.by(sorgente2));
+        System.out.println(dateService.deltaTextEsatto(inizio));
+
+        //        listaBeans = backend.findOnlyPageId();
+        int a = 87;
     }
 
     /**

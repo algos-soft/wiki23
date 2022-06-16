@@ -1,6 +1,7 @@
 package it.algos.base;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.login.*;
@@ -41,6 +42,9 @@ public abstract class WikiTest extends AlgosTest {
      */
     @Autowired
     public ApplicationContext appContext;
+
+    @Autowired
+    protected MongoService mongoService;
 
     @Autowired
     public WikiBotService wikiBotService;

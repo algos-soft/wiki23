@@ -254,7 +254,7 @@ public class BioBackend extends WikiBackend {
     }
 
     public List<Bio> findSenzaTmpl() {
-        return mongoService.projectionExclude(Bio.class, bioBackend, "tmplBio");
+        return mongoService.projectionExclude(Bio.class, this, "tmplBio");
     }
 
     /**
