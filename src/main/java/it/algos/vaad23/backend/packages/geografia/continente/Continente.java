@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
+import org.springframework.data.mongodb.core.mapping.*;
 
 import javax.validation.constraints.*;
 
@@ -17,6 +18,7 @@ import javax.validation.constraints.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Document
 //Lombok
 @Data
 @NoArgsConstructor
@@ -26,7 +28,7 @@ import javax.validation.constraints.*;
 public class Continente extends AREntity {
 
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.integer)
+    @AIField(type = AETypeField.integer, header = "#", widthEM = 2)
     public int ordine;
 
     @NotBlank()
@@ -34,7 +36,7 @@ public class Continente extends AREntity {
     @AIField(type = AETypeField.text)
     public String nome;
 
-    @AIField(type = AETypeField.booleano)
+    @AIField(type = AETypeField.booleano, widthEM = 7)
     public boolean abitato;
 
     @Override

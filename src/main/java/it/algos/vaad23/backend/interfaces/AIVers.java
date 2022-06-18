@@ -1,11 +1,16 @@
 package it.algos.vaad23.backend.interfaces;
 
 /**
- * Project vaadflow14
+ * Project vaadin23
  * Created by Algos
  * User: gac
  * Date: gio, 10-feb-2022
  * Time: 12:18
+ * <p>
+ * Interfaccia col metodo inizia() <br>
+ * Viene implementata 'una' delle sottoclassi concrete 'singleton', <br>
+ * tramite @Qualifier(QUALIFIER_VERSION_VAAD) selezionato in VaadBoot.setVersInstance(), oppure <br>
+ * tramite @Qualifier(QUALIFIER_VERSION_xxx) selezionato in xxxBoot.setVersInstance() <br>
  */
 public interface AIVers {
 

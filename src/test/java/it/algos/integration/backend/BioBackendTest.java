@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
 
@@ -308,28 +309,123 @@ public class BioBackendTest extends WikiTest {
 
     @Test
     @Order(9)
-    @DisplayName("9 - Index")
+    @DisplayName("9 - sort")
     void find8() {
-        System.out.println("9 - Index");
+        System.out.println("9 - Sort");
+        MongoCollection<Document> collection;
+        int numVoci;
+
+        clazz = Bio.class;
+        sorgente = clazz.getSimpleName().toLowerCase();
+        sorgente2 = "pageId";
+        sorgente3 = "ordinamento";
+        collection = mongoService.getCollection(sorgente);
+        assertNotNull(collection);
+        numVoci = backend.count();
+        System.out.println(String.format("Nella collezione %s ci sono %s entities", sorgente, textService.format(numVoci)));
+
+        startTime();
+        listaBeans = mongoService.query(clazz);
+        System.out.println(VUOTA);
+        System.out.println("Senza sort - mongoService.query(clazz)");
+        printTimeEsatto();
+        printDieci(listaBeans);
+
+        startTime();
+        listaBeans = mongoService.mongoOp.findAll(clazz);
+        System.out.println(VUOTA);
+        System.out.println("Senza sort - mongoOp.findAll(clazz)");
+        printTimeEsatto();
+        printDieci(listaBeans);
+
+        Query query = new Query();
+        Sort sort = Sort.by(Sort.Direction.ASC, sorgente2);
+        startTime();
+        listaBeans = mongoService.mongoOp.find(query, clazz);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Sort con %s - mongoOp.find(query, clazz) - Esiste indice", sorgente2));
+        printTimeEsatto();
+        printDieci(listaBeans);
+
+        query = new Query();
+        query.limit(1000);
+        startTime();
+        listaBeans = mongoService.mongoOp.find(query, clazz);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Senza sort - mongoOp.find(query, clazz, 1000)", sorgente2));
+        printTimeEsatto();
+        printDieci(listaBeans);
+
+        query = new Query();
+        sort = Sort.by(Sort.Direction.ASC, sorgente2);
+        query.with(sort);
+        query.limit(1000);
+        startTime();
+        listaBeans = mongoService.mongoOp.find(query, clazz);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Sort con %s - mongoOp.find(query, clazz, 1000) - Esiste indice", sorgente2));
+        printTimeEsatto();
+        printDieci(listaBeans);
+
+        query = new Query();
+        sort = Sort.by(Sort.Direction.ASC, sorgente3);
+        query.with(sort);
+        query.limit(1000);
+        startTime();
+        listaBeans = mongoService.mongoOp.find(query, clazz);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Sort con %s - mongoOp.find(query, clazz, 1000) - Non esiste indice", sorgente3));
+        printTimeEsatto();
+        printDieci(listaBeans);
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("10 - Index")
+    void find9() {
+        System.out.println("10 - Index");
         MongoCollection<Document> collection;
 
-        sorgente = "bio";
+        clazz = Bio.class;
+        sorgente = clazz.getSimpleName().toLowerCase();
         sorgente2 = "pageId";
         collection = mongoService.getCollection(sorgente);
         assertNotNull(collection);
 
-//        collection.dropIndex(sorgente2);
-        inizio = System.currentTimeMillis();
-        listaBeans = backend.findAll();
-        System.out.println(dateService.deltaTextEsatto(inizio));
+        startTime();
+        mongoService.mongoOp.findAll(clazz);
+        printTimeEsatto();
 
-        collection.createIndex(Indexes.ascending(sorgente2), new IndexOptions().unique(false));
-        inizio = System.currentTimeMillis();
-        listaBeans = backend.findAll(Sort.by(sorgente2));
-        System.out.println(dateService.deltaTextEsatto(inizio));
+
+        sorgente3 = "wikiTitle";
+//        collection.createIndex(Indexes.ascending(sorgente3), new IndexOptions().unique(false));
+//        ListIndexesIterable<Document> listaIndex = collection.listIndexes();
+//        for (Document doc : listaIndex) {
+//            String alfa = doc.toJson();
+//        }
+//
+//        collection.dropIndex(sorgente3 + "_1");
+        //
+        //
+        //
+        ////        collection.dropIndex(sorgente2);
+        //        inizio = System.currentTimeMillis();
+        //        listaBeans = backend.findAll();
+        //        System.out.println(dateService.deltaTextEsatto(inizio));
+        //
+        //        collection.createIndex(Indexes.ascending(sorgente2), new IndexOptions().unique(false));
+        //        inizio = System.currentTimeMillis();
+        //        listaBeans = backend.findAll(Sort.by(sorgente2));
+        //        System.out.println(dateService.deltaTextEsatto(inizio));
 
         //        listaBeans = backend.findOnlyPageId();
         int a = 87;
+    }
+
+    void printDieci(List<Bio> lista) {
+        for (Bio bio : lista.subList(0, 10)) {
+            System.out.println(bio.wikiTitle);
+        }
     }
 
     /**

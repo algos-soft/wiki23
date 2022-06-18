@@ -5,9 +5,9 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
-import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.bson.*;
 import org.bson.conversions.*;
@@ -46,11 +46,16 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MongoService<capture> extends AbstractService {
 
+    public static final String CONNECTION_STRING = "mongodb://localhost:27017/";
+
+    public static final int STANDARD_MONGO_MAX_BYTES = 33554432;
+
+    public static final int EXPECTED_ALGOS_MAX_BYTES = 50151432;
 
     /**
      * Versione della classe per la serializzazione
      */
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Inietta da Spring
@@ -107,16 +112,7 @@ public class MongoService<capture> extends AbstractService {
      */
     public void fixProperties() {
         MongoIterable<String> nomiCollezioni;
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017/" + databaseName);
-        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
-                .build();
-        mongoClient = MongoClients.create(mongoClientSettings);
-
-        if (textService.isValid(databaseName)) {
-            dataBase = mongoClient.getDatabase(databaseName);
-        }
-
+        dataBase = getDB(databaseName);
         if (dataBase != null) {
             collezioni = new ArrayList<>();
             nomiCollezioni = dataBase.listCollectionNames();
@@ -124,6 +120,122 @@ public class MongoService<capture> extends AbstractService {
                 collezioni.add(stringa);
             }
         }
+    }
+
+    /**
+     * Restituisce un generico database
+     */
+    public MongoDatabase getDB(String databaseName) {
+        ConnectionString connectionString = new ConnectionString(CONNECTION_STRING + databaseName);
+        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .build();
+        mongoClient = MongoClients.create(mongoClientSettings);
+
+        return mongoClient.getDatabase(databaseName);
+    }
+
+
+    /**
+     * Restituisce il database 'admin' di servizio, sempre presente in MongoDB
+     */
+    public MongoDatabase getDBAdmin() {
+        return getDB("admin");
+    }
+
+    /**
+     * Recupera il valore di un parametro
+     *
+     * @param parameterName
+     *
+     * @return value of parameter
+     */
+    public Object getParameter(String parameterName) {
+        Map<String, Object> mappa;
+        MongoDatabase dbAdmin = getDBAdmin();
+        Document param;
+
+        mappa = new LinkedHashMap<>();
+        mappa.put("getParameter", 1);
+        mappa.put(parameterName, 1);
+
+        param = dbAdmin.runCommand(new Document(mappa));
+
+        return param.get(parameterName);
+    }
+
+    /**
+     * Regola il valore di un parametro
+     *
+     * @param parameterName
+     * @param valueToSet    valore da regolare
+     *
+     * @return true se il valore è stato acquisito dal database
+     */
+    public boolean setParameter(String parameterName, Object valueToSet) {
+        Map<String, Object> mappa;
+        MongoDatabase dbAdmin = getDBAdmin();
+        Document param;
+
+        mappa = new LinkedHashMap<>();
+        mappa.put("setParameter", 1);
+        mappa.put(parameterName, valueToSet);
+
+        param = dbAdmin.runCommand(new Document(mappa));
+        return (double) param.get("ok") == 1;
+    }
+
+    /**
+     * Regola il valore del parametro internalQueryExecMaxBlockingSortBytes
+     *
+     * @param maxBytes da regolare
+     *
+     * @return true se il valore è stato acquisito dal database
+     */
+    public boolean setMaxBlockingSortBytes(int maxBytes) {
+        return setParameter("internalQueryExecMaxBlockingSortBytes", maxBytes);
+    }
+
+    /**
+     * Recupera il valore del parametro internalQueryExecMaxBlockingSortBytes
+     *
+     * @return value of parameter
+     */
+    public int getMaxBlockingSortBytes() {
+        int numBytes;
+        String value = "";
+        String message;
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
+
+        numBytes = (int) getParameter("internalQueryExecMaxBlockingSortBytes");
+        value = textService.format(numBytes);
+
+        if (numBytes == STANDARD_MONGO_MAX_BYTES) {
+            message = String.format("Algos - mongoDB. La variabile internalQueryExecMaxBlockingSortBytes è regolata col valore standard iniziale " +
+                    "settato da mongoDB: %s", value);
+            logger.info(new WrapLog().message(message).type(AETypeLog.setup));
+        }
+        else {
+            if (numBytes == EXPECTED_ALGOS_MAX_BYTES) {
+                message = String.format("Algos - mongoDB. La variabile internalQueryExecMaxBlockingSortBytes è regolata col valore " +
+                        "richiesto da Algos: %s", value);
+                logger.info(new WrapLog().message(message).type(AETypeLog.setup));
+            }
+            else {
+                message = String.format("Algos - mongoDB. La variabile internalQueryExecMaxBlockingSortBytes è regolata a cazzo: ", value);
+                logger.info(new WrapLog().message(message).type(AETypeLog.setup));
+            }
+        }
+
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
+        return numBytes;
+    }
+
+    /**
+     * Regola il valore iniziale del parametro internalQueryExecMaxBlockingSortBytes
+     */
+    public void fixMaxBytes() {
+        this.setMaxBlockingSortBytes(EXPECTED_ALGOS_MAX_BYTES);
     }
 
 

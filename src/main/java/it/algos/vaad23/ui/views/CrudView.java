@@ -27,7 +27,6 @@ import org.springframework.core.env.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
-import javax.sql.*;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -618,13 +617,18 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     protected void sincroFiltri() {
-        List items = null;
-        String textSearch;
+        List<AEntity> items = crudBackend.findAll(sortOrder);
 
         if (usaBottoneSearch && searchField != null) {
-            textSearch = searchField != null ? searchField.getValue() : VUOTA;
-            items = crudBackend.findByDescrizione(textSearch);
+            final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
+            if (textService.isValid(textSearch)) {
+                items = items
+                        .stream()
+                        .filter(bean -> ((String) reflectionService.getPropertyValue(bean, searchFieldName)).matches("^(?i)" + textSearch + ".*$"))
+                        .toList();
+            }
         }
+
 
         if (items != null) {
             grid.setItems(items);

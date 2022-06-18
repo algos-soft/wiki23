@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.service;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.notification.*;
+import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -99,6 +100,35 @@ public class LogService extends AbstractService {
         slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
     }
 
+
+    /**
+     * Logger specifico <br>
+     * Gestisce un messaggio alla partenza del programma <br>
+     */
+    public void setUpIni() {
+        String message = "Inizio regolazioni di VaadBoot";
+        this.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
+        this.info(new WrapLog().message(message).type(AETypeLog.setup));
+    }
+
+    /**
+     * Logger specifico <br>
+     * Gestisce un messaggio alla partenza del programma <br>
+     */
+    public void setUpEnd() {
+        String message = VUOTA;
+        message += VaadVar.projectNameUpper;
+        message += SEP;
+//        message += VaadVar.projectDescrizione;
+//        message += SEP;
+        message += "Versione ";
+        message += VaadVar.projectVersion;
+        message += " del ";
+        message += VaadVar.projectDate;
+
+        this.info(new WrapLog().message(message).type(AETypeLog.setup));
+        this.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
+    }
 
     /**
      * Gestisce una mail <br>

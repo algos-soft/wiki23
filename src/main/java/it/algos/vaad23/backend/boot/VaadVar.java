@@ -72,7 +72,7 @@ public class VaadVar {
 
     /**
      * Classe da usare per lo startup del programma <br>
-     * Di default FlowData oppure possibile sottoclasse del progetto <br>
+     * Di default VaadData oppure possibile sottoclasse del progetto <br>
      * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
      */
     public static Class dataClazz;

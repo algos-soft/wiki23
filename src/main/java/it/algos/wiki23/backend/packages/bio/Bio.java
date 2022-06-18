@@ -1,10 +1,12 @@
 package it.algos.wiki23.backend.packages.bio;
 
+import com.querydsl.core.annotations.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
+import org.springframework.data.mongodb.core.mapping.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -20,6 +22,8 @@ import java.time.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@QueryEntity
+@Document
 //Lombok
 @Data
 @NoArgsConstructor

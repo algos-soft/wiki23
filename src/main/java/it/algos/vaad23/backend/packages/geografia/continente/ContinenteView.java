@@ -3,6 +3,7 @@ package it.algos.vaad23.backend.packages.geografia.continente;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -52,11 +53,14 @@ public class ContinenteView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
+        super.sortOrder = Sort.by(Sort.Direction.ASC, "ordine");
         super.gridPropertyNamesList = Arrays.asList("ordine", "nome", "abitato");
         super.formPropertyNamesList = Arrays.asList("ordine", "nome", "abitato");
+        super.usaRowIndex = false;
         super.usaBottoneDeleteReset = true;
         super.usaBottoneNew = false;
         super.autoCreateColumns = false;
+        super.searchFieldName = "nome";
         super.dialogClazz = ContinenteDialog.class;
     }
 
@@ -67,7 +71,11 @@ public class ContinenteView extends CrudView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        addSpanVerde("Prova di colori");
+
+        addSpan("Usati solo come supporto. File originale (CSV) sul server Algos");
+        addSpanRosso("Solo hard coded. Non creabili e non modificabili. @Indexed unici per 'ordine' e per 'nome'");
+        addSpanRosso("Ordinati di default per 'ordine'. Ordinabili anche per 'nome'");
     }
+
 
 }// end of crud @Route view class

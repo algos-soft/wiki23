@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Scope;
  * Eseguita quindi a ogni avvio/riavvio del server e NON a ogni sessione <br>
  */
 @SpringComponent
-@Qualifier(TAG_FLOW_VERSION)
+@Qualifier(QUALIFIER_VERSION_VAAD)
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadVers implements AIVers {
 

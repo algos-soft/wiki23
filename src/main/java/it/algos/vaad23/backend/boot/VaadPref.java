@@ -24,7 +24,7 @@ import javax.servlet.*;
  * Creazione da code di alcune preferenze di base <br>
  */
 @SpringComponent
-@Qualifier(TAG_FLOW_PREFERENCES)
+@Qualifier(QUALIFIER_PREFERENCES_VAAD)
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadPref implements AIEnumPref, ServletContextListener {
 

@@ -71,7 +71,8 @@ public class ViaView extends CrudView {
         super.fixAlert();
 
         addSpan("Usati solo in background e per i popup anagrafici. File originale (CSV) sul server Algos");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpanRosso("Solo hard coded. Non creabili e non modificabili. @Indexed unico per 'nome'");
+        addSpanRosso("Ordinati di default per 'ordine'. Ordinabili anche per 'nome'");
     }
 
 

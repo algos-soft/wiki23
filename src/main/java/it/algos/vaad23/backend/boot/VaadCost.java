@@ -301,6 +301,12 @@ public class VaadCost {
 
     public static final String TAG_FLOW_VERSION = "flowversion";
 
+    public static final String QUALIFIER_VERSION_VAAD = "versionVaad";
+
+    public static final String QUALIFIER_DATA_VAAD = "dataVaad";
+
+    public static final String QUALIFIER_PREFERENCES_VAAD = "preferencesVaad";
+
     public static final String TAG_FLOW_PREFERENCES = "23preferences";
 
     public static final int PAD_TYPE = 10;

@@ -1,11 +1,15 @@
 package it.algos.vaad23.backend.boot;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.packages.utility.nota.*;
 import it.algos.vaad23.backend.packages.utility.preferenza.*;
 import it.algos.vaad23.backend.packages.utility.versione.*;
+import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.wizard.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.event.EventListener;
@@ -40,23 +44,26 @@ import java.util.*;
  */
 public abstract class VaadBoot implements ServletContextListener {
 
+    protected boolean allDebugSetup;
+
 
     /**
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
-     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-     */
-    public AIData dataInstance;
-
-    /**
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     public AIVers versInstance;
 
     /**
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    public AIData dataInstance;
+
+
+    /**
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
@@ -68,7 +75,25 @@ public abstract class VaadBoot implements ServletContextListener {
      * Iniettata dal framework SpringBoot/Vaadin usando il metodo setter() <br>
      * al termine del ciclo init() del costruttore di questa classe <br>
      */
+    @Autowired
     public Environment environment;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    protected LogService logger;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    protected MongoService mongoService;
+
 
     /**
      * Constructor with @Autowired on setter. Usato quando ci sono sottoclassi. <br>
@@ -79,11 +104,11 @@ public abstract class VaadBoot implements ServletContextListener {
      */
     public VaadBoot() {
         //        this.setMongo(mongo);
-        //        this.setLogger(logger);
-        this.setEnvironment(environment);
+        //        this.setLogger(logger)
+        //        this.setEnvironment(environment);
         this.setVersInstance(versInstance);
-        this.setPrefInstance(prefInstance);
         this.setDataInstance(dataInstance);
+        this.setPrefInstance(prefInstance);
     }// end of constructor with @Autowired on setter
 
     /**
@@ -110,13 +135,62 @@ public abstract class VaadBoot implements ServletContextListener {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void inizia() {
-        //        this.fixDBMongo();
+        logger.setUpIni();
+
+        this.fixEnvironment();
+        this.fixDBMongo();
         this.fixVariabili();
         this.fixPreferenze();
-        //        this.fixData();
         this.fixMenuRoutes();
+        this.fixData();
         this.fixVersioni();
         this.fixLogin();
+
+        logger.setUpEnd();
+    }
+
+
+    /**
+     * Controllo di alcune regolazioni
+     */
+    public void fixEnvironment() {
+        String message;
+        String databaseName;
+        String autoIndexCreation;
+        String allDebugSetupTxt;
+
+        if (environment == null) {
+            logger.error(new WrapLog().exception(new AlgosException("Manca la property 'environment'")).usaDb());
+            return;
+        }
+
+        allDebugSetupTxt = environment.getProperty("algos.vaadin23.all.debug.setup");
+        if (allDebugSetupTxt != null && allDebugSetupTxt.length() > 0 && allDebugSetupTxt.equals(VERO)) {
+            allDebugSetup = true;
+        }
+
+        databaseName = environment.getProperty("spring.data.mongodb.database");
+        message = String.format("Database mongo in uso: %s", databaseName);
+        if (allDebugSetup) {
+            logger.info(new WrapLog().message(message).type(AETypeLog.setup));
+        }
+
+        autoIndexCreation = environment.getProperty("spring.data.mongodb.auto-index-creation");
+        message = String.format("Auto creazione degli indici (per la classi @Document): %s", autoIndexCreation);
+        if (allDebugSetup) {
+            logger.info(new WrapLog().message(message).type(AETypeLog.setup));
+        }
+    }
+
+    /**
+     * Regola alcuni parametri standard del database MongoDB <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixDBMongo() {
+        if (allDebugSetup) {
+            mongoService.getMaxBlockingSortBytes();//@todo da controllare
+            mongoService.fixMaxBytes();//@todo da controllare
+        }
     }
 
     /**
@@ -206,52 +280,49 @@ public abstract class VaadBoot implements ServletContextListener {
 
     /**
      * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe di SpringBoot <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
      * Chiamata dal costruttore di questa classe con valore nullo <br>
      * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    public void setEnvironment(final Environment environment) {
-        this.environment = environment;
-    }
-
-
-    /**
-     * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
-     * Chiamata dal costruttore di questa classe con valore nullo <br>
-     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    @Qualifier(TAG_FLOW_VERSION)
+    @Qualifier(QUALIFIER_VERSION_VAAD)
     public void setVersInstance(final AIVers versInstance) {
         this.versInstance = versInstance;
     }
 
     /**
      * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
      * Chiamata dal costruttore di questa classe con valore nullo <br>
      * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    @Qualifier(TAG_FLOW_PREFERENCES)
-    public void setPrefInstance(final AIEnumPref prefInstance) {
-        this.prefInstance = prefInstance;
-    }
-
-    /**
-     * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
-     * Chiamata dal costruttore di questa classe con valore nullo <br>
-     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    @Qualifier(TAG_FLOW_DATA)
+    @Qualifier(QUALIFIER_DATA_VAAD)
     public void setDataInstance(final AIData dataInstance) {
         this.dataInstance = dataInstance;
     }
 
+
+    /**
+     * Set con @Autowired di una property chiamata dal costruttore <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
+     * Chiamata dal costruttore di questa classe con valore nullo <br>
+     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    @Qualifier(QUALIFIER_PREFERENCES_VAAD)
+    public void setPrefInstance(final AIEnumPref prefInstance) {
+        this.prefInstance = prefInstance;
+    }
+
+
+    /**
+     * Inizializzazione dei database di vaadinFlow <br>
+     * Inizializzazione dei database del programma specifico <br>
+     */
+    protected void fixData() {
+        this.dataInstance.inizia();
+    }
 
     /**
      * Inizializzazione delle versioni standard di vaadinFlow <br>
