@@ -15,6 +15,7 @@ package it.algos.vaad23.backend.interfaces;
 public interface AIData {
 
     void inizia();
+
     void resetData();
 
 }

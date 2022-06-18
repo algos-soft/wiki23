@@ -5,6 +5,8 @@ import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.index.*;
+import org.springframework.data.mongodb.core.mapping.*;
 
 /**
  * Project vaadwiki
@@ -15,6 +17,7 @@ import lombok.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Document
 //Lombok
 @Data
 @NoArgsConstructor
@@ -25,18 +28,22 @@ public class Attivita extends AEntity {
 
     private static final transient int WIDTHEM = 20;
 
+    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM, search = true)
     public String singolare;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM, caption = "Attività plurale")
     public String plurale;
 
     @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.ADD_DOCK, caption = "aggiunta (ex-attività)", usaCheckBox3Vie = true)
     public boolean aggiunta;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste attività singolari", widthEM = 5)
     public int numBio;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.integer, header = "sin")
     public int numSingolari;
 

@@ -2,7 +2,6 @@ package it.algos.vaad23.backend.configuration;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.*;
-import org.springframework.data.mongodb.config.*;
 import org.springframework.data.mongodb.core.convert.*;
 
 import javax.annotation.*;
@@ -15,7 +14,7 @@ import javax.annotation.*;
  * Time: 19:45
  */
 @Configuration
-public class MongoConfiguration  {
+public class MongoConfiguration {
 
     @Autowired
     private MappingMongoConverter mappingMongoConverter;

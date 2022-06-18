@@ -122,7 +122,7 @@ public class VaadData implements AIData {
 
     public void inizia() {
     }
-        //    /**
+    //    /**
     //     * Controlla che il service abbia il metodo reset() oppure download() <br>
     //     * nella sottoclasse specifica xxxService <br>
     //     * Altrimenti i dati non possono essere ri-creati <br>
@@ -268,11 +268,11 @@ public class VaadData implements AIData {
      * Al termine del ciclo init() del costruttore il framework SpringBoot/Vaadin, inietterà la relativa istanza <br>
      */
     public VaadData() {
-//        this.setFile(fileService);
-//        this.setText(textService);
-//        this.setClassService(classService);
-//        this.setLogger(logger);
-//        this.setAnnotation(annotationService);
+        //        this.setFile(fileService);
+        //        this.setText(textService);
+        //        this.setClassService(classService);
+        //        this.setLogger(logger);
+        //        this.setAnnotation(annotationService);
     }// end of constructor with @Autowired on setter
 
 

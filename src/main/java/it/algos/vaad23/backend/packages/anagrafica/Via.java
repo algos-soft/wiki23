@@ -1,6 +1,5 @@
 package it.algos.vaad23.backend.packages.anagrafica;
 
-import com.querydsl.core.annotations.*;
 import it.algos.vaad23.backend.entity.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;

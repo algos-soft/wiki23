@@ -2,8 +2,8 @@ package it.algos.vaad23.backend.service;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.notification.*;
-import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
@@ -119,8 +119,8 @@ public class LogService extends AbstractService {
         String message = VUOTA;
         message += VaadVar.projectNameUpper;
         message += SEP;
-//        message += VaadVar.projectDescrizione;
-//        message += SEP;
+        //        message += VaadVar.projectDescrizione;
+        //        message += SEP;
         message += "Versione ";
         message += VaadVar.projectVersion;
         message += " del ";

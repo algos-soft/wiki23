@@ -22,8 +22,8 @@ import java.time.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
-@QueryEntity
-@Document
+//@QueryEntity
+//@Document
 //Lombok
 @Data
 @NoArgsConstructor
