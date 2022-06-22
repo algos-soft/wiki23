@@ -21,6 +21,7 @@ import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
 import java.util.*;
@@ -84,6 +85,7 @@ public class BioView extends WikiView {
                 "attivita", "attivita2", "attivita3",
                 "nazionalita"
         );
+        super.sortOrder = Sort.by(Sort.Direction.DESC, "ordinamento");
 
         super.lastDownload = WPref.downloadBio;
         super.usaBottoneElabora = true;
@@ -157,6 +159,12 @@ public class BioView extends WikiView {
         searchFieldCognome.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(searchFieldCognome);
 
+        searchFieldOrdinamento = new TextField();
+        searchFieldOrdinamento.setPlaceholder("Filter by ordinamento");
+        searchFieldOrdinamento.setClearButtonVisible(true);
+        searchFieldOrdinamento.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(searchFieldOrdinamento);
+
         searchFieldNascita = new TextField();
         searchFieldNascita.setPlaceholder("Filter by nato");
         searchFieldNascita.setClearButtonVisible(true);
@@ -219,6 +227,24 @@ public class BioView extends WikiView {
                         .toList();
             }
         }
+
+
+        final String textSearchOrdine = searchFieldOrdinamento != null ? searchFieldOrdinamento.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearchOrdine)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.ordinamento != null ? bio.ordinamento.matches("^(?i)" + textSearchOrdine + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearchOrdine.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.ordinamento == null)
+                        .toList();
+            }
+        }
+
 
         final String textSearchNascita = searchFieldNascita != null ? searchFieldNascita.getValue() : VUOTA;
         if (textService.isValidNoSpace(textSearchNascita)) {
@@ -299,7 +325,7 @@ public class BioView extends WikiView {
      */
     public void download() {
         downloadService.ciclo();
-        reload();
+        refresh();
     }
 
     /**
@@ -337,6 +363,26 @@ public class BioView extends WikiView {
         if (bioMongoCompleto != null) {
             dialog = appContext.getBean(BioDialog.class, bioMongoCompleto, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
             dialog.openBio(this::saveHandler, this::annullaHandler, this::downloadHandler, this::elaboraHandler);
+        }
+    }
+
+
+    /**
+     * Apre un dialogo di cancellazione<br>
+     * Proveniente da un click sul bottone Delete della Top Bar <br>
+     * Attivo solo se è selezionata una e una sola riga <br>
+     * Passa al dialogo gli handler per annullare e cancellare <br>
+     */
+    public void deleteItem() {
+        Bio bioBeanSenzaTempl;
+        Bio bioMongoCompleto;
+        Optional entityBeanSenzaTempl = grid.getSelectedItems().stream().findFirst();
+
+        if (entityBeanSenzaTempl.isPresent()) {
+            bioBeanSenzaTempl = (Bio) entityBeanSenzaTempl.get();
+            bioMongoCompleto = backend.findByKey(bioBeanSenzaTempl.pageId);
+            dialog = appContext.getBean(BioDialog.class, bioMongoCompleto, CrudOperation.DELETE, crudBackend, formPropertyNamesList);
+            dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
         }
     }
 

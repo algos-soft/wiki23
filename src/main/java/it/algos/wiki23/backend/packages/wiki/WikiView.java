@@ -35,6 +35,7 @@ public abstract class WikiView extends CrudView {
      */
     @Autowired
     public WikiApiService wikiApiService;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -56,6 +57,7 @@ public abstract class WikiView extends CrudView {
     protected Button buttonUpload;
 
     protected boolean usaBottoneDeleteAll;
+
     protected Button buttonDeleteAll;
 
     //    protected boolean usaBottoneModulo;
@@ -125,8 +127,13 @@ public abstract class WikiView extends CrudView {
     public DateService dateService;
 
     protected TextField searchFieldPlurale;
+
     protected TextField searchFieldCognome;
+
+    protected TextField searchFieldOrdinamento;
+
     protected TextField searchFieldNascita;
+
     protected TextField searchFieldMorte;
 
     protected TextField searchFieldAttivita;

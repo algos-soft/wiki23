@@ -189,6 +189,11 @@ public class BioService extends WAbstractService {
             }
         }
 
+        //--controllo e aggiunta di un parametro che verrà elaborato
+        if (!mappa.containsKey("ForzaOrdinamento")) {
+            mappa.put("ForzaOrdinamento", VUOTA);
+        }
+
         return mappa;
     }
 

@@ -535,7 +535,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoRef(String entrata) {
-        return levaDopo(entrata, REF);
+        return levaCodaDa(entrata, REF_OPEN);
     }
 
 
@@ -551,7 +551,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoNote(String entrata) {
-        return levaDopo(entrata, NOTE);
+        return levaCodaDa(entrata, NOTE);
     }
 
     /**
@@ -566,7 +566,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoWiki(String entrata) {
-        return levaDopo(entrata, NO_WIKI);
+        return levaCodaDa(entrata, NO_WIKI);
     }
 
 
@@ -582,7 +582,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoUguale(String entrata) {
-        return levaDopo(entrata, UGUALE_SEMPLICE);
+        return levaCodaDa(entrata, UGUALE_SEMPLICE);
     }
 
 
@@ -598,7 +598,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoEccetera(String entrata) {
-        return levaDopo(entrata, ECC);
+        return levaCodaDa(entrata, ECC);
     }
 
 
@@ -614,7 +614,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoGraffe(String entrata) {
-        return levaDopo(entrata, DOPPIE_GRAFFE_INI);
+        return levaCodaDa(entrata, DOPPIE_GRAFFE_INI);
     }
 
 
@@ -630,7 +630,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoVirgola(String entrata) {
-        return levaDopo(entrata, VIRGOLA);
+        return levaCodaDa(entrata, VIRGOLA);
     }
 
 
@@ -646,7 +646,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoParentesi(String entrata) {
-        return levaDopo(entrata, PARENTESI_TONDA_END);
+        return levaCodaDa(entrata, PARENTESI_TONDA_END);
     }
 
 
@@ -662,7 +662,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoInterrogativo(String entrata) {
-        return levaDopo(entrata, PUNTO_INTERROGATIVO);
+        return levaCodaDa(entrata, PUNTO_INTERROGATIVO);
     }
 
 
@@ -678,7 +678,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoCirca(String entrata) {
-        return levaDopo(entrata, CIRCA);
+        return levaCodaDa(entrata, CIRCA);
     }
 
     /**
@@ -693,7 +693,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoTagRef(String entrata) {
-        return levaDopo(entrata, TAG_REF);
+        return levaCodaDa(entrata, TAG_REF);
     }
 
     /**
@@ -747,7 +747,7 @@ public class TextService extends AbstractService {
         if (this.isValid(testoOut) && this.isValid(tagInterrompi)) {
             testoOut = StringUtils.stripEnd(testoIn, SPAZIO);
             tag = tagInterrompi.trim();
-            if (testoOut.contains(tagInterrompi)) {
+            if (testoOut.contains(tag)) {
                 testoOut = testoOut.substring(0, testoOut.lastIndexOf(tag));
                 testoOut = StringUtils.stripEnd(testoOut, SPAZIO);
             }

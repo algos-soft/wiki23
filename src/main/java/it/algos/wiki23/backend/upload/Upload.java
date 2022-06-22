@@ -137,8 +137,9 @@ public abstract class Upload {
     protected String tmpListaBio(int numVoci) {
         String data = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMM yyy")); ;
         String progetto = "biografie";
+        String txtVoci = textService.format(numVoci);
 
-        return String.format("{{ListaBio|bio=%d|data=%s|progetto=%s}}", numVoci, data, progetto);
+        return String.format("{{ListaBio|bio=%s|data=%s|progetto=%s}}", txtVoci, data, progetto);
     }
 
     protected String includeEnd() {
@@ -151,7 +152,7 @@ public abstract class Upload {
         int maxPagina = WPref.sogliaAttNazWiki.getInt();
         int maxSottoPagina = WPref.sogliaSottoPagina.getInt();
         String mod = "Bio/Plurale attività";
-//        String pack = nomeAttivitaNazionalitaPlurale;
+        //        String pack = nomeAttivitaNazionalitaPlurale;
 
         buffer.append("Questa è una lista");
         message = "Le didascalie delle voci sono quelle previste nel [[Progetto:Biografie/Didascalie|progetto biografie]]";
@@ -170,57 +171,58 @@ public abstract class Upload {
         buffer.append(textService.setRef(message));
 
         buffer.append(" nell'enciclopedia che hanno");
-//        if (false) {
-//            if (WPref.usaTreAttivita.is()) {
-//                buffer.append(String.format(" tra le %s", attNaz));
-//            }
-//            else {
-//                buffer.append(String.format(" come %s", attNaz));
-//            }
-//            message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
-//                    "comunità ed [[Modulo:%s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]", attNaz, attNazUpper, mod);
-//            buffer.append(textService.setRef(message));
-//
-//            if (WPref.usaTreAttivita.is()) {
-//                message = String.format("Ogni persona è presente in diverse [[Progetto:Biografie/%s|liste]], in base a quanto riportato in " +
-//                        "uno dei 3 parametri ''%s, %s2 e %s3'' del [[template:Bio|template Bio]] presente nella voce " +
-//                        "biografica specifica della persona", attNazUpper, attNaz, attNaz, attNaz);
-//            }
-//            else {
-//                buffer.append(" principale");
-//                message = String.format("Ogni persona è presente in una sola [[Progetto:Biografie/%s|lista]], in base a quanto riportato " +
-//                        "nel (primo) parametro ''%s'' del [[template:Bio|template Bio]] presente nella voce biografica specifica della " +
-//                        "persona",attNazUpper,attNaz);
-//            }
-//            buffer.append(textService.setRef(message));
-//        }
-//        else {
-//            buffer.append(String.format(" come %s",attNazRevert));
-//        }
+        //        if (false) {
+        //            if (WPref.usaTreAttivita.is()) {
+        //                buffer.append(String.format(" tra le %s", attNaz));
+        //            }
+        //            else {
+        //                buffer.append(String.format(" come %s", attNaz));
+        //            }
+        //            message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
+        //                    "comunità ed [[Modulo:%s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]", attNaz, attNazUpper, mod);
+        //            buffer.append(textService.setRef(message));
+        //
+        //            if (WPref.usaTreAttivita.is()) {
+        //                message = String.format("Ogni persona è presente in diverse [[Progetto:Biografie/%s|liste]], in base a quanto riportato in " +
+        //                        "uno dei 3 parametri ''%s, %s2 e %s3'' del [[template:Bio|template Bio]] presente nella voce " +
+        //                        "biografica specifica della persona", attNazUpper, attNaz, attNaz, attNaz);
+        //            }
+        //            else {
+        //                buffer.append(" principale");
+        //                message = String.format("Ogni persona è presente in una sola [[Progetto:Biografie/%s|lista]], in base a quanto riportato " +
+        //                        "nel (primo) parametro ''%s'' del [[template:Bio|template Bio]] presente nella voce biografica specifica della " +
+        //                        "persona",attNazUpper,attNaz);
+        //            }
+        //            buffer.append(textService.setRef(message));
+        //        }
+        //        else {
+        //            buffer.append(String.format(" come %s",attNazRevert));
+        //        }
         buffer.append(incipitAttNaz());
         message = String.format(" quella di '''%s'''.", nomeAttivitaNazionalitaPlurale);
         buffer.append(message);
         buffer.append(" Le persone sono suddivise");
         message = String.format("La lista è suddivisa in paragrafi per ogni %s individuata. Se il numero di voci biografiche nel" +
-                " paragrafo supera le '''%s''' unità, viene creata una sottopagina.", attNazRevert,maxSottoPagina);
+                " paragrafo supera le '''%s''' unità, viene creata una sottopagina.", attNazRevert, maxSottoPagina);
         buffer.append(textService.setRef(message));
 
-        buffer.append(String.format(" per %s.",attNazRevert));
+        buffer.append(String.format(" per %s.", attNazRevert));
         message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
-            "comunità ed [[Modulo:Bio/Plurale %s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]",
-                attNazRevert,attNazUpper,attNazRevert);
+                        "comunità ed [[Modulo:Bio/Plurale %s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]",
+                attNazRevert, attNazUpper, attNazRevert
+        );
         buffer.append(textService.setRef(message));
 
         message = String.format("Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
-            "parametro ''%s'' oppure che usano una %s di difficile elaborazione da parte del '''[[Utente:Biobot|<span " +
-                "style=\"color:green;\">bot</span>]]'''",attNazRevert,attNazRevert);
+                "parametro ''%s'' oppure che usano una %s di difficile elaborazione da parte del '''[[Utente:Biobot|<span " +
+                "style=\"color:green;\">bot</span>]]'''", attNazRevert, attNazRevert);
         buffer.append(textService.setRef(message));
 
         return buffer.toString();
     }
 
     protected String incipitAttNaz() {
-        return String.format(" come %s",attNazRevert);
+        return String.format(" come %s", attNazRevert);
     }
 
     protected String body(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {

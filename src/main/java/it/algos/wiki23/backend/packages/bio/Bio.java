@@ -23,7 +23,7 @@ import java.time.*;
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
 //@QueryEntity
-//@Document
+@Document
 //Lombok
 @Data
 @NoArgsConstructor
@@ -32,14 +32,14 @@ import java.time.*;
 @EqualsAndHashCode(callSuper = false)
 public class Bio extends AEntity {
 
-    @Indexed(unique = true)
+    @Indexed(unique = true, direction = IndexDirection.ASCENDING)
     @AIField(type = AETypeField.lungo, enabled = false, widthEM = 7)
     public long pageId;
 
 
     @NotBlank()
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.text, flexGrow = true)
+    @AIField(type = AETypeField.text, widthEM = 16)
     public String wikiTitle;
 
     @Lob
@@ -65,13 +65,16 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.booleano, header = "fix")
     public boolean elaborato;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, search = true)
     public String nome;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text)
     public String cognome;
 
-    @AIField(type = AETypeField.text)
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.text, widthEM = 16)
     public String ordinamento;
 
     @AIField(type = AETypeField.text, header = "XY", widthEM = 3)
@@ -101,15 +104,19 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.text)
     public String luogoMortoLink;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = 12)
     public String attivita;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = 8)
     public String attivita2;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = 8)
     public String attivita3;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = 12)
     public String nazionalita;
 

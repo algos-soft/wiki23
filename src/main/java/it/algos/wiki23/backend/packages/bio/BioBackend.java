@@ -1,5 +1,7 @@
 package it.algos.wiki23.backend.packages.bio;
 
+import com.mongodb.client.model.*;
+import com.vaadin.flow.data.provider.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
@@ -10,6 +12,8 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.bson.*;
+import org.bson.codecs.configuration.*;
+import org.bson.conversions.*;
 import org.bson.types.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -153,10 +157,18 @@ public class BioBackend extends WikiBackend {
     public Bio save(final Object entity) {
         if (entity instanceof Bio bio) {
             if (isExist(bio.pageId)) {
-                repository.save(bio);
+                try {
+                    repository.save(bio);
+                } catch (Exception unErrore) {
+                    logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+                }
             }
             else {
-                repository.insert(bio);
+                try {
+                    repository.insert(bio);
+                } catch (Exception unErrore) {
+                    logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+                }
             }
             return bio;
         }
@@ -247,14 +259,23 @@ public class BioBackend extends WikiBackend {
             return findSenzaTmpl();
         }
         else {
-            return findSenzaTmpl();
-            //            return super.findAll();
+            return findSenzaTmpl(sort);
         }
 
     }
 
     public List<Bio> findSenzaTmpl() {
         return mongoService.projectionExclude(Bio.class, this, "tmplBio");
+    }
+
+    public List<Bio> findSenzaTmpl(Sort sort) {
+        Document doc = null;
+
+        if (sort != null) {
+            doc = new Document("ordinamento", 1);
+        }
+
+        return mongoService.projectionExclude(Bio.class, this, doc, "tmplBio");
     }
 
     /**
