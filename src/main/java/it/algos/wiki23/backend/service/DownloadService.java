@@ -251,7 +251,7 @@ public class DownloadService extends WAbstractService {
         Bio bio;
 
         if (listaMongoIdsDaCancellare == null || listaMongoIdsDaCancellare.size() < 1) {
-            message = "Nel mongodb non ci cono entities da cancellare";
+            message = "Nel mongodb non ci sono entities da cancellare";
             logger.info(new WrapLog().message(message));
             return;
         }
@@ -352,53 +352,33 @@ public class DownloadService extends WAbstractService {
      * @param listaPageIdsDaCreare tutti i (long) pageIds presenti sul server wiki e da creare
      */
     public void creaNewEntities(List<Long> listaPageIdsDaCreare) {
-        WrapBio wrap;
-        Bio bio;
-        int maxAPI = 50; //--come da API mediaWiki
-        int soglia = 10;
-        String message;
-        List<WrapBio> listWrapBio = new ArrayList<>();
-        int cont = 0;
+        long inizio = System.currentTimeMillis();
+        int maxAPI = 500; //--come da API mediaWiki
+        List<WrapBio> listWrapBio = null;
         int max;
+        String message;
+        String sizeNew;
+        String sizeTot;
+        String time;
+        int numVociCreate = 0;
 
-        if (listaPageIdsDaCreare.size() > soglia) {
-            for (int k = 0; k < listaPageIdsDaCreare.size(); k += maxAPI) {
-                max = Math.min(k+maxAPI, listaPageIdsDaCreare.size()-1);
-                try {
-                    listWrapBio = getListaWrapBio(listaPageIdsDaCreare.subList(k, max));
-                    message = String.format("Primo pageId %s - Ultimo pageId %s", listaPageIdsDaCreare.get(k),
-                            listaPageIdsDaCreare.get(max));
-                    logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-
-                    creaElaboraListaBio(listWrapBio);
-
-                } catch (Exception unErrore) {
-                    logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-                }
+        for (int k = 0; k <= listaPageIdsDaCreare.size(); k += maxAPI) {
+            try {
+                max = Math.min(k + maxAPI, listaPageIdsDaCreare.size());
+                listWrapBio = getListaWrapBio(listaPageIdsDaCreare.subList(k, max));
+            } catch (Exception unErrore) {
+                logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
             }
-        }
-        else {
-            for (Long pageId : listaPageIdsDaCreare) {
-                wrap = appContext.getBean(QueryBio.class).getWrap(pageId);
-                if (wrap.isValida()) {
-                    bio = bioBackend.newEntity(wrap);
-                    if (bio != null) {
-                        elaboraService.esegue(bio);
-                        bioBackend.save(bio);
-                        cont++;
-                    }
-                    else {
-                        message = String.format("Non sono riuscito a costruire la biografia di [%s]", wrap.getTitle());
-                        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
-                    }
-                }
-                else {
-                    message = String.format("La pagina [%s] non è una biografia", wrap.getTitle());
-                    logger.info(new WrapLog().message(message).type(AETypeLog.bio));
-                }
+            try {
+                numVociCreate += creaElaboraListaBio(listWrapBio);
+                sizeNew = textService.format(numVociCreate);
+                sizeTot = textService.format(mongoService.count(Bio.class));
+                time = dateService.deltaText(inizio);
+                message = String.format("Finora create %s nuove voci in %s (ce ne sono %s in totale nel mongoDB)", sizeNew, time, sizeTot);
+                logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+            } catch (Exception unErrore) {
+                logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
             }
-            message = String.format("Sono state create %s nuove biografie", cont);
-            logger.info(new WrapLog().message(message).type(AETypeLog.bio));
         }
     }
 
@@ -468,18 +448,7 @@ public class DownloadService extends WAbstractService {
      * @return listaWrapBio
      */
     public List<WrapBio> getListaWrapBio(final List<Long> listaPageIdsDaLeggere) {
-        long inizio = System.currentTimeMillis();
-        String size;
-        String time;
-
-        List<WrapBio> listaWrapBio = appContext.getBean(QueryWrapBio.class).getWrap(listaPageIdsDaLeggere);
-
-        size = textService.format(listaPageIdsDaLeggere.size());
-        time = dateService.deltaText(inizio);
-        String message = String.format("Scaricati %s wrapBio dal server in %s", size, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-
-        return listaWrapBio;
+        return appContext.getBean(QueryWrapBio.class).getWrap(listaPageIdsDaLeggere);
     }
 
 
@@ -487,26 +456,24 @@ public class DownloadService extends WAbstractService {
      * Crea/aggiorna le voci biografiche <br>
      * Salva le entities Bio su mongoDB <br>
      * Elabora (e salva) le entities Bio <br>
-     * Nella listaWrapBio possono ci sono solo voci CON il tmpl BIO valido <br>
+     * Nella listaWrapBio possono esserci solo voci CON il tmpl BIO valido <br>
      *
      * @param listaWrapBio da elaborare e salvare
      */
     public int creaElaboraListaBio(final List<WrapBio> listaWrapBio) {
         int numVociCreate = 0;
-        long inizio = System.currentTimeMillis();
         String message;
-        String size;
-        String time;
 
         if (listaWrapBio != null && listaWrapBio.size() > 0) {
             for (WrapBio wrap : listaWrapBio) {
-                numVociCreate += creaElaboraBio(wrap) ? numVociCreate + 1 : numVociCreate;
+                if (creaElaboraBio(wrap)) {
+                    numVociCreate++;
+                }
+                else {
+                    message = String.format("La pagina %s non è una biografia", wrap.getTitle());
+                    logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+                }
             }
-
-            size = textService.format(numVociCreate);
-            time = dateService.deltaText(inizio);
-            message = String.format("Create o aggiornate %s biografie in %s", size, time);
-            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
         }
         else {
             message = "Nessuna voce da aggiungere/modificare";
