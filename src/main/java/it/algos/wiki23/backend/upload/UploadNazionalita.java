@@ -26,6 +26,10 @@ public class UploadNazionalita extends Upload {
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
     public UploadNazionalita() {
+        super.attNazUpper = "Nazionalità";
+        super.attNaz = "nazionalità";
+        super.attNazRevert = "attività";
+        super.attNazRevertUpper = "Attività";
     }// end of constructor
 
     /**

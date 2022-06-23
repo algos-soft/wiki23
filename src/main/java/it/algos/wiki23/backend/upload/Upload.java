@@ -43,6 +43,8 @@ import java.util.*;
  */
 public abstract class Upload {
 
+    public static final String UPLOAD_TITLE_DEBUG = "Utente:Biobot/";
+
     /**
      * Istanza di una interfaccia <br>
      * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
@@ -94,7 +96,13 @@ public abstract class Upload {
 
     protected String attNazRevert;
 
+    protected String attNazRevertUpper;
+
     protected String nomeAttivitaNazionalitaPlurale;
+
+    protected String subAttivitaNazionalita;
+
+    protected boolean sottoPagina = false;
 
     protected WResult esegue(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
         StringBuffer buffer = new StringBuffer();
@@ -104,12 +112,42 @@ public abstract class Upload {
         buffer.append(CAPO);
         buffer.append(includeIni());
         buffer.append(forceToc());
+        buffer.append(torna(VUOTA));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
         buffer.append(CAPO);
         buffer.append(incipit());
         buffer.append(CAPO);
         buffer.append(body(wikiTitle, mappaDidascalie));
+        buffer.append(note());
+        buffer.append(CAPO);
+        buffer.append(correlate());
+        buffer.append(CAPO);
+        buffer.append(portale());
+        buffer.append(categorie());
+
+        return registra(wikiTitle, buffer.toString());
+    }
+
+
+    protected WResult esegueSub(String wikiTitle, String nomeAttivitaNazionalitaPlurale, LinkedHashMap<String, List<String>> mappaSub) {
+        StringBuffer buffer = new StringBuffer();
+        int numVoci = wikiUtility.getSize(mappaSub);
+        this.sottoPagina = true;
+        this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
+        this.subAttivitaNazionalita = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + SLASH.length());
+
+        buffer.append(avviso());
+        buffer.append(CAPO);
+        buffer.append(includeIni());
+        buffer.append(forceToc());
+        buffer.append(torna(wikiTitle));
+        buffer.append(tmpListaBio(numVoci));
+        buffer.append(includeEnd());
+        buffer.append(CAPO);
+        buffer.append(incipit());
+        buffer.append(CAPO);
+        buffer.append(bodySub(wikiTitle, mappaSub));
         buffer.append(note());
         buffer.append(CAPO);
         buffer.append(correlate());
@@ -134,6 +172,11 @@ public abstract class Upload {
         return "__FORCETOC__";
     }
 
+    protected String torna(String wikiTitle) {
+        wikiTitle = textService.levaCodaDa(wikiTitle, SLASH);
+        return textService.isValid(wikiTitle) ? String.format("{{Torna a|%s}}", wikiTitle) : VUOTA;
+    }
+
     protected String tmpListaBio(int numVoci) {
         String data = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMM yyy")); ;
         String progetto = "biografie";
@@ -156,77 +199,92 @@ public abstract class Upload {
 
         buffer.append("Questa è una lista");
         message = "Le didascalie delle voci sono quelle previste nel [[Progetto:Biografie/Didascalie|progetto biografie]]";
+        //--ref 1
         buffer.append(textService.setRef(message));
 
         message = "Le voci, all'interno di ogni paragrafo, sono in ordine alfabetico per '''cognome'''; se questo manca si utilizza il '''titolo''' della pagina.";
+        //--ref 2
         buffer.append(textService.setRef(message));
 
         buffer.append(" di persone");
         message = "La lista non è esaustiva e contiene solo le persone che sono citate nell'enciclopedia e per le quali è stato " +
                 "implementato correttamente il [[template:Bio|template Bio]]";
+        //--ref 3
         buffer.append(textService.setRef(message));
 
         buffer.append(" presenti");
         message = String.format("La pagina di una singola %s viene creata se le relative voci biografiche superano le '''%d''' unità.", attNaz, maxPagina);
+        //--ref 4
         buffer.append(textService.setRef(message));
 
         buffer.append(" nell'enciclopedia che hanno");
-        //        if (false) {
-        //            if (WPref.usaTreAttivita.is()) {
-        //                buffer.append(String.format(" tra le %s", attNaz));
-        //            }
-        //            else {
-        //                buffer.append(String.format(" come %s", attNaz));
-        //            }
-        //            message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
-        //                    "comunità ed [[Modulo:%s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]", attNaz, attNazUpper, mod);
-        //            buffer.append(textService.setRef(message));
-        //
-        //            if (WPref.usaTreAttivita.is()) {
-        //                message = String.format("Ogni persona è presente in diverse [[Progetto:Biografie/%s|liste]], in base a quanto riportato in " +
-        //                        "uno dei 3 parametri ''%s, %s2 e %s3'' del [[template:Bio|template Bio]] presente nella voce " +
-        //                        "biografica specifica della persona", attNazUpper, attNaz, attNaz, attNaz);
-        //            }
-        //            else {
-        //                buffer.append(" principale");
-        //                message = String.format("Ogni persona è presente in una sola [[Progetto:Biografie/%s|lista]], in base a quanto riportato " +
-        //                        "nel (primo) parametro ''%s'' del [[template:Bio|template Bio]] presente nella voce biografica specifica della " +
-        //                        "persona",attNazUpper,attNaz);
-        //            }
-        //            buffer.append(textService.setRef(message));
-        //        }
-        //        else {
-        //            buffer.append(String.format(" come %s",attNazRevert));
-        //        }
         buffer.append(incipitAttNaz());
-        message = String.format(" quella di '''%s'''.", nomeAttivitaNazionalitaPlurale);
+        message = String.format(" quella di '''%s'''", nomeAttivitaNazionalitaPlurale);
         buffer.append(message);
-        buffer.append(" Le persone sono suddivise");
-        message = String.format("La lista è suddivisa in paragrafi per ogni %s individuata. Se il numero di voci biografiche nel" +
-                " paragrafo supera le '''%s''' unità, viene creata una sottopagina.", attNazRevert, maxSottoPagina);
-        buffer.append(textService.setRef(message));
+        if (sottoPagina) {
+            buffer.append(sottoPaginaAttNaz());
+            message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
+                            "comunità ed [[Modulo:Bio/Plurale %s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]",
+                    attNazRevert, attNazRevertUpper, attNazRevert
+            );
+            //--ref 6/7/8
+            buffer.append(textService.setRef(message));
+        }
+        buffer.append(PUNTO);
+        if (!sottoPagina) {
+            buffer.append(" Le persone sono suddivise");
+            message = String.format("La lista è suddivisa in paragrafi per ogni %s individuata. Se il numero di voci biografiche nel" +
+                    " paragrafo supera le '''%s''' unità, viene creata una sottopagina.", attNazRevert, maxSottoPagina);
+            //--ref 5/7
+            buffer.append(textService.setRef(message));
 
-        buffer.append(String.format(" per %s.", attNazRevert));
-        message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
-                        "comunità ed [[Modulo:Bio/Plurale %s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]",
-                attNazRevert, attNazUpper, attNazRevert
-        );
-        buffer.append(textService.setRef(message));
+            buffer.append(String.format(" per %s.", attNazRevert));
+            message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
+                            "comunità ed [[Modulo:Bio/Plurale %s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]",
+                    attNazRevert, attNazRevertUpper, attNazRevert
+            );
+            //--ref 6/8
+            buffer.append(textService.setRef(message));
 
-        message = String.format("Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
-                "parametro ''%s'' oppure che usano una %s di difficile elaborazione da parte del '''[[Utente:Biobot|<span " +
-                "style=\"color:green;\">bot</span>]]'''", attNazRevert, attNazRevert);
-        buffer.append(textService.setRef(message));
+            message = String.format("Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
+                    "parametro ''%s'' oppure che usano una %s di difficile elaborazione da parte del '''[[Utente:Biobot|<span " +
+                    "style=\"color:green;\">bot</span>]]'''", attNazRevert, attNazRevert);
+            //--ref 9
+            buffer.append(textService.setRef(message));
+        }
 
         return buffer.toString();
     }
 
     protected String incipitAttNaz() {
-        return String.format(" come %s", attNazRevert);
+        return String.format(" come %s", attNaz);
+    }
+
+    protected String sottoPaginaAttNaz() {
+        return VUOTA;
     }
 
     protected String body(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
         return mappaToText(wikiTitle, mappaDidascalie);
+    }
+
+
+    protected String bodySub(String wikiTitle, LinkedHashMap<String, List<String>> mappaSub) {
+        StringBuffer buffer = new StringBuffer();
+        List<String> lista;
+
+        System.out.println(VUOTA);
+        for (String key : mappaSub.keySet()) {
+            lista = mappaSub.get(key);
+            buffer.append(wikiUtility.setParagrafo(key,lista.size()));
+            buffer.append(CAPO);
+            for (String didascalia : lista) {
+                buffer.append(didascalia + CAPO);
+            }
+            buffer.append(CAPO);
+        }
+
+        return buffer.toString();
     }
 
     protected String note() {
@@ -290,11 +348,13 @@ public abstract class Upload {
         StringBuffer buffer = new StringBuffer();
         List<String> lista;
         int max = WPref.sogliaSottoPagina.getInt();
+        String parente;
 
         if (numVoci > max) {
-            String vedi = String.format("{{Vedi anche|%s%s%s}}", wikiTitle, SLASH, textService.primaMaiuscola(titoloParagrafo));
+            parente = String.format("%s%s%s", wikiTitle, SLASH, textService.primaMaiuscola(titoloParagrafo));
+            String vedi = String.format("{{Vedi anche|%s}}", parente);
             buffer.append(vedi + CAPO);
-            this.uploadSottoPagina(wikiTitle, titoloParagrafo, numVoci, mappaSub);
+            this.uploadSottoPagina(parente, numVoci, mappaSub);
         }
         else {
             for (String key : mappaSub.keySet()) {
@@ -312,9 +372,9 @@ public abstract class Upload {
     /**
      * Esegue la scrittura della sotto-pagina <br>
      */
-    public void uploadSottoPagina(String wikiTitle, String titoloParagrafo, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
-        //        newText = subMappaToText(wikiTitle, mappaSub);
-        //        appContext.getBean(QueryWrite.class).urlRequest(wikiTitle + SLASH + textService.primaMaiuscola(titoloParagrafo), newText);
+    public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
+        //        UploadAttivita sottoPagina = appContext.getBean(UploadAttivita.class);
+        //        sottoPagina.esegueSub(wikiTitleParente, mappaSub);
     }
 
     protected String subMappaToText(String wikiTitle, LinkedHashMap<String, List<String>> mappaSub) {
@@ -338,32 +398,6 @@ public abstract class Upload {
 
         return buffer.toString();
     }
-
-    //    protected String mappaSubToText(LinkedHashMap<String, List<String>> mappaSub) {
-    //        String text = VUOTA;
-    //        StringBuffer buffer = new StringBuffer();
-    //        List<String> lista;
-    //        int max = 12; //@todo da preferenze
-    //
-    //        if (mappaSub != null) {
-    //            System.out.println(VUOTA);
-    //            if (mappaSub.size() > max) {
-    //                String vedi = "{{Vedi anche|Progetto:Biografie/Attività/Accademici/Statunitensi}}";
-    //                buffer.append(vedi + CAPO);
-    //            }
-    //            else {
-    //                for (String key : mappaSub.keySet()) {
-    //                    lista = mappaSub.get(key);
-    //                    for (String didascalia : lista) {
-    //                        buffer.append(didascalia + CAPO);
-    //                    }
-    //                }
-    //            }
-    //        }
-    //
-    //        return buffer.toString();
-    //    }
-
 
     public String setParagrafo(final String titolo) {
         return setParagrafo(titolo, 0);

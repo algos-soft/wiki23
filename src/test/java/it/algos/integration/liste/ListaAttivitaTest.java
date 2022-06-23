@@ -39,7 +39,6 @@ public class ListaAttivitaTest extends WikiTest {
     private ListaAttivita istanza;
 
 
-
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
@@ -212,7 +211,7 @@ public class ListaAttivitaTest extends WikiTest {
                 System.out.println(attivitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
-            printMappaDidascalia("l'attività",sorgente, mappaDidascalie);
+            printMappaDidascalia("l'attività", sorgente, mappaDidascalie);
         }
         else {
             message = "La mappa è nulla";
@@ -249,7 +248,7 @@ public class ListaAttivitaTest extends WikiTest {
                 System.out.println(attivitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
-            printMappaDidascalia("l'attività",sorgente, mappaParagrafi);
+            printMappaDidascalia("l'attività", sorgente, mappaParagrafi);
         }
         else {
             message = "La mappa è nulla";
@@ -286,7 +285,7 @@ public class ListaAttivitaTest extends WikiTest {
                 System.out.println(attivitaBackend.findByPlurale(sorgente));
             }
             System.out.println(VUOTA);
-            printMappaDidascalia("l'attività",sorgente, mappaParagrafiDimensionati);
+            printMappaDidascalia("l'attività", sorgente, mappaParagrafiDimensionati);
         }
         else {
             message = "La mappa è nulla";
@@ -295,6 +294,36 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
 
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA")
+    @Order(8)
+    @DisplayName("8 - Mappa sottoPagine")
+        //--nome attivita
+        //--flag singolare versus plurale
+    void mappaSottoPagine(final String attività, final boolean flagSingola) {
+        System.out.println("8 - Mappa sottoPagine");
+        int soglia = 50;
+        sorgente = attività;
+        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+        int size;
+
+        if (flagSingola) {
+            mappaDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaDidascalie();
+        }
+        else {
+            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaDidascalie();
+        }
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Solo le nazionalità di '%s' che superano la soglia di %s", sorgente, soglia));
+        for (String key : mappaDidascalie.keySet()) {
+            size = wikiUtility.getSize(mappaDidascalie.get(key));
+            if (size > soglia) {
+                message = String.format("%s%s%d", key, FORWARD, size);
+                System.out.println(message);
+            }
+        }
+    }
 
     protected void printWrapListaAttivita(List<WrapDidascalia> wrapLista) {
         String message;
@@ -341,7 +370,6 @@ public class ListaAttivitaTest extends WikiTest {
             System.out.println(SPAZIO);
         }
     }
-
 
 
     protected void printMappaWrapDidascalia(String attivita, LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrap) {
@@ -398,7 +426,6 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
 
-
     protected void printTreeMap(String attivita, TreeMap<String, TreeMap<String, List<String>>> treeMap) {
         int cont = 0;
         TreeMap<String, List<String>> mappaSub;
@@ -447,8 +474,6 @@ public class ListaAttivitaTest extends WikiTest {
             }
         }
     }
-
-
 
 
     /**

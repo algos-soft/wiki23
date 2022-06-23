@@ -75,6 +75,9 @@ public abstract class WikiTest extends AlgosTest {
     @Autowired
     public BotLogin botLogin;
 
+    @Autowired
+    public WikiUtility wikiUtility;
+
     protected final static long BIO_SALVINI_PAGEID = 132555;
 
     protected final static long BIO_RENZI_PAGEID = 134246;
@@ -208,7 +211,7 @@ public abstract class WikiTest extends AlgosTest {
     //--flag singolare versus plurale
     protected static Stream<Arguments> ATTIVITA() {
         return Stream.of(
-                Arguments.of("abate", true),
+                Arguments.of("abati e badesse", false),
                 Arguments.of("bassisti", false),
                 Arguments.of("allevatori", false),
                 Arguments.of("diplomatici", false),
@@ -265,6 +268,7 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(botLogin);
         assertNotNull(queryService);
         assertNotNull(downloadService);
+        assertNotNull(wikiUtility);
     }
 
     /**
