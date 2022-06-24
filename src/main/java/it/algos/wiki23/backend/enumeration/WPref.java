@@ -36,6 +36,8 @@ public enum WPref {
     uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, "Upload di tutte le nazionalità.", ROOT_DATA_TIME),
 
     downloadBio("downloadBio", AETypePref.localdatetime, "Download delle voci biografiche.", ROOT_DATA_TIME),
+    elaboraBio("elaboraBio", AETypePref.localdatetime, "Elaborazione di tutte le biografie.", ROOT_DATA_TIME),
+    elaboraBioTime("elaboraBioTime", AETypePref.integer, "Durata elaborazione delle biografie in secondi.", 0),
 
     //    uploadAttivitaTime("uploadAttivitaTime", AETypePref.integer, "Durata upload delle attività.", 0),
     //    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale nazionalità.", ROOT_DATA_TIME),

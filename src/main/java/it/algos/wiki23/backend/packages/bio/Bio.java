@@ -66,7 +66,7 @@ public class Bio extends AEntity {
     public boolean elaborato;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.text, search = true)
+    @AIField(type = AETypeField.text)
     public String nome;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
@@ -74,7 +74,7 @@ public class Bio extends AEntity {
     public String cognome;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.text, widthEM = 16)
+    @AIField(type = AETypeField.text, search = true, widthEM = 16)
     public String ordinamento;
 
     @AIField(type = AETypeField.text, header = "XY", widthEM = 3)

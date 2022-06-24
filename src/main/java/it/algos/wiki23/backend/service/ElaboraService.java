@@ -7,6 +7,7 @@ import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
@@ -120,6 +121,24 @@ public class ElaboraService extends WAbstractService {
         return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
     }
 
+    /**
+     * Regola la property <br>
+     *
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return testoValido regolato in uscita
+     */
+    public String fixOrdinamento(String testoGrezzo) {
+
+        if (testoGrezzo.startsWith(DEFAULT_SORT)) {
+            testoGrezzo = textService.levaTesta(testoGrezzo, DEFAULT_SORT);
+        }
+        if (testoGrezzo.endsWith(DOPPIE_GRAFFE_END)) {
+            testoGrezzo = textService.levaCodaDa(testoGrezzo, DOPPIE_GRAFFE_END);
+        }
+
+        return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+    }
 
     /**
      * Regola questa property <br>

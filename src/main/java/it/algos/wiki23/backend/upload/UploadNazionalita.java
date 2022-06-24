@@ -6,6 +6,8 @@ import static it.algos.wiki23.wiki.query.QueryWrite.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
+import java.util.*;
+
 /**
  * Project wiki23
  * Created by Algos
@@ -26,12 +28,16 @@ public class UploadNazionalita extends Upload {
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
     public UploadNazionalita() {
+        super.titoloLinkParagrafo = "Progetto:Biografie/Attività/";
         super.attNazUpper = "Nazionalità";
         super.attNaz = "nazionalità";
         super.attNazRevert = "attività";
         super.attNazRevertUpper = "Attività";
     }// end of constructor
 
+    protected String sottoPaginaAttNaz() {
+        return String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita));
+    }
     /**
      * Esegue la scrittura della pagina <br>
      */
@@ -44,9 +50,18 @@ public class UploadNazionalita extends Upload {
      * Esegue la scrittura della pagina <br>
      */
     public void uploadTest(String nomeAttivitaNazionalitaPlurale) {
+        String wikiTitle = UPLOAD_TITLE_DEBUG + textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
         this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
         mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
-        super.esegue(WIKI_TITLE_DEBUG, mappaDidascalie);
+        super.esegue(wikiTitle, mappaDidascalie);
+    }
+
+    /**
+     * Esegue la scrittura della sotto-pagina <br>
+     */
+    public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
+        UploadNazionalita sottoPagina = appContext.getBean(UploadNazionalita.class);
+        sottoPagina.esegueSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, mappaSub);
     }
 
 }

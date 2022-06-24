@@ -89,6 +89,7 @@ public abstract class Upload {
     protected TreeMap<String, TreeMap<String, List<String>>> mappa;
 
     protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+    protected String titoloLinkParagrafo;
 
     protected String attNazUpper;
 
@@ -324,7 +325,7 @@ public abstract class Upload {
                 mappaSub = mappaTxt.get(key);
                 numVoci = wikiUtility.getSize(mappaSub);
 
-                buffer.append(fixTitoloParagrafo(wikiTitle, key, numVoci));
+                buffer.append(fixTitoloParagrafo( key, numVoci));
                 buffer.append(CAPO);
                 buffer.append(fixCorpoParagrafo(wikiTitle, key, numVoci, mappaSub));
                 buffer.append(CAPO);
@@ -334,12 +335,12 @@ public abstract class Upload {
         return buffer.toString();
     }
 
-    protected String fixTitoloParagrafo(String wikiTitle, String titoloParagrafo, int numVoci) {
+    protected String fixTitoloParagrafo( String titoloParagrafo, int numVoci) {
         if (WPref.usaParagrafiDimensionati.is()) {
-            return wikiUtility.fixTitoloDimensionato(wikiTitle, titoloParagrafo, numVoci);
+            return wikiUtility.fixTitoloDimensionato(titoloLinkParagrafo, titoloParagrafo, numVoci);
         }
         else {
-            return wikiUtility.fixTitolo(wikiTitle, titoloParagrafo);
+            return wikiUtility.fixTitolo(titoloLinkParagrafo, titoloParagrafo);
         }
     }
 
@@ -373,8 +374,6 @@ public abstract class Upload {
      * Esegue la scrittura della sotto-pagina <br>
      */
     public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
-        //        UploadAttivita sottoPagina = appContext.getBean(UploadAttivita.class);
-        //        sottoPagina.esegueSub(wikiTitleParente, mappaSub);
     }
 
     protected String subMappaToText(String wikiTitle, LinkedHashMap<String, List<String>> mappaSub) {
@@ -387,7 +386,7 @@ public abstract class Upload {
             for (String key : mappaSub.keySet()) {
                 listaSub = mappaSub.get(key);
 
-                buffer.append(fixTitoloParagrafo(wikiTitle, key, listaSub.size()));
+                buffer.append(fixTitoloParagrafo( key, listaSub.size()));
                 buffer.append(CAPO);
                 for (String didascalia : listaSub) {
                     buffer.append(didascalia + CAPO);

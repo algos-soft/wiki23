@@ -93,6 +93,7 @@ public class AttivitaView extends WikiView {
         super.usaBottoneCategoria = true;
 
         super.dialogClazz = AttivitaDialog.class;
+        super.unitaMisuraElaborazione = "secondi";
         super.fixPreferenzeBackend();
     }
 

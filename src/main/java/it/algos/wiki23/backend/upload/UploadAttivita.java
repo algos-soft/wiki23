@@ -33,6 +33,7 @@ public class UploadAttivita extends Upload {
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
     public UploadAttivita() {
+        super.titoloLinkParagrafo = "Progetto:Biografie/Nazionalità/";
         super.attNazUpper = "Attività";
         super.attNaz = "attività";
         super.attNazRevert = "nazionalità";
@@ -100,14 +101,5 @@ public class UploadAttivita extends Upload {
         UploadAttivita sottoPagina = appContext.getBean(UploadAttivita.class);
         sottoPagina.esegueSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, mappaSub);
     }
-
-    //    /**
-    //     * Esegue la scrittura della sotto-pagina <br>
-    //     */
-    //    public void uploadSottoPagina(String wikiTitlePaginaPrincipale, String nomeAttivitaNazionalitaPlurale) {
-    //        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
-    //        //        newText = mappaToText(WIKI_TITLE_DEBUG,mappaDidascalie);
-    //        //        appContext.getBean(QueryWrite.class).urlRequest(WIKI_TITLE_DEBUG, newText);
-    //    }
 
 }

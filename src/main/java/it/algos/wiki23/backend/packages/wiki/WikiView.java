@@ -95,7 +95,7 @@ public abstract class WikiView extends CrudView {
 
     protected String wikiStatisticheTitle;
 
-    //    protected String alfabetico;
+    protected String unitaMisuraElaborazione;
     //
     //    protected String singolare;
     //
@@ -179,6 +179,7 @@ public abstract class WikiView extends CrudView {
         this.usaBottonePaginaWiki = true;
         this.usaBottoneTest = true;
         this.usaInfoDownload = true;
+        this.unitaMisuraElaborazione = VUOTA;
     }
 
     protected void fixPreferenzeBackend() {
@@ -228,7 +229,7 @@ public abstract class WikiView extends CrudView {
                 else {
                     message = String.format("Ultimo elaborazione effettuata il %s", dateService.get(elaborazione));
                     if (durataElaborazione != null && durataElaborazione.get() instanceof Integer durata) {
-                        message += String.format(" in circa %d secondi", durata);
+                        message += String.format(" in circa %d %s", durata, unitaMisuraElaborazione);
                     }
                 }
 

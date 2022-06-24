@@ -237,4 +237,6 @@ public class Wiki23Cost {
 
     public static final String ATTIVITA_PROPERTY_3 = "attivita3";
 
+    public static final String DEFAULT_SORT = "{{DEFAULTSORT:";
+
 }

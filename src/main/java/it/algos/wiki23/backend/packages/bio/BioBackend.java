@@ -284,12 +284,32 @@ public class BioBackend extends WikiBackend {
      */
     @Override
     public void elabora() {
+        long inizio = System.currentTimeMillis();
         List<Bio> lista = findAll();
+        int dim = 1000;
+        int blocco = lista.size() / dim;
+        int ini;
+        int end;
+        String size;
+        String time;
+        String message;
+        int cont = 0;
 
-        for (Bio bio : lista) {
-            bio = elaboraService.esegue(bio);
-            save(bio);
+        for (int k = 0; k < blocco; k++) {
+            ini = k * dim;
+            end = Math.min(ini + dim, lista.size());
+            for (Bio bio : lista.subList(ini, end)) {
+                bio = this.findByKey(bio.pageId);
+                bio = elaboraService.esegue(bio);
+                save(bio);
+                cont++;
+            }
+            size = textService.format(cont);
+            time = dateService.deltaText(inizio);
+            message = String.format("Elaborate finora %s voci biografiche, in %s", size, time);
+            System.out.println(message);
         }
+        super.fixElaboraSecondi(inizio, "biografie");
     }
 
 }// end of crud backend class

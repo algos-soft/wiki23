@@ -53,6 +53,7 @@ public abstract class WikiBackend extends CrudBackend {
      */
     @Autowired
     public BioBackend bioBackend;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -131,5 +132,32 @@ public abstract class WikiBackend extends CrudBackend {
         message = String.format("Elaborate %s %s in %d millisecondi", mongoTxt, modulo, delta);
         logger.info(new WrapLog().message(message));
     }
+
+    public void fixElaboraMinuti(final long inizio, final String modulo) {
+        long fine = System.currentTimeMillis();
+        Long delta = fine - inizio;
+        String mongoTxt = textService.format(count());
+
+        if (lastElabora != null) {
+            lastElabora.setValue(LocalDateTime.now());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("lastElabora è nullo")));
+            return;
+        }
+
+        if (durataElaborazione != null) {
+            delta = delta / 1000 / 60;
+            durataElaborazione.setValue(delta.intValue());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("durataElaborazione è nullo")));
+            return;
+        }
+
+        message = String.format("Elaborate %s %s in %d millisecondi", mongoTxt, modulo, delta);
+        logger.info(new WrapLog().message(message));
+    }
+
 
 }

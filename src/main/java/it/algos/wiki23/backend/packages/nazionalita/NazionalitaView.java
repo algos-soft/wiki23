@@ -84,7 +84,7 @@ public class NazionalitaView extends WikiView {
         super.usaBottoneEdit = true;
 
         super.dialogClazz = NazionalitaDialog.class;
-        super.fixPreferenzeBackend();
+        super.unitaMisuraElaborazione = "secondi";
         super.fixPreferenzeBackend();
     }
 

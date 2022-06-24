@@ -88,6 +88,8 @@ public class BioView extends WikiView {
         super.sortOrder = Sort.by(Sort.Direction.DESC, "ordinamento");
 
         super.lastDownload = WPref.downloadBio;
+        super.lastElaborazione = WPref.elaboraBio;
+        super.durataElaborazione = WPref.elaboraBioTime;
         super.usaBottoneElabora = true;
         super.usaBottoneDeleteAll = true;
         super.usaBottoneNew = true;
@@ -95,6 +97,8 @@ public class BioView extends WikiView {
         super.usaBottoneSearch = true;
         super.usaBottonePaginaWiki = true;
         super.dialogClazz = BioDialog.class;
+        super.unitaMisuraElaborazione = "minuti";
+        super.fixPreferenzeBackend();
     }
 
     /**

@@ -302,6 +302,38 @@ public class ListaNazionalitaTest extends WikiTest {
     }
 
 
+
+    @ParameterizedTest
+    @MethodSource(value = "NAZIONALITA")
+    @Order(8)
+    @DisplayName("8 - Mappa sottoPagine")
+        //--nome attivita
+        //--flag singolare versus plurale
+    void mappaSottoPagine(final String attività, final boolean flagSingola) {
+        System.out.println("8 - Mappa sottoPagine");
+        int soglia = 50;
+        sorgente = attività;
+        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+        int size;
+
+        if (flagSingola) {
+            mappaDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaDidascalie();
+        }
+        else {
+            mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaDidascalie();
+        }
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Solo le attività di '%s' che superano la soglia di %s", sorgente, soglia));
+        for (String key : mappaDidascalie.keySet()) {
+            size = wikiUtility.getSize(mappaDidascalie.get(key));
+            if (size > soglia) {
+                message = String.format("%s%s%d", key, FORWARD, size);
+                System.out.println(message);
+            }
+        }
+    }
+
     protected void printWrapListaNazionalita(List<WrapDidascalia> wrapLista) {
         String message;
         int max = 10;

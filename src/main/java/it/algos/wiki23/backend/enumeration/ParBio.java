@@ -67,7 +67,7 @@ public enum ParBio {
         public void setValue(Bio bio, String valuePropertyForzaOrdinamento) throws AlgosException {
             String valueTmp = VUOTA;
             if (textService.isValid(valuePropertyForzaOrdinamento)) {
-                bio.ordinamento = elaboraService.fixCognome(valuePropertyForzaOrdinamento);
+                bio.ordinamento = elaboraService.fixOrdinamento(valuePropertyForzaOrdinamento);
                 return;
             }
             if (textService.isValid(bio.cognome)) {

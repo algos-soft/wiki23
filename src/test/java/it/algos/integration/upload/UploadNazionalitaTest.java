@@ -83,7 +83,8 @@ public class UploadNazionalitaTest extends WikiTest {
     void getListaDidascalie() {
         System.out.println("2 - Upload di una nazionalità plurale");
         sorgente = "libanesi";
-//        sorgente = "birmani";
+        //        sorgente = "birmani";
+                sorgente = "azeri";
         appContext.getBean(UploadNazionalita.class).uploadTest(sorgente);
     }
 
