@@ -52,7 +52,7 @@ public abstract class WikiView extends CrudView {
 
     protected Button buttonElabora;
 
-    protected boolean usaBottoneUpload;
+    protected boolean usaBottoneUploadAll;
 
     protected Button buttonUpload;
 
@@ -171,7 +171,8 @@ public abstract class WikiView extends CrudView {
 
         this.usaBottoneDownload = true;
         this.usaBottoneElabora = false;
-        this.usaBottoneUpload = true;
+        this.usaBottoneUploadAll = true;
+        this.usaBottoneUploadPagina = false;
         //        this.usaBottoneModulo = true;
         this.usaBottoneCategoria = false;
         //        this.usaBottoneStatistiche = true;
@@ -280,7 +281,7 @@ public abstract class WikiView extends CrudView {
             topPlaceHolder.add(buttonElabora);
         }
 
-        if (usaBottoneUpload) {
+        if (usaBottoneUploadAll) {
             buttonUpload = new Button();
             buttonUpload.getElement().setAttribute("theme", "error");
             buttonUpload.getElement().setProperty("title", "Upload: costruisce tutte le pagine del package sul server wiki");
@@ -349,20 +350,12 @@ public abstract class WikiView extends CrudView {
         if (usaBottoneUploadPagina) {
             buttonUploadPagina = new Button();
             buttonUploadPagina.getElement().setAttribute("theme", "error");
-            buttonUploadPagina.getElement().setProperty("title", "Upload: scrittura della singola voce sul server wiki");
+            buttonUploadPagina.getElement().setProperty("title", "Upload: scrittura della singola pagina sul server wiki");
             buttonUploadPagina.setIcon(new Icon(VaadinIcon.UPLOAD));
             buttonUploadPagina.setEnabled(false);
             buttonUploadPagina.addClickListener(event -> uploadPagina());
             topPlaceHolder.add(buttonUploadPagina);
         }
-        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.TOOLS)));
-        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.SCREWDRIVER)));
-        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.PUZZLE_PIECE)));
-        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.FIRE)));
-        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.COG)));
-        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.AUTOMATION)));
-        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.BOLT)));
-        //        topPlaceHolder.add(new Button(new Icon(VaadinIcon.MAGIC)));
 
         super.fixBottoniTopStandard();
     }
@@ -387,12 +380,6 @@ public abstract class WikiView extends CrudView {
             buttonUpload.setEnabled(!singoloSelezionato);
         }
 
-        //        if (buttonModulo != null) {
-        //            buttonModulo.setEnabled(!singoloSelezionato);
-        //        }
-        //        if (buttonStatistiche != null) {
-        //            buttonStatistiche.setEnabled(!singoloSelezionato);
-        //        }
         if (buttonUploadStatistiche != null) {
             buttonUploadStatistiche.setEnabled(!singoloSelezionato);
         }

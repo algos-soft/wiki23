@@ -24,6 +24,7 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UploadAttivita extends Upload {
 
+    public static final String UPLOAD_TITLE_PROJECT_ATTIVITA = UPLOAD_TITLE_PROJECT + "Attività/";
 
     /**
      * Costruttore base con parametri <br>
@@ -80,8 +81,12 @@ public class UploadAttivita extends Upload {
     /**
      * Esegue la scrittura della pagina <br>
      */
-    public void upload() {
+    public void upload(String nomeAttivitaNazionalitaPlurale) {
+        this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
+        String wikiTitle = UPLOAD_TITLE_PROJECT_ATTIVITA + textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
         appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
+        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
+        super.esegue(wikiTitle, mappaDidascalie);
     }
 
     /**

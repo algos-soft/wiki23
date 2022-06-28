@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.enumeration;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.packages.utility.preferenza.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -20,42 +21,46 @@ import java.util.*;
  * <p>
  * Creazione da code di alcune preferenze del progetto <br>
  */
-public enum WPref {
+public enum WPref implements AIGenPref {
 
-    downloadGenere("downloadGenere", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale attività genere.", ROOT_DATA_TIME),
+    downloadGenere("downloadGenere", AETypePref.localdatetime, ROOT_DATA_TIME,"Download di Modulo:Bio/Plurale attività genere."),
 
-    downloadAttivita("downloadAttivita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale attività.", ROOT_DATA_TIME),
-    elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, "Elaborazione di tutte le attività.", ROOT_DATA_TIME),
-    elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, "Durata elaborazione delle attività in secondi.", 0),
-    uploadAttivita("uploadAttivita", AETypePref.localdatetime, "Upload di tutte le attività.", ROOT_DATA_TIME),
+    downloadAttivita("downloadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME,"Download di Modulo:Bio/Plurale attività."),
+    elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, ROOT_DATA_TIME,"Elaborazione di tutte le attività."),
+    elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, 0,"Durata elaborazione delle attività in secondi."),
+    uploadAttivita("uploadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME,"Upload di tutte le attività."),
 
 
-    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale nazionalità.", ROOT_DATA_TIME),
-    elaboraNazionalita("elaboraNazionalita", AETypePref.localdatetime, "Elaborazione di tutte le nazionalità.", ROOT_DATA_TIME),
-    elaboraNazionalitaTime("elaboraNazionalitaTime", AETypePref.integer, "Durata elaborazione delle nazionalità in secondi.", 0),
-    uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, "Upload di tutte le nazionalità.", ROOT_DATA_TIME),
+    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME,"Download di Modulo:Bio/Plurale nazionalità."),
+    elaboraNazionalita("elaboraNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME,"Elaborazione di tutte le nazionalità."),
+    elaboraNazionalitaTime("elaboraNazionalitaTime", AETypePref.integer, 0,"Durata elaborazione delle nazionalità in secondi."),
+    uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME,"Upload di tutte le nazionalità."),
 
-    downloadBio("downloadBio", AETypePref.localdatetime, "Download delle voci biografiche.", ROOT_DATA_TIME),
-    elaboraBio("elaboraBio", AETypePref.localdatetime, "Elaborazione di tutte le biografie.", ROOT_DATA_TIME),
-    elaboraBioTime("elaboraBioTime", AETypePref.integer, "Durata elaborazione delle biografie in secondi.", 0),
+    downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME,"Download delle voci biografiche."),
+    elaboraBio("elaboraBio", AETypePref.localdatetime, ROOT_DATA_TIME,"Elaborazione di tutte le biografie."),
+    elaboraBioTime("elaboraBioTime", AETypePref.integer, ROOT_DATA_TIME,"Durata elaborazione delle biografie in secondi."),
 
     //    uploadAttivitaTime("uploadAttivitaTime", AETypePref.integer, "Durata upload delle attività.", 0),
     //    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale nazionalità.", ROOT_DATA_TIME),
     //    downloadProfessione("downloadProfessione", AETypePref.localdatetime, "Download di Modulo:Bio/Link attività.", ROOT_DATA_TIME),
     //    downloadNomi("downloadNomi", AETypePref.localdatetime, "Download di Progetto:Antroponimi/Nomi doppi.", ROOT_DATA_TIME),
 
-    categoriaBio("categoriaBio", AETypePref.string, "Categoria di riferimento per le Biografie", "BioBot"),
-    sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, "Soglia minima per creare la pagina di una attività o nazionalità sul server wiki", 50),
-    sogliaSottoPagina("sogliaSottoPagina", AETypePref.integer, "Soglia minima per creare una sottopagina di una attività o nazionalità " +
-            "sul server wiki", 50),
-    usaTreAttivita("usaTreAttivita", AETypePref.bool, "Considera tutte le attività (tre) nelle liste di attività", false),
-    usaParagrafiDimensionati("usaParagrafiDimensionati", AETypePref.bool, "Nel titolo del paragrafo aggiunge la dimensione delle voci " +
-            "elencate", true),
+    categoriaBio("categoriaBio", AETypePref.string, "BioBot","Categoria di riferimento per le Biografie"),
+    sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, 50,"Soglia minima per creare la pagina di una attività o nazionalità sul " +
+            "server wiki"),
+    sogliaSottoPagina("sogliaSottoPagina", AETypePref.integer, 50,"Soglia minima per creare una sottopagina di una attività o nazionalità" +
+            " " +
+            "sul server wiki"),
+    usaTreAttivita("usaTreAttivita", AETypePref.bool, false,"Considera tutte le attività (tre) nelle liste di attività"),
+    usaParagrafiDimensionati("usaParagrafiDimensionati", AETypePref.bool, true,"Nel titolo del paragrafo aggiunge la dimensione delle " +
+            "voci " +
+            "elencate"),
 
 
-    simboloNato("simboloNato", AETypePref.string,"Simbolo della nascita nelle didascalie",  "n."),
-    simboloMorto("simboloMorto", AETypePref.string,"Simbolo della morte nelle didascalie",  "†"),
+    simboloNato("simboloNato", AETypePref.string,"n.","Simbolo della nascita nelle didascalie"),
+    simboloMorto("simboloMorto", AETypePref.string,"†","Simbolo della morte nelle didascalie"),
 
+    linkCrono("linkCrono", AETypePref.enumerationType, AETypeLinkCrono.nessuno,"Type di link a giorni/anni nelle didascalie"),
     ;
 
     //--codice di riferimento.
@@ -64,6 +69,7 @@ public enum WPref {
     //--tipologia di dato da memorizzare.
     //--Serve per convertire (nei due sensi) il valore nel formato byte[] usato dal mongoDb
     private AETypePref type;
+    private AETypePref typeEnum;
 
     //--descrizione breve ma comprensibile. Ulteriori (eventuali) informazioni nel campo 'note'
     private String descrizione;
@@ -74,8 +80,8 @@ public enum WPref {
     //--preferenze che necessita di un riavvio del programma per avere effetto
     private boolean needRiavvio;
 
-    //--Link injected da un metodo static
-    private PreferenzaBackend preferenzaBackend;
+    //--Link injettato da un metodo static
+    private PreferenceService preferenceService;
 
     //--Link injected da un metodo static
     private LogService logger;
@@ -83,125 +89,140 @@ public enum WPref {
     //--Link injected da un metodo static
     private DateService date;
 
+    //--Link injettato da un metodo static
+    private TextService text;
 
-    WPref(final String keyCode, final AETypePref type, final String descrizione, final Object defaultValue) {
+    WPref(final String keyCode, final AETypePref type, final Object defaultValue, final String descrizione) {
         this.keyCode = keyCode;
         this.type = type;
-        this.descrizione = descrizione;
         this.defaultValue = defaultValue;
+        this.descrizione = descrizione;
     }// fine del costruttore
 
 
     public static List<WPref> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
+    //------------------------------------------------
+    //--copiare tutti i metodi (Instance Method e non Static Method) nelle sottoclassi xPref
+    //--cambiando in static PreferenzaServiceInjector.postConstruct() Pref.values() -> xPref.values()
+    //------------------------------------------------
 
-    public void setPreferenzaBackend(PreferenzaBackend preferenzaBackend) {
-        this.preferenzaBackend = preferenzaBackend;
+    @Override
+    public void setPreferenceService(PreferenceService preferenceService) {
+        this.preferenceService = preferenceService;
     }
 
+    @Override
     public void setLogger(LogService logger) {
         this.logger = logger;
     }
 
+    @Override
     public void setDate(DateService date) {
         this.date = date;
     }
 
-    public void setValue(Object javaValue) {
-        Preferenza preferenza;
-
-        if (preferenzaBackend == null) {
-            return;
-        }
-
-        preferenza = preferenzaBackend.findByKeyCode(keyCode);
-        if (preferenza == null) {
-            return;
-        }
-
-        preferenza.setValue(type.objectToBytes(javaValue));
-        preferenzaBackend.update(preferenza);
+    @Override
+    public void setText(TextService text) {
+        this.text = text;
     }
 
+    @Override
+    public void setValue(Object javaValue) {
+        preferenceService.setValue(type, keyCode, javaValue);
+    }
+
+
+    @Override
     public Object get() {
         return getValue();
     }
 
-    private Object getValue() {
-        Object javaValue;
-        Preferenza preferenza = null;
-
-        if (preferenzaBackend == null) {
-            return null;
-        }
-
-        preferenza = preferenzaBackend.findByKeyCode(keyCode);
-        javaValue = preferenza != null ? type.bytesToObject(preferenza.getValue()) : null;
-
-        return javaValue;
+    @Override
+    public Object getValue() {
+        return preferenceService.getValue(type, keyCode);
     }
 
+    @Override
     public String getStr() {
-        String message;
-
-        if (type == AETypePref.string) {
-            return getValue() != null ? (String) getValue() : VUOTA;
-        }
-        else {
-            message = String.format("La preferenza %s è di type %s. Non puoi usare getStr()", keyCode, type);
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return VUOTA;
-        }
+        return preferenceService.getStr(type, keyCode);
     }
 
+    @Override
     public boolean is() {
-        String message;
-
-        if (type == AETypePref.bool) {
-            return getValue() != null && (boolean) getValue();
-        }
-        else {
-            message = String.format("La preferenza %s è di type %s. Non puoi usare is()", keyCode, type);
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return false;
-        }
+        return preferenceService.is(type, keyCode);
     }
 
+    @Override
     public int getInt() {
-        String message;
-
-        if (type == AETypePref.integer) {
-            return getValue() != null ? (int) getValue() : 0;
-        }
-        else {
-            message = String.format("La preferenza %s è di type %s. Non puoi usare getInt()", keyCode, type);
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return 0;
-        }
+        return preferenceService.getInt(type, keyCode);
     }
 
+    @Override
     public AETypePref getType() {
         return type;
     }
 
+    @Override
     public String getKeyCode() {
         return keyCode;
     }
 
+    @Override
     public String getDescrizione() {
         return descrizione;
     }
 
+    @Override
     public Object getDefaultValue() {
         return defaultValue;
+    }
+
+    @Override
+    public AITypePref getTypeEnum() {
+        return typeEnum;
+    }
+
+    /**
+     * Tutti i valori della enum <br>
+     */
+    @Override
+    public String getEnumAll() {
+        return preferenceService.getEnumAll(type, keyCode);
+    }
+
+    @Override
+    public AITypePref getEnumCurrentObj() {
+        return preferenceService.getEnumCurrentObj(typeEnum, type, keyCode);
+    }
+
+    /**
+     * Valore selezionato della enum <br>
+     */
+    @Override
+    public String getEnumCurrent() {
+        return preferenceService.getEnumCurrentTxt(type, keyCode);
+    }
+
+    /**
+     * Valore selezionato della enum <br>
+     */
+    @Override
+    public void setEnumCurrent(String currentValue) {
+        preferenceService.setEnumCurrentTxt(type, keyCode, currentValue);
+    }
+
+    @Override
+    public void setEnumCurrentObj(AITypePref currentValue) {
+        preferenceService.setEnumCurrentObj(type, keyCode, currentValue);
     }
 
     @Component
     public static class PreferenzaServiceInjector {
 
         @Autowired
-        private PreferenzaBackend preferenzaBackend;
+        private PreferenceService preferenceService;
 
         @Autowired
         private LogService logger;
@@ -209,15 +230,17 @@ public enum WPref {
         @Autowired
         private DateService date;
 
+        @Autowired
+        private TextService text;
+
         @PostConstruct
         public void postConstruct() {
             for (WPref pref : WPref.values()) {
-                pref.setPreferenzaBackend(preferenzaBackend);
+                pref.setPreferenceService(preferenceService);
                 pref.setLogger(logger);
                 pref.setDate(date);
+                pref.setText(text);
             }
         }
-
     }
-
 }

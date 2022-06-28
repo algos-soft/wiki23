@@ -45,6 +45,8 @@ public abstract class Upload {
 
     public static final String UPLOAD_TITLE_DEBUG = "Utente:Biobot/";
 
+    public static final String UPLOAD_TITLE_PROJECT = "Progetto:Biografie/";
+
     /**
      * Istanza di una interfaccia <br>
      * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
@@ -89,6 +91,7 @@ public abstract class Upload {
     protected TreeMap<String, TreeMap<String, List<String>>> mappa;
 
     protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+
     protected String titoloLinkParagrafo;
 
     protected String attNazUpper;
@@ -277,7 +280,7 @@ public abstract class Upload {
         System.out.println(VUOTA);
         for (String key : mappaSub.keySet()) {
             lista = mappaSub.get(key);
-            buffer.append(wikiUtility.setParagrafo(key,lista.size()));
+            buffer.append(wikiUtility.setParagrafo(key, lista.size()));
             buffer.append(CAPO);
             for (String didascalia : lista) {
                 buffer.append(didascalia + CAPO);
@@ -325,7 +328,7 @@ public abstract class Upload {
                 mappaSub = mappaTxt.get(key);
                 numVoci = wikiUtility.getSize(mappaSub);
 
-                buffer.append(fixTitoloParagrafo( key, numVoci));
+                buffer.append(fixTitoloParagrafo(key, numVoci));
                 buffer.append(CAPO);
                 buffer.append(fixCorpoParagrafo(wikiTitle, key, numVoci, mappaSub));
                 buffer.append(CAPO);
@@ -335,7 +338,7 @@ public abstract class Upload {
         return buffer.toString();
     }
 
-    protected String fixTitoloParagrafo( String titoloParagrafo, int numVoci) {
+    protected String fixTitoloParagrafo(String titoloParagrafo, int numVoci) {
         if (WPref.usaParagrafiDimensionati.is()) {
             return wikiUtility.fixTitoloDimensionato(titoloLinkParagrafo, titoloParagrafo, numVoci);
         }
@@ -386,7 +389,7 @@ public abstract class Upload {
             for (String key : mappaSub.keySet()) {
                 listaSub = mappaSub.get(key);
 
-                buffer.append(fixTitoloParagrafo( key, listaSub.size()));
+                buffer.append(fixTitoloParagrafo(key, listaSub.size()));
                 buffer.append(CAPO);
                 for (String didascalia : listaSub) {
                     buffer.append(didascalia + CAPO);

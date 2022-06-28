@@ -143,11 +143,11 @@ public class AttivitaBackend extends WikiBackend {
      * Cerca una singola entity con una query. <br>
      * Restituisce un valore valido ANCHE se esistono diverse entities <br>
      *
-     * @param attivitaPlurale  per costruire la query
+     * @param attivitaPlurale per costruire la query
      *
      * @return the FIRST founded entity
      */
-    public Attivita findFirstByPlurale(final String attivitaPlurale)  {
+    public Attivita findFirstByPlurale(final String attivitaPlurale) {
         return repository.findFirstByPlurale(attivitaPlurale);
     }
 
@@ -173,7 +173,6 @@ public class AttivitaBackend extends WikiBackend {
 
         return listaNomi;
     }
-
 
 
     public LinkedHashMap<String, List<String>> findMappaSingolariByPlurale() {
@@ -202,6 +201,24 @@ public class AttivitaBackend extends WikiBackend {
         return mappa;
     }
 
+    /**
+     * Conta il totale delle voci bio per tutte le attività associate a quella indicata. <br>
+     * Recupera l'attività plurale e quindi tutte le attività singole associate <br>
+     *
+     * @param attivitaSingolare selezionata
+     *
+     * @return totale di voci biografiche interessate
+     */
+    public int contBio(final Attivita attivitaSingolare) {
+        int numBio = 0;
+        List<Attivita> lista = this.findByPlurale(attivitaSingolare.plurale);
+
+        for (Attivita attivita : lista) {
+            numBio += attivita.numBio;
+        }
+
+        return numBio;
+    }
 
     /**
      * Legge la mappa di valori dal modulo di wiki <br>

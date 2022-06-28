@@ -1,5 +1,6 @@
 package it.algos.wiki23.backend.service;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -48,6 +49,7 @@ public class DownloadService extends WAbstractService {
      */
     public void ciclo(final String categoryTitle) {
         long inizio = System.currentTimeMillis();
+        String message;
         List<Long> listaPageIds;
         List<Long> listaMongoIds;
         List<Long> listaMongoIdsDaCancellare;
@@ -55,6 +57,8 @@ public class DownloadService extends WAbstractService {
         List<WrapTime> listaMiniWrap;
         List<Long> listaPageIdsDaLeggere;
         List<WrapBio> listaWrapBio;
+
+        logger.info(new WrapLog().message("Inizio ciclo").type(AETypeLog.bio));
 
         //--Controlla quante pagine ci sono nella categoria
         checkCategoria(categoryTitle);
@@ -68,14 +72,17 @@ public class DownloadService extends WAbstractService {
         //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
         listaMongoIds = getListaMongoIds();
 
+        //--Spazio
+        logger.info(new WrapLog().type(AETypeLog.bio));
+
         //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
-        listaMongoIdsDaCancellare = getEntitiesDaCancellare(listaMongoIds, listaPageIds);
+        listaMongoIdsDaCancellare = deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
 
         //--Cancella dal database (mongo) locale le entities non più presenti nella category <br>
         cancellaEntitiesNonInCategory(listaMongoIdsDaCancellare);
 
         //--Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare
-        listaPageIdsDaCreare = getNewEntitiesDaCreare(listaPageIds, listaMongoIds);
+        listaPageIdsDaCreare = deltaPageIds(listaPageIds, listaMongoIds, "listaPageIdsDaCreare");
 
         //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
         creaNewEntities(listaPageIdsDaCreare);
@@ -118,7 +125,7 @@ public class DownloadService extends WAbstractService {
         else {
             message = String.format("La categoria [%s] non esiste oppure è vuota", categoryTitle);
         }
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
 
         return numPages;
     }
@@ -143,7 +150,7 @@ public class DownloadService extends WAbstractService {
 
         if (status) {
             message = String.format("Regolarmente collegato come %s di nick '%s'", botLogin.getUserType(), botLogin.getUsername());
-            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+            logger.info(new WrapLog().message(message).type(AETypeLog.bio));
         }
         else {
             message = String.format("Collegato come %s di nick '%s' e NON come bot", botLogin.getUserType(), botLogin.getUsername());
@@ -172,7 +179,7 @@ public class DownloadService extends WAbstractService {
         size = textService.format(listaPageIds.size());
         time = dateService.deltaText(inizio);
         String message = String.format("Recuperati %s pageIds (long) dalla categoria '%s', in %s", size, categoryTitle, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
 
         return listaPageIds;
     }
@@ -200,7 +207,7 @@ public class DownloadService extends WAbstractService {
         size = textService.format(lista.size());
         time = dateService.deltaText(inizio);
         message = String.format("Recuperata da mongoDb una lista di %s pageIds esistenti nel database, in %s", size, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
 
         return lista;
     }
@@ -214,7 +221,7 @@ public class DownloadService extends WAbstractService {
      *
      * @return lista di tutti i (long) pageId da cancellare dal database (mongo) locale
      */
-    public List<Long> getEntitiesDaCancellare(List<Long> listaMongoIds, List<Long> listaPageIds) {
+    public List<Long> deltaPagxxeIds(List<Long> listaMongoIds, List<Long> listaPageIds, String nomeArray) {
         List<Long> listaMongoIdsDaCancellare = null;
         String message;
         long inizio = System.currentTimeMillis();
@@ -227,7 +234,8 @@ public class DownloadService extends WAbstractService {
             return listaMongoIdsDaCancellare;
         }
 
-        listaMongoIdsDaCancellare = arrayService.differenzaLong(listaMongoIds, listaPageIds);
+        //        listaMongoIdsDaCancellare = arrayService.differenzaLong(listaMongoIds, listaPageIds);
+        //        listaMongoIdsDaCancellare = getNewEntitiesDaCreare(listaMongoIds, listaPageIds);
 
         size = textService.format(listaMongoIdsDaCancellare.size());
         time = dateService.deltaText(inizio);
@@ -278,14 +286,16 @@ public class DownloadService extends WAbstractService {
      *
      * @return lista di tutti i nuovi (long) pageId da inserire nel database (mongo) locale
      */
-    public List<Long> getNewEntitiesDaCreare(List<Long> listaPageIds, List<Long> listaMongoIds) {
+    public List<Long> deltaPageIds(List<Long> listaPageIds, List<Long> listaMongoIds, String nomeLog) {
         long inizio = System.currentTimeMillis();
+        long inizioSub;
+        long fine;
+        long delta;
+        long deltaSub;
         String size;
         String time;
         List<Long> listaPageIdsDaCreare = new ArrayList<>();
-        int delta;
-        int soglia = 10000;
-        int max = 10000;
+        int max = 50000;
         List<Long> subLista = new ArrayList<>();
         String message;
 
@@ -297,29 +307,26 @@ public class DownloadService extends WAbstractService {
             return listaPageIds;
         }
 
-        delta = listaPageIds.size() - listaMongoIds.size();
-        delta = Math.abs(delta);
+        for (int k = 0; k < listaPageIds.size(); k += max) {
+            inizioSub = System.currentTimeMillis();
+            subLista = addSub(listaPageIds.subList(k, Math.min(k + max, listaPageIds.size())), listaMongoIds);
+            listaPageIdsDaCreare.addAll(subLista);
 
-        if (delta > soglia) {
-            for (int k = 0; k < listaPageIds.size(); k += max) {
-                subLista = addSub(listaPageIds.subList(k, Math.min(k + max, listaPageIds.size())), listaMongoIds);
-                listaPageIdsDaCreare.addAll(subLista);
-                message = String.format("K= %s Primo pageId %s - Ultimo pageId %s", k, listaPageIds.get(k),
-                        listaPageIds.get(Math.min(k + max, listaPageIds.size() - 1))
-                );
-                logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-                message = String.format("Adesso listaPageIdsDaCreare ha %s pageIds", listaPageIdsDaCreare.size());
-                logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
-            }
-        }
-        else {
-            listaPageIdsDaCreare = arrayService.differenzaLong(listaPageIds, listaMongoIds);
+            size = textService.format(k);
+            fine = System.currentTimeMillis();
+            deltaSub = fine - inizioSub;
+            deltaSub = deltaSub / 1000;
+            delta = fine - inizio;
+            delta = delta / 1000;
+            message = String.format("K= %s (%s/%s): adesso %s ha %s pageIds", size, deltaSub, delta, nomeLog, listaPageIdsDaCreare.size());
+            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
         }
 
         size = textService.format(listaPageIdsDaCreare.size());
         time = dateService.deltaText(inizio);
-        message = String.format("Elaborata una lista di %s pageIds esistenti nella category e da creare, in %s", size, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        message = String.format("Elaborata la lista %s di %s pageIds, in %s", nomeLog, size, time);
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
 
         return listaPageIdsDaCreare;
     }
@@ -338,9 +345,9 @@ public class DownloadService extends WAbstractService {
                 subLista.add(pageId);
             }
         }
-        time = dateService.deltaTextEsatto(inizio);
-        message = String.format("Ciclo for, in %s", time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        //        time = dateService.deltaTextEsatto(inizio);
+        //        message = String.format("Ciclo for 'addSub', in %s", time);
+        //        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
         return subLista;
     }

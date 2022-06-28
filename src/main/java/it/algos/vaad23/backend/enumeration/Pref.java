@@ -1,10 +1,7 @@
 package it.algos.vaad23.backend.enumeration;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.packages.utility.preferenza.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
-import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
@@ -18,7 +15,7 @@ import java.util.*;
  * Date: mer, 30-mar-2022
  * Time: 21:29
  */
-public enum Pref {
+public enum Pref implements AIGenPref {
     debug("debug", AETypePref.bool, false, "Flag generale di debug") {},
     doubleClick("doubleClick", AETypePref.bool, true, "Doppio click abilitato nelle righe della Grid") {},
     durataAvviso("durataAvviso", AETypePref.integer, 2000, "Durata in millisecondi dell'avviso a video") {},
@@ -34,6 +31,9 @@ public enum Pref {
 
     //--Valore java iniziale da convertire in byte[] a seconda del type
     private Object defaultValue;
+
+    //--Tipo AITypePref per AETypePref.enumerationType
+    private AITypePref typeEnum;
 
     //--preferenze singole per ogni company; usa un prefisso col codice della company
     private boolean usaCompany;
@@ -54,7 +54,7 @@ public enum Pref {
     private String note;
 
     //--Link injettato da un metodo static
-    private PreferenzaBackend preferenzaBackend;
+    private PreferenceService preferenceService;
 
     //--Link injettato da un metodo static
     private LogService logger;
@@ -62,6 +62,7 @@ public enum Pref {
     //--Link injettato da un metodo static
     private DateService date;
 
+    private TextService text;
 
     Pref(final String keyCode, final AETypePref type, final Object defaultValue, final String descrizione) {
         this.keyCode = keyCode;
@@ -70,100 +71,131 @@ public enum Pref {
         this.descrizione = descrizione;
     }// fine del costruttore
 
+
     public static List<Pref> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
 
-    public void setPreferenzaBackend(PreferenzaBackend preferenzaBackend) {
-        this.preferenzaBackend = preferenzaBackend;
+    //------------------------------------------------
+    //--copiare tutti i metodi (Instance Method e non Static Method) nelle sottoclassi xPref
+    //--cambiando in static PreferenzaServiceInjector.postConstruct() Pref.values() -> xPref.values()
+    //------------------------------------------------
+
+    @Override
+    public void setPreferenceService(PreferenceService preferenceService) {
+        this.preferenceService = preferenceService;
     }
 
+    @Override
     public void setLogger(LogService logger) {
         this.logger = logger;
     }
 
+    @Override
     public void setDate(DateService date) {
         this.date = date;
     }
 
+    @Override
+    public void setText(TextService text) {
+        this.text = text;
+    }
+
+    @Override
+    public void setValue(Object javaValue) {
+        preferenceService.setValue(type, keyCode, javaValue);
+    }
+
+
+    @Override
     public Object get() {
-        return null;
+        return getValue();
     }
 
-    private Object getValue() {
-        Object javaValue;
-        Preferenza preferenza = null;
-
-        if (preferenzaBackend == null) {
-            return null;
-        }
-
-        preferenza = preferenzaBackend.findByKeyCode(keyCode);
-        javaValue = preferenza != null ? type.bytesToObject(preferenza.getValue()) : null;
-
-        return javaValue;
+    @Override
+    public Object getValue() {
+        return preferenceService.getValue(type, keyCode);
     }
 
+    @Override
     public String getStr() {
-        String message;
-
-        if (type == AETypePref.string) {
-            return getValue() != null ? (String) getValue() : VUOTA;
-        }
-        else {
-            message = String.format("La preferenza %s è di type %s. Non puoi usare getStr()", keyCode, type);
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return VUOTA;
-        }
+        return preferenceService.getStr(type, keyCode);
     }
 
+    @Override
     public boolean is() {
-        String message;
-
-        if (type == AETypePref.bool) {
-            return getValue() != null && (boolean) getValue();
-        }
-        else {
-            message = String.format("La preferenza %s è di type %s. Non puoi usare is()", keyCode, type);
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return false;
-        }
+        return preferenceService.is(type, keyCode);
     }
 
+    @Override
     public int getInt() {
-        String message;
-
-        if (type == AETypePref.integer) {
-            return getValue() != null ? (int) getValue() : 0;
-        }
-        else {
-            message = String.format("La preferenza %s è di type %s. Non puoi usare getInt()", keyCode, type);
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return 0;
-        }
+        return preferenceService.getInt(type, keyCode);
     }
 
+    @Override
     public AETypePref getType() {
         return type;
     }
 
+    @Override
     public String getKeyCode() {
         return keyCode;
     }
 
+    @Override
     public String getDescrizione() {
         return descrizione;
     }
 
+    @Override
     public Object getDefaultValue() {
         return defaultValue;
+    }
+
+    @Override
+    public AITypePref getTypeEnum() {
+        return typeEnum;
+    }
+
+    /**
+     * Tutti i valori della enum <br>
+     */
+    @Override
+    public String getEnumAll() {
+        return preferenceService.getEnumAll(type, keyCode);
+    }
+
+    @Override
+    public AITypePref getEnumCurrentObj() {
+        return preferenceService.getEnumCurrentObj(typeEnum, type, keyCode);
+    }
+
+    /**
+     * Valore selezionato della enum <br>
+     */
+    @Override
+    public String getEnumCurrent() {
+        return preferenceService.getEnumCurrentTxt(type, keyCode);
+    }
+
+    /**
+     * Valore selezionato della enum <br>
+     */
+    @Override
+    public void setEnumCurrent(String currentValue) {
+        preferenceService.setEnumCurrentTxt(type, keyCode, currentValue);
+    }
+
+    @Override
+    public void setEnumCurrentObj(AITypePref currentValue) {
+        preferenceService.setEnumCurrentObj(type, keyCode, currentValue);
     }
 
     @Component
     public static class PreferenzaServiceInjector {
 
         @Autowired
-        private PreferenzaBackend preferenzaBackend;
+        private PreferenceService preferenceService;
 
         @Autowired
         private LogService logger;
@@ -171,15 +203,19 @@ public enum Pref {
         @Autowired
         private DateService date;
 
+        @Autowired
+        private TextService text;
+
         @PostConstruct
         public void postConstruct() {
             for (Pref pref : Pref.values()) {
-                pref.setPreferenzaBackend(preferenzaBackend);
+                pref.setPreferenceService(preferenceService);
                 pref.setLogger(logger);
                 pref.setDate(date);
+                pref.setText(text);
             }
         }
 
     }
 
-}
+}// end of enumeration

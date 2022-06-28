@@ -93,4 +93,5 @@ public class UtilityService extends AbstractService {
         return String.format("%s%s%s%s%s", companySigla, SPAZIO, userName, SPAZIO, addressIP);
     }
 
+
 }

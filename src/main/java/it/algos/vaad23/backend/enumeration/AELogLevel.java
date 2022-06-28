@@ -13,7 +13,7 @@ import java.util.*;
  * Date: lun, 07-mar-2022
  * Time: 11:45
  */
-public enum AELogLevel implements AIType, AIPref {
+public enum AELogLevel implements AIType, AITypePref {
     debug(GREEN),
     info(BRIGHT_BLUE),
     warn(YELLOW),
@@ -83,4 +83,12 @@ public enum AELogLevel implements AIType, AIPref {
         return buffer.toString();
     }
 
+    @Override
+    public AITypePref get(String nome) {
+        return getAllEnums()
+                .stream()
+                .filter(type -> type.name().equals(nome))
+                .findAny()
+                .orElse(null);
+    }
 }

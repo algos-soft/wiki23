@@ -2,6 +2,8 @@ package it.algos.vaad23.backend.service;
 
 import com.google.common.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.apache.commons.lang3.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -1196,6 +1198,83 @@ public class TextService extends AbstractService {
     public String setRef(final String stringaIn) {
         String stringaOut = REF + stringaIn.trim() + REF_END;
         return stringaOut.trim();
+    }
+
+
+    /**
+     * Recupera la lista di valori della enumeration prima del punto e virgola. <br>
+     *
+     * @param allEnumSelection in ingresso
+     *
+     * @return lista di valori
+     */
+    public String getEnumAll(final String allEnumSelection) {
+        String value = VUOTA;
+        String message;
+
+        if (allEnumSelection.contains(PUNTO_VIRGOLA)) {
+            value = this.levaCodaDa(allEnumSelection, PUNTO_VIRGOLA);
+        }
+        else {
+            message = String.format("La stringa in ingresso non contiene il punto-virgola");
+            logger.info(new WrapLog().exception(new AlgosException(message)));
+        }
+
+        if (isValid(value)) {
+            value = value.replaceAll(SPAZIO, VUOTA);
+        }
+
+        return value;
+    }
+
+    /**
+     * Recupera il valore corrente della enumeration dopo il punto e virgola. <br>
+     *
+     * @param allEnumSelection in ingresso
+     *
+     * @return valore corrente
+     */
+    public String getEnumValue(final String allEnumSelection) {
+        String value = VUOTA;
+        String message;
+
+        if (allEnumSelection.contains(PUNTO_VIRGOLA)) {
+            value = this.levaTestoPrimaDi(allEnumSelection, PUNTO_VIRGOLA);
+        }
+        else {
+            message = String.format("La stringa in ingresso non contiene il punto-virgola");
+            logger.info(new WrapLog().exception(new AlgosException(message)));
+        }
+
+        return value != null ? value.trim() : value;
+    }
+
+    /**
+     * Seleziona un valore della enumeration. <br>
+     *
+     * @param value in ingresso
+     *
+     * @return lista di valori della enumeration con il valore selezionato
+     */
+    public String setEnumValue(String allEnumSelection, String value) {
+        String message;
+
+        if (allEnumSelection.contains(PUNTO_VIRGOLA)) {
+            if (allEnumSelection.contains(value)) {
+                allEnumSelection = getEnumAll(allEnumSelection);
+                allEnumSelection += PUNTO_VIRGOLA + value;
+            }
+            else {
+                message = String.format("La selezione di enumeration non contiene il valore proposto");
+                logger.info(new WrapLog().exception(new AlgosException(message)));
+            }
+        }
+        else {
+            message = String.format("La stringa in ingresso non contiene il punto-virgola");
+            logger.info(new WrapLog().exception(new AlgosException(message)));
+        }
+
+        return allEnumSelection;
     }
 
 }

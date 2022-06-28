@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -91,6 +92,7 @@ public class AttivitaView extends WikiView {
         //        super.wikiStatisticheTitle = PATH_STATISTICHE_ATTIVITA;
         super.usaBottoneEdit = true;
         super.usaBottoneCategoria = true;
+        super.usaBottoneUploadPagina = true;
 
         super.dialogClazz = AttivitaDialog.class;
         super.unitaMisuraElaborazione = "secondi";
@@ -200,6 +202,23 @@ public class AttivitaView extends WikiView {
         }
     }
 
+    @Override
+    protected boolean sincroSelection(SelectionEvent event) {
+        boolean singoloSelezionato = super.sincroSelection(event);
+        boolean numVociNecessarie = false;
+
+        Attivita attivita = getAttivitaCorrente();
+        if (attivita != null) {
+            numVociNecessarie = attivita.numBio > WPref.sogliaAttNazWiki.getInt();
+        }
+
+        if (buttonUploadPagina != null) {
+            buttonUploadPagina.setEnabled(singoloSelezionato && numVociNecessarie);
+        }
+
+        return singoloSelezionato;
+    }
+
     protected void sincroPlurali() {
         List<Attivita> items = null;
 
@@ -268,15 +287,36 @@ public class AttivitaView extends WikiView {
                 Avviso.show3000(message).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
             }
         }
+    }
 
-//        String nomeAttivitaPlurale = "politici";
-//        appContext.getBean(UploadAttivita.class).uploadTest(nomeAttivitaPlurale);
-//        reload();
+    /**
+     * Scrive una pagina definitiva sul server wiki <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void uploadPagina() {
+        Attivita attivita = getAttivitaCorrente();
+
+        if (attivita != null) {
+            appContext.getBean(UploadAttivita.class).upload(attivita.plurale);
+        }
+
+        reload();
     }
 
     public void updateItem(AEntity entityBean) {
         dialog = appContext.getBean(AttivitaDialog.class, entityBean, CrudOperation.READ, crudBackend, formPropertyNamesList);
         dialog.open(this::saveHandler, this::annullaHandler);
+    }
+
+    public Attivita getAttivitaCorrente() {
+        Attivita attivita = null;
+
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            attivita = (Attivita) entityBean.get();
+        }
+
+        return attivita;
     }
 
 }// end of crud @Route view class

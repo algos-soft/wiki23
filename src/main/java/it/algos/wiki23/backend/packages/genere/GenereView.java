@@ -68,7 +68,7 @@ public class GenereView extends WikiView {
         super.lastDownload = WPref.downloadGenere;
         super.wikiModuloTitle = PATH_MODULO_GENERE;
 
-        super.usaBottoneUpload = false;
+        super.usaBottoneUploadAll = false;
 //        super.usaBottoneStatistiche = false;
         super.usaBottoneUploadStatistiche = false;
         super.usaBottonePaginaWiki = false;

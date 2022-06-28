@@ -65,7 +65,7 @@ public class ProfessioneView extends WikiView {
 //        super.lastDownload = WPref.downloadProfessione;
         super.wikiModuloTitle = PATH_MODULO_PROFESSIONE;
 
-        super.usaBottoneUpload = false;
+        super.usaBottoneUploadAll = false;
 //        super.usaBottoneStatistiche = false;
         super.usaBottoneUploadStatistiche = false;
         super.usaBottoneTest = false;

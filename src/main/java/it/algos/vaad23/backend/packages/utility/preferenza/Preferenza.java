@@ -97,6 +97,8 @@ public class Preferenza extends AEntity {
     //    @AIColumn(widthEM = 24, flexGrow = true)
     public String descrizioneEstesa;
 
+    public String enumClazzName;
+
 
     /**
      * @return a string representation of the object.
@@ -184,5 +186,12 @@ public class Preferenza extends AEntity {
         this.visibileAdmin = visibileAdmin;
     }
 
+    public String getEnumClazzName() {
+        return enumClazzName;
+    }
+
+    public void setEnumClazzName(String enumClazzName) {
+        this.enumClazzName = enumClazzName;
+    }
 
 }// end of crud entity class

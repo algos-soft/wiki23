@@ -267,6 +267,13 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
                         icona.setColor(vero ? COLOR_VERO : COLOR_FALSO);
                         yield icona;
                     }
+                    case enumerationType, enumerationString -> {
+                        String value = pref.getType().bytesToString(pref.getValue());
+                        Label label = new Label(value);
+                        label.getElement().getStyle().set("color", pref.getType().getColor());
+                        label.getElement().getStyle().set("fontWeight", "bold");
+                        yield label;
+                    }
                     default -> new Label(TRE_PUNTI);
                 })).setHeader("Value").setKey("value");
 

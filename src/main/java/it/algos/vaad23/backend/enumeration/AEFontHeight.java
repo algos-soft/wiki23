@@ -13,7 +13,7 @@ import java.util.*;
  * Date: sab, 20-feb-2021
  * Time: 17:40
  */
-public enum AEFontHeight implements AIType, AIPref {
+public enum AEFontHeight implements AIType, AITypePref {
 
     normal("1"),
     number16("1.6"),
@@ -96,4 +96,14 @@ public enum AEFontHeight implements AIType, AIPref {
 
         return buffer.toString();
     }
+
+    @Override
+    public AITypePref get(String nome) {
+        return getAllEnums()
+                .stream()
+                .filter(type -> type.name().equals(nome))
+                .findAny()
+                .orElse(null);
+    }
+
 }

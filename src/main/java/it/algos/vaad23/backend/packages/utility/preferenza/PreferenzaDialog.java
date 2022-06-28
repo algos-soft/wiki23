@@ -19,15 +19,18 @@ import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
+import org.springframework.context.*;
 import org.springframework.context.annotation.Scope;
 import org.vaadin.crudui.crud.*;
 
 import javax.annotation.*;
+import java.util.*;
 import java.util.function.*;
 
 /**
@@ -40,6 +43,14 @@ import java.util.function.*;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PreferenzaDialog extends Dialog {
+
+    /**
+     * Istanza di una interfaccia SpringBoot <br>
+     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ApplicationContext appContext;
 
     protected final H2 titleField = new H2();
 
@@ -59,6 +70,9 @@ public class PreferenzaDialog extends Dialog {
 
     @Autowired
     public LogService logger;
+
+    @Autowired
+    public ArrayService arrayService;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -297,7 +311,6 @@ public class PreferenzaDialog extends Dialog {
                 boxField.setReadOnly(operation == CrudOperation.DELETE);
                 valueLayout.add(boxField);
             }
-
             case integer -> {
                 TextField numberField = new TextField("Value (intero)");
                 numberField.setRequired(true);
@@ -323,6 +336,45 @@ public class PreferenzaDialog extends Dialog {
                 DateTimePicker pickerField = new DateTimePicker("Data completa (giorno e orario)");
                 pickerField.setReadOnly(operation == CrudOperation.DELETE);
                 valueLayout.add(pickerField);
+            }
+            case enumerationType -> {
+                ComboBox<String> combo = new ComboBox<>();
+                combo.setRequired(true);
+                combo.setAllowCustomValue(false);
+                combo.setClearButtonVisible(false);
+                combo.setReadOnly(false);
+                combo.addValueChangeListener(event -> sincroCombo());
+                String allEnumSelection = (String) type.getValue().bytesToObject(currentItem.getValue());
+                String allValues = textService.getEnumAll(allEnumSelection);
+                String selectedValue = textService.getEnumValue(allEnumSelection);
+                List<String> items = arrayService.getList(allValues);
+                if (items != null) {
+                    combo.setItems(items);
+                    if (items.contains(selectedValue)) {
+                        combo.setValue(selectedValue);
+                    }
+                }
+                valueLayout.add(combo);
+            }
+
+            case enumerationString -> {
+                ComboBox<String> combo = new ComboBox<>();
+                combo.setRequired(true);
+                combo.setAllowCustomValue(false);
+                combo.setClearButtonVisible(false);
+                combo.setReadOnly(false);
+                combo.addValueChangeListener(event -> sincroCombo());
+                String allEnumSelection = (String) type.getValue().bytesToObject(currentItem.getValue());
+                String allValues = textService.getEnumAll(allEnumSelection);
+                String selectedValue = textService.getEnumValue(allEnumSelection);
+                List<String> items = arrayService.getList(allValues);
+                if (items != null) {
+                    combo.setItems(items);
+                    if (items.contains(selectedValue)) {
+                        combo.setValue(selectedValue);
+                    }
+                }
+                valueLayout.add(combo);
             }
             default -> valueLayout.add(new Label("Type non ancora gestito"));
         }
@@ -386,10 +438,33 @@ public class PreferenzaDialog extends Dialog {
                     valido = true;
                 }
             }
+            case enumerationType -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof ComboBox combo) {
+                    String value = (String) combo.getValue();
+                    String allEnumSelection = (String) type.getValue().bytesToObject(currentItem.getValue());
+                    value = textService.setEnumValue(allEnumSelection, value);
+                    currentItem.setValue(type.getValue().objectToBytes(value));
+                    valido = true;
+                }
+            }
+            case enumerationString -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof ComboBox combo) {
+                    String value = (String) combo.getValue();
+                    String allEnumSelection = (String) type.getValue().bytesToObject(currentItem.getValue());
+                    value = textService.setEnumValue(allEnumSelection, value);
+                    currentItem.setValue(type.getValue().objectToBytes(value));
+                    valido = true;
+                }
+            }
             default -> Notification.show("Switch non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
 
         return valido;
+    }
+
+    protected void sincroCombo() {
     }
 
     /**

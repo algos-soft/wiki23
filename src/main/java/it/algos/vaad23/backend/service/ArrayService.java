@@ -364,4 +364,20 @@ public class ArrayService extends AbstractService {
         return arrayA.stream().filter(a -> !arrayB.contains(a)).toList();
     }
 
+    public List<String> getList(String testo) {
+        List<String> lista = null;
+        String tag = VIRGOLA;
+        String[] parti = null;
+
+        if (textService.isValid(testo) && testo.contains(tag)) {
+            parti = testo.split(tag);
+        }
+
+        if (parti != null && parti.length > 0) {
+            lista = Arrays.asList(parti);
+        }
+
+        return lista;
+    }
+
 }
