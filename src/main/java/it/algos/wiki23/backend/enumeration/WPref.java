@@ -23,44 +23,48 @@ import java.util.*;
  */
 public enum WPref implements AIGenPref {
 
-    downloadGenere("downloadGenere", AETypePref.localdatetime, ROOT_DATA_TIME,"Download di Modulo:Bio/Plurale attività genere."),
+    downloadGenere("downloadGenere", AETypePref.localdatetime, ROOT_DATA_TIME, "Download di Modulo:Bio/Plurale attività genere."),
 
-    downloadAttivita("downloadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME,"Download di Modulo:Bio/Plurale attività."),
-    elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, ROOT_DATA_TIME,"Elaborazione di tutte le attività."),
-    elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, 0,"Durata elaborazione delle attività in secondi."),
-    uploadAttivita("uploadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME,"Upload di tutte le attività."),
+    downloadAttivita("downloadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Download di Modulo:Bio/Plurale attività."),
+    downloadAttivitaTime("downloadAttivitaTime", AETypePref.integer, 0, "Durata download delle attività in secondi."),
+    elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le attività."),
+    elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, 0, "Durata elaborazione delle attività in secondi."),
+    uploadAttivita("uploadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le attività."),
 
 
-    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME,"Download di Modulo:Bio/Plurale nazionalità."),
-    elaboraNazionalita("elaboraNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME,"Elaborazione di tutte le nazionalità."),
-    elaboraNazionalitaTime("elaboraNazionalitaTime", AETypePref.integer, 0,"Durata elaborazione delle nazionalità in secondi."),
-    uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME,"Upload di tutte le nazionalità."),
+    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Download di Modulo:Bio/Plurale nazionalità."),
+    elaboraNazionalita("elaboraNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le nazionalità."),
+    elaboraNazionalitaTime("elaboraNazionalitaTime", AETypePref.integer, 0, "Durata elaborazione delle nazionalità in secondi."),
+    uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le nazionalità."),
 
-    downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME,"Download delle voci biografiche."),
-    elaboraBio("elaboraBio", AETypePref.localdatetime, ROOT_DATA_TIME,"Elaborazione di tutte le biografie."),
-    elaboraBioTime("elaboraBioTime", AETypePref.integer, ROOT_DATA_TIME,"Durata elaborazione delle biografie in secondi."),
+    downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download delle voci biografiche."),
+    downloadBioTime("downloadBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata ciclo completo download delle biografie in minuti."),
+    elaboraBio("elaboraBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le biografie."),
+    elaboraBioTime("elaboraBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata elaborazione delle biografie in minuti."),
 
     //    uploadAttivitaTime("uploadAttivitaTime", AETypePref.integer, "Durata upload delle attività.", 0),
     //    downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, "Download di Modulo:Bio/Plurale nazionalità.", ROOT_DATA_TIME),
     //    downloadProfessione("downloadProfessione", AETypePref.localdatetime, "Download di Modulo:Bio/Link attività.", ROOT_DATA_TIME),
     //    downloadNomi("downloadNomi", AETypePref.localdatetime, "Download di Progetto:Antroponimi/Nomi doppi.", ROOT_DATA_TIME),
 
-    categoriaBio("categoriaBio", AETypePref.string, "BioBot","Categoria di riferimento per le Biografie"),
-    sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, 50,"Soglia minima per creare la pagina di una attività o nazionalità sul " +
+    categoriaBio("categoriaBio", AETypePref.string, "BioBot", "Categoria di riferimento per le Biografie"),
+    sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, 50, "Soglia minima per creare la pagina di una attività o nazionalità sul " +
             "server wiki"),
-    sogliaSottoPagina("sogliaSottoPagina", AETypePref.integer, 50,"Soglia minima per creare una sottopagina di una attività o nazionalità" +
+    sogliaSottoPagina("sogliaSottoPagina", AETypePref.integer, 50, "Soglia minima per creare una sottopagina di una attività o nazionalità" +
             " " +
             "sul server wiki"),
-    usaTreAttivita("usaTreAttivita", AETypePref.bool, false,"Considera tutte le attività (tre) nelle liste di attività"),
-    usaParagrafiDimensionati("usaParagrafiDimensionati", AETypePref.bool, true,"Nel titolo del paragrafo aggiunge la dimensione delle " +
+    usaTreAttivita("usaTreAttivita", AETypePref.bool, false, "Considera tutte le attività (tre) nelle liste di attività"),
+    usaParagrafiDimensionati("usaParagrafiDimensionati", AETypePref.bool, true, "Nel titolo del paragrafo aggiunge la dimensione delle " +
             "voci " +
             "elencate"),
 
 
-    simboloNato("simboloNato", AETypePref.string,"n.","Simbolo della nascita nelle didascalie"),
-    simboloMorto("simboloMorto", AETypePref.string,"†","Simbolo della morte nelle didascalie"),
+    simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),
+    simboloMorto("simboloMorto", AETypePref.string, "†", "Simbolo della morte nelle didascalie"),
 
-    linkCrono("linkCrono", AETypePref.enumerationType, AETypeLinkCrono.nessuno,"Type di link a giorni/anni nelle didascalie"),
+    linkCrono("linkCrono", AETypePref.enumerationType, AETypeLinkCrono.voce, "Type di link a giorni/anni nelle didascalie",
+            AETypeLinkCrono.nessuno
+    ),
     ;
 
     //--codice di riferimento.
@@ -69,7 +73,8 @@ public enum WPref implements AIGenPref {
     //--tipologia di dato da memorizzare.
     //--Serve per convertire (nei due sensi) il valore nel formato byte[] usato dal mongoDb
     private AETypePref type;
-    private AETypePref typeEnum;
+
+    private AITypePref typeEnum;
 
     //--descrizione breve ma comprensibile. Ulteriori (eventuali) informazioni nel campo 'note'
     private String descrizione;
@@ -93,10 +98,15 @@ public enum WPref implements AIGenPref {
     private TextService text;
 
     WPref(final String keyCode, final AETypePref type, final Object defaultValue, final String descrizione) {
+        this(keyCode, type, defaultValue, descrizione, null);
+    }// fine del costruttore
+
+    WPref(final String keyCode, final AETypePref type, final Object defaultValue, final String descrizione, AITypePref typeEnum) {
         this.keyCode = keyCode;
         this.type = type;
         this.defaultValue = defaultValue;
         this.descrizione = descrizione;
+        this.typeEnum = typeEnum;
     }// fine del costruttore
 
 
@@ -242,5 +252,6 @@ public enum WPref implements AIGenPref {
                 pref.setText(text);
             }
         }
+
     }
 }

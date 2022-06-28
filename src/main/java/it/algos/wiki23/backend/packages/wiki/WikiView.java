@@ -95,6 +95,8 @@ public abstract class WikiView extends CrudView {
 
     protected String wikiStatisticheTitle;
 
+    protected String unitaMisuraDownload;
+
     protected String unitaMisuraElaborazione;
     //
     //    protected String singolare;
@@ -104,6 +106,8 @@ public abstract class WikiView extends CrudView {
     protected boolean usaInfoDownload;
 
     protected WPref lastDownload;
+
+    protected WPref durataDownload;
 
     protected WPref lastElaborazione;
 
@@ -180,12 +184,14 @@ public abstract class WikiView extends CrudView {
         this.usaBottonePaginaWiki = true;
         this.usaBottoneTest = true;
         this.usaInfoDownload = true;
+        this.unitaMisuraDownload = VUOTA;
         this.unitaMisuraElaborazione = VUOTA;
     }
 
     protected void fixPreferenzeBackend() {
         if (crudBackend != null) {
             crudBackend.lastDownload = lastDownload;
+            crudBackend.durataDownload = durataDownload;
             crudBackend.lastElabora = lastElaborazione;
             crudBackend.durataElaborazione = durataElaborazione;
         }
@@ -220,6 +226,9 @@ public abstract class WikiView extends CrudView {
                 }
                 else {
                     message = String.format("Ultimo download effettuato il %s", dateService.get(download));
+                    if (durataDownload != null && durataDownload.get() instanceof Integer durata) {
+                        message += String.format(" in circa %d %s", durata, unitaMisuraElaborazione);
+                    }
                 }
                 addSpanVerdeSmall(message);
             }

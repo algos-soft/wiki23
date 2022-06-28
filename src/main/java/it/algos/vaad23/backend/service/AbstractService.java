@@ -1,6 +1,7 @@
 package it.algos.vaad23.backend.service;
 
 import it.algos.vaad23.backend.packages.utility.preferenza.*;
+import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 
@@ -142,6 +143,14 @@ public abstract class AbstractService {
      */
     @Autowired
     public UtilityService utilityService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata dal framework SpringBoot/Vaadin usando il metodo setter() <br>
+     * al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WikiUtility wikiUtility;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>

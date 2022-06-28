@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
 import java.util.*;
+import java.util.regex.*;
 
 /**
  * Project vaadwiki
@@ -166,6 +167,47 @@ public class WikiUtility extends WAbstractService {
         }
 
         return size;
+    }
+
+    public String nati(String anno) {
+        return natiMorti("Nati", anno);
+    }
+
+    public String morti(String anno) {
+        return natiMorti("Morti", anno);
+    }
+
+    /**
+     * I numeri che iniziano (parlato) con vocale richiedono l'apostrofo  <br>
+     * Sono:
+     * 1
+     * 11
+     * tutti quelli che iniziano con 8
+     *
+     * @param tag  nati/morti
+     * @param anno di riferimento
+     *
+     * @return titolo della pagina wiki
+     */
+    private String natiMorti(String tag, String anno) {
+        String testo = VUOTA;
+        String tagSpecifico = "l'";
+        tag += " nel";
+        List<Integer> lista = Arrays.asList(1, 8, 11);
+        String regex = "(1|11|8.*)";
+
+        if (textService.isEmpty(anno)) {
+            return VUOTA;
+        }
+
+        if (Pattern.matches(regex, anno)) {
+            testo = tag + tagSpecifico + anno;
+        }
+        else {
+            testo = tag + SPAZIO + anno;
+        }
+
+        return testo;
     }
 
 }

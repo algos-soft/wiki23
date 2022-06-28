@@ -3,6 +3,7 @@ package it.algos.unit.wiki;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
@@ -70,12 +71,12 @@ public class DidascaliaServiceTest extends WikiTest {
         super.setUpEach();
     }
 
-//    private Giorno creaGiorno(String giornoText) {
-//        Giorno giorno = null;
-//        giorno = new Giorno();
-//        //        giorno.titolo = giornoText;
-//        return giorno;
-//    }// end of method
+    //    private Giorno creaGiorno(String giornoText) {
+    //        Giorno giorno = null;
+    //        giorno = new Giorno();
+    //        //        giorno.titolo = giornoText;
+    //        return giorno;
+    //    }// end of method
 
     //    private Anno creaAnno(int annoInt) {
     //        Anno anno = null;
@@ -137,18 +138,18 @@ public class DidascaliaServiceTest extends WikiTest {
         assertEquals(previsto, ottenuto);
         printDidascalia(sorgente, sorgente2, sorgente3, ottenuto);
 
-//        wrap = queryBio.urlRequest(sorgente).getWrap();
-//        assertNotNull(wrap);
-//        assertTrue(wrap.isValido());
-//        bio = bioService.newEntity(wrap);
-//        bio = elaboraService.esegue(bio);
-//        ottenuto = service.getNomeCognome(bio);
-//        assertTrue(textService.isValid(ottenuto));
-//        assertEquals(previsto, ottenuto);
-//        System.out.println(VUOTA);
-//        System.out.println(VUOTA);
-//        System.out.println("Lo stesso passando da WrapBio e Bio");
-//        print(bio, ottenuto);
+        //        wrap = queryBio.urlRequest(sorgente).getWrap();
+        //        assertNotNull(wrap);
+        //        assertTrue(wrap.isValido());
+        //        bio = bioService.newEntity(wrap);
+        //        bio = elaboraService.esegue(bio);
+        //        ottenuto = service.getNomeCognome(bio);
+        //        assertTrue(textService.isValid(ottenuto));
+        //        assertEquals(previsto, ottenuto);
+        //        System.out.println(VUOTA);
+        //        System.out.println(VUOTA);
+        //        System.out.println("Lo stesso passando da WrapBio e Bio");
+        //        print(bio, ottenuto);
     }
 
     @Test
@@ -202,8 +203,6 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-
-
     @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(5)
@@ -226,7 +225,7 @@ public class DidascaliaServiceTest extends WikiTest {
 
         if (ottenutoRisultato.isValido()) {
             pageId = ottenutoRisultato.getLongValue();
-            wikiBioTmpl = textService.isValid(ottenutoRisultato.getWrap().getTemplBio())?ottenutoRisultato.getWrap().getTemplBio():VUOTA;
+            wikiBioTmpl = textService.isValid(ottenutoRisultato.getWrap().getTemplBio()) ? ottenutoRisultato.getWrap().getTemplBio() : VUOTA;
             bio = bioBackend.newEntity(pageId, wikiTitle, wikiBioTmpl);
             bio = elaboraService.esegue(bio);
             assertNotNull(bio.pageId);
@@ -265,6 +264,49 @@ public class DidascaliaServiceTest extends WikiTest {
             System.out.println(VUOTA);
             printRisultato(ottenutoRisultato);
         }
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Didascalie lista con varianti di linkCrono")
+        //--titolo
+        //--pagina valida
+    void linkCrono() {
+        String wikiBioTmpl;
+        String lista;
+        AITypePref oldValue = WPref.linkCrono.getEnumCurrentObj();
+        AITypePref newValue;
+        sorgente = "Gaio Claudio Marcello (console 50 a.C.)";
+        ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(sorgente);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(String.format("Biografia: %s", sorgente));
+
+        pageId = ottenutoRisultato.getLongValue();
+        wikiBioTmpl = textService.isValid(ottenutoRisultato.getWrap().getTemplBio()) ? ottenutoRisultato.getWrap().getTemplBio() : VUOTA;
+        bio = bioBackend.newEntity(pageId, sorgente, wikiBioTmpl);
+        bio = elaboraService.esegue(bio);
+        System.out.println("Lista (NomeCognome + AttivitaNazionalita + NatoMorto)");
+
+        WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.nessuno);
+        lista = service.getDidascaliaLista(bio);
+        System.out.println(VUOTA);
+        System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.nessuno);
+        System.out.println(lista);
+
+        WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.voce);
+        lista = service.getDidascaliaLista(bio);
+        System.out.println(VUOTA);
+        System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.voce);
+        System.out.println(lista);
+
+        WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.lista);
+        lista = service.getDidascaliaLista(bio);
+        System.out.println(VUOTA);
+        System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.lista);
+        System.out.println(lista);
+
+        WPref.linkCrono.setEnumCurrentObj(oldValue);
     }
 
     //    @Test
@@ -322,17 +364,17 @@ public class DidascaliaServiceTest extends WikiTest {
     //    }// end of single test
 
     void elabora(String wikiTitle) {
-//        sorgente = wikiTitle;
-//        wrap = queryBio.urlRequest(sorgente).getWrap();
-//        assertNotNull(wrap);
-//        assertTrue(wrap.isValido());
-//        bio = bioService.newEntity(wrap);
-//        elaboraService.esegue(bio);
-//        try {
-//            bioService.save(bio, AEOperation.edit);
-//        } catch (Exception unErrore) {
-//            System.out.println("Errore");
-//        }
+        //        sorgente = wikiTitle;
+        //        wrap = queryBio.urlRequest(sorgente).getWrap();
+        //        assertNotNull(wrap);
+        //        assertTrue(wrap.isValido());
+        //        bio = bioService.newEntity(wrap);
+        //        elaboraService.esegue(bio);
+        //        try {
+        //            bioService.save(bio, AEOperation.edit);
+        //        } catch (Exception unErrore) {
+        //            System.out.println("Errore");
+        //        }
     }
 
     /**
@@ -340,7 +382,7 @@ public class DidascaliaServiceTest extends WikiTest {
      */
     @AfterAll
     void tearDownAll() {
-//        FlowVar.typeSerializing = AETypeSerializing.spring;
+        //        FlowVar.typeSerializing = AETypeSerializing.spring;
     }
 
 }// end of class

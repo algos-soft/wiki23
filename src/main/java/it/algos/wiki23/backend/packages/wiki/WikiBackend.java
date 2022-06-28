@@ -1,6 +1,7 @@
 package it.algos.wiki23.backend.packages.wiki;
 
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -25,6 +26,8 @@ public abstract class WikiBackend extends CrudBackend {
     protected String message;
 
     public WPref lastDownload;
+
+    protected WPref durataDownload;
 
     public WPref lastElabora;
 
@@ -93,6 +96,15 @@ public abstract class WikiBackend extends CrudBackend {
         }
         else {
             logger.warn(new WrapLog().exception(new AlgosException("lastDownload è nullo")));
+            return;
+        }
+
+        if (durataDownload != null) {
+            delta = delta / 1000 / 60;
+            durataDownload.setValue(LocalDateTime.now());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("durataDownload è nullo")));
             return;
         }
 

@@ -4,6 +4,7 @@ import com.mongodb.client.model.*;
 import com.vaadin.flow.data.provider.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -286,7 +287,7 @@ public class BioBackend extends WikiBackend {
     public void elabora() {
         long inizio = System.currentTimeMillis();
         List<Bio> lista = findAll();
-        int dim = 1000;
+        int dim = 50000;
         int blocco = lista.size() / dim;
         int ini;
         int end;
@@ -307,9 +308,9 @@ public class BioBackend extends WikiBackend {
             size = textService.format(cont);
             time = dateService.deltaText(inizio);
             message = String.format("Elaborate finora %s voci biografiche, in %s", size, time);
-            System.out.println(message);
+            logger.info(new WrapLog().message(message).type(AETypeLog.elabora));
         }
-        super.fixElaboraSecondi(inizio, "biografie");
+        super.fixElaboraMinuti(inizio, "biografie");
     }
 
 }// end of crud backend class

@@ -29,8 +29,11 @@ import java.util.*;
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class DidascaliaService extends AbstractService {
+public class DidascaliaService extends WAbstractService {
 
+    private static String NATI = "Nati nel ";
+
+    private static String MORTI = "Morti nel ";
 
     /**
      * Restituisce una lista semplice di didascalie complete <br>
@@ -188,10 +191,10 @@ public class DidascaliaService extends AbstractService {
         String tagMorto = WPref.simboloMorto.getStr();
         String luogoNato = textService.isValid(bio.luogoNato) ? bio.luogoNato : VUOTA;
         String luogoNatoLink = bio.luogoNatoLink;
-        String annoNato = textService.isValid(bio.annoNato) ? tagNato + bio.annoNato : VUOTA;
+        String annoNato = linkAnnoNato(bio);
         String luogoMorto = textService.isValid(bio.luogoMorto) ? bio.luogoMorto : VUOTA;
         String luogoMortoLink = bio.luogoMortoLink;
-        String annoMorto = textService.isValid(bio.annoMorto) ? tagMorto + bio.annoMorto : VUOTA;
+        String annoMorto = linkAnnoMorto(bio);
 
         if (textService.isValid(luogoNatoLink)) {
             luogoNato = luogoNatoLink + PIPE + luogoNato;
@@ -212,6 +215,64 @@ public class DidascaliaService extends AbstractService {
 
         //        crono = text.levaCoda(crono, SEP);
         return textService.isValid(crono) ? textService.setTonde(crono) : VUOTA;
+    }
+
+    public String linkAnnoNato(final Bio bio) {
+        if (bio != null && textService.isValid(bio.annoNato)) {
+            return linkAnnoNato(bio.annoNato);
+        }
+        else {
+            return VUOTA;
+        }
+    }
+
+    public String linkAnnoNato(String annoNato) {
+        String annoNatoLinkato = annoNato;
+        String tagNato = WPref.simboloNato.getStr();
+        Object obj = WPref.linkCrono.getEnumCurrentObj();
+        if (obj instanceof AETypeLinkCrono type) {
+            switch (type) {
+                case voce -> annoNatoLinkato = textService.setDoppieQuadre(annoNato);
+                case lista -> {
+                    annoNato = wikiUtility.nati(annoNato) + PIPE + annoNato;
+                    annoNatoLinkato = textService.setDoppieQuadre(annoNato);
+                }
+                case nessuno -> annoNatoLinkato = annoNato;
+                default -> annoNatoLinkato = annoNato;
+            } ;
+
+        }
+
+        return tagNato + annoNatoLinkato;
+    }
+
+    public String linkAnnoMorto(final Bio bio) {
+        if (bio != null && textService.isValid(bio.annoMorto)) {
+            return linkAnnoMorto(bio.annoMorto);
+        }
+        else {
+            return VUOTA;
+        }
+    }
+
+    public String linkAnnoMorto(String annoMorto) {
+        String annoMortoLinkato = annoMorto;
+        String tagMorto = WPref.simboloMorto.getStr();
+        Object obj = WPref.linkCrono.getEnumCurrentObj();
+        if (obj instanceof AETypeLinkCrono type) {
+            switch (type) {
+                case voce -> annoMortoLinkato = textService.setDoppieQuadre(annoMorto);
+                case lista -> {
+                    annoMorto = wikiUtility.morti(annoMorto) + PIPE + annoMorto;
+                    annoMortoLinkato = textService.setDoppieQuadre(annoMorto);
+                }
+                case nessuno -> annoMortoLinkato = annoMorto;
+                default -> annoMortoLinkato = annoMorto;
+            } ;
+
+        }
+
+        return tagMorto + annoMortoLinkato;
     }
 
     //    /**

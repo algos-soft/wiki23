@@ -99,10 +99,8 @@ public class DownloadService extends WAbstractService {
         //        //--Crea/aggiorna le voci biografiche <br>
         //        creaElaboraListaBio(listaWrapBio);
 
-        WPref.downloadBio.setValue(LocalDateTime.now());
-
         //--durata del ciclo completo
-        fixInfoDurataCiclo(categoryTitle, inizio);
+        fixInfoDurataCiclo( inizio);
     }
 
 
@@ -505,6 +503,24 @@ public class DownloadService extends WAbstractService {
         }
 
         return false;
+    }
+
+    public void fixInfoDurataCiclo(final long inizio) {
+        String message;
+        long fine = System.currentTimeMillis();
+        Long delta = fine - inizio;
+
+        if (WPref.downloadBio != null) {
+            WPref.downloadBio.setValue(LocalDateTime.now());
+        }
+
+        if (WPref.downloadBioTime != null) {
+            delta = delta / 1000 / 60;
+            WPref.downloadBioTime.setValue(delta.intValue());
+        }
+
+        message = String.format("Ciclo completo di download in, %s", dateService.deltaText(inizio));
+        logger.info(new WrapLog().message(message).type(AETypeLog.download));
     }
 
     /**

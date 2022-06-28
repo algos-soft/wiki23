@@ -85,6 +85,7 @@ public class AttivitaView extends WikiView {
 
         super.usaBottoneElabora = true;
         super.lastDownload = WPref.downloadAttivita;
+        super.durataDownload = WPref.downloadAttivitaTime;
         super.lastElaborazione = WPref.elaboraAttivita;
         super.durataElaborazione = WPref.elaboraAttivitaTime;
         super.lastUpload = WPref.uploadAttivita;
@@ -95,6 +96,7 @@ public class AttivitaView extends WikiView {
         super.usaBottoneUploadPagina = true;
 
         super.dialogClazz = AttivitaDialog.class;
+        super.unitaMisuraDownload = "secondi";
         super.unitaMisuraElaborazione = "secondi";
         super.fixPreferenzeBackend();
     }
