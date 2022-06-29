@@ -154,6 +154,10 @@ public class BioBackend extends WikiBackend {
                 .build();
     }
 
+    public Bio insert(final Bio bio) {
+        return repository.insert(bio);
+    }
+
     @Override
     public Bio save(final Object entity) {
         if (entity instanceof Bio bio) {

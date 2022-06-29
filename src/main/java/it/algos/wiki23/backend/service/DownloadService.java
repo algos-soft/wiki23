@@ -54,7 +54,7 @@ public class DownloadService extends WAbstractService {
         List<Long> listaMongoIds;
         List<Long> listaMongoIdsDaCancellare;
         List<Long> listaPageIdsDaCreare;
-        List<WrapTime> listaMiniWrap;
+        List<WrapTime> listaWrapTime;
         List<Long> listaPageIdsDaLeggere;
         List<WrapBio> listaWrapBio;
 
@@ -72,9 +72,6 @@ public class DownloadService extends WAbstractService {
         //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
         listaMongoIds = getListaMongoIds();
 
-        //--Spazio
-        logger.info(new WrapLog().type(AETypeLog.bio));
-
         //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
         listaMongoIdsDaCancellare = deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
 
@@ -87,20 +84,20 @@ public class DownloadService extends WAbstractService {
         //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
         creaNewEntities(listaPageIdsDaCreare);
 
-        //        //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di miniWrap
-        //        listaMiniWrap = getListaMiniWrap(listaPageIds);
-        //
-        //        //--Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere
-        //        listaPageIdsDaLeggere = elaboraMiniWrap(listaMiniWrap);
-        //
-        //        //--Legge tutte le pagine
-        //        listaWrapBio = getListaWrapBio(listaPageIdsDaLeggere);
-        //
-        //        //--Crea/aggiorna le voci biografiche <br>
-        //        creaElaboraListaBio(listaWrapBio);
+        //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di wrapTimes
+        listaWrapTime = getListaWrapTime(listaPageIds);
+
+        //--Elabora la lista di wrapTimes e costruisce una lista di pageIds da leggere
+        listaPageIdsDaLeggere = elaboraListaWrapTime(listaWrapTime);
+
+        //--Legge tutte le pagine
+        listaWrapBio = getListaWrapBio(listaPageIdsDaLeggere);
+
+        //--Crea/aggiorna le voci biografiche <br>
+        creaElaboraListaBio(listaWrapBio);
 
         //--durata del ciclo completo
-        fixInfoDurataCiclo( inizio);
+        fixInfoDurataCiclo(inizio);
     }
 
 
@@ -119,11 +116,12 @@ public class DownloadService extends WAbstractService {
 
         if (numPages > 0) {
             message = String.format("La categoria [%s] esiste e ci sono %s voci", categoryTitle, textService.format(numPages));
+            logger.info(new WrapLog().message(message).type(AETypeLog.bio));
         }
         else {
             message = String.format("La categoria [%s] non esiste oppure è vuota", categoryTitle);
+            logger.warn(new WrapLog().message(message).type(AETypeLog.bio).usaDb());
         }
-        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
 
         return numPages;
     }
@@ -152,7 +150,7 @@ public class DownloadService extends WAbstractService {
         }
         else {
             message = String.format("Collegato come %s di nick '%s' e NON come bot", botLogin.getUserType(), botLogin.getUsername());
-            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+            logger.warn(new WrapLog().message(message).type(AETypeLog.bio).usaDb());
         }
         return status;
     }
@@ -205,6 +203,9 @@ public class DownloadService extends WAbstractService {
         size = textService.format(lista.size());
         time = dateService.deltaText(inizio);
         message = String.format("Recuperata da mongoDb una lista di %s pageIds esistenti nel database, in %s", size, time);
+        if (Pref.debug.is()) {
+            logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+        }
         logger.info(new WrapLog().message(message).type(AETypeLog.bio));
 
         return lista;
@@ -269,10 +270,14 @@ public class DownloadService extends WAbstractService {
             }
         }
 
+        if (Pref.debug.is()) {
+            logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+        }
+
         size = textService.format(listaMongoIdsDaCancellare.size());
         time = dateService.deltaText(inizio);
         message = String.format("Cancellate dal database (mongo) locale le %s entities non più presenti nella category, in %s", size, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
     }
 
 
@@ -305,26 +310,30 @@ public class DownloadService extends WAbstractService {
             return listaPageIds;
         }
 
+        if (Pref.debug.is()) {
+            logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+        }
         for (int k = 0; k < listaPageIds.size(); k += max) {
             inizioSub = System.currentTimeMillis();
             subLista = addSub(listaPageIds.subList(k, Math.min(k + max, listaPageIds.size())), listaMongoIds);
             listaPageIdsDaCreare.addAll(subLista);
 
-            size = textService.format(k);
-            fine = System.currentTimeMillis();
-            deltaSub = fine - inizioSub;
-            deltaSub = deltaSub / 1000;
-            delta = fine - inizio;
-            delta = delta / 1000;
-            message = String.format("K= %s (%s/%s): adesso %s ha %s pageIds", size, deltaSub, delta, nomeLog, listaPageIdsDaCreare.size());
-            logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+            if (Pref.debug.is()) {
+                size = textService.format(k);
+                fine = System.currentTimeMillis();
+                deltaSub = fine - inizioSub;
+                deltaSub = deltaSub / 1000;
+                delta = fine - inizio;
+                delta = delta / 1000;
+                message = String.format("K= %s (%s/%s): adesso %s ha %s pageIds", size, deltaSub, delta, nomeLog, listaPageIdsDaCreare.size());
+                logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+            }
         }
 
         size = textService.format(listaPageIdsDaCreare.size());
         time = dateService.deltaText(inizio);
         message = String.format("Elaborata la lista %s di %s pageIds, in %s", nomeLog, size, time);
         logger.info(new WrapLog().message(message).type(AETypeLog.bio));
-        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
 
         return listaPageIdsDaCreare;
     }
@@ -332,20 +341,13 @@ public class DownloadService extends WAbstractService {
     public List<Long> addSub(List<Long> listaPageIds, List<Long> listaMongoIds) {
         List<Long> subLista = new ArrayList<>();
         long pageId;
-        long inizio;
-        String message;
-        String time;
 
-        inizio = System.currentTimeMillis();
         for (int k = 0; k < listaPageIds.size(); k++) {
             pageId = listaPageIds.get(k);
             if (!listaMongoIds.contains(pageId)) {
                 subLista.add(pageId);
             }
         }
-        //        time = dateService.deltaTextEsatto(inizio);
-        //        message = String.format("Ciclo for 'addSub', in %s", time);
-        //        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
 
         return subLista;
     }
@@ -375,16 +377,24 @@ public class DownloadService extends WAbstractService {
                 logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
             }
             try {
+                if (Pref.debug.is()) {
+                    logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+                }
                 numVociCreate += creaElaboraListaBio(listWrapBio);
                 sizeNew = textService.format(numVociCreate);
                 sizeTot = textService.format(mongoService.count(Bio.class));
                 time = dateService.deltaText(inizio);
                 message = String.format("Finora create %s nuove voci in %s (ce ne sono %s in totale nel mongoDB)", sizeNew, time, sizeTot);
-                logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+                logger.info(new WrapLog().message(message).type(AETypeLog.bio));
             } catch (Exception unErrore) {
                 logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
             }
         }
+
+        sizeNew = textService.format(numVociCreate);
+        time = dateService.deltaText(inizio);
+        message = String.format("Create %s nuove voci in %s", sizeNew, time);
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
     }
 
 
@@ -398,17 +408,21 @@ public class DownloadService extends WAbstractService {
      *
      * @return lista di tutti i miniWraps
      */
-    public List<WrapTime> getListaMiniWrap(final List<Long> listaPageIds) {
+    public List<WrapTime> getListaWrapTime(final List<Long> listaPageIds) {
         long inizio = System.currentTimeMillis();
         String size;
         String time;
+
+        if (Pref.debug.is()) {
+            logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+        }
 
         List<WrapTime> listaMiniWrap = queryService.getMiniWrap(listaPageIds);
 
         size = textService.format(listaPageIds.size());
         time = dateService.deltaText(inizio);
-        String message = String.format("Creati %s miniWrap dai corrispondenti pageIds in %s", size, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        String message = String.format("Creati %s wrapTimes dai corrispondenti pageIds in %s", size, time);
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
 
         return listaMiniWrap;
     }
@@ -422,21 +436,43 @@ public class DownloadService extends WAbstractService {
      * si tratta delle voci nuove e di quelle modificate nelle ultime 24 ore <br>
      * Nella listaPageIdsDaLeggere possono esserci anche voci SENZA il tmpl BIO, che verranno scartate dopo <br>
      *
-     * @param listaMiniWrap con il pageIds e lastModifica
+     * @param listaWrapTimes con il pageIds e lastModifica
      *
      * @return listaPageIdsDaLeggere
      */
-    public List<Long> elaboraMiniWrap(final List<WrapTime> listaMiniWrap) {
+    public List<Long> elaboraListaWrapTime(final List<WrapTime> listaWrapTimes) {
+        List<Long> listaPageIdsDaLeggere = new ArrayList<>();
+        List<WrapTime> listaSub;
         long inizio = System.currentTimeMillis();
         String size;
+        String voci;
         String time;
+        int maxAPI = 50000;
+        int max;
 
-        List<Long> listaPageIdsDaLeggere = wikiBotService.elaboraMiniWrap(listaMiniWrap);
+        if (Pref.debug.is()) {
+            logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+        }
+        for (int k = 0; k < listaWrapTimes.size(); k += maxAPI) {
+            max = Math.min(k + maxAPI, listaWrapTimes.size());
+            listaSub = listaWrapTimes.subList(k, max);
+            listaPageIdsDaLeggere.addAll(wikiBotService.elaboraWrapTime(listaSub));
 
-        size = textService.format(listaMiniWrap.size());
+            if (Pref.debug.is()) {
+                size = textService.format(k + maxAPI);
+                voci = textService.format(listaPageIdsDaLeggere.size());
+                time = dateService.deltaText(inizio);
+                String message = String.format("Finora elaborati %s wrapTimes e trovate %s voci da aggiornare, in %s", size, voci, time);
+                logger.info(new WrapLog().message(message).type(AETypeLog.bio));
+            }
+        }
+
+        size = textService.format(listaWrapTimes.size());
+        voci = textService.format(listaPageIdsDaLeggere.size());
         time = dateService.deltaText(inizio);
-        String message = String.format("Elaborati %s miniWrap per controllare lastModifica in %s", size, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        String message = String.format("Elaborati in totale %s wrapTimes e trovate %s voci da aggiornare, in %s", size, voci, time);
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
 
         return listaPageIdsDaLeggere;
     }
@@ -494,11 +530,29 @@ public class DownloadService extends WAbstractService {
      */
     public boolean creaElaboraBio(WrapBio wrap) {
         Bio bio;
+        long pageId;
 
         if (wrap != null && wrap.isValida()) {
-            bio = bioBackend.newEntity(wrap);
-            bio = elaboraService.esegue(bio);
-            bioBackend.save(bio);
+            pageId = wrap.getPageid();
+            bio = bioBackend.findByKey(pageId);
+            if (bio != null) {
+                bio.setTmplBio(wrap.getTemplBio());
+                bio = elaboraService.esegue(bio);
+                bio.lastServer = LocalDateTime.now();
+                bio.lastMongo = LocalDateTime.now();
+                bioBackend.save(bio);
+            }
+            else {
+                bio = bioBackend.newEntity(wrap);
+                bio = elaboraService.esegue(bio);
+                bio.lastServer = LocalDateTime.now();
+                bio.lastMongo = LocalDateTime.now();
+                bioBackend.insert(bio);
+            }
+
+            //            bio = bioBackend.newEntity(wrap);
+            //            bio = elaboraService.esegue(bio);
+            //            bioBackend.save(bio);
             return true;
         }
 
@@ -520,7 +574,7 @@ public class DownloadService extends WAbstractService {
         }
 
         message = String.format("Ciclo completo di download in, %s", dateService.deltaText(inizio));
-        logger.info(new WrapLog().message(message).type(AETypeLog.download));
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
     }
 
     /**

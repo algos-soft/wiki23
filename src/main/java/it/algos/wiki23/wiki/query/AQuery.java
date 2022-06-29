@@ -1,6 +1,7 @@
 package it.algos.wiki23.wiki.query;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -135,6 +136,14 @@ public abstract class AQuery {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
+    public DateService dateService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
     public LogService logger;
 
     /**
@@ -192,6 +201,14 @@ public abstract class AQuery {
      */
     @Autowired
     public ElaboraService elaboraService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MathService mathService;
 
     //        public QueryAssert queryAssert;
 
@@ -415,7 +432,7 @@ public abstract class AQuery {
                 }
                 tokenContinue = WIKI_QUERY_CAT_CONTINUE + result.getToken();
             }
-            while (textService.isValid(result.getToken()) );
+            while (textService.isValid(result.getToken()));
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }
@@ -439,10 +456,11 @@ public abstract class AQuery {
                 .queryType(AETypeQuery.getLoggatoConCookies)
                 .typePage(AETypePage.indeterminata);
         queryType = AETypeQuery.getLoggatoConCookies;
+        long inizio = System.currentTimeMillis();
         String strisciaIds;
         String message;
         AETypeUser type;
-        int num;
+        int num = 0;
         String urlDomain;
         int size = listaPageids != null ? listaPageids.size() : 0;
         int max = 500; //--come da API mediaWiki
@@ -452,7 +470,6 @@ public abstract class AQuery {
             message = "Nessun valore per la lista di pageIds";
             return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies).fine();
         }
-        num = listaPageids != null ? listaPageids.size() : 0;
 
         type = botLogin != null ? botLogin.getUserType() : null;
         result.setCookies(botLogin != null ? botLogin.getCookies() : null);
@@ -460,8 +477,8 @@ public abstract class AQuery {
         result.userType(type);
         switch (type) {
             case anonymous, user, admin -> {
-                if (num > type.getLimit()) {
-                    message = String.format("Sei collegato come %s e nella request ci sono %s pageIds", type, textService.format(num));
+                if (size > type.getLimit()) {
+                    message = String.format("Sei collegato come %s e nella request ci sono %s pageIds", type, textService.format(size));
                     logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
                     return WResult.errato(message).queryType(AETypeQuery.getLoggatoConCookies).fine();
                 }
@@ -483,6 +500,16 @@ public abstract class AQuery {
             strisciaIds = array.toStringaPipe(listaPageids.subList(k * max, Math.min((k * max) + max, size)));
             urlDomain = wikiQuery + strisciaIds;
             result = requestGet(result, urlDomain);
+
+            if (Pref.debug.is()) {
+                num += max;
+                if (mathService.multiploEsatto(50000, num)) {
+                    String time = dateService.deltaText(inizio);
+                    message = String.format("Finora creati %s wrapTimes in %s (la categoria ha %s voci)", textService.format(num), time,
+                            textService.format(size));
+                    logger.info(new WrapLog().message(message).type(AETypeLog.bio));
+                }
+            }
         }
 
         result.setGetRequest(VUOTA);

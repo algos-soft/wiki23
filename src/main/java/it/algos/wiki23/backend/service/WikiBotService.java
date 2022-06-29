@@ -308,11 +308,11 @@ public class WikiBotService extends WAbstractService {
      * Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb <br>
      * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
      *
-     * @param listaMiniWrap da elaborare
+     * @param listaWrapTimes da elaborare
      *
      * @return lista di pageId da leggere dal server
      */
-    public List<Long> elaboraMiniWrap(final List<WrapTime> listaMiniWrap) {
+    public List<Long> elaboraWrapTime(final List<WrapTime> listaWrapTimes) {
         List<Long> listaPageIdsDaLeggere = new ArrayList<>();
         List<WrapTime> listaMiniWrapTotali = new ArrayList<>();
         long inizio = System.currentTimeMillis();
@@ -322,33 +322,32 @@ public class WikiBotService extends WAbstractService {
         String message;
 
         //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
-        List<WrapTime> listaMiniWrapNuovi = listaMiniWrap
-                .stream()
-                .filter(checkNuovi)
-                .sorted()
-                .collect(Collectors.toList());
-        nuove = listaMiniWrapNuovi.size();
-        listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
+//        List<WrapTime> listaMiniWrapNuovi = listaWrapTimes
+//                .stream()
+//                .filter(checkNuovi)
+//                .sorted()
+//                .collect(Collectors.toList());
+//        nuove = listaMiniWrapNuovi.size();
+//        listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
 
         //--Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica
-        List<WrapTime> listaMiniWrapModificati = listaMiniWrap
+        List<WrapTime> listaMiniWrapModificati = listaWrapTimes
                 .stream()
-                .filter(checkEsistenti)
+//                .filter(checkEsistenti)
                 .filter(checkModificati)
                 .sorted()
                 .collect(Collectors.toList());
         modificate = listaMiniWrapModificati.size();
         listaMiniWrapTotali.addAll(listaMiniWrapModificati);
-        totali = nuove + modificate;
+        totali =  modificate;
 
         for (WrapTime wrap : listaMiniWrapTotali) {
             listaPageIdsDaLeggere.add(wrap.getPageid());
         }
 
-        message = String.format("Elaborata una lista di miniWrap da leggere: %s nuove e %s modificate (%s totali) in %s",
-                textService.format(nuove), textService.format(modificate), textService.format(totali), dateService.deltaText(inizio)
-        );
-        logger.info(new WrapLog().type(AETypeLog.bio).exception(new AlgosException(message)).usaDb());
+//        message = String.format("Elaborata una lista di miniWrap da leggere: %s nuove e %s modificate (%s totali) in %s",
+//                textService.format(nuove), textService.format(modificate), textService.format(totali), dateService.deltaText(inizio));
+//        logger.info(new WrapLog().type(AETypeLog.bio).exception(new AlgosException(message)));
 
         return listaPageIdsDaLeggere;
     }
