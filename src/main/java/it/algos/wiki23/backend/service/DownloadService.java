@@ -377,15 +377,15 @@ public class DownloadService extends WAbstractService {
                 logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
             }
             try {
+                numVociCreate += creaElaboraListaBio(listWrapBio);
                 if (Pref.debug.is()) {
                     logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+                    sizeNew = textService.format(numVociCreate);
+                    sizeTot = textService.format(mongoService.count(Bio.class));
+                    time = dateService.deltaText(inizio);
+                    message = String.format("Finora create %s nuove voci in %s (ce ne sono %s in totale nel mongoDB)", sizeNew, time, sizeTot);
+                    logger.info(new WrapLog().message(message).type(AETypeLog.bio));
                 }
-                numVociCreate += creaElaboraListaBio(listWrapBio);
-                sizeNew = textService.format(numVociCreate);
-                sizeTot = textService.format(mongoService.count(Bio.class));
-                time = dateService.deltaText(inizio);
-                message = String.format("Finora create %s nuove voci in %s (ce ne sono %s in totale nel mongoDB)", sizeNew, time, sizeTot);
-                logger.info(new WrapLog().message(message).type(AETypeLog.bio));
             } catch (Exception unErrore) {
                 logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
             }
@@ -584,7 +584,7 @@ public class DownloadService extends WAbstractService {
         String message;
         String time = dateService.deltaText(inizio);
         message = String.format("Ciclo completo di download della categoria [%s] in %s", categoryTitle, time);
-        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+        logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio).usaDb());
     }
 
 }
