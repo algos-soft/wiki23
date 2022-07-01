@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.service.*;
@@ -57,6 +58,13 @@ public abstract class WikiBackend extends CrudBackend {
     @Autowired
     public BioBackend bioBackend;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AttivitaBackend attivitaBackend;
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>

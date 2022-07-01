@@ -77,28 +77,29 @@ public class ColumnService extends AbstractService {
         String sortProperty = annotationService.getSortProperty(entityClazz, propertyName);
 
         colonna = switch (type) {
-            case text, integer, lungo, enumeration, link, localDateTime, localDate, localTime ->
-                    grid.addColumn(propertyName).setSortable(true);
-            case booleano -> {
-                yield grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = null;
-                    Icon icona = null;
-                    try {
-                        field = reflectionService.getField(entityClazz, propertyName);
-                    } catch (Exception unErrore) {
-                        logger.error(new WrapLog().exception(unErrore).usaDb());
-                    }
-                    try {
-                        icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
-                        icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);
-
-                    } catch (Exception unErrore) {
-                        logger.error(new WrapLog().exception(unErrore).usaDb());
-                    }
-
-                    return icona;
-                })).setSortable(false);
-            }
+            case text, enumeration, link, localDateTime, localDate, localTime -> grid.addColumn(propertyName).setSortable(true);
+            case integer, lungo -> grid.addColumn(propertyName).setSortable(true);
+            case booleano -> grid.addColumn(propertyName).setSortable(true);
+            //            case booleano -> {
+            //                yield grid.addColumn(new ComponentRenderer<>(entity -> {
+            //                    Field field = null;
+            //                    Icon icona = null;
+            //                    try {
+            //                        field = reflectionService.getField(entityClazz, propertyName);
+            //                    } catch (Exception unErrore) {
+            //                        logger.error(new WrapLog().exception(unErrore).usaDb());
+            //                    }
+            //                    try {
+            //                        icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+            //                        icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);
+            //
+            //                    } catch (Exception unErrore) {
+            //                        logger.error(new WrapLog().exception(unErrore).usaDb());
+            //                    }
+            //
+            //                    return icona;
+            //                })).setSortable(true);
+            //            }
             default -> null;
         };
 

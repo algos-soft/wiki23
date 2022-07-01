@@ -1,21 +1,15 @@
 package it.algos.wiki23.backend.packages.bio;
 
-import com.mongodb.client.model.*;
-import com.vaadin.flow.data.provider.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.bson.*;
-import org.bson.codecs.configuration.*;
-import org.bson.conversions.*;
-import org.bson.types.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
@@ -197,29 +191,62 @@ public class BioBackend extends WikiBackend {
         return null;
     }
 
-
     /**
-     * Conta tutte le biografie con una serie di attività. <br>
+     * Conta tutte le biografie con una serie di attività plurali. <br>
      *
-     * @param attivita singola
+     * @param attivitaPlurale
      *
      * @return conteggio di biografie che la usano
      */
-    public int countAttivita(final String attivita) {
+    public int countAttivitaPlurale(final String attivitaPlurale) {
         int numBio = 0;
-        Long attivitaUno = repository.countBioByAttivita(attivita);
+        List<String> listaNomi = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+
+        for (String singolare : listaNomi) {
+            numBio += countAttivitaAll(singolare);
+        }
+
+        return numBio;
+    }
+
+
+    /**
+     * Conta tutte le biografie con una serie di attività singolari. <br>
+     *
+     * @param attivitaSingola
+     *
+     * @return conteggio di biografie che la usano
+     */
+    public int countAttivitaAll(final String attivitaSingola) {
+        int numBio = 0;
+        Long attivitaUno = repository.countBioByAttivita(attivitaSingola);
         Long attivitaDue;
         Long attivitaTre;
 
         numBio = attivitaUno.intValue();
 
         if (WPref.usaTreAttivita.is()) {
-            attivitaDue = repository.countBioByAttivita2(attivita);
-            attivitaTre = repository.countBioByAttivita3(attivita);
+            attivitaDue = repository.countBioByAttivita2(attivitaSingola);
+            attivitaTre = repository.countBioByAttivita3(attivitaSingola);
             numBio += attivitaDue.intValue() + attivitaTre.intValue();
         }
 
         return numBio;
+    }
+
+    public int countAttivita(final String attivitaSingola) {
+        Long numBio = repository.countBioByAttivita(attivitaSingola);
+        return numBio > 0 ? numBio.intValue() : 0;
+    }
+
+    public int countAttivitaDue(final String attivitaSingola) {
+        Long numBio = repository.countBioByAttivita2(attivitaSingola);
+        return numBio > 0 ? numBio.intValue() : 0;
+    }
+
+    public int countAttivitaTre(final String attivitaSingola) {
+        Long numBio = repository.countBioByAttivita3(attivitaSingola);
+        return numBio > 0 ? numBio.intValue() : 0;
     }
 
     /**

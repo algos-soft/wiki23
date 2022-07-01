@@ -61,6 +61,8 @@ public class VaadCost {
 
     public static final String PUNTO = ".";
 
+    public static final String APICE = "'";
+
     public static final String ESCLAMATIVO = "!";
 
     public static final String DOPPIO_ESCLAMATIVO = ESCLAMATIVO + ESCLAMATIVO;

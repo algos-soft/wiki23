@@ -143,7 +143,7 @@ public class DownloadServiceTest extends WikiTest {
         printLong(listaPageIds,10);
 
         System.out.println((VUOTA));
-        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        listMiniWrap = service.getListaWrapTime(listaPageIds);
         printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
     }
 
@@ -164,11 +164,11 @@ public class DownloadServiceTest extends WikiTest {
         printLong(listaPageIds,10);
 
         System.out.println((VUOTA));
-        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        listMiniWrap = service.getListaWrapTime(listaPageIds);
         printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
 
         System.out.println((VUOTA));
-        listaPageIds = service.elaboraMiniWrap(listMiniWrap);
+        listaPageIds = service.elaboraListaWrapTime(listMiniWrap);
         printLong(listaPageIds,10);
     }
 
@@ -188,11 +188,11 @@ public class DownloadServiceTest extends WikiTest {
         printLong(listaPageIds,10);
 
         System.out.println((VUOTA));
-        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        listMiniWrap = service.getListaWrapTime(listaPageIds);
         printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
 
         System.out.println((VUOTA));
-        listaPageIds = service.elaboraMiniWrap(listMiniWrap);
+        listaPageIds = service.elaboraListaWrapTime(listMiniWrap);
         printLong(listaPageIds,10);
 
         System.out.println((VUOTA));
@@ -217,11 +217,11 @@ public class DownloadServiceTest extends WikiTest {
         printLong(listaPageIds,10);
 
         System.out.println((VUOTA));
-        listMiniWrap = service.getListaMiniWrap(listaPageIds);
+        listMiniWrap = service.getListaWrapTime(listaPageIds);
         printMiniWrap(listMiniWrap.subList(0, Math.min(10, listMiniWrap.size())));
 
         System.out.println((VUOTA));
-        listaPageIds = service.elaboraMiniWrap(listMiniWrap);
+        listaPageIds = service.elaboraListaWrapTime(listMiniWrap);
         printLong(listaPageIds,10);
 
         System.out.println((VUOTA));

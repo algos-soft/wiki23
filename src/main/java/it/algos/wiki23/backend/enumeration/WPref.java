@@ -26,7 +26,7 @@ public enum WPref implements AIGenPref {
     downloadGenere("downloadGenere", AETypePref.localdatetime, ROOT_DATA_TIME, "Download di Modulo:Bio/Plurale attività genere."),
 
     downloadAttivita("downloadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Download di Modulo:Bio/Plurale attività."),
-    downloadAttivitaTime("downloadAttivitaTime", AETypePref.integer, 0, "Durata download delle attività in secondi."),
+    downloadAttivitaTime("downloadAttivitaTime", AETypePref.integer, 0, "Durata download delle attività in minuti."),
     elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le attività."),
     elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, 0, "Durata elaborazione delle attività in secondi."),
     uploadAttivita("uploadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le attività."),

@@ -112,6 +112,7 @@ public class WikiUtility extends WAbstractService {
     public String setParagrafo(final String titolo, final int numero) {
         String paragrafo = VUOTA;
 
+        paragrafo += CAPO;
         paragrafo += PARAGRAFO;
         paragrafo += SPAZIO;
         paragrafo += titolo;
@@ -121,6 +122,7 @@ public class WikiUtility extends WAbstractService {
         }
         paragrafo += SPAZIO;
         paragrafo += PARAGRAFO;
+        paragrafo += CAPO;
 
         return paragrafo;
     }

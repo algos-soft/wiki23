@@ -2,9 +2,13 @@ package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
+import it.algos.wiki23.backend.packages.attivita.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
@@ -78,6 +82,21 @@ public abstract class Upload {
      */
     @Autowired
     public DateService dateService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public BioBackend bioBackend;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AttivitaBackend attivitaBackend;
 
     protected Lista lista;
 
@@ -163,6 +182,33 @@ public abstract class Upload {
     }
 
 
+    protected WResult esegueStatistiche(String wikiTitle) {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(avviso());
+        buffer.append(CAPO);
+        buffer.append(includeIni());
+        buffer.append(forceToc());
+        buffer.append(torna(VUOTA));
+        buffer.append(tmpListaStat());
+        buffer.append(includeEnd());
+        buffer.append(CAPO);
+        buffer.append(bodyStatistiche());
+        buffer.append(note());
+        buffer.append(CAPO);
+        buffer.append(correlate());
+        buffer.append(CAPO);
+        buffer.append(portale());
+        buffer.append(categorie());
+
+        if (Pref.debug.is()) {
+            wikiTitle = WIKI_TITLE_DEBUG;
+        }
+
+        return registra(wikiTitle, buffer.toString());
+    }
+
+
     protected String avviso() {
         return "<!-- NON MODIFICATE DIRETTAMENTE QUESTA PAGINA - GRAZIE -->";
     }
@@ -187,6 +233,11 @@ public abstract class Upload {
         String txtVoci = textService.format(numVoci);
 
         return String.format("{{ListaBio|bio=%s|data=%s|progetto=%s}}", txtVoci, data, progetto);
+    }
+
+    protected String tmpListaStat() {
+        String data = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMM yyy")); ;
+        return String.format("{{StatBio|data=%s}}", data);
     }
 
     protected String includeEnd() {
@@ -229,8 +280,7 @@ public abstract class Upload {
             buffer.append(sottoPaginaAttNaz());
             message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
                             "comunità ed [[Modulo:Bio/Plurale %s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]",
-                    attNazRevert, attNazRevertUpper, attNazRevert
-            );
+                    attNazRevert, attNazRevertUpper, attNazRevert);
             //--ref 6/7/8
             buffer.append(textService.setRef(message));
         }
@@ -289,6 +339,10 @@ public abstract class Upload {
         }
 
         return buffer.toString();
+    }
+
+    protected String bodyStatistiche() {
+        return CAPO;
     }
 
     protected String note() {
@@ -448,5 +502,6 @@ public abstract class Upload {
 
         return testo;
     }
+
 
 }

@@ -68,9 +68,9 @@ public abstract class WikiView extends CrudView {
 
     protected Button buttonCategoria;
 
-    //    protected boolean usaBottoneStatistiche;
-    //
-    //    protected Button buttonStatistiche;
+    protected boolean usaBottoneStatistiche;
+
+    protected Button buttonStatistiche;
 
     protected boolean usaBottoneUploadStatistiche;
 
@@ -179,8 +179,8 @@ public abstract class WikiView extends CrudView {
         this.usaBottoneUploadPagina = false;
         //        this.usaBottoneModulo = true;
         this.usaBottoneCategoria = false;
-        //        this.usaBottoneStatistiche = true;
-        this.usaBottoneUploadStatistiche = true;
+        this.usaBottoneStatistiche = false;
+        this.usaBottoneUploadStatistiche = false;
         this.usaBottonePaginaWiki = true;
         this.usaBottoneTest = true;
         this.usaInfoDownload = true;
@@ -317,10 +317,19 @@ public abstract class WikiView extends CrudView {
         //            topPlaceHolder.add(buttonStatistiche);
         //        }
 
+        if (usaBottoneStatistiche) {
+            buttonStatistiche = new Button();
+            buttonStatistiche.getElement().setAttribute("theme", "secondary");
+            buttonStatistiche.getElement().setProperty("title", "Statistiche: apre la pagina esistente delle statistiche sul server wiki");
+            buttonStatistiche.setIcon(new Icon(VaadinIcon.TABLE));
+            buttonStatistiche.addClickListener(event -> viewStatistiche());
+            topPlaceHolder.add(buttonStatistiche);
+        }
+
         if (usaBottoneUploadStatistiche) {
             buttonUploadStatistiche = new Button();
             buttonUploadStatistiche.getElement().setAttribute("theme", "error");
-            buttonUploadStatistiche.getElement().setProperty("title", "Statistiche: costruisce la pagina delle statistiche sul server wiki");
+            buttonUploadStatistiche.getElement().setProperty("title", "Statistiche: costruisce una nuova pagina delle statistiche sul server wiki");
             buttonUploadStatistiche.setIcon(new Icon(VaadinIcon.TABLE));
             buttonUploadStatistiche.addClickListener(event -> uploadStatistiche());
             topPlaceHolder.add(buttonUploadStatistiche);
@@ -387,6 +396,10 @@ public abstract class WikiView extends CrudView {
 
         if (buttonUpload != null) {
             buttonUpload.setEnabled(!singoloSelezionato);
+        }
+
+        if (buttonStatistiche != null) {
+            buttonStatistiche.setEnabled(!singoloSelezionato);
         }
 
         if (buttonUploadStatistiche != null) {
@@ -462,16 +475,24 @@ public abstract class WikiView extends CrudView {
         }
     }
 
+
+    /**
+     * Apre una pagina su wiki, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void viewStatistiche() {
+    }
+
     /**
      * Esegue un azione di upload delle statistiche, specifica del programma/package in corso <br>
-     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     * Deve essere sovrascritto, invocando DOPO il metodo della superclasse <br>
      */
     public void uploadStatistiche() {
         reload();
     }
 
     /**
-     * Esegue un azione di apertura di una categoria su wiki, specifica del programma/package in corso <br>
+     * Apre una pagina di una categoria su wiki, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public AEntity wikiCategoria() {

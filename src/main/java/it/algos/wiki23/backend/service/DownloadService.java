@@ -326,7 +326,7 @@ public class DownloadService extends WAbstractService {
                 delta = fine - inizio;
                 delta = delta / 1000;
                 message = String.format("K= %s (%s/%s): adesso %s ha %s pageIds", size, deltaSub, delta, nomeLog, listaPageIdsDaCreare.size());
-                logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+                logger.info(new WrapLog().message(message).type(AETypeLog.bio));
             }
         }
 

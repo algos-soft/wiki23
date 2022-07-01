@@ -48,8 +48,11 @@ public class Attivita extends AEntity {
     @AIField(type = AETypeField.integer, header = "sin")
     public int numSingolari;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.LIST)
-    public boolean pagina;
+    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.PENCIL)
+    public boolean superaSoglia;
+
+    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.SEARCH)
+    public boolean esistePagina;
 
     /**
      * @return a string representation of the object.

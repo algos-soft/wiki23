@@ -31,7 +31,6 @@ public class UploadAttivita extends Upload {
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
      * Uso: appContext.getBean(UploadAttivita.class, attivita) <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
-     * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
     public UploadAttivita() {
         super.titoloLinkParagrafo = "Progetto:Biografie/Nazionalità/";

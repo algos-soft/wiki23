@@ -29,8 +29,6 @@ public class QueryWrite extends AQuery {
 
     public static final AETypeQuery QUERY_TYPE = AETypeQuery.postPiuCookies;
 
-    public static final String WIKI_TITLE_DEBUG = "Utente:Biobot/2";
-
     // oggetto della modifica in scrittura
     protected String summary;
 

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Wiki23Cost {
+    public static final String WIKI_TITLE_DEBUG = "Utente:Biobot/2";
     public static final String TAG_BOLD = "'''";
 
     public static final String TAG_ITALIC = "''";

@@ -21,6 +21,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.statistiche.*;
 import it.algos.wiki23.backend.upload.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -50,9 +51,13 @@ public class AttivitaView extends WikiView {
     //--per eventuali metodi specifici
     private AttivitaBackend backend;
 
-    protected IndeterminateCheckbox boxBoxPagina;
+    protected IndeterminateCheckbox boxSuperaSoglia;
+
+    protected IndeterminateCheckbox boxEsistePagina;
 
     protected Checkbox boxDistinctPlurali;
+
+    protected Checkbox boxPagineDaCancellare;
 
     //--per eventuali metodi specifici
     private AttivitaDialog dialog;
@@ -79,7 +84,7 @@ public class AttivitaView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "aggiunta", "numBio", "numSingolari", "pagina");
+        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "aggiunta", "numBio", "numSingolari", "superaSoglia", "esistePagina");
         super.formPropertyNamesList = Arrays.asList("plurale", "numBio");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
 
@@ -90,6 +95,8 @@ public class AttivitaView extends WikiView {
         super.durataElaborazione = WPref.elaboraAttivitaTime;
         super.lastUpload = WPref.uploadAttivita;
         super.wikiModuloTitle = PATH_MODULO_ATTIVITA;
+        super.usaBottoneStatistiche = true;
+        super.usaBottoneUploadStatistiche = true;
         //        super.wikiStatisticheTitle = PATH_STATISTICHE_ATTIVITA;
         super.usaBottoneEdit = true;
         super.usaBottoneCategoria = true;
@@ -97,7 +104,7 @@ public class AttivitaView extends WikiView {
 
         super.dialogClazz = AttivitaDialog.class;
         super.unitaMisuraDownload = "secondi";
-        super.unitaMisuraElaborazione = "secondi";
+        super.unitaMisuraElaborazione = "minuti";
         super.fixPreferenzeBackend();
     }
 
@@ -148,20 +155,35 @@ public class AttivitaView extends WikiView {
         layout.setAlignItems(Alignment.CENTER);
         topPlaceHolder.add(layout);
 
-        boxBoxPagina = new IndeterminateCheckbox();
-        boxBoxPagina.setLabel("Pagina wiki");
-        boxBoxPagina.setIndeterminate(true);
-        boxBoxPagina.addValueChangeListener(event -> sincroFiltri());
-        HorizontalLayout layout2 = new HorizontalLayout(boxBoxPagina);
+        boxSuperaSoglia = new IndeterminateCheckbox();
+        boxSuperaSoglia.setLabel("Supera soglia");
+        boxSuperaSoglia.setIndeterminate(true);
+        boxSuperaSoglia.addValueChangeListener(event -> sincroFiltri());
+        HorizontalLayout layout2 = new HorizontalLayout(boxSuperaSoglia);
         layout2.setAlignItems(Alignment.CENTER);
         topPlaceHolder.add(layout2);
+
+        boxEsistePagina = new IndeterminateCheckbox();
+        boxEsistePagina.setLabel("Esiste pagina");
+        boxEsistePagina.setIndeterminate(true);
+        boxEsistePagina.addValueChangeListener(event -> sincroFiltri());
+        HorizontalLayout layout3 = new HorizontalLayout(boxEsistePagina);
+        layout3.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout3);
 
         boxDistinctPlurali = new Checkbox();
         boxDistinctPlurali.setLabel("Distinct plurali");
         boxDistinctPlurali.addValueChangeListener(event -> sincroPlurali());
-        HorizontalLayout layout3 = new HorizontalLayout(boxDistinctPlurali);
-        layout3.setAlignItems(Alignment.CENTER);
-        topPlaceHolder.add(layout3);
+        HorizontalLayout layout4 = new HorizontalLayout(boxDistinctPlurali);
+        layout4.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout4);
+
+        boxPagineDaCancellare = new Checkbox();
+        boxPagineDaCancellare.setLabel("Da cancellare");
+        boxPagineDaCancellare.addValueChangeListener(event -> sincroCancellare());
+        HorizontalLayout layout5 = new HorizontalLayout(boxPagineDaCancellare);
+        layout5.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout5);
     }
 
     /**
@@ -187,9 +209,19 @@ public class AttivitaView extends WikiView {
             items = items.stream().filter(att -> att.aggiunta == boxBox.getValue()).toList();
         }
 
-        if (boxBoxPagina != null && !boxBoxPagina.isIndeterminate()) {
-            items = items.stream().filter(att -> att.pagina == boxBoxPagina.getValue()).toList();
-            if (boxBoxPagina.getValue()) {
+        if (boxSuperaSoglia != null && !boxSuperaSoglia.isIndeterminate()) {
+            items = items.stream().filter(att -> att.superaSoglia == boxSuperaSoglia.getValue()).toList();
+            if (boxSuperaSoglia.getValue()) {
+                sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+            }
+            else {
+                sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+            }
+        }
+
+        if (boxEsistePagina != null && !boxEsistePagina.isIndeterminate()) {
+            items = items.stream().filter(att -> att.esistePagina == boxEsistePagina.getValue()).toList();
+            if (boxEsistePagina.getValue()) {
                 sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
             }
             else {
@@ -239,6 +271,45 @@ public class AttivitaView extends WikiView {
             elementiFiltrati = items.size();
             sicroBottomLayout();
         }
+    }
+
+
+    protected void sincroCancellare() {
+        List<Attivita> items = null;
+
+        if (boxPagineDaCancellare != null) {
+            if (boxPagineDaCancellare.getValue()) {
+                items = backend.findPagineDaCancellare();
+            }
+            else {
+                sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+                items = backend.findAll(sortOrder);
+            }
+        }
+
+        if (items != null) {
+            grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
+        }
+    }
+
+
+    /**
+     * Apre una pagina su wiki, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void viewStatistiche() {
+        wikiApiService.openWikiPage(PATH_ATTIVITA);
+    }
+
+    /**
+     * Esegue un azione di upload delle statistiche, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando DOPO il metodo della superclasse <br>
+     */
+    public void uploadStatistiche() {
+        appContext.getBean(StatisticheAttivita.class).upload();
+        super.uploadStatistiche();
     }
 
     /**

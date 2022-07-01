@@ -1,13 +1,14 @@
 package it.algos.wiki23.backend.packages.attivita;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
-import it.algos.wiki23.backend.boot.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
-import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
@@ -88,6 +89,8 @@ public class AttivitaBackend extends WikiBackend {
                 .singolare(textService.isValid(singolare) ? singolare : null)
                 .plurale(textService.isValid(plurale) ? plurale : null)
                 .aggiunta(aggiunta)
+                .superaSoglia(false)
+                .esistePagina(false)
                 .build();
     }
 
@@ -111,6 +114,27 @@ public class AttivitaBackend extends WikiBackend {
 
         return lista;
     }
+
+    /**
+     * Pagine che esistono sul server wikipedia e che non superano la soglia prevista per le liste <br>
+     * flag esistePagina=true <br>
+     * flag superaSoglia=false <br>
+     *
+     * @return attività con liste da cancellare
+     */
+    public List<Attivita> findPagineDaCancellare() {
+        List<Attivita> listaDaCancellare = new ArrayList<>();
+        List<Attivita> listaPlurali = findAttivitaDistinctByPlurali();
+
+        for (Attivita attivita : listaPlurali) {
+            if (attivita.esistePagina && !attivita.superaSoglia) {
+                listaDaCancellare.add(attivita);
+            }
+        }
+
+        return listaDaCancellare;
+    }
+
 
     public List<String> findAllPlurali() {
         List<String> lista = new ArrayList<>();
@@ -313,6 +337,11 @@ public class AttivitaBackend extends WikiBackend {
         long inizio = System.currentTimeMillis();
         int numBio;
         int numSingolari;
+        int soglia = WPref.sogliaAttNazWiki.getInt();
+        int cont = 0;
+        String size;
+        String time;
+        int tot = count();
 
         for (Attivita attivita : findAll()) {
             attivita.numBio = 0;
@@ -328,18 +357,35 @@ public class AttivitaBackend extends WikiBackend {
             numSingolari = 0;
 
             for (String singolare : findSingolariByPlurale(attivita.plurale)) {
-                numBio += bioBackend.countAttivita(singolare);
+                numBio += bioBackend.countAttivitaAll(singolare);
                 numSingolari++;
             }
 
             for (Attivita attivitaOK : findByPlurale(attivita.plurale)) {
                 attivitaOK.numBio = numBio;
+                attivitaOK.superaSoglia = numBio >= soglia ? true : false;
+                attivitaOK.esistePagina = esistePagina(attivitaOK);
                 attivitaOK.numSingolari = numSingolari;
                 update(attivitaOK);
+                cont++;
+                if (mathService.multiploEsatto(100, cont)) {
+                    size = textService.format(cont);
+                    time = dateService.deltaText(inizio);
+                    message = String.format("Finora controllata l'esistenza di %s/%s liste di attività, in %s", size, tot, time);
+                    logger.info(new WrapLog().message(message).type(AETypeLog.elabora));
+                }
             }
         }
 
         super.fixElaboraSecondi(inizio, "attività");
+    }
+
+    /**
+     * Controlla l'esistenza della pagina wiki relativa a questa attività (lista) <br>
+     */
+    public boolean esistePagina(Attivita attivita) {
+        String wikiTitle = "Progetto:Biografie/Attività/" + textService.primaMaiuscola(attivita.plurale);
+        return appContext.getBean(QueryExist.class).isEsiste(wikiTitle);
     }
 
 }// end of crud backend class
