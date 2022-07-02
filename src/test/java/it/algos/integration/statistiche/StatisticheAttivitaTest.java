@@ -3,6 +3,7 @@ package it.algos.integration.statistiche;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.statistiche.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,14 +75,38 @@ public class StatisticheAttivitaTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - Upload normale")
-    void upload() {
-        System.out.println(("2 - Upload normale"));
-        System.out.println(VUOTA);
+    @DisplayName("2 - Upload col valore 'usaTreAttivita=false'")
+    void upload2() {
+        System.out.println(("2 - Crea la pagina di test col valore 'usaTreAttivita=false'"));
+        boolean oldValue = WPref.usaTreAttivita.is();
 
+        System.out.println(VUOTA);
+        WPref.usaTreAttivita.setValue(false);
         ottenutoRisultato = appContext.getBean(StatisticheAttivita.class).upload();
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println(("Ripristino il precedente valore della preferenza 'usaTreAttivita'"));
+        WPref.usaTreAttivita.setValue(oldValue);
+    }
+
+//    @Test
+    @Order(3)
+    @DisplayName("3 - Upload col valore 'usaTreAttivita=true'")
+    void upload3() {
+        System.out.println(("3 - Crea la pagina di test col valore 'usaTreAttivita=true'"));
+        boolean oldValue = WPref.usaTreAttivita.is();
+
+        System.out.println(VUOTA);
+        WPref.usaTreAttivita.setValue(false);
+        ottenutoRisultato = appContext.getBean(StatisticheAttivita.class).upload();
+        assertTrue(ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println(("Ripristino il precedente valore della preferenza 'usaTreAttivita'"));
+        WPref.usaTreAttivita.setValue(oldValue);
     }
 
 

@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.statistiche;
 
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.wiki23.backend.enumeration.*;
 
 /**
  * Project vaadwiki
@@ -47,12 +48,12 @@ public class MappaStatistiche {
     }
 
 
-    public MappaStatistiche(String chiave, int numAttivitaUno, int numAttivitaDue, int numAttivitaTre, int numAttivitaTotali) {
+    public MappaStatistiche(String chiave, int numAttivitaUno, int numAttivitaDue, int numAttivitaTre) {
         this.chiave = chiave;
         this.numAttivitaUno = numAttivitaUno;
         this.numAttivitaDue = numAttivitaDue;
         this.numAttivitaTre = numAttivitaTre;
-        this.numAttivitaTotali = numAttivitaTotali;
+        this.numAttivitaTotali = numAttivitaUno + numAttivitaDue + numAttivitaTre;
     }
 
 
@@ -124,6 +125,30 @@ public class MappaStatistiche {
 
     public int getOrdine() {
         return ordine;
+    }
+
+    public boolean isUsata(boolean treAttivita) {
+        if (treAttivita) {
+            return isUsataTreAttivita();
+        }
+        else {
+            return isUsataUnaAttivita();
+        }
+    }
+    public boolean isUsataTreAttivita() {
+        return numAttivitaTotali > 0;
+    }
+
+    public boolean isUsataUnaAttivita() {
+        return numAttivitaUno > 0;
+    }
+
+    public boolean isUsataParzialmente() {
+        return numAttivitaTotali > 0 && numAttivitaUno == 0;
+    }
+
+    public boolean isNonUsata() {
+        return numAttivitaTotali < 1;
     }
 
 

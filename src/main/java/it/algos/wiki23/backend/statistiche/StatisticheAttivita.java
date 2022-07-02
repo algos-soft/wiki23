@@ -2,6 +2,8 @@ package it.algos.wiki23.backend.statistiche;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
@@ -22,6 +24,14 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class StatisticheAttivita extends Statistiche {
 
+    private int attivitaUsate;
+
+    private int attivitaParzialmenteUsate;
+
+    private int attivitaNonUsate;
+
+    private int attivitaTotali;
+
     /**
      * Costruttore base con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
@@ -39,7 +49,7 @@ public class StatisticheAttivita extends Statistiche {
     @Override
     protected void fixPreferenze() {
         super.fixPreferenze();
-        super.typeToc = AETypeToc.noToc;
+        super.typeToc = AETypeToc.forceToc;
     }
 
     /**
@@ -51,12 +61,42 @@ public class StatisticheAttivita extends Statistiche {
 
     protected String body() {
         StringBuffer buffer = new StringBuffer();
+        this.fixConteggi();
+
         buffer.append(usate());
-        //        buffer.append(nonUsate());
+        buffer.append(parzialmenteUsate());
+        buffer.append(nonUsate());
 
         return buffer.toString();
     }
 
+    protected void fixConteggi() {
+        int usate = 0;
+        int parzialmenteUsate = 0;
+        int nonUsate = 0;
+        MappaStatistiche singolaMappa;
+
+        if (mappa != null) {
+            for (String key : mappa.keySet()) {
+                singolaMappa = mappa.get(key);
+                if (singolaMappa.getNumAttivitaUno() > 0) {
+                    usate++;
+                }
+                else {
+                    if (singolaMappa.getNumAttivitaTotali() > 0) {
+                        parzialmenteUsate++;
+                    }
+                    else {
+                        nonUsate++;
+                    }
+                }
+            }
+            attivitaUsate = usate;
+            attivitaParzialmenteUsate = parzialmenteUsate;
+            attivitaNonUsate = nonUsate;
+            attivitaTotali = usate + parzialmenteUsate + nonUsate;
+        }
+    }
 
     /**
      * Prima tabella <br>
@@ -74,6 +114,34 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
+    protected String incipitUsate() {
+        StringBuffer buffer = new StringBuffer();
+        String message;
+        int vociBio = bioBackend.count();
+        int attivita = lista.size();
+        buffer.append(String.format("'''%s''' attività", textService.format(attivitaUsate)));
+        message = "Le attività sono quelle [[Discussioni progetto:Biografie/Attività|'''convenzionalmente''' previste]] " +
+                "dalla comunità ed [[Modulo:Bio/Plurale attività|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
+        buffer.append(textService.setRef(message));
+        buffer.append(" '''effettivamente utilizzate''' nelle");
+        buffer.append(String.format(" '''%s'''", textService.format(vociBio)));
+        message = "La '''differenza''' tra le voci della categoria e quelle utilizzate è dovuta allo specifico utilizzo del [[template:Bio|template Bio]] ed in particolare all'uso del parametro Categorie=NO";
+        buffer.append(textService.setRef(message));
+        buffer.append(" voci biografiche che usano il [[template:Bio|template Bio]] e");
+        if (WPref.usaTreAttivita.is()) {
+            buffer.append(" i parametri '''''attività, attività2, attività3'''''.");
+            message = "Ogni persona è presente in '''diverse liste''', in base a quanto riportato in uno dei '''3''' parametri '''''attività, attività2 e attività3''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona";
+        }
+        else {
+            buffer.append(" il '''primo''' parametro '''''attività'''''.");
+            message = String.format("Ogni persona è presente in '''una sola lista''', in base a quanto riportato nel" +
+                    " '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
+        }
+        buffer.append(textService.setRef(message));
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
 
     protected String colonneUsate() {
         StringBuffer buffer = new StringBuffer();
@@ -91,10 +159,6 @@ public class StatisticheAttivita extends Statistiche {
         message = String.format("La pagina di una singola %s viene creata se le relative voci biografiche superano le %s unità.", "attività", soglia);
         buffer.append(textService.setRef(message));
 
-        message = String.format("Ogni persona è presente in una sola [[Progetto:Biografie/Attività|lista]], in base a quanto riportato nel" +
-                " (primo) parametro ''attività'' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
-        buffer.append(textService.setRef(message));
-
         message = String.format("La lista è suddivisa in paragrafi per ogni '''[[Modulo:Bio/Plurale nazionalità|nazionalità]]''' individuata. Se il numero" +
                 " di voci biografiche nel paragrafo supera le %s unità, viene creata una sottopagina.", sub);
         buffer.append(textService.setRef(message));
@@ -106,21 +170,28 @@ public class StatisticheAttivita extends Statistiche {
         buffer.append(textService.setRef(message));
         buffer.append(CAPO);
 
-        buffer.append(color);
-        buffer.append(textService.setBold("1° att"));
-        buffer.append(CAPO);
+        if (WPref.usaTreAttivita.is()) {
+            buffer.append(color);
+            buffer.append(textService.setBold("1° att"));
+            buffer.append(CAPO);
 
-        buffer.append(color);
-        buffer.append(textService.setBold("2° att"));
-        buffer.append(CAPO);
+            buffer.append(color);
+            buffer.append(textService.setBold("2° att"));
+            buffer.append(CAPO);
 
-        buffer.append(color);
-        buffer.append(textService.setBold("3° att"));
-        buffer.append(CAPO);
+            buffer.append(color);
+            buffer.append(textService.setBold("3° att"));
+            buffer.append(CAPO);
 
-        buffer.append(color);
-        buffer.append(textService.setBold("totale"));
-        buffer.append(CAPO);
+            buffer.append(color);
+            buffer.append(textService.setBold("totale"));
+            buffer.append(CAPO);
+        }
+        else {
+            buffer.append(color);
+            buffer.append(textService.setBold("voci"));
+            buffer.append(CAPO);
+        }
 
         return buffer.toString();
     }
@@ -130,21 +201,34 @@ public class StatisticheAttivita extends Statistiche {
         int cont = 1;
         int k = 1;
         String riga;
+        MappaStatistiche mappaSingola;
+        String message;
+        boolean treAttivita = WPref.usaTreAttivita.is();
+        int soglia = WPref.sogliaAttNazWiki.getInt();
 
         for (String key : mappa.keySet()) {
-            riga = rigaUsate(key, cont);
-            if (textService.isValid(riga)) {
-                buffer.append(riga);
-                k = k + 1;
-                cont = k;
+            mappaSingola = mappa.get(key);
+            if (mappaSingola.isUsata(treAttivita)) {
+                riga = rigaUsate(key, mappaSingola, treAttivita, cont, soglia);
+                if (textService.isValid(riga)) {
+                    buffer.append(riga);
+                    k = k + 1;
+                    cont = k;
+                }
             }
+        }
+
+        cont--;
+        if (cont != attivitaUsate) {
+            message = String.format("Le attività usate non corrispondono: previste=%s trovate=%s", attivitaUsate, cont);
+            logger.error(new WrapLog().exception(new AlgosException(message)));
         }
 
         return buffer.toString();
     }
 
 
-    protected String rigaUsate(String plurale, int cont) {
+    protected String rigaUsate(String plurale, MappaStatistiche mappaSingola, boolean treAttivita, int cont, int soglia) {
         StringBuffer buffer = new StringBuffer();
         String tagSin = "style=\"text-align: left;\" |";
         String nome = plurale.toLowerCase();
@@ -154,37 +238,26 @@ public class StatisticheAttivita extends Statistiche {
         String doppioTag = " || ";
         String pipe = "|";
         String endTag = "]]";
-        String lista;
         String categoria;
-        MappaStatistiche mappaSingola;
-        int soglia = WPref.sogliaAttNazWiki.getInt();
 
-        lista = listaTag + textService.primaMaiuscola(nome) + pipe + nome + endTag;
         categoria = categoriaTag + nome + pipe + nome + endTag;
+        buffer.append(iniTag);
+        buffer.append(CAPO);
+        buffer.append(pipe);
 
-        mappaSingola = mappa.get(plurale);
-        if (mappaSingola == null) {
-            return VUOTA;
-        }
+        buffer.append(cont);
 
-        if (mappaSingola.getNumAttivitaTotali() > 0) {
-            buffer.append(iniTag);
-            buffer.append(CAPO);
-            buffer.append(pipe);
+        buffer.append(doppioTag);
+        buffer.append(tagSin);
+        buffer.append(fixNome(plurale, soglia));
 
-            buffer.append(cont);
+        buffer.append(doppioTag);
+        buffer.append(tagSin);
+        buffer.append(categoria);
+        buffer.append(doppioTag);
+        buffer.append(mappaSingola.getNumAttivitaUno());
 
-            buffer.append(doppioTag);
-            buffer.append(tagSin);
-            buffer.append(fixNome(plurale, soglia));
-
-            buffer.append(doppioTag);
-            buffer.append(tagSin);
-            buffer.append(categoria);
-
-            buffer.append(doppioTag);
-            buffer.append(mappaSingola.getNumAttivitaUno());
-
+        if (treAttivita) {
             buffer.append(doppioTag);
             buffer.append(mappaSingola.getNumAttivitaDue());
 
@@ -193,9 +266,8 @@ public class StatisticheAttivita extends Statistiche {
 
             buffer.append(doppioTag);
             buffer.append(mappaSingola.getNumAttivitaTotali());
-
-            buffer.append(CAPO);
         }
+        buffer.append(CAPO);
 
         return buffer.toString();
     }
@@ -207,7 +279,7 @@ public class StatisticheAttivita extends Statistiche {
         String listaTag = "Progetto:Biografie/Attività/";
 
         numVociBio = bioBackend.countAttivitaPlurale(nomeAttivitaPlurale);
-        superaSoglia = numVociBio > soglia;
+        superaSoglia = numVociBio >= soglia;
         if (superaSoglia) {
             nomeVisibile = listaTag + textService.primaMaiuscola(nomeAttivitaPlurale) + PIPE + nomeAttivitaPlurale;
             nomeVisibile = textService.setDoppieQuadre(nomeVisibile);
@@ -216,21 +288,257 @@ public class StatisticheAttivita extends Statistiche {
         return nomeVisibile;
     }
 
-    protected String incipitUsate() {
+
+    /**
+     * Seconda tabella <br>
+     */
+    protected String parzialmenteUsate() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(wikiUtility.setParagrafo("Attività parzialmente usate"));
+        buffer.append(incipitParzialmenteUsate());
+        buffer.append(inizioTabella());
+        buffer.append(colonneParzialmenteUsate());
+        buffer.append(corpoParzialmenteUsate());
+        buffer.append(fineTabella());
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+
+    protected String incipitParzialmenteUsate() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(String.format("'''%s''' attività presenti", textService.format(attivitaParzialmenteUsate)));
+        buffer.append(" nell' [[Modulo:Bio/Plurale attività|'''elenco del progetto Biografie''']] ma '''non utilizzate''' nel primo parametro ''attività''");
+        buffer.append(" di qualsiasi '''voce biografica''' che usa il [[template:Bio|template Bio]]");
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+
+
+    protected String colonneParzialmenteUsate() {
+        StringBuffer buffer = new StringBuffer();
+        String color = "! style=\"background-color:#CCC;\" |";
+        buffer.append(VUOTA);
+        buffer.append(color);
+        buffer.append(textService.setBold("#"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("attività"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("categoria"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("1° att"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("2° att"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("3° att"));
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+
+    protected String corpoParzialmenteUsate() {
+        StringBuffer buffer = new StringBuffer();
+        MappaStatistiche mappaSingola;
+        int cont = 1;
+        int k = 1;
+        String riga;
+        String message;
+        boolean treAttivita = WPref.usaTreAttivita.is();
+
+        for (String key : mappa.keySet()) {
+            mappaSingola = mappa.get(key);
+            if (mappaSingola.isUsataParzialmente()) {
+                riga = rigaParzialmenteUsate(key, mappaSingola, treAttivita, cont);
+                if (textService.isValid(riga)) {
+                    buffer.append(riga);
+                    k = k + 1;
+                    cont = k;
+                }
+            }
+        }
+
+        cont--;
+        if (cont != attivitaParzialmenteUsate) {
+            message = String.format("Le attività parzialmente usate non corrispondono: previste=%s trovate=%s", attivitaParzialmenteUsate, cont);
+            logger.error(new WrapLog().exception(new AlgosException(message)));
+        }
+
+        return buffer.toString();
+    }
+
+    protected String rigaParzialmenteUsate(String plurale, MappaStatistiche mappaSingola, boolean treAttivita, int cont) {
+        StringBuffer buffer = new StringBuffer();
+        String tagSin = "style=\"text-align: left;\" |";
+        String nome = plurale.toLowerCase();
+        String categoriaTag = "[[:Categoria:";
+        String iniTag = "|-";
+        String doppioTag = " || ";
+        String pipe = "|";
+        String endTag = "]]";
+        String categoria;
+        int soglia = WPref.sogliaAttNazWiki.getInt();
+
+        categoria = categoriaTag + nome + pipe + nome + endTag;
+        buffer.append(iniTag);
+        buffer.append(CAPO);
+        buffer.append(pipe);
+
+        buffer.append(cont);
+
+        buffer.append(doppioTag);
+        buffer.append(tagSin);
+        buffer.append(fixNome(plurale, soglia));
+
+        buffer.append(doppioTag);
+        buffer.append(tagSin);
+        buffer.append(categoria);
+        buffer.append(doppioTag);
+        buffer.append(mappaSingola.getNumAttivitaUno());
+
+        buffer.append(doppioTag);
+        buffer.append(mappaSingola.getNumAttivitaDue());
+
+        buffer.append(doppioTag);
+        buffer.append(mappaSingola.getNumAttivitaTre());
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+
+
+    /**
+     * Terza tabella <br>
+     */
+    protected String nonUsate() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(wikiUtility.setParagrafo("Attività non usate"));
+        buffer.append(incipitNonUsate());
+        buffer.append(inizioTabella());
+        buffer.append(colonneNonUsate());
+        buffer.append(corpoNonUsate());
+        buffer.append(fineTabella());
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+
+
+    protected String incipitNonUsate() {
         StringBuffer buffer = new StringBuffer();
         String message;
         int vociBio = bioBackend.count();
         int attivita = lista.size();
-        buffer.append(String.format("'''%s''' attività", textService.format(attivita)));
-        message = "Le attività sono quelle [[Discussioni progetto:Biografie/Attività|'''convenzionalmente''' previste]] " +
-                "dalla comunità ed [[Modulo:Bio/Plurale attività|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
+        buffer.append(String.format("'''%s''' attività presenti", textService.format(attivitaNonUsate)));
+        buffer.append(" nell' [[Modulo:Bio/Plurale attività|'''elenco del progetto Biografie''']] ma '''non utilizzate''' in nessuno dei " +
+                "3 parametri ''attività, attività2, attività3''");
+        message = "Si tratta di attività '''originariamente''' discusse ed [[Modulo:Bio/Plurale attività|inserite nell'elenco]] che non sono '''mai''' state utilizzate o che sono state in un secondo tempo sostituite da altre denominazioni";
         buffer.append(textService.setRef(message));
-        buffer.append(" '''effettivamente utilizzate''' nelle");
-        buffer.append(String.format(" '''%s'''", textService.format(vociBio)));
-        message = "La '''differenza''' tra le voci della categoria e quelle utilizzate è dovuta allo specifico utilizzo del [[template:Bio|template Bio]] ed in particolare all'uso del parametro Categorie=NO";
-        buffer.append(textService.setRef(message));
-        buffer.append(" voci biografiche che usano il [[template:Bio|template Bio]] ed i parametri '''''attività, attività2, " +
-                "attività3'''''.");
+        buffer.append(" di qualsiasi '''voce biografica''' che usa il [[template:Bio|template Bio]]");
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+
+    protected String colonneNonUsate() {
+        StringBuffer buffer = new StringBuffer();
+        String color = "! style=\"background-color:#CCC;\" |";
+        buffer.append(VUOTA);
+        buffer.append(color);
+        buffer.append(textService.setBold("#"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("attività"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("categoria"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("1° att"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("2° att"));
+        buffer.append(CAPO);
+        buffer.append(color);
+        buffer.append(textService.setBold("3° att"));
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+
+    protected String corpoNonUsate() {
+        StringBuffer buffer = new StringBuffer();
+        MappaStatistiche singolaMappa;
+        int cont = 1;
+        int k = 1;
+        String riga;
+
+        for (String key : mappa.keySet()) {
+            singolaMappa = mappa.get(key);
+            if (singolaMappa.getNumAttivitaTotali() < 1) {
+                riga = rigaNonUsate(key, cont);
+                if (textService.isValid(riga)) {
+                    buffer.append(riga);
+                    k = k + 1;
+                    cont = k;
+                }
+            }
+        }
+
+        return buffer.toString();
+    }
+
+    protected String rigaNonUsate(String plurale, int cont) {
+        StringBuffer buffer = new StringBuffer();
+        String tagSin = "style=\"text-align: left;\" |";
+        String nome = plurale.toLowerCase();
+        String listaTag = "[[Progetto:Biografie/Attività/";
+        String categoriaTag = "[[:Categoria:";
+        String iniTag = "|-";
+        String doppioTag = " || ";
+        String pipe = "|";
+        String endTag = "]]";
+        String categoria;
+        MappaStatistiche mappaSingola;
+        int soglia = WPref.sogliaAttNazWiki.getInt();
+        //                buffer.append(iniTag);
+        //                buffer.append(CAPO);
+        //                buffer.append(pipe);
+        //                buffer.append(key);
+        //                buffer.append(doppioTag);
+
+        categoria = categoriaTag + nome + pipe + nome + endTag;
+        mappaSingola = mappa.get(plurale);
+        if (mappaSingola == null) {
+            return VUOTA;
+        }
+
+        buffer.append(iniTag);
+        buffer.append(CAPO);
+        buffer.append(pipe);
+
+        buffer.append(cont);
+
+        buffer.append(doppioTag);
+        buffer.append(tagSin);
+        buffer.append(fixNome(plurale, soglia));
+
+        buffer.append(doppioTag);
+        buffer.append(tagSin);
+        buffer.append(categoria);
+        buffer.append(doppioTag);
+        buffer.append(mappaSingola.getNumAttivitaUno());
+
+        buffer.append(doppioTag);
+        buffer.append(mappaSingola.getNumAttivitaDue());
+
+        buffer.append(doppioTag);
+        buffer.append(mappaSingola.getNumAttivitaTre());
         buffer.append(CAPO);
 
         return buffer.toString();
@@ -268,10 +576,9 @@ public class StatisticheAttivita extends Statistiche {
                 numAttivitaUno += bioBackend.countAttivita(singolare);
                 numAttivitaDue += bioBackend.countAttivitaDue(singolare);
                 numAttivitaTre += bioBackend.countAttivitaTre(singolare);
-                numAttivitaTotali += bioBackend.countAttivitaAll(singolare);
             }
 
-            mappaSingola = new MappaStatistiche(attivita.plurale, numAttivitaUno, numAttivitaDue, numAttivitaTre, numAttivitaTotali);
+            mappaSingola = new MappaStatistiche(attivita.plurale, numAttivitaUno, numAttivitaDue, numAttivitaTre);
             mappa.put(attivita.plurale, mappaSingola);
         }
     }
