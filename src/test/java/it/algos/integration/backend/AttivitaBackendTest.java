@@ -63,7 +63,9 @@ public class AttivitaBackendTest extends WikiTest {
                 Arguments.of("politico", true),
                 Arguments.of("errata", false),
                 Arguments.of("attrice", true),
-                Arguments.of("direttore di scena", false)
+                Arguments.of("direttore di scena", false),
+                Arguments.of("vescovo ariano", true)
+
         );
     }
 
@@ -252,6 +254,16 @@ public class AttivitaBackendTest extends WikiTest {
         mappa = backend.findMappaSingolariByPlurale();
         assertNotNull(mappa);
         printMappa(mappa, "di attività plurali con le relative attività singolari");
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_SINGOLARE")
+    @Order(11)
+    @DisplayName("11 - countBySingolare")
+    void countBySingolare(String singolare, boolean esiste) {
+        System.out.println("11 - countBySingolare");
+        ottenutoIntero = bioBackend.countAttivita(singolare);
+        System.out.println(String.format("L'attività '%s' contiene %s voci biografiche", singolare, ottenutoIntero));
     }
 
     /**

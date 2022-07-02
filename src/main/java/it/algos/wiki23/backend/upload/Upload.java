@@ -90,6 +90,7 @@ public abstract class Upload {
      */
     @Autowired
     public BioBackend bioBackend;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -182,32 +183,6 @@ public abstract class Upload {
     }
 
 
-    protected WResult esegueStatistiche(String wikiTitle) {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append(avviso());
-        buffer.append(CAPO);
-        buffer.append(includeIni());
-        buffer.append(forceToc());
-        buffer.append(torna(VUOTA));
-        buffer.append(tmpListaStat());
-        buffer.append(includeEnd());
-        buffer.append(CAPO);
-        buffer.append(bodyStatistiche());
-        buffer.append(note());
-        buffer.append(CAPO);
-        buffer.append(correlate());
-        buffer.append(CAPO);
-        buffer.append(portale());
-        buffer.append(categorie());
-
-        if (Pref.debug.is()) {
-            wikiTitle = WIKI_TITLE_DEBUG;
-        }
-
-        return registra(wikiTitle, buffer.toString());
-    }
-
 
     protected String avviso() {
         return "<!-- NON MODIFICATE DIRETTAMENTE QUESTA PAGINA - GRAZIE -->";
@@ -280,7 +255,8 @@ public abstract class Upload {
             buffer.append(sottoPaginaAttNaz());
             message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
                             "comunità ed [[Modulo:Bio/Plurale %s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]",
-                    attNazRevert, attNazRevertUpper, attNazRevert);
+                    attNazRevert, attNazRevertUpper, attNazRevert
+            );
             //--ref 6/7/8
             buffer.append(textService.setRef(message));
         }
@@ -341,32 +317,50 @@ public abstract class Upload {
         return buffer.toString();
     }
 
-    protected String bodyStatistiche() {
-        return CAPO;
-    }
 
     protected String note() {
-        return "==Note==" + CAPO + "<references/>" + CAPO;
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(wikiUtility.setParagrafo("Note"));
+        buffer.append("<references/>");
+
+        return buffer.toString();
     }
 
     protected String correlate() {
+        StringBuffer buffer = new StringBuffer();
         String cat = textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
-        return "==Voci correlate==" + CAPO + String.format("*[[:Categoria:%s]]", cat) + CAPO + "*[[Progetto:Biografie/Attività]]" + CAPO;
+
+        buffer.append(wikiUtility.setParagrafo("Voci correlate"));
+        buffer.append(String.format("*[[:Categoria:%s]]", cat));
+        buffer.append(CAPO);
+        buffer.append("*[[Progetto:Biografie/Attività]]");
+
+        return buffer.toString();
     }
 
     protected String portale() {
-        return "{{Portale|biografie}}" + CAPO;
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(CAPO);
+        buffer.append("{{Portale|biografie}}");
+
+        return buffer.toString();
     }
 
 
     protected String categorie() {
+        StringBuffer buffer = new StringBuffer();
         String cat = textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
-        return String.format("[[Categoria:Bio attività|%s]]", cat);
+
+        buffer.append(CAPO);
+        buffer.append(String.format("*[[Categoria:Bio attività|%s]]", cat));
+
+        return buffer.toString();
     }
 
 
     protected WResult registra(String wikiTitle, String newText) {
-        //        newText = mappaToText(WIKI_TITLE_DEBUG,mappaDidascalie);
         return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText);
     }
 
@@ -376,16 +370,12 @@ public abstract class Upload {
         int numVoci = 0;
 
         if (mappaTxt != null) {
-            System.out.println(VUOTA);
-
             for (String key : mappaTxt.keySet()) {
                 mappaSub = mappaTxt.get(key);
                 numVoci = wikiUtility.getSize(mappaSub);
 
                 buffer.append(fixTitoloParagrafo(key, numVoci));
-                buffer.append(CAPO);
                 buffer.append(fixCorpoParagrafo(wikiTitle, key, numVoci, mappaSub));
-                buffer.append(CAPO);
             }
         }
 

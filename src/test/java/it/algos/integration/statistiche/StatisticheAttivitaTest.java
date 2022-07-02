@@ -73,7 +73,7 @@ public class StatisticheAttivitaTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    @Test
+//    @Test
     @Order(2)
     @DisplayName("2 - Upload col valore 'usaTreAttivita=false'")
     void upload2() {
@@ -99,7 +99,7 @@ public class StatisticheAttivitaTest extends WikiTest {
         boolean oldValue = WPref.usaTreAttivita.is();
 
         System.out.println(VUOTA);
-        WPref.usaTreAttivita.setValue(false);
+        WPref.usaTreAttivita.setValue(true);
         ottenutoRisultato = appContext.getBean(StatisticheAttivita.class).upload();
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
@@ -109,6 +109,26 @@ public class StatisticheAttivitaTest extends WikiTest {
         WPref.usaTreAttivita.setValue(oldValue);
     }
 
+    @Test
+    @Order(4)
+    @DisplayName("4 - Upload col valore 'usaLinkStatistiche=true'")
+    void upload4() {
+        System.out.println(("4 - Crea la pagina di test col valore 'usaLinkStatistiche=true'"));
+        boolean oldValue = WPref.usaLinkStatistiche.is();
+        boolean oldValue2 = WPref.usaTreAttivita.is();
+
+        System.out.println(VUOTA);
+        WPref.usaLinkStatistiche.setValue(true);
+        WPref.usaTreAttivita.setValue(false);
+        ottenutoRisultato = appContext.getBean(StatisticheAttivita.class).upload();
+        assertTrue(ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println(("Ripristino il precedente valore della preferenza 'usaLinkStatistiche'"));
+        WPref.usaLinkStatistiche.setValue(oldValue);
+        WPref.usaTreAttivita.setValue(oldValue2);
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

@@ -205,11 +205,12 @@ public class StatisticheAttivita extends Statistiche {
         String message;
         boolean treAttivita = WPref.usaTreAttivita.is();
         int soglia = WPref.sogliaAttNazWiki.getInt();
+        boolean linkLista = WPref.usaLinkStatistiche.is();
 
         for (String key : mappa.keySet()) {
             mappaSingola = mappa.get(key);
             if (mappaSingola.isUsata(treAttivita)) {
-                riga = rigaUsate(key, mappaSingola, treAttivita, cont, soglia);
+                riga = rigaUsate(key, mappaSingola, treAttivita, cont, soglia, linkLista);
                 if (textService.isValid(riga)) {
                     buffer.append(riga);
                     k = k + 1;
@@ -228,7 +229,7 @@ public class StatisticheAttivita extends Statistiche {
     }
 
 
-    protected String rigaUsate(String plurale, MappaStatistiche mappaSingola, boolean treAttivita, int cont, int soglia) {
+    protected String rigaUsate(String plurale, MappaStatistiche mappaSingola, boolean treAttivita, int cont, int soglia, boolean linkLista) {
         StringBuffer buffer = new StringBuffer();
         String tagSin = "style=\"text-align: left;\" |";
         String nome = plurale.toLowerCase();
@@ -249,7 +250,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNome(plurale, soglia));
+        buffer.append(fixNome(plurale, soglia, linkLista));
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
@@ -272,7 +273,7 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
-    protected String fixNome(String nomeAttivitaPlurale, int soglia) {
+    protected String fixNome(String nomeAttivitaPlurale, int soglia, boolean linkLista) {
         String nomeVisibile = nomeAttivitaPlurale;
         boolean superaSoglia;
         int numVociBio;
@@ -280,7 +281,7 @@ public class StatisticheAttivita extends Statistiche {
 
         numVociBio = bioBackend.countAttivitaPlurale(nomeAttivitaPlurale);
         superaSoglia = numVociBio >= soglia;
-        if (superaSoglia) {
+        if (superaSoglia || linkLista) {
             nomeVisibile = listaTag + textService.primaMaiuscola(nomeAttivitaPlurale) + PIPE + nomeAttivitaPlurale;
             nomeVisibile = textService.setDoppieQuadre(nomeVisibile);
         }
@@ -350,11 +351,12 @@ public class StatisticheAttivita extends Statistiche {
         String riga;
         String message;
         boolean treAttivita = WPref.usaTreAttivita.is();
+        boolean linkLista = WPref.usaLinkStatistiche.is();
 
         for (String key : mappa.keySet()) {
             mappaSingola = mappa.get(key);
             if (mappaSingola.isUsataParzialmente()) {
-                riga = rigaParzialmenteUsate(key, mappaSingola, treAttivita, cont);
+                riga = rigaParzialmenteUsate(key, mappaSingola, treAttivita, cont, 0, linkLista);
                 if (textService.isValid(riga)) {
                     buffer.append(riga);
                     k = k + 1;
@@ -372,7 +374,7 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
-    protected String rigaParzialmenteUsate(String plurale, MappaStatistiche mappaSingola, boolean treAttivita, int cont) {
+    protected String rigaParzialmenteUsate(String plurale, MappaStatistiche mappaSingola, boolean treAttivita, int cont, int soglia, boolean linkLista) {
         StringBuffer buffer = new StringBuffer();
         String tagSin = "style=\"text-align: left;\" |";
         String nome = plurale.toLowerCase();
@@ -382,7 +384,6 @@ public class StatisticheAttivita extends Statistiche {
         String pipe = "|";
         String endTag = "]]";
         String categoria;
-        int soglia = WPref.sogliaAttNazWiki.getInt();
 
         categoria = categoriaTag + nome + pipe + nome + endTag;
         buffer.append(iniTag);
@@ -393,7 +394,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNome(plurale, soglia));
+        buffer.append(fixNome(plurale, soglia, linkLista));
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
@@ -505,12 +506,6 @@ public class StatisticheAttivita extends Statistiche {
         String endTag = "]]";
         String categoria;
         MappaStatistiche mappaSingola;
-        int soglia = WPref.sogliaAttNazWiki.getInt();
-        //                buffer.append(iniTag);
-        //                buffer.append(CAPO);
-        //                buffer.append(pipe);
-        //                buffer.append(key);
-        //                buffer.append(doppioTag);
 
         categoria = categoriaTag + nome + pipe + nome + endTag;
         mappaSingola = mappa.get(plurale);
@@ -526,7 +521,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNome(plurale, soglia));
+        buffer.append(fixNome(plurale, 0,false));
 
         buffer.append(doppioTag);
         buffer.append(tagSin);

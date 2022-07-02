@@ -55,16 +55,16 @@ public enum WPref implements AIGenPref {
             "sul server wiki"),
     usaTreAttivita("usaTreAttivita", AETypePref.bool, false, "Considera tutte le attività (tre) nelle liste di attività"),
     usaParagrafiDimensionati("usaParagrafiDimensionati", AETypePref.bool, true, "Nel titolo del paragrafo aggiunge la dimensione delle " +
-            "voci " +
-            "elencate"),
+            "voci elencate"),
+    usaLinkStatistiche("usaLinkStatistiche", AETypePref.bool, false, "Link alle liste di attività nel template statistiche, anche se " +
+            "rossi"),
 
 
     simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),
     simboloMorto("simboloMorto", AETypePref.string, "†", "Simbolo della morte nelle didascalie"),
 
     linkCrono("linkCrono", AETypePref.enumerationType, AETypeLinkCrono.voce, "Type di link a giorni/anni nelle didascalie",
-            AETypeLinkCrono.nessuno
-    ),
+            AETypeLinkCrono.nessuno),
     ;
 
     //--codice di riferimento.
