@@ -73,7 +73,7 @@ public class WResult extends AResult {
 
     private Map<String, String> cookies;
 
-    private String content=VUOTA;
+    private String content = VUOTA;
 
     private WResult() {
         this(null);
@@ -161,6 +161,7 @@ public class WResult extends AResult {
         this.wikiText = wikiText;
         return this;
     }
+
     public WResult post(final String post) {
         this.post = post;
         return this;

@@ -324,6 +324,7 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Type: %s", result.getTypePage()));
         System.out.println(String.format("User: %s", result.getUserType()));
         System.out.println(String.format("Limit: %d", result.getLimit()));
+        System.out.println(String.format("Summary: %s", result.getSummary()));
         System.out.println(String.format("Preliminary url: %s", result.getUrlPreliminary()));
         System.out.println(String.format("Secondary url: %s", result.getUrlRequest()));
         System.out.println(String.format("Get request url: %s", result.getGetRequest()));

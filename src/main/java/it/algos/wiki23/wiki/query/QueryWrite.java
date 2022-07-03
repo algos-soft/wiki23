@@ -29,23 +29,86 @@ public class QueryWrite extends AQuery {
 
     public static final AETypeQuery QUERY_TYPE = AETypeQuery.postPiuCookies;
 
-    // oggetto della modifica in scrittura
-    protected String summary;
-
-    // titolo della pagina
-    private String wikiTitle;
-
-    // nuovo testo da inserire nella pagina
-    //    private String newText;
-
     // token di controllo recuperato dalla urlResponse della primaryRequestGet
     private String csrftoken;
 
+    /**
+     * Request al software mediawiki composta di tre passaggi:
+     * 1. Log in, via one of the methods described in API:Login. Note that while this is required to correctly attribute the edit to its author, many wikis do allow users to edit without registering or logging into an account.
+     * 2. GET a CSRF token.
+     * 3. Send a POST request, with the CSRF token, to take action on a page.
+     * <p>
+     * Controllo del login già effettuato ad inizio programma <br>
+     * I dati del login di collegamento (userid, username e cookies) sono nel singleton botLogin <br>
+     * <p>
+     * La prima request preliminare è di tipo GET, per recuperare token e session <br>
+     * urlDomain = "&meta=tokens&type=csrf" <br>
+     * Invia la request con i cookies di login e senza testo POST <br>
+     * Recupera i cookies della connessione (in particolare 'itwikisession') <br>
+     * Recupera il logintoken dalla urlResponse <br>
+     * <p>
+     * La seconda request è di tipo POST <br>
+     * urlDomain = "&action=xxxx" <br>
+     * Invia la request con i cookies ricevuti (solo 'session') <br>
+     * Scrive il testo post con i valori di lgname, lgpassword e lgtoken <br>
+     * <p>
+     * La response viene elaborata per conferma <br>
+     *
+     * @param wikiTitleGrezzo della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param newText         da inserire
+     * @param summary         oggetto della modifica (facoltativo)
+     *
+     * @return wrapper di informazioni
+     *
+     * @see https://www.mediawiki.org/wiki/API:Edit#Example
+     */
+    private WResult checkWrite(final String wikiTitleGrezzo, final String newText, final String summary) {
+        queryType = AETypeQuery.getLoggatoConCookies;
+
+        WResult result = checkIniziale(QUERY_CAT_REQUEST, wikiTitleGrezzo);
+        result.setLimit(0);
+        if (result.isErrato()) {
+            return result.queryType(AETypeQuery.getLoggatoConCookies);
+        }
+
+        if (textService.isEmpty(newText)) {
+            String message = "Manca il newText da inserire";
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            result.errorMessage(message);
+            result.setFine();
+            return result;
+        }
+
+        //--Controllo del Login
+        if (!botLogin.isBot()) {
+            result.setWikiTitle(wikiTitleGrezzo);
+            result.setErrorMessage("Login non valido come bot");
+            return result;
+        }
+
+        result.setQueryType(QUERY_TYPE);
+        result.setWikiTitle(wikiTitleGrezzo);
+        result.setSummary(summary);
+        result.setNewtext(newText);
+
+        if (textService.isEmpty(wikiTitleGrezzo)) {
+            result.setErrorMessage("Manca il titolo della pagina wiki");
+            return result;
+        }
+
+        if (textService.isEmpty(newText)) {
+            result.setErrorMessage("Manca il nuovo testo da inserire");
+            return result;
+        }
+
+        //--codifica del titolo (spazi vuoti e simili)
+        return result.wikiTitle(fixWikiTitle(wikiTitleGrezzo));
+    }
 
     /**
      * Request condizionata al contenuto pre-esistente <br>
-     * Se cambia SOLO la parte 'modificabile' (di solito iniziale) e non quella 'significativa', la query NON deve scrivere <br>
-     * Se cambia ANCHE o solo la parte 'significativa', la query DEVE scrivere <br>
+     * Se cambia SOLO la parte 'modificabile' iniziale e non quella 'significativa', la query NON deve scrivere <br>
+     * Se cambia ANCHE la parte 'significativa' finale, la query DEVE scrivere <br>
      *
      * @param wikiTitleGrezzo    della pagina wiki (necessita di codifica) usato nella urlRequest
      * @param newText            complessivo da inserire
@@ -54,8 +117,37 @@ public class QueryWrite extends AQuery {
      * @return wrapper di informazioni
      */
     public WResult urlRequestCheck(final String wikiTitleGrezzo, final String newText, final String inizioModificabile) {
-        WResult  ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(wikiTitleGrezzo);
-        return ottenutoRisultato;
+        return urlRequestCheck(wikiTitleGrezzo, newText, inizioModificabile, VUOTA);
+    }
+
+    /**
+     * Request condizionata al contenuto pre-esistente <br>
+     * Se cambia SOLO la parte 'modificabile' iniziale e non quella 'significativa', la query NON deve scrivere <br>
+     * Se cambia ANCHE la parte 'significativa' finale, la query DEVE scrivere <br>
+     *
+     * @param wikiTitleGrezzo      della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param newTextAll           complessivo da inserire
+     * @param newTextSignificativo successivo alla parte iniziale che può variare senza che la pagina venga riscritta
+     *
+     * @return wrapper di informazioni
+     */
+    public WResult urlRequestCheck(final String wikiTitleGrezzo, final String newTextAll, final String newTextSignificativo, final String summary) {
+        WResult result = checkWrite(wikiTitleGrezzo, newText, summary);
+        if (result.isErrato()) {
+            return result;
+        }
+
+        //--La prima request è di tipo GET
+        //--Indispensabile aggiungere i cookies del botLogin
+        result = this.primaryRequestGet(result);
+
+        //--La seconda request è di tipo POST
+        //--Indispensabile aggiungere i cookies
+        //--Indispensabile aggiungere il testo POST
+        return this.secondaryRequestPost(result);
+
+        //        WResult ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(wikiTitleGrezzo);
+        //        return ottenutoRisultato;
     }
 
     public WResult urlRequest(final String wikiTitleGrezzo, final String newText) {
@@ -93,131 +185,11 @@ public class QueryWrite extends AQuery {
      *
      * @see https://www.mediawiki.org/wiki/API:Edit#Example
      */
-    public WResult checkWrite(final String wikiTitleGrezzo, final String newText, final String summary) {
-        queryType = AETypeQuery.getLoggatoConCookies;
-        this.summary = summary;
-
-        WResult result = checkIniziale(QUERY_CAT_REQUEST, wikiTitleGrezzo);
-        result.setLimit(0);
-        if (result.isErrato()) {
-            return result.queryType(AETypeQuery.getLoggatoConCookies);
-        }
-
-        if (textService.isEmpty(newText)) {
-            String message = "Manca il newText da inserire";
-            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-            result.errorMessage(message);
-            result.setFine();
-            return result;
-        }
-
-        //--Controllo del Login
-        if (!botLogin.isBot()) {
-            result.setWikiTitle(wikiTitleGrezzo);
-            result.setErrorMessage("Login non valido come bot");
-            return result;
-        }
-
-        result.setQueryType(QUERY_TYPE);
-        result.setWikiTitle(wikiTitleGrezzo);
-        result.setSummary(summary);
-        result.setNewtext(newText);
-
-        if (textService.isEmpty(wikiTitleGrezzo)) {
-            result.setErrorMessage("Manca il titolo della pagina wiki");
-            return result;
-        }
-
-        if (textService.isEmpty(newText)) {
-            result.setErrorMessage("Manca il nuovo testo da inserire");
-            return result;
-        }
-
-        //--codifica del titolo (spazi vuoti e simili)
-        wikiTitle = fixWikiTitle(wikiTitleGrezzo);
-
-        //--La prima request è di tipo GET
-        //--Indispensabile aggiungere i cookies del botLogin
-        result = this.primaryRequestGet(result);
-
-        //--La seconda request è di tipo POST
-        //--Indispensabile aggiungere i cookies
-        //--Indispensabile aggiungere il testo POST
-        return this.secondaryRequestPost(result);
-    }
-
-    /**
-     * Request al software mediawiki composta di tre passaggi:
-     * 1. Log in, via one of the methods described in API:Login. Note that while this is required to correctly attribute the edit to its author, many wikis do allow users to edit without registering or logging into an account.
-     * 2. GET a CSRF token.
-     * 3. Send a POST request, with the CSRF token, to take action on a page.
-     * <p>
-     * Controllo del login già effettuato ad inizio programma <br>
-     * I dati del login di collegamento (userid, username e cookies) sono nel singleton botLogin <br>
-     * <p>
-     * La prima request preliminare è di tipo GET, per recuperare token e session <br>
-     * urlDomain = "&meta=tokens&type=csrf" <br>
-     * Invia la request con i cookies di login e senza testo POST <br>
-     * Recupera i cookies della connessione (in particolare 'itwikisession') <br>
-     * Recupera il logintoken dalla urlResponse <br>
-     * <p>
-     * La seconda request è di tipo POST <br>
-     * urlDomain = "&action=xxxx" <br>
-     * Invia la request con i cookies ricevuti (solo 'session') <br>
-     * Scrive il testo post con i valori di lgname, lgpassword e lgtoken <br>
-     * <p>
-     * La response viene elaborata per conferma <br>
-     *
-     * @param wikiTitleGrezzo della pagina wiki (necessita di codifica) usato nella urlRequest
-     * @param newText         da inserire
-     * @param summary         oggetto della modifica (facoltativo)
-     *
-     * @return wrapper di informazioni
-     *
-     * @see https://www.mediawiki.org/wiki/API:Edit#Example
-     */
     public WResult urlRequest(final String wikiTitleGrezzo, final String newText, final String summary) {
-        queryType = AETypeQuery.getLoggatoConCookies;
-        this.summary = summary;
-
-        WResult result = checkIniziale(QUERY_CAT_REQUEST, wikiTitleGrezzo);
-        result.setLimit(0);
+        WResult result = checkWrite(wikiTitleGrezzo, newText, summary);
         if (result.isErrato()) {
-            return result.queryType(AETypeQuery.getLoggatoConCookies);
-        }
-
-        if (textService.isEmpty(newText)) {
-            String message = "Manca il newText da inserire";
-            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-            result.errorMessage(message);
-            result.setFine();
             return result;
         }
-
-        //--Controllo del Login
-        if (!botLogin.isBot()) {
-            result.setWikiTitle(wikiTitleGrezzo);
-            result.setErrorMessage("Login non valido come bot");
-            return result;
-        }
-
-        result.setQueryType(QUERY_TYPE);
-        result.setWikiTitle(wikiTitleGrezzo);
-        result.setSummary(summary);
-        result.setNewtext(newText);
-
-        if (textService.isEmpty(wikiTitleGrezzo)) {
-            result.setErrorMessage("Manca il titolo della pagina wiki");
-            return result;
-        }
-
-        if (textService.isEmpty(newText)) {
-            result.setErrorMessage("Manca il nuovo testo da inserire");
-            return result;
-        }
-
-        //--codifica del titolo (spazi vuoti e simili)
-        wikiTitle = fixWikiTitle(wikiTitleGrezzo);
 
         //--La prima request è di tipo GET
         //--Indispensabile aggiungere i cookies del botLogin
@@ -318,7 +290,7 @@ public class QueryWrite extends AQuery {
      * @return true se il collegamento come bot è confermato
      */
     public WResult secondaryRequestPost(WResult result) {
-        String urlDomain = TAG_SECONDARY_REQUEST_POST + wikiTitle;
+        String urlDomain = TAG_SECONDARY_REQUEST_POST + result.getWikiTitle();
         String urlResponse = VUOTA;
         URLConnection urlConn;
         Map<String, String> cookies = botLogin.getCookies();
@@ -361,7 +333,7 @@ public class QueryWrite extends AQuery {
      */
     protected WResult elaboraPost(final WResult result) {
         String testoPost = "";
-        String testoSummary = "";
+        String summary = result.getSummary();
         String testoCodificato = "";
         String newText = result.getNewtext();
 
@@ -379,15 +351,8 @@ public class QueryWrite extends AQuery {
         }
 
         if (textService.isValid(summary)) {
-            testoSummary = summary;
-            //            try { // prova ad eseguire il codice
-            //                testoSummary = URLEncoder.encode(summary, "UTF-8");
-            //            } catch (Exception unErrore) { // intercetta l'errore
-            //            }// fine del blocco try-catch
-        }
-
-        if (textService.isValid(testoSummary)) {
-            testoPost += "&summary=" + testoSummary;
+            result.setSummary(summary);
+            testoPost += "&summary=" + summary;
         }
 
         try { // prova a eseguire il codice

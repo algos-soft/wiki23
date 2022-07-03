@@ -315,9 +315,8 @@ public abstract class AQuery {
 
         if (textService.isEmpty(wikiTitleGrezzo)) {
             String message = "Manca il wikiTitleGrezzo";
-            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            logger.warn(new WrapLog().exception(new AlgosException(message)));
             result.errorMessage(message);
-            result.setWikiTitle(wikiTitleGrezzo);
             result.setFine();
             return result;
         }

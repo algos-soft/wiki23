@@ -101,7 +101,7 @@ public class QueryWriteTest extends WikiTest {
     }
 
 
-    //    @Test
+    @Test
     @Order(4)
     @DisplayName("4 - Request valida")
     void corretta() {
@@ -118,14 +118,30 @@ public class QueryWriteTest extends WikiTest {
 
     @Test
     @Order(5)
-    @DisplayName("5 - Request con controllo data")
+    @DisplayName("5 - Request valida con summary")
+    void summary() {
+        System.out.println(("5 - Request valida con summary"));
+
+        sorgente = "Utente:Biobot/2";
+        sorgente2 = String.format("Prova delle %s", System.currentTimeMillis());
+        sorgente3 = "Test";
+        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2, sorgente3);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+        printWrapBio(ottenutoRisultato.getWrap());
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Request con controllo dati/tmpl iniziale")
     void limitata() {
-        System.out.println(("5 - Request con controllo data"));
+        System.out.println(("6 - Request con controllo dati/tmpl iniziale"));
         System.out.println(VUOTA);
         System.out.println("Prima leggo un contenuto corposa da un'altra pagina e lo inserisco nella pagina di prova");
         System.out.println("Provo a riscrivere la pagina di prova precisando la parte di testo SIGNIFICATIVO");
-        System.out.println("Se cambia SOLO la parte 'modificabile' (data) e non quella 'significativa', la query NON deve scrivere");
-        System.out.println("Se cambia ANCHE la parte 'significativa', la query DEVE scrivere");
+        System.out.println("Se cambia SOLO la parte 'modificabile' iniziale e non quella 'significativa', la query NON deve scrivere");
+        System.out.println("Se cambia ANCHE la parte 'significativa' finale, la query DEVE scrivere");
 
         sorgente3 = "Progetto:Biografie/Attività/Abati e badesse";
         ottenuto = appContext.getBean(QueryRead.class).getText(sorgente3);
