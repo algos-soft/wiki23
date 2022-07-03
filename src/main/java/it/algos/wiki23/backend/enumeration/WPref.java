@@ -58,6 +58,8 @@ public enum WPref implements AIGenPref {
             "voci elencate"),
     usaLinkStatistiche("usaLinkStatistiche", AETypePref.bool, false, "Link alle liste di attività nel template statistiche, anche se " +
             "rossi"),
+    typeTocAttNaz("typeTocAttNaz", AETypePref.enumerationType, AETypeToc.noToc, "Type di TOC in attività e nazionalità",
+            AETypeToc.noToc),
 
 
     simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),

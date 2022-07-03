@@ -194,7 +194,7 @@ public abstract class Upload {
     }
 
     protected String forceToc() {
-        return "__FORCETOC__";
+        return ((AETypeToc)WPref.typeTocAttNaz.getEnumCurrentObj()).get();
     }
 
     protected String torna(String wikiTitle) {
@@ -307,11 +307,9 @@ public abstract class Upload {
         for (String key : mappaSub.keySet()) {
             lista = mappaSub.get(key);
             buffer.append(wikiUtility.setParagrafo(key, lista.size()));
-            buffer.append(CAPO);
             for (String didascalia : lista) {
                 buffer.append(didascalia + CAPO);
             }
-            buffer.append(CAPO);
         }
 
         return buffer.toString();

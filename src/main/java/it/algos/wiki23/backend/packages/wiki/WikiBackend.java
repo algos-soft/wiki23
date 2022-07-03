@@ -65,6 +65,7 @@ public abstract class WikiBackend extends CrudBackend {
      */
     @Autowired
     public AttivitaBackend attivitaBackend;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -141,7 +142,7 @@ public abstract class WikiBackend extends CrudBackend {
         }
 
         if (durataElaborazione != null) {
-            delta = delta / 1000;
+            delta = delta / 1000 / 60; //memorizzato e successivamente visualizzato in minuti
             durataElaborazione.setValue(delta.intValue());
         }
         else {
@@ -149,7 +150,7 @@ public abstract class WikiBackend extends CrudBackend {
             return;
         }
 
-        message = String.format("Elaborate %s %s in %d millisecondi", mongoTxt, modulo, delta);
+        message = String.format("Elaborate %s %s in circa %d minuti", mongoTxt, modulo, delta);
         logger.info(new WrapLog().message(message));
     }
 

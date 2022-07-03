@@ -367,12 +367,14 @@ public class AttivitaBackend extends WikiBackend {
                 attivitaOK.esistePagina = esistePagina(attivitaOK);
                 attivitaOK.numSingolari = numSingolari;
                 update(attivitaOK);
-                cont++;
-                if (mathService.multiploEsatto(100, cont)) {
-                    size = textService.format(cont);
-                    time = dateService.deltaText(inizio);
-                    message = String.format("Finora controllata l'esistenza di %s/%s liste di attività, in %s", size, tot, time);
-                    logger.info(new WrapLog().message(message).type(AETypeLog.elabora));
+                if (Pref.debug.is()) {
+                    cont++;
+                    if (mathService.multiploEsatto(100, cont)) {
+                        size = textService.format(cont);
+                        time = dateService.deltaText(inizio);
+                        message = String.format("Finora controllata l'esistenza di %s/%s liste di attività, in %s", size, tot, time);
+                        logger.info(new WrapLog().message(message).type(AETypeLog.elabora));
+                    }
                 }
             }
         }

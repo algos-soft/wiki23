@@ -3,6 +3,8 @@ package it.algos.wiki23.backend.upload;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.boot.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.attivita.*;
@@ -57,15 +59,11 @@ public class UploadAttivita extends Upload {
         buffer.append(textService.setRef(message));
 
         if (WPref.usaTreAttivita.is()) {
-            message = String.format("Ogni persona è presente in diverse [[Progetto:Biografie/%s|liste]], in base a quanto riportato in " +
-                    "uno dei 3 parametri ''%s, %s2 e %s3'' del [[template:Bio|template Bio]] presente nella voce " +
-                    "biografica specifica della persona", attNazUpper, attNaz, attNaz, attNaz);
+            message = LISTA_ATTIVITA_TRE;
         }
         else {
             buffer.append(" principale");
-            message = String.format("Ogni persona è presente in una sola [[Progetto:Biografie/%s|lista]], in base a quanto riportato " +
-                    "nel (primo) parametro ''%s'' del [[template:Bio|template Bio]] presente nella voce biografica specifica della " +
-                    "persona", attNazUpper, attNaz);
+            message = LISTA_ATTIVITA_UNICA;
         }
         //--ref 6
         buffer.append(textService.setRef(message));

@@ -506,7 +506,8 @@ public abstract class AQuery {
                 if (mathService.multiploEsatto(50000, num)) {
                     String time = dateService.deltaText(inizio);
                     message = String.format("Finora creati %s wrapTimes in %s (la categoria ha %s voci)", textService.format(num), time,
-                            textService.format(size));
+                            textService.format(size)
+                    );
                     logger.info(new WrapLog().message(message).type(AETypeLog.bio));
                 }
             }
@@ -832,6 +833,7 @@ public abstract class AQuery {
                     }
                     if (jsonRevZero.get(KEY_JSON_CONTENT) instanceof String contentTxt) {
                         mappaUrlResponse.put(KEY_JSON_CONTENT, contentTxt);
+                        result.setContent(contentTxt);
                     }
                 }
             }

@@ -14,7 +14,9 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Wiki23Cost {
+
     public static final String WIKI_TITLE_DEBUG = "Utente:Biobot/2";
+
     public static final String TAG_BOLD = "'''";
 
     public static final String TAG_ITALIC = "''";
@@ -239,5 +241,12 @@ public class Wiki23Cost {
     public static final String ATTIVITA_PROPERTY_3 = "attivita3";
 
     public static final String DEFAULT_SORT = "{{DEFAULTSORT:";
+
+    public static final String LISTA_ATTIVITA_TRE = "Ogni persona è presente in '''diverse [[Progetto:Biografie/Attività|liste]]''', in " +
+            "base a quanto riportato in uno " +
+            "dei '''3''' parametri '''''attività, attività2 e attività3''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona";
+
+    public static final String LISTA_ATTIVITA_UNICA = String.format("Ogni persona è presente in '''una sola [[Progetto:Biografie/Attività|lista]]''', in base a quanto " +
+            "riportato nel '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
 
 }

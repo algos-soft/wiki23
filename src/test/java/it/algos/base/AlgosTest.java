@@ -77,6 +77,7 @@ public abstract class AlgosTest {
     protected String ottenuto;
 
     protected String ottenuto2;
+    protected String ottenuto3;
 
     protected int sorgenteIntero;
 
@@ -318,6 +319,7 @@ public abstract class AlgosTest {
         previsto3 = VUOTA;
         ottenuto = VUOTA;
         ottenuto2 = VUOTA;
+        ottenuto3 = VUOTA;
         sorgenteIntero = 0;
         previstoIntero = 0;
         ottenutoIntero = 0;

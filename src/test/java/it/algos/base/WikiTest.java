@@ -32,7 +32,7 @@ import java.util.stream.*;
  */
 public abstract class WikiTest extends AlgosTest {
 
-    private static int MAX = 175;
+    public static int MAX = 175;
 
     /**
      * Istanza di una interfaccia <br>
@@ -308,6 +308,10 @@ public abstract class WikiTest extends AlgosTest {
     protected void printRisultato(WResult result) {
         List lista = result.getLista();
         lista = lista != null && lista.size() > 20 ? lista.subList(0, 10) : lista;
+        String newText = result.getNewtext();
+        newText = newText.length() < MAX ? newText : newText.substring(0, Math.min(MAX, newText.length()));
+        String content = result.getContent();
+        content = content.length() < MAX ? content : content.substring(0, Math.min(MAX, content.length()));
 
         System.out.println(VUOTA);
         System.out.println("Risultato");
@@ -327,7 +331,7 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Preliminary response: %s", result.getPreliminaryResponse()));
         System.out.println(String.format("Token: %s", result.getToken()));
         System.out.println(String.format("Post: %s", result.getPost()));
-        System.out.println(String.format("New text: %s", result.getNewtext()));
+        System.out.println(String.format("New text: %s", newText));
         System.out.println(String.format("Secondary response: %s", result.getResponse()));
         System.out.println(String.format("Message code: %s", result.getCodeMessage()));
         System.out.println(String.format("Message: %s", result.getMessage()));
@@ -339,6 +343,7 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("Cicli: %d", result.getCicli())); ;
         System.out.println(String.format("List value: %s", lista));
         System.out.println(String.format("Map value: %s", result.getMappa()));
+        System.out.println(String.format("Content value: %s", content));
         System.out.println(String.format("Risultato ottenuto in %s", dateService.toText(result.getDurata())));
         System.out.println(String.format("Risultato ottenuto in %s", dateService.deltaTextEsatto(result.getInizio(), result.getFine())));
         printWrapBio(result.getWrap());

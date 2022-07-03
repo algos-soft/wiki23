@@ -3,6 +3,7 @@ package it.algos.unit.query;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,8 +18,8 @@ import com.vaadin.flow.component.textfield.TextField;
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Tue, 07-Jun-2022
- * Time: 17:43
+ * Date: Sun, 03-Jul-2022
+ * Time: 08:17
  * Unit test di una classe service o backend o query <br>
  * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
  * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -28,15 +29,15 @@ import com.vaadin.flow.component.textfield.TextField;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("query")
-@DisplayName("Test QueryWrite")
+@DisplayName("Test QueryRead")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class QueryWriteTest extends WikiTest {
+public class QueryReadTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private QueryWrite istanza;
+    private QueryRead istanza;
 
 
     /**
@@ -65,11 +66,11 @@ public class QueryWriteTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1- Costruttore base senza parametri")
+    @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new QueryWrite();
+        istanza = new QueryRead();
         assertNotNull(istanza);
-        System.out.println(("1- Costruttore base senza parametri"));
+        System.out.println(("1 - Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
@@ -77,79 +78,56 @@ public class QueryWriteTest extends WikiTest {
     @Test
     @Order(2)
     @DisplayName("2 - Request errata. Manca il wikiTitle")
-    void errata2() {
+    void manca() {
         System.out.println(("2 - Request errata. Manca il wikiTitle"));
 
-        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2);
+        ottenutoRisultato = appContext.getBean(QueryRead.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
     }
-
 
     @Test
     @Order(3)
-    @DisplayName("3 - Request errata. Manca il newText")
-    void errata3() {
-        System.out.println(("3 - Request errata. Manca il newText"));
+    @DisplayName("3 - Request errata. Non esiste la pagina")
+    void inesistente() {
+        System.out.println(("3 - Request errata. Non esiste la pagina"));
 
-        sorgente = "Utente:Biobot/2";
-        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2);
+        sorgente = "Pippoz Belloz";
+        ottenutoRisultato = appContext.getBean(QueryRead.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
     }
 
-
-    //    @Test
+    @Test
     @Order(4)
     @DisplayName("4 - Request valida")
-    void corretta() {
+    void valida() {
         System.out.println(("4 - Request valida"));
 
         sorgente = "Utente:Biobot/2";
-        sorgente2 = String.format("Prova delle %s", System.currentTimeMillis());
-        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2);
+        ottenutoRisultato = appContext.getBean(QueryRead.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
-        printWrapBio(ottenutoRisultato.getWrap());
     }
 
     @Test
     @Order(5)
-    @DisplayName("5 - Request con controllo data")
-    void limitata() {
-        System.out.println(("5 - Request con controllo data"));
+    @DisplayName("5 - Altra request valida")
+    void valida2() {
+        System.out.println(("5 - Altra request valida"));
         System.out.println(VUOTA);
-        System.out.println("Prima leggo un contenuto corposa da un'altra pagina e lo inserisco nella pagina di prova");
-        System.out.println("Provo a riscrivere la pagina di prova precisando la parte di testo SIGNIFICATIVO");
-        System.out.println("Se cambia SOLO la parte 'modificabile' (data) e non quella 'significativa', la query NON deve scrivere");
-        System.out.println("Se cambia ANCHE la parte 'significativa', la query DEVE scrivere");
 
-        sorgente3 = "Progetto:Biografie/Attività/Abati e badesse";
-        ottenuto = appContext.getBean(QueryRead.class).getText(sorgente3);
+        sorgente = "Piozzano";
+        ottenuto = appContext.getBean(QueryRead.class).getText(sorgente);
         assertTrue(textService.isValid(ottenuto));
 
-        sorgente = "Utente:Biobot/2";
-        sorgente2 = ottenuto;
-        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2);
-        ottenuto2 = appContext.getBean(QueryRead.class).getText(sorgente);
-        assertEquals(ottenuto, ottenuto2);
-
-        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2);
-        assertNotNull(ottenutoRisultato);
-        assertTrue(ottenutoRisultato.isValido());
-        assertFalse(ottenutoRisultato.isModificata());
-        printRisultato(ottenutoRisultato);
-
-        sorgente3 = "";
-        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequestCheck(sorgente, sorgente2, sorgente3);
-        assertNotNull(ottenutoRisultato);
-        assertFalse(ottenutoRisultato.isValido());
-        assertFalse(ottenutoRisultato.isModificata());
-        printRisultato(ottenutoRisultato);
+        ottenuto = ottenuto.length() < MAX ? ottenuto : ottenuto.substring(0, Math.min(MAX, ottenuto.length()));
+        System.out.println((ottenuto));
     }
+
 
     /**
      * Qui passa al termine di ogni singolo test <br>

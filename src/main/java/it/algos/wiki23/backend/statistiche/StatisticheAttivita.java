@@ -130,12 +130,14 @@ public class StatisticheAttivita extends Statistiche {
         buffer.append(" voci biografiche che usano il [[template:Bio|template Bio]] e");
         if (WPref.usaTreAttivita.is()) {
             buffer.append(" i parametri '''''attività, attività2, attività3'''''.");
-            message = "Ogni persona è presente in '''diverse liste''', in base a quanto riportato in uno dei '''3''' parametri '''''attività, attività2 e attività3''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona";
+//            message = "Ogni persona è presente in '''diverse liste''', in base a quanto riportato in uno dei '''3''' parametri '''''attività, attività2 e attività3''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona";
+            message = LISTA_ATTIVITA_TRE;
         }
         else {
             buffer.append(" il '''primo''' parametro '''''attività'''''.");
-            message = String.format("Ogni persona è presente in '''una sola lista''', in base a quanto riportato nel" +
-                    " '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
+//            message = String.format("Ogni persona è presente in '''una sola lista''', in base a quanto riportato nel" +
+//                    " '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
+            message = LISTA_ATTIVITA_UNICA;
         }
         buffer.append(textService.setRef(message));
         buffer.append(CAPO);
