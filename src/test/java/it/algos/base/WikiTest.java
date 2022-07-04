@@ -313,7 +313,6 @@ public abstract class WikiTest extends AlgosTest {
         String content = result.getContent();
         content = content.length() < MAX ? content : content.substring(0, Math.min(MAX, content.length()));
 
-        System.out.println(VUOTA);
         System.out.println("Risultato");
         System.out.println(String.format("Status: %s", result.isValido() ? "true" : "false"));
         System.out.println(String.format("Modificata: %s", result.isModificata() ? "true" : "false"));

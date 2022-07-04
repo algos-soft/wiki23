@@ -73,7 +73,7 @@ public class QueryWrite extends AQuery {
 
         if (textService.isEmpty(newText)) {
             String message = "Manca il newText da inserire";
-            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            logger.warn(new WrapLog().exception(new AlgosException(message)));
             result.errorMessage(message);
             result.setFine();
             return result;
@@ -102,7 +102,7 @@ public class QueryWrite extends AQuery {
         }
 
         //--codifica del titolo (spazi vuoti e simili)
-        return result.wikiTitle(fixWikiTitle(wikiTitleGrezzo));
+        return result;
     }
 
     /**
@@ -110,14 +110,14 @@ public class QueryWrite extends AQuery {
      * Se cambia SOLO la parte 'modificabile' iniziale e non quella 'significativa', la query NON deve scrivere <br>
      * Se cambia ANCHE la parte 'significativa' finale, la query DEVE scrivere <br>
      *
-     * @param wikiTitleGrezzo    della pagina wiki (necessita di codifica) usato nella urlRequest
-     * @param newText            complessivo da inserire
-     * @param inizioModificabile senza che la pagina venga riscritta
+     * @param wikiTitleGrezzo      della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param newText              complessivo da inserire
+     * @param newTextSignificativo successivo alla parte iniziale che può variare senza che la pagina venga riscritta
      *
      * @return wrapper di informazioni
      */
-    public WResult urlRequestCheck(final String wikiTitleGrezzo, final String newText, final String inizioModificabile) {
-        return urlRequestCheck(wikiTitleGrezzo, newText, inizioModificabile, VUOTA);
+    public WResult urlRequestCheck(final String wikiTitleGrezzo, final String newText, final String newTextSignificativo) {
+        return urlRequestCheck(wikiTitleGrezzo, newText, newTextSignificativo, VUOTA);
     }
 
     /**
@@ -128,26 +128,66 @@ public class QueryWrite extends AQuery {
      * @param wikiTitleGrezzo      della pagina wiki (necessita di codifica) usato nella urlRequest
      * @param newTextAll           complessivo da inserire
      * @param newTextSignificativo successivo alla parte iniziale che può variare senza che la pagina venga riscritta
+     * @param summary              oggetto della modifica (facoltativo)
      *
      * @return wrapper di informazioni
      */
     public WResult urlRequestCheck(final String wikiTitleGrezzo, final String newTextAll, final String newTextSignificativo, final String summary) {
-        WResult result = checkWrite(wikiTitleGrezzo, newText, summary);
+        WResult result = checkWrite(wikiTitleGrezzo, newTextAll, summary);
         if (result.isErrato()) {
             return result;
         }
 
-        //--La prima request è di tipo GET
-        //--Indispensabile aggiungere i cookies del botLogin
-        result = this.primaryRequestGet(result);
+        if (textService.isEmpty(newTextSignificativo)) {
+            return (WResult) result.errorMessage("Manca il newTextSignificativo");
+        }
 
-        //--La seconda request è di tipo POST
-        //--Indispensabile aggiungere i cookies
-        //--Indispensabile aggiungere il testo POST
-        return this.secondaryRequestPost(result);
+        if (!newTextAll.endsWith(newTextSignificativo)) {
+            return (WResult) result.errorMessage("Il newTextAll NON finisce col newTextSignificativo");
+        }
 
-        //        WResult ottenutoRisultato = appContext.getBean(QueryBio.class).urlRequest(wikiTitleGrezzo);
-        //        return ottenutoRisultato;
+        //--confronto della parte 'significativa' per decidere se registrare
+        if (isModificataSignificativamente(wikiTitleGrezzo, newTextAll, newTextSignificativo)) {
+            //--La prima request è di tipo GET
+            //--Indispensabile aggiungere i cookies del botLogin
+            result = this.primaryRequestGet(result);
+
+            //--La seconda request è di tipo POST
+            //--Indispensabile aggiungere i cookies
+            //--Indispensabile aggiungere il testo POST
+            return this.secondaryRequestPost(result);
+        }
+        else {
+            result.setModificata(false);
+            result.setValidMessage("Nessuna modifica sostanziale ai contenuti");
+            return result;
+        }
+    }
+
+    /**
+     * confronto della parte 'significativa' per decidere se scriverla <br>
+     * <p>
+     * recupera la precedente esistente revisione della pagina <br>
+     * confronto le due parti 'significative' del testo <br>
+     *
+     * @param wikiTitleGrezzo      della pagina wiki (necessita di codifica) usato nella urlRequest
+     * @param newTextAll           complessivo da inserire
+     * @param newTextSignificativo successivo alla parte iniziale che può variare senza che la pagina venga riscritta
+     *
+     * @return true se significativamente cambiata e deve essere scritta
+     */
+    public boolean isModificataSignificativamente(final String wikiTitleGrezzo, final String newTextAll, final String newTextSignificativo) {
+        boolean modificataSignificativamente = true;
+        String oldTextAll;
+
+        oldTextAll = appContext.getBean(QueryRead.class).getText(wikiTitleGrezzo);
+        if (textService.isValid(oldTextAll)) {
+            if (oldTextAll.endsWith(newTextSignificativo)) {
+                modificataSignificativamente = false;
+            }
+        }
+
+        return modificataSignificativamente;
     }
 
     public WResult urlRequest(final String wikiTitleGrezzo, final String newText) {
@@ -290,7 +330,8 @@ public class QueryWrite extends AQuery {
      * @return true se il collegamento come bot è confermato
      */
     public WResult secondaryRequestPost(WResult result) {
-        String urlDomain = TAG_SECONDARY_REQUEST_POST + result.getWikiTitle();
+        String wikiTitleEncoded = fixWikiTitle(result.getWikiTitle());
+        String urlDomain = TAG_SECONDARY_REQUEST_POST + wikiTitleEncoded;
         String urlResponse = VUOTA;
         URLConnection urlConn;
         Map<String, String> cookies = botLogin.getCookies();
@@ -393,6 +434,7 @@ public class QueryWrite extends AQuery {
             result.setValido(true);
         }
 
+        result.setTypePage(AETypePage.pagina);
         result.setPageid(pageid);
         result.setNewrevid(revid);
         result.setNewtimestamp(newtimestamp);

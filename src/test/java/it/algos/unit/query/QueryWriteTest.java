@@ -143,27 +143,85 @@ public class QueryWriteTest extends WikiTest {
         System.out.println("Se cambia SOLO la parte 'modificabile' iniziale e non quella 'significativa', la query NON deve scrivere");
         System.out.println("Se cambia ANCHE la parte 'significativa' finale, la query DEVE scrivere");
 
+        System.out.println(VUOTA);
+        System.out.println("Leggo una corposa pagina esistente");
         sorgente3 = "Progetto:Biografie/Attività/Abati e badesse";
         ottenuto = appContext.getBean(QueryRead.class).getText(sorgente3);
         assertTrue(textService.isValid(ottenuto));
+        System.out.println("Fatto");
 
+        System.out.println(VUOTA);
+        System.out.println("Scrivo un contenuto corposo nella pagina test. Controllo che sia stato scritto");
         sorgente = "Utente:Biobot/2";
         sorgente2 = ottenuto;
         ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2);
         ottenuto2 = appContext.getBean(QueryRead.class).getText(sorgente);
         assertEquals(ottenuto, ottenuto2);
+        System.out.println("Fatto");
 
+        System.out.println(VUOTA);
+        System.out.println("Provo a riscrivere lo stesso contenuto, senza nessun controllo. Non scrive.");
         ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         assertFalse(ottenutoRisultato.isModificata());
         printRisultato(ottenutoRisultato);
 
+        System.out.println(VUOTA);
+        System.out.println("Provo a scrivere il contenuto con una minima (xyz) modifica iniziale, senza nessun controllo. Scrive.");
+        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, "xyz"+sorgente2);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.isModificata());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println("Provo a scrivere il contenuto, con check control. Mancano dati.");
         sorgente3 = "";
         ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequestCheck(sorgente, sorgente2, sorgente3);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
         assertFalse(ottenutoRisultato.isModificata());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println("Provo a scrivere il contenuto, con check control. Dati errati.");
+        sorgente3 = "Pippoz";
+        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequestCheck(sorgente, sorgente2, sorgente3);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+        assertFalse(ottenutoRisultato.isModificata());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println("Provo a scrivere il contenuto, con check control. Testo significativo NON modificato. Non scrive.");
+        sorgente3 = sorgente2.substring(sorgente2.length() - 50, sorgente2.length() - 25) + sorgente2.substring(sorgente2.length() - 25);
+        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequestCheck(sorgente, sorgente2, sorgente3);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        assertFalse(ottenutoRisultato.isModificata());
+        printRisultato(ottenutoRisultato);
+
+
+        System.out.println(VUOTA);
+        System.out.println("Ripristino il contenuto nella parte iniziale. Rimetto senza (xyz).");
+        System.out.println("Modifico il contenuto nella parte significativa. Scrive senza controllo.");
+        String sorgente2Old =  sorgente2;
+        String sorgente3Old =  sorgente2.substring(sorgente2.length() - 100);
+        sorgente2 = sorgente2.substring(0, sorgente2.length() - 25) + "x" + sorgente2.substring(sorgente2.length() - 25);
+        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequest(sorgente, sorgente2);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.isModificata());
+        printRisultato(ottenutoRisultato);
+
+
+        System.out.println(VUOTA);
+        System.out.println("Provo a scrivere il contenuto, con check control. Testo significativo modificato. Scrive.");
+        ottenutoRisultato = appContext.getBean(QueryWrite.class).urlRequestCheck(sorgente, sorgente2Old, sorgente3Old);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        assertTrue(ottenutoRisultato.isModificata());
         printRisultato(ottenutoRisultato);
     }
 
