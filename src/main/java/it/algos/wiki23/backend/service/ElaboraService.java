@@ -5,14 +5,12 @@ import static it.algos.vaad23.backend.boot.VaadCost.NOTE;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
-import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
-import static javax.tools.Diagnostic.Kind.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -494,7 +492,7 @@ public class ElaboraService extends WAbstractService {
         Nazionalita nazionalita = null;
 
         try {
-            nazionalita = nazionalitaBackend.findBySingolare(testoValido);
+            nazionalita = nazionalitaBackend.findFirstBySingolare(testoValido);
         } catch (Exception unErrore) {
             logger.info(new WrapLog().exception(unErrore));
         }
@@ -546,7 +544,7 @@ public class ElaboraService extends WAbstractService {
 
         if (textService.isValid(testoValido)) {
             try {
-                nazionalita = nazionalitaBackend.findBySingolare(testoValido);
+                nazionalita = nazionalitaBackend.findFirstBySingolare(testoValido);
             } catch (Exception unErrore) {
                 logger.error(new WrapLog().exception(unErrore).usaDb());
             }

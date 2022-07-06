@@ -40,7 +40,7 @@ public interface AttivitaRepository extends MongoRepository<Attivita, String> {
 
     Attivita findFirstByPlurale(String plurale);
 
-    List<Attivita> findByPluraleOrderBySingolareAsc(String plurale);
+    List<Attivita> findAllByPluraleOrderBySingolareAsc(String plurale);
 
     List<Attivita> findBySuperaSogliaFalseAndEsistePaginaTrue();
 

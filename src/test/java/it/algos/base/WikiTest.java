@@ -15,6 +15,7 @@ import org.mockito.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -149,6 +150,9 @@ public abstract class WikiTest extends AlgosTest {
     protected static final String PAGINA_REDIRECT = "Regno di Napoli (1805-1815)";
 
     protected long pageId;
+    public static final String SINGOLARE = "singolare";
+
+    public static final String PLURALE = "plurale";
 
     //--titolo
     //--pagina valida
@@ -234,6 +238,17 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("mongoli", false),
                 Arguments.of("persiani", false)
 
+        );
+    }
+
+    //--direzione
+    //--property
+    protected static Stream<Arguments> SORT() {
+        return Stream.of(
+                Arguments.of(Sort.Direction.ASC, SINGOLARE),
+                Arguments.of(Sort.Direction.DESC, SINGOLARE),
+                Arguments.of(Sort.Direction.ASC, PLURALE),
+                Arguments.of(Sort.Direction.DESC, PLURALE)
         );
     }
 
@@ -591,6 +606,14 @@ public abstract class WikiTest extends AlgosTest {
 
                 System.out.println(VUOTA);
             }
+        }
+    }
+    protected void printAllSingolari(String plurale, List<String> listaSingolari, String tag) {
+        System.out.println(String.format("Ci sono %d %s singolari per %s", listaSingolari.size(), tag, plurale));
+        System.out.println(VUOTA);
+
+        for (String singolare : listaSingolari) {
+            System.out.println(singolare);
         }
     }
 

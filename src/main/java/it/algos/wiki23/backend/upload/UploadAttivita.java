@@ -79,7 +79,6 @@ public class UploadAttivita extends Upload {
         if (subAttivitaNazionalita.equals(TAG_ALTRE)) {
             subAttivitaNazionalita = "senza nazionalità";
             buffer.append(String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita)));
-//            buffer.append(textService.setRef(LISTA_NAZIONALITA));
             message = "Qui vengono raggruppate quelle voci biografiche che '''non''' usano il parametro ''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
             buffer.append(textService.setRef(message));
         }

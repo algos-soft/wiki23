@@ -4,7 +4,6 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.liste.*;
-import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,7 +98,7 @@ public class ListaAttivitaTest extends WikiTest {
             message = String.format("Ci sono %d biografie che implementano l'attività %s %s", listBio.size(), sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printBioLista(listBio);
@@ -135,7 +134,7 @@ public class ListaAttivitaTest extends WikiTest {
             message = String.format("Ci sono %d wrapDidascalia che implementano l'attività %s %s", listWrapDidascalia.size(), sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printWrapListaAttivita(listWrapDidascalia);
@@ -171,7 +170,7 @@ public class ListaAttivitaTest extends WikiTest {
             message = String.format("WrapDidascalie che implementano l'attività %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaWrapDidascalia(sorgente, mappaWrapDidascalie);
@@ -208,7 +207,7 @@ public class ListaAttivitaTest extends WikiTest {
             message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaDidascalia("l'attività", sorgente, mappaDidascalie);
@@ -245,7 +244,7 @@ public class ListaAttivitaTest extends WikiTest {
             message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaDidascalia("l'attività", sorgente, mappaParagrafi);
@@ -282,7 +281,7 @@ public class ListaAttivitaTest extends WikiTest {
             message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(attivitaBackend.findByPlurale(sorgente));
+                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaDidascalia("l'attività", sorgente, mappaParagrafiDimensionati);

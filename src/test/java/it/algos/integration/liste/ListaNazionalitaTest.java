@@ -107,7 +107,7 @@ public class ListaNazionalitaTest extends WikiTest {
             message = String.format("Ci sono %d biografie che implementano la nazionalità %s%s", listBio.size(), sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printBioLista(listBio);
@@ -142,7 +142,7 @@ public class ListaNazionalitaTest extends WikiTest {
             message = String.format("Ci sono %d wrapDidascalia che implementano la nazionalità %s %s", listWrapDidascalia.size(), sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printWrapListaNazionalita(listWrapDidascalia);
@@ -178,7 +178,7 @@ public class ListaNazionalitaTest extends WikiTest {
             message = String.format("WrapDidascalie che implementano la nazionalità %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaWrapDidascalia(sorgente, mappaWrapDidascalie);
@@ -216,7 +216,7 @@ public class ListaNazionalitaTest extends WikiTest {
             message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaDidascalia("la nazionalità",sorgente, mappaDidascalie);
@@ -253,7 +253,7 @@ public class ListaNazionalitaTest extends WikiTest {
             message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaDidascalia("la nazionalità",sorgente, mappaParagrafi);
@@ -290,7 +290,7 @@ public class ListaNazionalitaTest extends WikiTest {
             message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
             System.out.println(message);
             if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findByPlurale(sorgente));
+                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
             }
             System.out.println(VUOTA);
             printMappaDidascalia("la nazionalità",sorgente, mappaParagrafiDimensionati);

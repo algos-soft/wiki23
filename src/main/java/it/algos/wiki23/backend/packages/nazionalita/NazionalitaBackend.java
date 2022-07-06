@@ -29,7 +29,7 @@ import java.util.*;
 public class NazionalitaBackend extends WikiBackend {
 
 
-    private NazionalitaRepository repository;
+    public NazionalitaRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -92,6 +92,42 @@ public class NazionalitaBackend extends WikiBackend {
         return repository.findAll();
     }
 
+    public List<String> findAllPlurali() {
+        List<String> lista = new ArrayList<>();
+        List<Nazionalita> listaAll = findNazionalitaDistinctByPlurali();
+
+        for (Nazionalita nazionalita : listaAll) {
+            lista.add(nazionalita.plurale);
+        }
+
+        return lista;
+    }
+
+    /**
+     * Retrieves the first entity by a 'singular' property.
+     * Cerca una singola entity con una query. <br>
+     * Restituisce un valore valido ANCHE se esistono diverse entities <br>
+     *
+     * @param nazionalitaSingolare per costruire la query
+     *
+     * @return the FIRST founded entity
+     */
+    public Nazionalita findFirstBySingolare(final String nazionalitaSingolare) {
+        return repository.findFirstBySingolare(nazionalitaSingolare);
+    }
+
+    /**
+     * Retrieves the first entity by a 'plural' property.
+     * Cerca una singola entity con una query. <br>
+     * Restituisce un valore valido ANCHE se esistono diverse entities <br>
+     *
+     * @param nazionalitaPlurale per costruire la query
+     *
+     * @return the FIRST founded entity
+     */
+    public Nazionalita findFirstByPlurale(final String nazionalitaPlurale) {
+        return repository.findFirstByPlurale(nazionalitaPlurale);
+    }
 
     public List<Nazionalita> findNazionalitaDistinctByPlurali() {
         List<Nazionalita> lista = new ArrayList<>();
@@ -107,24 +143,14 @@ public class NazionalitaBackend extends WikiBackend {
         return lista;
     }
 
-    public List<String> findAllPlurali() {
-        List<String> lista = new ArrayList<>();
-        List<Nazionalita> listaAll = findNazionalitaDistinctByPlurali();
 
-        for (Nazionalita nazionalita : listaAll) {
-            lista.add(nazionalita.plurale);
-        }
-
-        return lista;
-    }
-
-    public List<Nazionalita> findByPlurale(final String plurale) {
-        return repository.findByPluraleOrderBySingolareAsc(plurale);
+    public List<Nazionalita> findAllByPlurale(final String plurale) {
+        return repository.findAllByPluraleOrderBySingolareAsc(plurale);
     }
 
     public List<String> findSingolariByPlurale(final String plurale) {
         List<String> listaNomi = new ArrayList<>();
-        List<Nazionalita> listaNazionalita = findByPlurale(plurale);
+        List<Nazionalita> listaNazionalita = findAllByPlurale(plurale);
 
         for (Nazionalita nazionalita : listaNazionalita) {
             listaNomi.add(nazionalita.singolare);
@@ -133,15 +159,31 @@ public class NazionalitaBackend extends WikiBackend {
         return listaNomi;
     }
 
-    /**
-     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria e unica) <br>
-     *
-     * @param singolare (obbligatorio, unico)
-     *
-     * @return istanza della Entity, null se non trovata
-     */
-    public Nazionalita findBySingolare(final String singolare) {
-        return repository.findFirstBySingolare(singolare);
+
+    public LinkedHashMap<String, List<String>> findMappaSingolariByPlurale() {
+        LinkedHashMap<String, List<String>> mappa = new LinkedHashMap<>();
+        List<String> lista;
+        List<Nazionalita> listaAll = repository.findAll();
+        String plurale;
+        String singolare;
+
+        for (Nazionalita nazionalita : listaAll) {
+            plurale = nazionalita.plurale;
+            singolare = nazionalita.singolare;
+
+            if (mappa.get(plurale) == null) {
+                lista = new ArrayList<>();
+                lista.add(singolare);
+                mappa.put(plurale, lista);
+            }
+            else {
+                lista = mappa.get(plurale);
+                lista.add(singolare);
+                mappa.put(plurale, lista);
+            }
+        }
+
+        return mappa;
     }
 
     /**
@@ -204,7 +246,7 @@ public class NazionalitaBackend extends WikiBackend {
                 numSingolari++;
             }
 
-            for (Nazionalita nazionalitaOK : findByPlurale(nazionalita.plurale)) {
+            for (Nazionalita nazionalitaOK : findAllByPlurale(nazionalita.plurale)) {
                 nazionalitaOK.numBio = numBio;
                 nazionalitaOK.numSingolari = numSingolari;
                 update(nazionalitaOK);

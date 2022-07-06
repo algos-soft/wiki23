@@ -2,93 +2,87 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.wiki23.backend.packages.attivita.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
 import org.junit.jupiter.api.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.data.domain.*;
 
 import java.util.*;
 import java.util.stream.*;
+
+import org.springframework.data.domain.*;
 
 /**
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: mar, 03-mag-2022
- * Time: 10:10
- * <p>
- * Unit test di una classe di servizio (di norma) <br>
- * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
- * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
- * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
+ * Date: Wed, 06-Jul-2022
+ * Time: 14:26
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("backend")
-@DisplayName("Attivita backend")
+@DisplayName("Nazionalita Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AttivitaBackendTest extends WikiTest {
-
+public class NazionalitaBackendTest extends WikiTest {
 
     /**
-     * Classe principale di riferimento <br>
-     * Gia 'costruita' nella superclasse <br>
+     * The Service.
      */
     @InjectMocks
-    private AttivitaBackend backend;
+    public NazionalitaBackend backend;
 
     @Autowired
-    private AttivitaRepository repository;
+    private NazionalitaRepository repository;
 
-    protected List<Attivita> listaBeans;
+    protected List<Nazionalita> listaBeans;
 
-
-    private Attivita entityBean;
+    private Nazionalita entityBean;
 
     //--nome singolare
     //--esiste
-    protected static Stream<Arguments> ATTIVITA_SINGOLARE() {
+    protected static Stream<Arguments> NAZIONALITA_SINGOLARE() {
         return Stream.of(
                 Arguments.of(VUOTA, false),
-                Arguments.of("politico", true),
+                Arguments.of("turco", true),
                 Arguments.of("errata", false),
-                Arguments.of("attrice", true),
+                Arguments.of("tedesca", true),
+                Arguments.of("tedeschi", false),
                 Arguments.of("direttore di scena", false),
-                Arguments.of("vescovo ariano", true)
+                Arguments.of("brasiliano", true)
 
         );
     }
 
     //--nome plurale
     //--esiste
-    protected static Stream<Arguments> ATTIVITA_PLURALI() {
+    protected static Stream<Arguments> NAZIONALITA_PLURALI() {
         return Stream.of(
-                Arguments.of(VUOTA, false),
-                Arguments.of("politici", true),
-                Arguments.of("fantasmi", false),
-                Arguments.of("attori", true),
-                Arguments.of("nessuna", false),
-                Arguments.of("accademici", true)
+                Arguments.of(VUOTA,false),
+                Arguments.of("tedesca",false),
+                Arguments.of("britannici",true),
+                Arguments.of("tedesco",false),
+                Arguments.of("tedeschi",true),
+                Arguments.of("non esiste",false)
         );
     }
 
-
     /**
-     * Execute only once before running all tests <br>
-     * Esegue una volta sola, chiamato dalle sottoclassi <br>
-     * Invocare PRIMA il metodo setUpAll() della superclasse <br>
-     * Si possono aggiungere regolazioni specifiche <br>
+     * Qui passa una volta sola <br>
      */
     @BeforeAll
     protected void setUpAll() {
         super.setUpAll();
+
+        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(backend);
+        Assertions.assertNotNull(backend);
 
         backend.repository = repository;
         backend.crudRepository = repository;
@@ -98,10 +92,25 @@ public class AttivitaBackendTest extends WikiTest {
 
 
     /**
-     * Qui passa prima di ogni test delle sottoclassi <br>
-     * Invocare PRIMA il metodo setUpEach() della superclasse <br>
-     * Si possono aggiungere regolazioni specifiche <br>
+     * Inizializzazione dei service <br>
+     * Devono essere tutti 'mockati' prima di iniettare i riferimenti incrociati <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
+    protected void initMocks() {
+        super.initMocks();
+    }
+
+
+    /**
+     * Regola tutti riferimenti incrociati <br>
+     * Deve essere fatto dopo aver costruito tutte le referenze 'mockate' <br>
+     * Nelle sottoclassi devono essere regolati i riferimenti dei service specifici <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixRiferimentiIncrociati() {
+        super.fixRiferimentiIncrociati();
+    }
+
     @BeforeEach
     protected void setUpEach() {
         super.setUpEach();
@@ -122,9 +131,10 @@ public class AttivitaBackendTest extends WikiTest {
 
         ottenutoIntero = backend.count();
         assertTrue(ottenutoIntero > 0);
-        message = String.format("Ci sono in totale %s attività", textService.format(ottenutoIntero));
+        message = String.format("Ci sono in totale %s entities nel database mongoDB", textService.format(ottenutoIntero));
         System.out.println(message);
     }
+
 
     @Test
     @Order(2)
@@ -135,10 +145,10 @@ public class AttivitaBackendTest extends WikiTest {
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s attività", textService.format(listaBeans.size()));
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Nazionalita");
         System.out.println(message);
-        printSingolari(listaBeans);
     }
+
 
     @ParameterizedTest
     @MethodSource(value = "SORT")
@@ -153,8 +163,8 @@ public class AttivitaBackendTest extends WikiTest {
 
         listaBeans = backend.findAll(sort);
         assertNotNull(listaBeans);
-        System.out.println(String.format("Le prime %s attività ordinate per '%s' %s", num, property, direction));
-        printSingolari(listaBeans.subList(0, num));
+        System.out.println(String.format("Le prime %s nazionalità ordinate per '%s' %s", num, property, direction));
+        printBeans(listaBeans.subList(0, num));
         System.out.println(VUOTA);
         System.out.println(VUOTA);
     }
@@ -170,36 +180,35 @@ public class AttivitaBackendTest extends WikiTest {
         print(listaStr, "di tutti i plurali distinti");
     }
 
+
     @Test
     @Order(5)
-    @DisplayName("5 - findAttivitaDistinctByPlurali (Attivita attività)")
+    @DisplayName("5 - findNazionalitaDistinctByPlurali (Nazionalita nazionalità)")
     void allDistinct() {
-        System.out.println("5 - findAttivitaDistinctByPlurali (Attivita attività)");
-        listaBeans = backend.findAttivitaDistinctByPlurali();
+        System.out.println("5 - findNazionalitaDistinctByPlurali (Nazionalita nazionalità)");
+        listaBeans = backend.findNazionalitaDistinctByPlurali();
         assertNotNull(listaBeans);
         printPlurali(listaBeans);
     }
 
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_SINGOLARE")
+    @MethodSource(value = "NAZIONALITA_SINGOLARE")
     @Order(6)
     @DisplayName("6 - isExist")
-        //--nome singolare
-        //--esiste
     void isExist(final String singolare, final boolean esiste) {
         System.out.println("6 - isExist");
         ottenutoBooleano = backend.isExist(singolare);
         assertEquals(esiste, ottenutoBooleano);
         if (ottenutoBooleano) {
-            System.out.println(String.format("L'attività '%s' esiste", singolare));
+            System.out.println(String.format("La nazionalità '%s' esiste", singolare));
         }
         else {
-            System.out.println(String.format("L'attività '%s' non esiste", singolare));
+            System.out.println(String.format("La nazionalità '%s' non esiste", singolare));
         }
     }
 
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_SINGOLARE")
+    @MethodSource(value = "NAZIONALITA_SINGOLARE")
     @Order(7)
     @DisplayName("7 - findBySingolare")
         //--nome singolare
@@ -209,37 +218,39 @@ public class AttivitaBackendTest extends WikiTest {
         entityBean = backend.findFirstBySingolare(singolare);
         assertEquals(entityBean != null, esiste);
         if (esiste) {
-            System.out.println(String.format("L'attività '%s' esiste", singolare));
+            System.out.println(String.format("La nazionalità '%s' esiste", singolare));
         }
         else {
-            System.out.println(String.format("L'attività '%s' non esiste", singolare));
+            System.out.println(String.format("La nazionalità '%s' non esiste", singolare));
         }
     }
 
+
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_PLURALI")
+    @MethodSource(value = "NAZIONALITA_PLURALI")
     @Order(8)
-    @DisplayName("8 - findByPlurale e trova 'attività'")
+    @DisplayName("8 - findByPlurale e trova 'nazionalità'")
         //--nome plurale
         //--esiste
     void findByPlurale(String plurale, boolean esiste) {
-        System.out.println("8 - findByPlurale e trova 'attività'");
+        System.out.println("8 - findByPlurale e trova 'nazionalità'");
         entityBean = backend.findFirstByPlurale(plurale);
         assertEquals(entityBean != null, esiste);
         if (esiste) {
-            System.out.println(String.format("L'attività '%s' esiste", plurale));
+            System.out.println(String.format("La nazionalità '%s' esiste", plurale));
         }
         else {
-            System.out.println(String.format("L'attività '%s' non esiste", plurale));
+            System.out.println(String.format("La nazionalità '%s' non esiste", plurale));
         }
         listaBeans = backend.findAllByPlurale(plurale);
         assertNotNull(listaBeans);
         assertEquals(listaBeans.size() > 0, esiste);
-        printSingolariAttivita(plurale, listaBeans);
+        printSingolariNazionalita(plurale, listaBeans);
     }
 
+
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_PLURALI")
+    @MethodSource(value = "NAZIONALITA_PLURALI")
     @Order(9)
     @DisplayName("9 - findSingolariByPlurale e trova 'singolari'")
         //--nome plurale
@@ -249,7 +260,7 @@ public class AttivitaBackendTest extends WikiTest {
         listaStr = backend.findSingolariByPlurale(plurale);
         assertNotNull(listaStr);
         assertEquals(listaStr.size() > 0, esiste);
-        printAllSingolari(plurale,  listaStr,"attività");
+        printAllSingolari(plurale,  listaStr,"nazionalità");
     }
 
 
@@ -260,17 +271,18 @@ public class AttivitaBackendTest extends WikiTest {
         System.out.println("10 - findMappaSingolariByPlurale");
         mappa = backend.findMappaSingolariByPlurale();
         assertNotNull(mappa);
-        printMappa(mappa, "di attività plurali con le relative attività singolari");
+        printMappa(mappa, "di nazionalità plurali con le relative nazionalità singolari");
     }
 
+
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_SINGOLARE")
+    @MethodSource(value = "NAZIONALITA_SINGOLARE")
     @Order(11)
     @DisplayName("11 - countBySingolare")
     void countBySingolare(String singolare, boolean esiste) {
         System.out.println("11 - countBySingolare");
-        ottenutoIntero = bioBackend.countAttivita(singolare);
-        System.out.println(String.format("L'attività '%s' contiene %s voci biografiche", singolare, ottenutoIntero));
+        ottenutoIntero = bioBackend.countNazionalita(singolare);
+        System.out.println(String.format("La nazionalità '%s' contiene %s voci biografiche", singolare, ottenutoIntero));
     }
 
     /**
@@ -287,39 +299,36 @@ public class AttivitaBackendTest extends WikiTest {
     @AfterAll
     void tearDownAll() {
     }
-
-    void printSingolariAttivita(String plurale, List<Attivita> listaAttivita) {
-        System.out.println(String.format("Ci sono %d attività singolari per %s", listaAttivita.size(), plurale));
-        System.out.println(VUOTA);
-
-        for (Attivita attivita : listaAttivita) {
-            System.out.println(attivita.singolare);
-        }
-    }
-
-
-    void printPlurali(List<Attivita> listaAttivita) {
-        System.out.println(String.format("Ci sono %d attività plurali distinte", listaAttivita.size()));
+    void printPlurali(List<Nazionalita> listaNazionalita) {
+        System.out.println(String.format("Ci sono %d nazionalità plurali distinte", listaNazionalita.size()));
         System.out.println(VUOTA);
         int k = 0;
 
-        for (Attivita attivita : listaAttivita) {
+        for (Nazionalita nazionalita : listaNazionalita) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(attivita.plurale);
+            System.out.println(nazionalita.plurale);
         }
     }
 
-    void printSingolari(List<Attivita> listaAttivita) {
+    void printBeans(List<Nazionalita> listaBeans) {
         System.out.println(VUOTA);
         int k = 0;
 
-        for (Attivita attivita : listaAttivita) {
+        for (Nazionalita bean : listaBeans) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(attivita.singolare);
+            System.out.println(bean);
+        }
+    }
+    void printSingolariNazionalita(String plurale, List<Nazionalita> listaNazionalita) {
+        System.out.println(String.format("Ci sono %d nazionalita singolari per %s", listaNazionalita.size(), plurale));
+        System.out.println(VUOTA);
+
+        for (Nazionalita nazionalita : listaNazionalita) {
+            System.out.println(nazionalita.singolare);
         }
     }
 

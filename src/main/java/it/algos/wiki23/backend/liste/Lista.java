@@ -313,7 +313,7 @@ public abstract class Lista {
         }
         wrap.setNazionalitaSingola(bio.nazionalita);
         if (textService.isValid(bio.nazionalita)) {
-            wrap.setNazionalitaParagrafo(nazionalitaBackend.findBySingolare(bio.nazionalita).plurale);
+            wrap.setNazionalitaParagrafo(nazionalitaBackend.findFirstBySingolare(bio.nazionalita).plurale);
         }
         wrap.setWikiTitle(bio.wikiTitle);
         wrap.setNome(bio.nome);

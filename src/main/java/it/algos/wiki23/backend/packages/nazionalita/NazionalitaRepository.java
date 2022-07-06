@@ -36,6 +36,7 @@ public interface NazionalitaRepository extends MongoRepository<Nazionalita, Stri
     void delete(Nazionalita entity);
 
     Nazionalita findFirstBySingolare(String singolare);
-    List<Nazionalita> findByPluraleOrderBySingolareAsc(String plurale);
+    Nazionalita findFirstByPlurale(String plurale);
+    List<Nazionalita> findAllByPluraleOrderBySingolareAsc(String plurale);
 
 }// end of crud repository class

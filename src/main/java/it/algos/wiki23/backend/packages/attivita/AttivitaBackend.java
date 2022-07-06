@@ -150,19 +150,21 @@ public class AttivitaBackend extends WikiBackend {
         return lista;
     }
 
-    public boolean isExist(final String singolare) {
-        return findFirstBySingolare(singolare) != null;
+    public boolean isExist(final String attivitaSingolare) {
+        return findFirstBySingolare(attivitaSingolare) != null;
     }
 
     /**
-     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria e unica) <br>
+     * Retrieves the first entity by a 'singular' property.
+     * Cerca una singola entity con una query. <br>
+     * Restituisce un valore valido ANCHE se esistono diverse entities <br>
      *
-     * @param singolare (obbligatorio, unico)
+     * @param attivitaSingolare per costruire la query
      *
-     * @return istanza della Entity, null se non trovata
+     * @return the FIRST founded entity
      */
-    public Attivita findFirstBySingolare(final String singolare) {
-        return repository.findFirstBySingolare(singolare);
+    public Attivita findFirstBySingolare(final String attivitaSingolare) {
+        return repository.findFirstBySingolare(attivitaSingolare);
     }
 
     /**
@@ -179,8 +181,8 @@ public class AttivitaBackend extends WikiBackend {
     }
 
 
-    public List<Attivita> findByPlurale(final String plurale) {
-        return repository.findByPluraleOrderBySingolareAsc(plurale);
+    public List<Attivita> findAllByPlurale(final String plurale) {
+        return repository.findAllByPluraleOrderBySingolareAsc(plurale);
     }
 
     /**
@@ -192,7 +194,7 @@ public class AttivitaBackend extends WikiBackend {
      */
     public List<String> findSingolariByPlurale(final String attivitaPlurale) {
         List<String> listaNomi = new ArrayList<>();
-        List<Attivita> listaAttivita = findByPlurale(attivitaPlurale);
+        List<Attivita> listaAttivita = findAllByPlurale(attivitaPlurale);
 
         for (Attivita attivita : listaAttivita) {
             listaNomi.add(attivita.singolare);
@@ -238,7 +240,7 @@ public class AttivitaBackend extends WikiBackend {
      */
     public int contBio(final Attivita attivitaSingolare) {
         int numBio = 0;
-        List<Attivita> lista = this.findByPlurale(attivitaSingolare.plurale);
+        List<Attivita> lista = this.findAllByPlurale(attivitaSingolare.plurale);
 
         for (Attivita attivita : lista) {
             numBio += attivita.numBio;
@@ -364,7 +366,7 @@ public class AttivitaBackend extends WikiBackend {
                 numSingolari++;
             }
 
-            for (Attivita attivitaOK : findByPlurale(attivita.plurale)) {
+            for (Attivita attivitaOK : findAllByPlurale(attivita.plurale)) {
                 attivitaOK.numBio = numBio;
                 attivitaOK.superaSoglia = numBio >= soglia ? true : false;
                 attivitaOK.esistePagina = esistePagina(attivitaOK.plurale);
@@ -398,7 +400,7 @@ public class AttivitaBackend extends WikiBackend {
         List<String> listaPluraliUnici = findAllPlurali();
         this.fixNext();
 
-        for (String pluraleAttivita : listaPluraliUnici.subList(45, 51)) { //#todo attenzione
+        for (String pluraleAttivita : listaPluraliUnici) {
             result = uploadPagina(pluraleAttivita);
             if (result.isValido()) {
                 if (result.isModificata()) {
