@@ -8,12 +8,15 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.upload.*;
+import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+import java.time.*;
 import java.util.*;
 
 /**
@@ -364,7 +367,7 @@ public class AttivitaBackend extends WikiBackend {
             for (Attivita attivitaOK : findByPlurale(attivita.plurale)) {
                 attivitaOK.numBio = numBio;
                 attivitaOK.superaSoglia = numBio >= soglia ? true : false;
-                attivitaOK.esistePagina = esistePagina(attivitaOK);
+                attivitaOK.esistePagina = esistePagina(attivitaOK.plurale);
                 attivitaOK.numSingolari = numSingolari;
                 update(attivitaOK);
                 if (Pref.debug.is()) {
@@ -383,11 +386,99 @@ public class AttivitaBackend extends WikiBackend {
     }
 
     /**
+     * Esegue un azione di upload, specifica del programma/package in corso <br>
+     */
+    public void uploadAll() {
+        WResult result;
+        long inizio = System.currentTimeMillis();
+        int sottoSoglia = 0;
+        int daCancellare = 0;
+        int modificate = 0;
+        int nonModificate = 0;
+        List<String> listaPluraliUnici = findAllPlurali();
+        this.fixNext();
+
+        for (String pluraleAttivita : listaPluraliUnici.subList(45, 51)) { //#todo attenzione
+            result = uploadPagina(pluraleAttivita);
+            if (result.isValido()) {
+                if (result.isModificata()) {
+                    modificate++;
+                }
+                else {
+                    nonModificate++;
+                }
+            }
+            else {
+                sottoSoglia++;
+                if (result.getErrorCode().equals(KEY_ERROR_CANCELLANDA)) {
+                    daCancellare++;
+                }
+            }
+        }
+        super.fixUploadMinuti(inizio, sottoSoglia, daCancellare, nonModificate, modificate, "attività");
+
+        LocalDateTime adesso = LocalDateTime.now();
+        adesso = adesso.plusDays(7);
+        WPref.uploadAttivitaPrevisto.setValue(adesso);
+    }
+
+    /**
      * Controlla l'esistenza della pagina wiki relativa a questa attività (lista) <br>
      */
-    public boolean esistePagina(Attivita attivita) {
-        String wikiTitle = "Progetto:Biografie/Attività/" + textService.primaMaiuscola(attivita.plurale);
+    public boolean esistePagina(String pluraleAttivita) {
+        String wikiTitle = "Progetto:Biografie/Attività/" + textService.primaMaiuscola(pluraleAttivita);
         return appContext.getBean(QueryExist.class).isEsiste(wikiTitle);
+    }
+
+    /**
+     * Scrive una pagina definitiva sul server wiki <br>
+     */
+    public WResult uploadPagina(String pluraleAttivitaMinuscola) {
+        WResult result = WResult.errato();
+        String message;
+        int numVoci = bioBackend.countAttivitaPlurale(pluraleAttivitaMinuscola);
+        String voci = textService.format(numVoci);
+        String pluraleAttivitaMaiuscola = textService.primaMaiuscola(pluraleAttivitaMinuscola);
+        int soglia = WPref.sogliaAttNazWiki.getInt();
+        String wikiTitle = "Progetto:Biografie/Attività/" + pluraleAttivitaMaiuscola;
+
+        if (numVoci > soglia) {
+            result = appContext.getBean(UploadAttivita.class).upload(pluraleAttivitaMinuscola);
+            if (result.isValido()) {
+                if (result.isModificata()) {
+                    message = String.format("Lista %s utilizzati in %s voci biografiche", pluraleAttivitaMinuscola, voci);
+                }
+                else {
+                    message = String.format("Attività %s utilizzata in %s voci biografiche. %s", pluraleAttivitaMinuscola, voci, result.getValidMessage());
+                }
+                if (Pref.debug.is()) {
+                    logger.info(new WrapLog().message(message).type(AETypeLog.upload));
+                }
+            }
+            else {
+                logger.warn(new WrapLog().message(result.getErrorMessage()).type(AETypeLog.upload));
+            }
+        }
+        else {
+            message = String.format("L'attività %s ha solo %s voci biografiche e non raggiunge il numero necessario per avere una pagina dedicata", pluraleAttivitaMinuscola, voci);
+            if (Pref.debug.is()) {
+                result.setErrorMessage(message).setValido(false);
+                logger.info(new WrapLog().message(message).type(AETypeLog.upload));
+            }
+            if (esistePagina(pluraleAttivitaMinuscola)) {
+                result.setErrorCode(KEY_ERROR_CANCELLANDA);
+                message = String.format("Esiste la pagina %s che andrebbe cancellata", wikiTitle);
+                logger.warn(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
+            }
+        }
+
+        return result;
+    }
+
+    public void fixNext() {
+        LocalDateTime adesso = LocalDateTime.now();
+        LocalDateTime prossimo = adesso.plusDays(7);
+        WPref.uploadAttivitaPrevisto.setValue(prossimo);
     }
 
 }// end of crud backend class

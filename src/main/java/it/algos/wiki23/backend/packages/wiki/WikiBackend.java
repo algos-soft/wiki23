@@ -34,6 +34,10 @@ public abstract class WikiBackend extends CrudBackend {
 
     public WPref durataElaborazione;
 
+    protected WPref lastUpload;
+
+    protected WPref durataUpload;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -180,5 +184,30 @@ public abstract class WikiBackend extends CrudBackend {
         logger.info(new WrapLog().message(message));
     }
 
+    public void fixUploadMinuti(final long inizio, int sottoSoglia, int daCancellare, int nonModificate, int modificate, final String modulo) {
+        long fine = System.currentTimeMillis();
+        Long delta = fine - inizio;
+        int tot = sottoSoglia + nonModificate + modificate;
+
+        if (lastUpload != null) {
+            lastUpload.setValue(LocalDateTime.now());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("lastUpload è nullo")));
+            return;
+        }
+
+        if (durataUpload != null) {
+            delta = delta / 1000 / 60;
+            durataUpload.setValue(delta.intValue());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("durataUpload è nullo")));
+            return;
+        }
+
+        message = String.format("Check di %s %s, in %s minuti. Sotto soglia: %s. Da cancellare: %s. Non modificate: %s. Modificate: %s.", tot, modulo, delta, sottoSoglia, daCancellare, nonModificate, modificate);
+        logger.info(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
+    }
 
 }

@@ -30,6 +30,8 @@ public enum WPref implements AIGenPref {
     elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le attività."),
     elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, 0, "Durata elaborazione delle attività in secondi."),
     uploadAttivita("uploadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le attività."),
+    uploadAttivitaTime("uploadAttivitaTime", AETypePref.integer, 0, "Durata upload delle attività in minuti."),
+    uploadAttivitaPrevisto("uploadAttivitaPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per le attività."),
 
 
     downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Download di Modulo:Bio/Plurale nazionalità."),
@@ -39,6 +41,7 @@ public enum WPref implements AIGenPref {
 
     downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download delle voci biografiche."),
     downloadBioTime("downloadBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata ciclo completo download delle biografie in minuti."),
+    downloadBioPrevisto("downloadBioPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo download previsto delle voci biografiche."),
     elaboraBio("elaboraBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le biografie."),
     elaboraBioTime("elaboraBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata elaborazione delle biografie in minuti."),
 
@@ -59,14 +62,16 @@ public enum WPref implements AIGenPref {
     usaLinkStatistiche("usaLinkStatistiche", AETypePref.bool, false, "Link alle liste di attività nel template statistiche, anche se " +
             "rossi"),
     typeTocAttNaz("typeTocAttNaz", AETypePref.enumerationType, AETypeToc.noToc, "Type di TOC in attività e nazionalità",
-            AETypeToc.noToc),
+            AETypeToc.noToc
+    ),
 
 
     simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),
     simboloMorto("simboloMorto", AETypePref.string, "†", "Simbolo della morte nelle didascalie"),
 
     linkCrono("linkCrono", AETypePref.enumerationType, AETypeLinkCrono.voce, "Type di link a giorni/anni nelle didascalie",
-            AETypeLinkCrono.nessuno),
+            AETypeLinkCrono.nessuno
+    ),
     ;
 
     //--codice di riferimento.

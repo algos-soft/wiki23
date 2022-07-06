@@ -89,6 +89,7 @@ public class BioView extends WikiView {
 
         super.lastDownload = WPref.downloadBio;
         super.durataDownload = WPref.downloadBioTime;
+        super.nextDownload=WPref.downloadBioPrevisto;
         super.lastElaborazione = WPref.elaboraBio;
         super.durataElaborazione = WPref.elaboraBioTime;
 

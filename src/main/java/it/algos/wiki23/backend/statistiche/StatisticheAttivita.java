@@ -252,7 +252,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNome(plurale, soglia, linkLista));
+        buffer.append(fixNomeUsate(plurale, soglia, linkLista));
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
@@ -275,7 +275,7 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
-    protected String fixNome(String nomeAttivitaPlurale, int soglia, boolean linkLista) {
+    protected String fixNomeUsate(String nomeAttivitaPlurale, int soglia, boolean linkLista) {
         String nomeVisibile = nomeAttivitaPlurale;
         boolean superaSoglia;
         int numVociBio;
@@ -284,6 +284,21 @@ public class StatisticheAttivita extends Statistiche {
         numVociBio = bioBackend.countAttivitaPlurale(nomeAttivitaPlurale);
         superaSoglia = numVociBio >= soglia;
         if (superaSoglia || linkLista) {
+            nomeVisibile = listaTag + textService.primaMaiuscola(nomeAttivitaPlurale) + PIPE + nomeAttivitaPlurale;
+            nomeVisibile = textService.setDoppieQuadre(nomeVisibile);
+        }
+
+        return nomeVisibile;
+    }
+    protected String fixNomeParzialmenteUsate(String nomeAttivitaPlurale, int soglia, boolean linkLista) {
+        String nomeVisibile = nomeAttivitaPlurale;
+        boolean superaSoglia;
+        int numVociBio;
+        String listaTag = "Progetto:Biografie/Attività/";
+
+        numVociBio = bioBackend.countAttivitaPlurale(nomeAttivitaPlurale);
+        superaSoglia = numVociBio >= soglia;
+        if (superaSoglia && linkLista) {
             nomeVisibile = listaTag + textService.primaMaiuscola(nomeAttivitaPlurale) + PIPE + nomeAttivitaPlurale;
             nomeVisibile = textService.setDoppieQuadre(nomeVisibile);
         }
@@ -396,7 +411,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNome(plurale, soglia, linkLista));
+        buffer.append(fixNomeParzialmenteUsate(plurale, soglia, linkLista));
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
@@ -523,7 +538,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNome(plurale, 0,false));
+        buffer.append(fixNomeParzialmenteUsate(plurale, 0,false));
 
         buffer.append(doppioTag);
         buffer.append(tagSin);

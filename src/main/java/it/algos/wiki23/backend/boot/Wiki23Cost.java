@@ -146,6 +146,8 @@ public class Wiki23Cost {
 
     public static final String TAG_BIO = "bio";
 
+    public static final String TAG_ALTRE = "...";
+
 
     public static final String KEY_JSON_QUERY = "query";
 
@@ -248,5 +250,10 @@ public class Wiki23Cost {
 
     public static final String LISTA_ATTIVITA_UNICA = String.format("Ogni persona è presente in '''una sola [[Progetto:Biografie/Attività|lista]]''', in base a quanto " +
             "riportato nel '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
+
+    public static final String KEY_ERROR_CANCELLANDA = "esistenteDaCancellare";
+
+    public static final String LISTA_NAZIONALITA = String.format("Le nazionalità sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla " +
+            "comunità ed [[Modulo:Bio/Plurale nazionalità|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]");
 
 }

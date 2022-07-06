@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 
 import java.time.*;
+import java.time.format.*;
 import java.util.*;
 
 /**
@@ -98,6 +99,8 @@ public abstract class WikiView extends CrudView {
     protected String unitaMisuraDownload;
 
     protected String unitaMisuraElaborazione;
+
+    protected String unitaMisuraUpload;
     //
     //    protected String singolare;
     //
@@ -108,6 +111,7 @@ public abstract class WikiView extends CrudView {
     protected WPref lastDownload;
 
     protected WPref durataDownload;
+    protected WPref nextDownload;
 
     protected WPref lastElaborazione;
 
@@ -115,8 +119,8 @@ public abstract class WikiView extends CrudView {
 
     protected WPref lastUpload;
 
-
     protected WPref durataUpload;
+    protected WPref nextUpload;
 
     protected WikiBackend crudBackend;
 
@@ -186,6 +190,7 @@ public abstract class WikiView extends CrudView {
         this.usaInfoDownload = true;
         this.unitaMisuraDownload = VUOTA;
         this.unitaMisuraElaborazione = VUOTA;
+        this.unitaMisuraUpload = VUOTA;
     }
 
     protected void fixPreferenzeBackend() {
@@ -194,6 +199,8 @@ public abstract class WikiView extends CrudView {
             crudBackend.durataDownload = durataDownload;
             crudBackend.lastElabora = lastElaborazione;
             crudBackend.durataElaborazione = durataElaborazione;
+            crudBackend.lastUpload = lastUpload;
+            crudBackend.durataUpload = durataUpload;
         }
     }
 
@@ -227,7 +234,10 @@ public abstract class WikiView extends CrudView {
                 else {
                     message = String.format("Ultimo download effettuato il %s", dateService.get(download));
                     if (durataDownload != null && durataDownload.get() instanceof Integer durata) {
-                        message += String.format(" in circa %d %s", durata, unitaMisuraElaborazione);
+                        message += String.format(" in circa %d %s.", durata, unitaMisuraDownload);
+                    }
+                    if (nextDownload != null && nextDownload.get() instanceof LocalDateTime next) {
+                        message += String.format(" Prossimo download previsto %s.",DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next) );
                     }
                 }
                 addSpanVerdeSmall(message);
@@ -239,7 +249,7 @@ public abstract class WikiView extends CrudView {
                 else {
                     message = String.format("Ultimo elaborazione effettuata il %s", dateService.get(elaborazione));
                     if (durataElaborazione != null && durataElaborazione.get() instanceof Integer durata) {
-                        message += String.format(" in circa %d %s", durata, unitaMisuraElaborazione);
+                        message += String.format(" in circa %d %s.", durata, unitaMisuraElaborazione);
                     }
                 }
 
@@ -251,6 +261,12 @@ public abstract class WikiView extends CrudView {
                 }
                 else {
                     message = String.format("Ultimo upload effettuato il %s", dateService.get(upload));
+                    if (durataUpload != null && durataUpload.get() instanceof Integer durata) {
+                        message += String.format(" in circa %d %s.", durata, unitaMisuraUpload);
+                    }
+                    if (nextUpload != null && nextUpload.get() instanceof LocalDateTime next) {
+                        message += String.format(" Prossimo upload previsto %s.",DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next) );
+                    }
                 }
                 addSpanVerdeSmall(message);
             }

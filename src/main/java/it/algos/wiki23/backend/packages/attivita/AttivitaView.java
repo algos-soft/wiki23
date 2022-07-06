@@ -94,6 +94,8 @@ public class AttivitaView extends WikiView {
         super.lastElaborazione = WPref.elaboraAttivita;
         super.durataElaborazione = WPref.elaboraAttivitaTime;
         super.lastUpload = WPref.uploadAttivita;
+        super.durataUpload = WPref.uploadAttivitaTime;
+        super.nextUpload = WPref.uploadAttivitaPrevisto;
         super.wikiModuloTitle = PATH_MODULO_ATTIVITA;
         super.usaBottoneStatistiche = true;
         super.usaBottoneUploadStatistiche = true;
@@ -105,6 +107,7 @@ public class AttivitaView extends WikiView {
         super.dialogClazz = AttivitaDialog.class;
         super.unitaMisuraDownload = "secondi";
         super.unitaMisuraElaborazione = "minuti";
+        super.unitaMisuraUpload = "minuti";
         super.fixPreferenzeBackend();
     }
 
@@ -135,6 +138,13 @@ public class AttivitaView extends WikiView {
         addSpanRosso(message);
 
         message = String.format("Le singole pagine di attività vengono create su wiki quando superano le %s biografie.", WPref.sogliaAttNazWiki.get());
+        addSpanRossoBold(message);
+        if (WPref.usaTreAttivita.is()) {
+            message = "Ultima elaborazione effettuata considerando valide le voci biografiche con almeno una delle '''3''' attività.";
+        }
+        else {
+            message = "Ultima elaborazione effettuata considerando valide le voci biografiche con 1 sola attività principale.";
+        }
         addSpanRossoBold(message);
     }
 
@@ -294,6 +304,13 @@ public class AttivitaView extends WikiView {
         }
     }
 
+    /**
+     * Esegue un azione di upload, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void upload() {
+        backend.uploadAll();
+    }
 
     /**
      * Apre una pagina su wiki, specifica del programma/package in corso <br>
@@ -370,10 +387,9 @@ public class AttivitaView extends WikiView {
         Attivita attivita = getAttivitaCorrente();
 
         if (attivita != null) {
-            appContext.getBean(UploadAttivita.class).upload(attivita.plurale);
+            backend.uploadPagina(attivita.plurale);
+            reload();
         }
-
-        reload();
     }
 
     public void updateItem(AEntity entityBean) {

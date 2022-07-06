@@ -8,6 +8,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.attivita.*;
+import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import static it.algos.wiki23.wiki.query.QueryWrite.*;
 import org.springframework.context.annotation.Scope;
@@ -72,18 +73,32 @@ public class UploadAttivita extends Upload {
     }
 
     protected String sottoPaginaAttNaz() {
-        return String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita));
+        StringBuffer buffer = new StringBuffer();
+        String message;
+
+        if (subAttivitaNazionalita.equals(TAG_ALTRE)) {
+            subAttivitaNazionalita = "senza nazionalità";
+            buffer.append(String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita)));
+//            buffer.append(textService.setRef(LISTA_NAZIONALITA));
+            message = "Qui vengono raggruppate quelle voci biografiche che '''non''' usano il parametro ''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
+            buffer.append(textService.setRef(message));
+        }
+        else {
+            buffer.append(String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita)));
+        }
+
+        return buffer.toString();
     }
 
     /**
      * Esegue la scrittura della pagina <br>
      */
-    public void upload(String nomeAttivitaNazionalitaPlurale) {
+    public WResult upload(String nomeAttivitaNazionalitaPlurale) {
         this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
         String wikiTitle = UPLOAD_TITLE_PROJECT_ATTIVITA + textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
         appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
         mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
-        super.esegue(wikiTitle, mappaDidascalie);
+        return super.esegue(wikiTitle, mappaDidascalie);
     }
 
     /**

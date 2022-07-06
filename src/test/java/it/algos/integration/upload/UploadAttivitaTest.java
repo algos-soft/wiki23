@@ -83,7 +83,7 @@ public class UploadAttivitaTest extends WikiTest {
     @DisplayName("2 - Upload di una attività plurale")
     void getListaDidascalie() {
         System.out.println("2 - Upload di una attività plurale");
-        sorgente = "abati e badesse";
+        sorgente = "dogi";
         appContext.getBean(UploadAttivita.class).uploadTest(sorgente);
     }
 

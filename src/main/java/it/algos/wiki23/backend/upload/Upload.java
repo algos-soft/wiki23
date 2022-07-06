@@ -183,7 +183,6 @@ public abstract class Upload {
     }
 
 
-
     protected String avviso() {
         return "<!-- NON MODIFICATE DIRETTAMENTE QUESTA PAGINA - GRAZIE -->";
     }
@@ -194,7 +193,7 @@ public abstract class Upload {
     }
 
     protected String forceToc() {
-        return ((AETypeToc)WPref.typeTocAttNaz.getEnumCurrentObj()).get();
+        return ((AETypeToc) WPref.typeTocAttNaz.getEnumCurrentObj()).get();
     }
 
     protected String torna(String wikiTitle) {
@@ -359,7 +358,8 @@ public abstract class Upload {
 
 
     protected WResult registra(String wikiTitle, String newText) {
-        return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText);
+        String newTextSignificativo = newText.substring(newText.indexOf("</noinclude>"));
+        return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo);
     }
 
     protected String mappaToText(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaTxt) {
@@ -397,6 +397,7 @@ public abstract class Upload {
         String parente;
 
         if (numVoci > max) {
+            titoloParagrafo = textService.isValid(titoloParagrafo) ? titoloParagrafo : TAG_ALTRE;
             parente = String.format("%s%s%s", wikiTitle, SLASH, textService.primaMaiuscola(titoloParagrafo));
             String vedi = String.format("{{Vedi anche|%s}}", parente);
             buffer.append(vedi + CAPO);
