@@ -127,6 +127,10 @@ public class MappaStatistiche {
         return ordine;
     }
 
+    public boolean isUsata() {
+        return numNazionalita > 0;
+    }
+
     public boolean isUsata(boolean treAttivita) {
         if (treAttivita) {
             return isUsataTreAttivita();

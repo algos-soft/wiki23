@@ -20,6 +20,10 @@ import java.util.regex.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class WikiUtility extends WAbstractService {
 
+    public String fixTitolo(String titoloGrezzo) {
+        return fixTitolo(VUOTA, titoloGrezzo);
+    }
+
     public String fixTitolo(String wikiTitleBase, String titoloGrezzo) {
         String paragrafoVisibile = VUOTA;
 
@@ -43,21 +47,30 @@ public class WikiUtility extends WAbstractService {
         return paragrafoVisibile;
     }
 
+    public String fixTitolo(String titoloGrezzo, int numVoci) {
+        return fixTitolo(VUOTA, titoloGrezzo, numVoci);
+    }
 
-    public String fixTitoloDimensionato(String wikiTitleBase, String titoloGrezzo, int numVoci) {
+    public String fixTitolo(String wikiTitleBase, String titoloGrezzo, int numVoci) {
         String paragrafoVisibile = VUOTA;
 
-        if (!wikiTitleBase.endsWith(SLASH)) {
-            wikiTitleBase += SLASH;
+        if (textService.isValid(wikiTitleBase)) {
+            if (!wikiTitleBase.endsWith(SLASH)) {
+                wikiTitleBase += SLASH;
+            }
+            paragrafoVisibile = wikiTitleBase;
         }
 
         if (textService.isValid(titoloGrezzo)) {
-            paragrafoVisibile = wikiTitleBase;
             paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-            paragrafoVisibile += PIPE;
-            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-            paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
-            paragrafoVisibile = setParagrafo(paragrafoVisibile, numVoci);
+            if (textService.isValid(wikiTitleBase)) {
+                paragrafoVisibile += PIPE;
+                paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+                paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+            }
+            if (numVoci > 0) {
+                paragrafoVisibile = setParagrafo(paragrafoVisibile, numVoci);
+            }
         }
         else {
             paragrafoVisibile = "Altre...";

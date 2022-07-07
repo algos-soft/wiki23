@@ -118,7 +118,6 @@ public class StatisticheAttivita extends Statistiche {
         StringBuffer buffer = new StringBuffer();
         String message;
         int vociBio = bioBackend.count();
-        int attivita = lista.size();
         buffer.append(String.format("'''%s''' attività", textService.format(attivitaUsate)));
         message = "Le attività sono quelle [[Discussioni progetto:Biografie/Attività|'''convenzionalmente''' previste]] " +
                 "dalla comunità ed [[Modulo:Bio/Plurale attività|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
@@ -235,7 +234,6 @@ public class StatisticheAttivita extends Statistiche {
         StringBuffer buffer = new StringBuffer();
         String tagSin = "style=\"text-align: left;\" |";
         String nome = plurale.toLowerCase();
-        String listaTag = "[[Progetto:Biografie/Attività/";
         String categoriaTag = "[[:Categoria:";
         String iniTag = "|-";
         String doppioTag = " || ";
@@ -450,8 +448,6 @@ public class StatisticheAttivita extends Statistiche {
     protected String incipitNonUsate() {
         StringBuffer buffer = new StringBuffer();
         String message;
-        int vociBio = bioBackend.count();
-        int attivita = lista.size();
         buffer.append(String.format("'''%s''' attività presenti", textService.format(attivitaNonUsate)));
         buffer.append(" nell' [[Modulo:Bio/Plurale attività|'''elenco del progetto Biografie''']] ma '''non utilizzate''' in nessuno dei " +
                 "3 parametri ''attività, attività2, attività3''");
@@ -575,14 +571,12 @@ public class StatisticheAttivita extends Statistiche {
         int numAttivitaUno;
         int numAttivitaDue;
         int numAttivitaTre;
-        int numAttivitaTotali;
 
         for (Attivita attivita : (List<Attivita>) lista) {
             singolari = attivitaBackend.findSingolariByPlurale(attivita.plurale);
             numAttivitaUno = 0;
             numAttivitaDue = 0;
             numAttivitaTre = 0;
-            numAttivitaTotali = 0;
 
             for (String singolare : singolari) {
                 numAttivitaUno += bioBackend.countAttivita(singolare);

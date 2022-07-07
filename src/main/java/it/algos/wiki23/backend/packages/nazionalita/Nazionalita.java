@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.index.*;
 
 /**
  * Project wiki
@@ -25,20 +26,27 @@ public class Nazionalita extends AEntity {
 
     private static final transient int WIDTHEM = 20;
 
+    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM, search = true)
     public String singolare;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM)
     public String plurale;
 
-    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste nazionalità singolari")
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste nazionalità singolari", widthEM = 6)
     public int numBio;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.integer, header = "sin")
     public int numSingolari;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.LIST)
-    public boolean pagina;
+    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.PENCIL)
+    public boolean superaSoglia;
+
+    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.SEARCH)
+    public boolean esistePagina;
 
     /**
      * @return a string representation of the object.

@@ -9,6 +9,7 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.genere.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
@@ -69,6 +70,14 @@ public abstract class WikiBackend extends CrudBackend {
      */
     @Autowired
     public AttivitaBackend attivitaBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public NazionalitaBackend nazionalitaBackend;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -146,7 +155,7 @@ public abstract class WikiBackend extends CrudBackend {
         }
 
         if (durataElaborazione != null) {
-            delta = delta / 1000 / 60; //memorizzato e successivamente visualizzato in minuti
+            delta = delta / 1000;
             durataElaborazione.setValue(delta.intValue());
         }
         else {
@@ -154,7 +163,7 @@ public abstract class WikiBackend extends CrudBackend {
             return;
         }
 
-        message = String.format("Elaborate %s %s in circa %d minuti", mongoTxt, modulo, delta);
+        message = String.format("Elaborate %s %s in circa %d secondi", mongoTxt, modulo, delta);
         logger.info(new WrapLog().message(message));
     }
 

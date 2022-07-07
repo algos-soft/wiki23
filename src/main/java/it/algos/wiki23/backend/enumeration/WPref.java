@@ -35,9 +35,12 @@ public enum WPref implements AIGenPref {
 
 
     downloadNazionalita("downloadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Download di Modulo:Bio/Plurale nazionalità."),
+    downloadNazionalitaTime("downloadNazionalitaTime", AETypePref.integer, 0, "Durata download delle nazionalità in minuti."),
     elaboraNazionalita("elaboraNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le nazionalità."),
     elaboraNazionalitaTime("elaboraNazionalitaTime", AETypePref.integer, 0, "Durata elaborazione delle nazionalità in secondi."),
     uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le nazionalità."),
+    uploadNazionalitaTime("uploadNazionalitaTime", AETypePref.integer, 0, "Durata upload delle nazionalità in minuti."),
+    uploadNazionalitaPrevisto("uploadNazionalitaPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per le nazionalità."),
 
     downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download delle voci biografiche."),
     downloadBioTime("downloadBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata ciclo completo download delle biografie in minuti."),

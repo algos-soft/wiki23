@@ -508,7 +508,7 @@ public class QueryWrite extends AQuery {
         if (objectAll != null && objectAll.get(EDIT) != null && objectAll.get(EDIT) instanceof JSONObject) {
             objectEdit = (JSONObject) objectAll.get(EDIT);
         }
-        if (objectEdit.get(NEW_REV_ID) != null && objectEdit.get(NEW_REV_ID) instanceof Long) {
+        if (objectEdit != null &&objectEdit.get(NEW_REV_ID) != null && objectEdit.get(NEW_REV_ID) instanceof Long) {
             newrevid = (Long) objectEdit.get(NEW_REV_ID);
         }
 

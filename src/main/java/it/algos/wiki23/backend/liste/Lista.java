@@ -294,7 +294,7 @@ public abstract class Lista {
             paragrafoDimensionato = key;
             mappaSub = mappaDidascalie.get(key);
             size = wikiUtility.getSize(mappaSub);
-            paragrafoDimensionato = wikiUtility.fixTitoloDimensionato(titoloParagrafo, paragrafoDimensionato, size);
+            paragrafoDimensionato = wikiUtility.fixTitolo(titoloParagrafo, paragrafoDimensionato, size);
 
             mappaParagrafiDimensionati.put(paragrafoDimensionato, mappaSub);
         }

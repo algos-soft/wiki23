@@ -183,6 +183,34 @@ public abstract class Upload {
     }
 
 
+    protected WResult esegueSubSub(String wikiTitle, String nomeAttivitaNazionalitaPlurale, List<String> listaSub) {
+        StringBuffer buffer = new StringBuffer();
+        int numVoci = listaSub.size();
+        this.sottoPagina = true;
+        this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
+        this.subAttivitaNazionalita = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + SLASH.length());
+
+        buffer.append(avviso());
+        buffer.append(CAPO);
+        buffer.append(includeIni());
+        buffer.append(forceToc());
+        buffer.append(torna(wikiTitle));
+        buffer.append(tmpListaBio(numVoci));
+        buffer.append(includeEnd());
+        buffer.append(CAPO);
+//        buffer.append(incipit());
+//        buffer.append(CAPO);
+        buffer.append(bodySubSub(wikiTitle, listaSub));
+//        buffer.append(note());
+//        buffer.append(CAPO);
+        buffer.append(correlate());
+        buffer.append(CAPO);
+        buffer.append(portale());
+        buffer.append(categorie());
+
+        return registra(wikiTitle, buffer.toString());
+    }
+
     protected String avviso() {
         return "<!-- NON MODIFICATE DIRETTAMENTE QUESTA PAGINA - GRAZIE -->";
     }
@@ -299,21 +327,35 @@ public abstract class Upload {
 
 
     protected String bodySub(String wikiTitle, LinkedHashMap<String, List<String>> mappaSub) {
-        StringBuffer buffer = new StringBuffer();
-        List<String> lista;
-
-        System.out.println(VUOTA);
-        for (String key : mappaSub.keySet()) {
-            lista = mappaSub.get(key);
-            buffer.append(wikiUtility.setParagrafo(key, lista.size()));
-            for (String didascalia : lista) {
-                buffer.append(didascalia + CAPO);
-            }
-        }
-
-        return buffer.toString();
+        return mappaToTextSub(wikiTitle, mappaSub);
+        //        StringBuffer buffer = new StringBuffer();
+        //        List<String> lista;
+        //
+        //        System.out.println(VUOTA);
+        //        for (String key : mappaSub.keySet()) {
+        //            lista = mappaSub.get(key);
+        //            buffer.append(wikiUtility.setParagrafo(key, lista.size()));
+        //            for (String didascalia : lista) {
+        //                buffer.append(didascalia + CAPO);
+        //            }
+        //        }
+        //
+        //        return buffer.toString();
+        //    }
+        //
+        //
+        //    protected String note() {
+        //        StringBuffer buffer = new StringBuffer();
+        //
+        //        buffer.append(wikiUtility.setParagrafo("Note"));
+        //        buffer.append("<references/>");
+        //
+        //        return buffer.toString();
     }
 
+    protected String bodySubSub(String wikiTitle, List<String> listaSub) {
+        return mappaToTextSubSub(wikiTitle, listaSub);
+    }
 
     protected String note() {
         StringBuffer buffer = new StringBuffer();
@@ -325,15 +367,7 @@ public abstract class Upload {
     }
 
     protected String correlate() {
-        StringBuffer buffer = new StringBuffer();
-        String cat = textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
-
-        buffer.append(wikiUtility.setParagrafo("Voci correlate"));
-        buffer.append(String.format("*[[:Categoria:%s]]", cat));
-        buffer.append(CAPO);
-        buffer.append("*[[Progetto:Biografie/Attività]]");
-
-        return buffer.toString();
+        return VUOTA;
     }
 
     protected String portale() {
@@ -347,13 +381,7 @@ public abstract class Upload {
 
 
     protected String categorie() {
-        StringBuffer buffer = new StringBuffer();
-        String cat = textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
-
-        buffer.append(CAPO);
-        buffer.append(String.format("*[[Categoria:Bio attività|%s]]", cat));
-
-        return buffer.toString();
+        return VUOTA;
     }
 
 
@@ -365,7 +393,7 @@ public abstract class Upload {
     protected String mappaToText(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaTxt) {
         StringBuffer buffer = new StringBuffer();
         LinkedHashMap<String, List<String>> mappaSub;
-        int numVoci = 0;
+        int numVoci;
 
         if (mappaTxt != null) {
             for (String key : mappaTxt.keySet()) {
@@ -380,12 +408,49 @@ public abstract class Upload {
         return buffer.toString();
     }
 
+    protected String mappaToTextSub(String wikiTitle, LinkedHashMap<String, List<String>> mappaSub) {
+        StringBuffer buffer = new StringBuffer();
+        int numVoci;
+
+        if (mappaSub != null) {
+            for (String key : mappaSub.keySet()) {
+                numVoci = mappaSub.get(key).size();
+
+                buffer.append(fixTitoloParagrafoSub(key, numVoci));
+                buffer.append(fixCorpoParagrafoSub(wikiTitle, key, numVoci, mappaSub.get(key)));
+            }
+        }
+
+        return buffer.toString();
+    }
+
+    protected String mappaToTextSubSub(String wikiTitle, List<String> listaSub) {
+        StringBuffer buffer = new StringBuffer();
+
+        if (listaSub != null) {
+            for (String didascalia : listaSub) {
+                buffer.append(didascalia + CAPO);
+            }
+        }
+
+        return buffer.toString();
+    }
+
     protected String fixTitoloParagrafo(String titoloParagrafo, int numVoci) {
         if (WPref.usaParagrafiDimensionati.is()) {
-            return wikiUtility.fixTitoloDimensionato(titoloLinkParagrafo, titoloParagrafo, numVoci);
+            return wikiUtility.fixTitolo(titoloLinkParagrafo, titoloParagrafo, numVoci);
         }
         else {
             return wikiUtility.fixTitolo(titoloLinkParagrafo, titoloParagrafo);
+        }
+    }
+
+    protected String fixTitoloParagrafoSub(String titoloParagrafo, int numVoci) {
+        if (WPref.usaParagrafiDimensionati.is()) {
+            return wikiUtility.fixTitolo(titoloParagrafo, numVoci);
+        }
+        else {
+            return wikiUtility.fixTitolo( titoloParagrafo);
         }
     }
 
@@ -415,11 +480,37 @@ public abstract class Upload {
         return buffer.toString();
     }
 
+    protected String fixCorpoParagrafoSub(String wikiTitle, String titoloParagrafo, int numVoci, List<String> listaSub) {
+        StringBuffer buffer = new StringBuffer();
+        int max = WPref.sogliaSottoPagina.getInt();
+        String parente;
+
+        if (numVoci > max) {
+            titoloParagrafo = textService.isValid(titoloParagrafo) ? titoloParagrafo : TAG_ALTRE;
+            parente = String.format("%s%s%s", wikiTitle, SLASH, textService.primaMaiuscola(titoloParagrafo));
+            String vedi = String.format("{{Vedi anche|%s}}", parente);
+            buffer.append(vedi + CAPO);
+            this.uploadSottoSottoPagina(parente, listaSub);
+        }
+        else {
+            for (String didascalia : listaSub) {
+                buffer.append(didascalia + CAPO);
+            }
+        }
+
+        return buffer.toString();
+    }
 
     /**
      * Esegue la scrittura della sotto-pagina <br>
      */
     public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
+    }
+
+    /**
+     * Esegue la scrittura della sotto-sotto-pagina <br>
+     */
+    public void uploadSottoSottoPagina(String wikiTitleParente, List<String> lista) {
     }
 
     protected String subMappaToText(String wikiTitle, LinkedHashMap<String, List<String>> mappaSub) {

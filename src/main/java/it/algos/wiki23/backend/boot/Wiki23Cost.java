@@ -250,10 +250,16 @@ public class Wiki23Cost {
 
     public static final String LISTA_ATTIVITA_UNICA = String.format("Ogni persona è presente in '''una sola [[Progetto:Biografie/Attività|lista]]''', in base a quanto " +
             "riportato nel '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
+    public static final String LISTA_NAZIONALITA = String.format("Ogni persona è presente in '''una sola [[Progetto:Biografie/Nazionalità|lista]]''', in base a quanto " +
+            "riportato nel parametro '''''nazionalità''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
+    public static final String LISTA_DIFFERENZA = "La '''differenza''' tra le voci della categoria e quelle utilizzate è dovuta allo specifico utilizzo del [[template:Bio|template Bio]] ed in particolare all'uso del parametro Categorie=NO";
 
     public static final String KEY_ERROR_CANCELLANDA = "esistenteDaCancellare";
 
-    public static final String LISTA_NAZIONALITA = String.format("Le nazionalità sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla " +
+    public static final String ATTIVITA_CONVENZIONALI = String.format("Le attività sono quelle [[Discussioni progetto:Biografie/Attività|'''convenzionalmente''' previste]] dalla " +
+            "comunità ed [[Modulo:Bio/Plurale attività|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]");
+
+    public static final String NAZIONALITA_CONVENZIONALI = String.format("Le nazionalità sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla " +
             "comunità ed [[Modulo:Bio/Plurale nazionalità|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]");
 
 }

@@ -324,14 +324,6 @@ public abstract class WikiView extends CrudView {
         //            topPlaceHolder.add(buttonModulo);
         //        }
 
-        //        if (usaBottoneStatistiche) {
-        //            buttonStatistiche = new Button();
-        //            buttonStatistiche.getElement().setAttribute("theme", "secondary");
-        //            buttonStatistiche.getElement().setProperty("title", "Statistiche: lettura della pagina su wiki");
-        //            buttonStatistiche.setIcon(new Icon(VaadinIcon.TABLE));
-        //            buttonStatistiche.addClickListener(event -> statistiche());
-        //            topPlaceHolder.add(buttonStatistiche);
-        //        }
 
         if (usaBottoneStatistiche) {
             buttonStatistiche = new Button();

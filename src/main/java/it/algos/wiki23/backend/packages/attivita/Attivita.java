@@ -40,8 +40,7 @@ public class Attivita extends AEntity {
     public boolean aggiunta;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste attività singolari",
-            widthEM = 6)
+    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste attività singolari", widthEM = 6)
     public int numBio;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)

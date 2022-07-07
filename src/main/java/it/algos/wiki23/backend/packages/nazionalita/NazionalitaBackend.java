@@ -1,14 +1,20 @@
 package it.algos.wiki23.backend.packages.nazionalita;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.upload.*;
+import it.algos.wiki23.backend.wrapper.*;
+import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+import java.time.*;
 import java.util.*;
 
 /**
@@ -143,6 +149,25 @@ public class NazionalitaBackend extends WikiBackend {
         return lista;
     }
 
+    /**
+     * Pagine che esistono sul server wikipedia e che non superano la soglia prevista per le liste <br>
+     * flag esistePagina=true <br>
+     * flag superaSoglia=false <br>
+     *
+     * @return attività con liste da cancellare
+     */
+    public List<Nazionalita> findPagineDaCancellare() {
+        List<Nazionalita> listaDaCancellare = new ArrayList<>();
+        List<Nazionalita> listaPlurali = findNazionalitaDistinctByPlurali();
+
+        for (Nazionalita nazionalita : listaPlurali) {
+            if (nazionalita.esistePagina && !nazionalita.superaSoglia) {
+                listaDaCancellare.add(nazionalita);
+            }
+        }
+
+        return listaDaCancellare;
+    }
 
     public List<Nazionalita> findAllByPlurale(final String plurale) {
         return repository.findAllByPluraleOrderBySingolareAsc(plurale);
@@ -219,6 +244,7 @@ public class NazionalitaBackend extends WikiBackend {
         super.fixDownload(inizio, wikiTitle, mappa.size(), size);
     }
 
+
     /**
      * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
@@ -254,6 +280,103 @@ public class NazionalitaBackend extends WikiBackend {
         }
 
         super.fixElaboraSecondi(inizio, "nazionalità");
+    }
+
+
+    /**
+     * Esegue un azione di upload, specifica del programma/package in corso <br>
+     */
+    public void uploadAll() {
+        WResult result;
+        long inizio = System.currentTimeMillis();
+        int sottoSoglia = 0;
+        int daCancellare = 0;
+        int modificate = 0;
+        int nonModificate = 0;
+        List<String> listaPluraliUnici = findAllPlurali();
+        this.fixNext();
+
+        for (String pluraleNazionalita : listaPluraliUnici) {
+            result = uploadPagina(pluraleNazionalita);
+            if (result.isValido()) {
+                if (result.isModificata()) {
+                    modificate++;
+                }
+                else {
+                    nonModificate++;
+                }
+            }
+            else {
+                sottoSoglia++;
+                if (result.getErrorCode().equals(KEY_ERROR_CANCELLANDA)) {
+                    daCancellare++;
+                }
+            }
+        }
+        super.fixUploadMinuti(inizio, sottoSoglia, daCancellare, nonModificate, modificate, "nazionalità");
+
+        LocalDateTime adesso = LocalDateTime.now();
+        adesso = adesso.plusDays(7);
+        WPref.uploadNazionalitaPrevisto.setValue(adesso);
+    }
+
+    /**
+     * Controlla l'esistenza della pagina wiki relativa a questa nazionalità (lista) <br>
+     */
+    public boolean esistePagina(String pluraleNazionalita) {
+        String wikiTitle = "Progetto:Biografie/Nazionalità/" + textService.primaMaiuscola(pluraleNazionalita);
+        return appContext.getBean(QueryExist.class).isEsiste(wikiTitle);
+    }
+
+    /**
+     * Scrive una pagina definitiva sul server wiki <br>
+     */
+    public WResult uploadPagina(String pluraleNazionalitaMinuscola) {
+        WResult result = WResult.errato();
+        String message;
+        int numVoci = bioBackend.countNazionalitaPlurale(pluraleNazionalitaMinuscola);
+        String voci = textService.format(numVoci);
+        String pluraleNazionalitaMaiuscola = textService.primaMaiuscola(pluraleNazionalitaMinuscola);
+        int soglia = WPref.sogliaAttNazWiki.getInt();
+        String wikiTitle = "Progetto:Biografie/Nazionalità/" + pluraleNazionalitaMaiuscola;
+
+        if (numVoci > soglia) {
+            result = appContext.getBean(UploadNazionalita.class).upload(pluraleNazionalitaMinuscola);
+            if (result.isValido()) {
+                if (result.isModificata()) {
+                    message = String.format("Lista %s utilizzati in %s voci biografiche", pluraleNazionalitaMinuscola, voci);
+                }
+                else {
+                    message = String.format("Nazionalità %s utilizzata in %s voci biografiche. %s", pluraleNazionalitaMinuscola, voci, result.getValidMessage());
+                }
+                if (Pref.debug.is()) {
+                    logger.info(new WrapLog().message(message).type(AETypeLog.upload));
+                }
+            }
+            else {
+                logger.warn(new WrapLog().message(result.getErrorMessage()).type(AETypeLog.upload));
+            }
+        }
+        else {
+            message = String.format("La nazionalità %s ha solo %s voci biografiche e non raggiunge il numero necessario per avere una pagina dedicata", pluraleNazionalitaMinuscola, voci);
+            if (Pref.debug.is()) {
+                result.setErrorMessage(message).setValido(false);
+                logger.info(new WrapLog().message(message).type(AETypeLog.upload));
+            }
+            if (esistePagina(pluraleNazionalitaMinuscola)) {
+                result.setErrorCode(KEY_ERROR_CANCELLANDA);
+                message = String.format("Esiste la pagina %s che andrebbe cancellata", wikiTitle);
+                logger.warn(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
+            }
+        }
+
+        return result;
+    }
+
+    public void fixNext() {
+        LocalDateTime adesso = LocalDateTime.now();
+        LocalDateTime prossimo = adesso.plusDays(7);
+        WPref.uploadNazionalitaPrevisto.setValue(prossimo);
     }
 
 }// end of crud backend class

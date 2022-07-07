@@ -14,6 +14,7 @@ import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.statistiche.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
@@ -42,9 +43,13 @@ public class NazionalitaView extends WikiView {
     private NazionalitaBackend backend;
 
     private TextField searchFieldPlurale;
-    protected IndeterminateCheckbox boxBoxPagina;
+
+    protected IndeterminateCheckbox boxSuperaSoglia;
+
+    protected IndeterminateCheckbox boxEsistePagina;
 
     protected Checkbox boxDistinctPlurali;
+    protected Checkbox boxPagineDaCancellare;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -68,23 +73,30 @@ public class NazionalitaView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "numBio", "numSingolari", "pagina");
-        super.formPropertyNamesList = Arrays.asList( "plurale",  "numBio");
+        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "numBio", "numSingolari", "superaSoglia", "esistePagina");
+        super.formPropertyNamesList = Arrays.asList("plurale", "numBio");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
-
 
         super.usaBottoneElabora = true;
         super.lastDownload = WPref.downloadNazionalita;
+        super.durataDownload = WPref.downloadNazionalitaTime;
         super.lastElaborazione = WPref.elaboraNazionalita;
         super.durataElaborazione = WPref.elaboraNazionalitaTime;
         super.lastUpload = WPref.uploadNazionalita;
+        super.durataUpload = WPref.uploadNazionalitaTime;
+        super.nextUpload = WPref.uploadNazionalitaPrevisto;
         super.wikiModuloTitle = PATH_MODULO_NAZIONALITA;
+        super.usaBottoneStatistiche = true;
+        super.usaBottoneUploadStatistiche = true;
         //        super.wikiStatisticheTitle = PATH_STATISTICHE_ATTIVITA;
-        super.usaBottoneCategoria = true;
         super.usaBottoneEdit = true;
+        super.usaBottoneCategoria = true;
+        super.usaBottoneUploadPagina = true;
 
         super.dialogClazz = NazionalitaDialog.class;
+        super.unitaMisuraDownload = "secondi";
         super.unitaMisuraElaborazione = "secondi";
+        super.unitaMisuraUpload = "minuti";
         super.fixPreferenzeBackend();
     }
 
@@ -118,17 +130,27 @@ public class NazionalitaView extends WikiView {
     }
 
     protected void fixBottoniTopSpecifici() {
+        super.fixBottoniTopSpecifici();
+
         searchFieldPlurale = new TextField();
         searchFieldPlurale.setPlaceholder("Filter by plurale");
         searchFieldPlurale.setClearButtonVisible(true);
         searchFieldPlurale.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(searchFieldPlurale);
 
-        boxBoxPagina = new IndeterminateCheckbox();
-        boxBoxPagina.setLabel("Pagina wiki");
-        boxBoxPagina.setIndeterminate(true);
-        boxBoxPagina.addValueChangeListener(event -> sincroFiltri());
-        HorizontalLayout layout2 = new HorizontalLayout(boxBoxPagina);
+        boxSuperaSoglia = new IndeterminateCheckbox();
+        boxSuperaSoglia.setLabel("Supera soglia");
+        boxSuperaSoglia.setIndeterminate(true);
+        boxSuperaSoglia.addValueChangeListener(event -> sincroFiltri());
+        HorizontalLayout layout = new HorizontalLayout(boxSuperaSoglia);
+        layout.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout);
+
+        boxEsistePagina = new IndeterminateCheckbox();
+        boxEsistePagina.setLabel("Esiste pagina");
+        boxEsistePagina.setIndeterminate(true);
+        boxEsistePagina.addValueChangeListener(event -> sincroFiltri());
+        HorizontalLayout layout2 = new HorizontalLayout(boxEsistePagina);
         layout2.setAlignItems(Alignment.CENTER);
         topPlaceHolder.add(layout2);
 
@@ -138,6 +160,13 @@ public class NazionalitaView extends WikiView {
         HorizontalLayout layout3 = new HorizontalLayout(boxDistinctPlurali);
         layout3.setAlignItems(Alignment.CENTER);
         topPlaceHolder.add(layout3);
+
+        boxPagineDaCancellare = new Checkbox();
+        boxPagineDaCancellare.setLabel("Da cancellare");
+        boxPagineDaCancellare.addValueChangeListener(event -> sincroCancellare());
+        HorizontalLayout layout5 = new HorizontalLayout(boxPagineDaCancellare);
+        layout5.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout5);
     }
 
     /**
@@ -156,9 +185,19 @@ public class NazionalitaView extends WikiView {
             items = items.stream().filter(naz -> naz.plurale.matches("^(?i)" + textSearchPlurale + ".*$")).toList();
         }
 
-        if (boxBoxPagina != null && !boxBoxPagina.isIndeterminate()) {
-            items = items.stream().filter(att -> att.pagina == boxBoxPagina.getValue()).toList();
-            if (boxBoxPagina.getValue()) {
+        if (boxSuperaSoglia != null && !boxSuperaSoglia.isIndeterminate()) {
+            items = items.stream().filter(naz -> naz.superaSoglia == boxSuperaSoglia.getValue()).toList();
+            if (boxSuperaSoglia.getValue()) {
+                sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+            }
+            else {
+                sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+            }
+        }
+
+        if (boxEsistePagina != null && !boxEsistePagina.isIndeterminate()) {
+            items = items.stream().filter(naz -> naz.esistePagina == boxEsistePagina.getValue()).toList();
+            if (boxEsistePagina.getValue()) {
                 sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
             }
             else {
@@ -193,6 +232,64 @@ public class NazionalitaView extends WikiView {
         }
     }
 
+    protected void sincroCancellare() {
+        List<Nazionalita> items = null;
+
+        if (boxPagineDaCancellare != null) {
+            if (boxPagineDaCancellare.getValue()) {
+                items = backend.findPagineDaCancellare();
+            }
+            else {
+                sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+                items = backend.findAll(sortOrder);
+            }
+        }
+
+        if (items != null) {
+            grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
+        }
+    }
+
+    /**
+     * Esegue un azione di upload, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void upload() {
+        backend.uploadAll();
+    }
+
+    /**
+     * Apre una pagina su wiki, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void viewStatistiche() {
+        wikiApiService.openWikiPage(PATH_NAZIONALITA);
+    }
+
+    /**
+     * Esegue un azione di upload delle statistiche, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando DOPO il metodo della superclasse <br>
+     */
+    public void uploadStatistiche() {
+        appContext.getBean(StatisticheNazionalita.class).upload();
+        super.uploadStatistiche();
+    }
+
+    /**
+     * Scrive una pagina definitiva sul server wiki <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void uploadPagina() {
+        Nazionalita nazionalita = getNazionalitaCorrente();
+
+        if (nazionalita != null) {
+            backend.uploadPagina(nazionalita.plurale);
+            reload();
+        }
+    }
+
     /**
      * Esegue un azione di apertura di una categoria su wiki, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
@@ -219,6 +316,16 @@ public class NazionalitaView extends WikiView {
         wikiApiService.openWikiPage(path + attivitaText);
 
         return null;
+    }
+    public Nazionalita getNazionalitaCorrente() {
+        Nazionalita nazionalita = null;
+
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            nazionalita = (Nazionalita) entityBean.get();
+        }
+
+        return nazionalita;
     }
 
     public void updateItem(AEntity entityBean) {

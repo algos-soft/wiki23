@@ -89,13 +89,35 @@ public class UploadAttivita extends Upload {
         return buffer.toString();
     }
 
+
+    protected String correlate() {
+        StringBuffer buffer = new StringBuffer();
+        String cat = textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
+
+        buffer.append(wikiUtility.setParagrafo("Voci correlate"));
+        buffer.append(String.format("*[[:Categoria:%s]]", cat));
+        buffer.append(CAPO);
+        buffer.append("*[[Progetto:Biografie/Attività]]");
+
+        return buffer.toString();
+    }
+
+    protected String categorie() {
+        StringBuffer buffer = new StringBuffer();
+        String cat = textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
+
+        buffer.append(CAPO);
+        buffer.append(String.format("*[[Categoria:Bio attività|%s]]", cat));
+
+        return buffer.toString();
+    }
+
     /**
      * Esegue la scrittura della pagina <br>
      */
     public WResult upload(String nomeAttivitaNazionalitaPlurale) {
         this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
         String wikiTitle = UPLOAD_TITLE_PROJECT_ATTIVITA + textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
-        appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
         mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
         return super.esegue(wikiTitle, mappaDidascalie);
     }

@@ -177,7 +177,6 @@ public class BioBackend extends WikiBackend {
 
     @Override
     public Bio update(Object entityBean) {
-
         if (entityBean instanceof Bio bio) {
             if (isExist(bio.pageId)) {
                 repository.save(bio);
@@ -249,15 +248,34 @@ public class BioBackend extends WikiBackend {
         return numBio > 0 ? numBio.intValue() : 0;
     }
 
+
     /**
-     * Conta tutte le biografie con una serie di nazionalita. <br>
+     * Conta tutte le biografie con una serie di nazionalità plurali. <br>
      *
-     * @param nazionalita singola
+     * @param nazionalitaPlurale
      *
      * @return conteggio di biografie che la usano
      */
-    public int countNazionalita(final String nazionalita) {
-        Long nazLong = repository.countBioByNazionalita(nazionalita);
+    public int countNazionalitaPlurale(final String nazionalitaPlurale) {
+        int numBio = 0;
+        List<String> listaNomi = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
+
+        for (String singolare : listaNomi) {
+            numBio += countNazionalita(singolare);
+        }
+
+        return numBio;
+    }
+
+    /**
+     * Conta tutte le biografie con una serie di nazionalita. <br>
+     *
+     * @param nazionalitaSingola singola
+     *
+     * @return conteggio di biografie che la usano
+     */
+    public int countNazionalita(final String nazionalitaSingola) {
+        Long nazLong = repository.countBioByNazionalita(nazionalitaSingola);
         return nazLong.intValue();
     }
 
