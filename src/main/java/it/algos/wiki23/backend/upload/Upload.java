@@ -198,11 +198,7 @@ public abstract class Upload {
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
         buffer.append(CAPO);
-//        buffer.append(incipit());
-//        buffer.append(CAPO);
         buffer.append(bodySubSub(wikiTitle, listaSub));
-//        buffer.append(note());
-//        buffer.append(CAPO);
         buffer.append(correlate());
         buffer.append(CAPO);
         buffer.append(portale());
@@ -328,29 +324,6 @@ public abstract class Upload {
 
     protected String bodySub(String wikiTitle, LinkedHashMap<String, List<String>> mappaSub) {
         return mappaToTextSub(wikiTitle, mappaSub);
-        //        StringBuffer buffer = new StringBuffer();
-        //        List<String> lista;
-        //
-        //        System.out.println(VUOTA);
-        //        for (String key : mappaSub.keySet()) {
-        //            lista = mappaSub.get(key);
-        //            buffer.append(wikiUtility.setParagrafo(key, lista.size()));
-        //            for (String didascalia : lista) {
-        //                buffer.append(didascalia + CAPO);
-        //            }
-        //        }
-        //
-        //        return buffer.toString();
-        //    }
-        //
-        //
-        //    protected String note() {
-        //        StringBuffer buffer = new StringBuffer();
-        //
-        //        buffer.append(wikiUtility.setParagrafo("Note"));
-        //        buffer.append("<references/>");
-        //
-        //        return buffer.toString();
     }
 
     protected String bodySubSub(String wikiTitle, List<String> listaSub) {

@@ -96,4 +96,8 @@ public class QueryService extends WAbstractService {
         return appContext.getBean(QueryBio.class).getBio(pageId);
     }
 
+    public boolean isEsiste(final String wikiTitleGrezzo) {
+        return appContext.getBean(QueryExist.class).isEsiste(wikiTitleGrezzo);
+    }
+
 }

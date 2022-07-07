@@ -140,4 +140,12 @@ public class UploadAttivita extends Upload {
         sottoPagina.esegueSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, mappaSub);
     }
 
+    /**
+     * Esegue la scrittura della sotto-sotto-pagina <br>
+     */
+    public void uploadSottoSottoPagina(String wikiTitleParente, List<String> listaSub) {
+        UploadAttivita sottoSottoPagina = appContext.getBean(UploadAttivita.class);
+        sottoSottoPagina.esegueSubSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, listaSub);
+    }
+
 }

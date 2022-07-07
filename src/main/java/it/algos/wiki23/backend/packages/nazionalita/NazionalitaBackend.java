@@ -253,6 +253,11 @@ public class NazionalitaBackend extends WikiBackend {
         long inizio = System.currentTimeMillis();
         int numBio;
         int numSingolari;
+        int soglia = WPref.sogliaAttNazWiki.getInt();
+        int cont = 0;
+        String size;
+        String time;
+        int tot = count();
 
         for (Nazionalita nazionalita : findAll()) {
             nazionalita.numBio = 0;
@@ -274,12 +279,24 @@ public class NazionalitaBackend extends WikiBackend {
 
             for (Nazionalita nazionalitaOK : findAllByPlurale(nazionalita.plurale)) {
                 nazionalitaOK.numBio = numBio;
+                nazionalitaOK.superaSoglia = numBio >= soglia ? true : false;
+                nazionalitaOK.esistePagina = esistePagina(nazionalitaOK.plurale);
                 nazionalitaOK.numSingolari = numSingolari;
                 update(nazionalitaOK);
+
+                if (Pref.debug.is()) {
+                    cont++;
+                    if (mathService.multiploEsatto(100, cont)) {
+                        size = textService.format(cont);
+                        time = dateService.deltaText(inizio);
+                        message = String.format("Finora controllata l'esistenza di %s/%s liste di nazionalità, in %s", size, tot, time);
+                        logger.info(new WrapLog().message(message).type(AETypeLog.elabora));
+                    }
+                }
             }
         }
 
-        super.fixElaboraSecondi(inizio, "nazionalità");
+        super.fixElaboraMinuti(inizio, "nazionalità");
     }
 
 
@@ -314,10 +331,6 @@ public class NazionalitaBackend extends WikiBackend {
             }
         }
         super.fixUploadMinuti(inizio, sottoSoglia, daCancellare, nonModificate, modificate, "nazionalità");
-
-        LocalDateTime adesso = LocalDateTime.now();
-        adesso = adesso.plusDays(7);
-        WPref.uploadNazionalitaPrevisto.setValue(adesso);
     }
 
     /**

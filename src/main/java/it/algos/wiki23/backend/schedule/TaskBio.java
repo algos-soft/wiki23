@@ -41,7 +41,7 @@ public class TaskBio extends AlgosTask {
      * Descrizione: ogni giorno della settimana, la sera
      * 0 21 * * *
      */
-    private static final String PATTERN = "0 21 * * *";
+    private static final String PATTERN = "5 20 * * *";
 
 
     @Override

@@ -95,7 +95,7 @@ public class NazionalitaView extends WikiView {
 
         super.dialogClazz = NazionalitaDialog.class;
         super.unitaMisuraDownload = "secondi";
-        super.unitaMisuraElaborazione = "secondi";
+        super.unitaMisuraElaborazione = "minuti";
         super.unitaMisuraUpload = "minuti";
         super.fixPreferenzeBackend();
     }

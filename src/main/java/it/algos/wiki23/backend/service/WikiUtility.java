@@ -21,30 +21,11 @@ import java.util.regex.*;
 public class WikiUtility extends WAbstractService {
 
     public String fixTitolo(String titoloGrezzo) {
-        return fixTitolo(VUOTA, titoloGrezzo);
+        return fixTitolo(VUOTA, titoloGrezzo, 0);
     }
 
     public String fixTitolo(String wikiTitleBase, String titoloGrezzo) {
-        String paragrafoVisibile = VUOTA;
-
-        if (!wikiTitleBase.endsWith(SLASH)) {
-            wikiTitleBase += SLASH;
-        }
-
-        if (textService.isValid(titoloGrezzo)) {
-            paragrafoVisibile = wikiTitleBase;
-            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-            paragrafoVisibile += PIPE;
-            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-            paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
-            paragrafoVisibile = PARAGRAFO + paragrafoVisibile + PARAGRAFO;
-        }
-        else {
-            paragrafoVisibile = "Altre...";
-            paragrafoVisibile = setParagrafo(paragrafoVisibile);
-        }
-
-        return paragrafoVisibile;
+        return fixTitolo(wikiTitleBase, titoloGrezzo, 0);
     }
 
     public String fixTitolo(String titoloGrezzo, int numVoci) {
@@ -62,11 +43,20 @@ public class WikiUtility extends WAbstractService {
         }
 
         if (textService.isValid(titoloGrezzo)) {
-            paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
+            if (titoloGrezzo.length() > 1) {
+                titoloGrezzo = textService.primaMaiuscola(titoloGrezzo);
+            }
+            paragrafoVisibile += titoloGrezzo;
+
             if (textService.isValid(wikiTitleBase)) {
-                paragrafoVisibile += PIPE;
-                paragrafoVisibile += textService.primaMaiuscola(titoloGrezzo);
-                paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+                if (queryService.isEsiste(paragrafoVisibile)) {
+                    paragrafoVisibile += PIPE;
+                    paragrafoVisibile += titoloGrezzo;
+                    paragrafoVisibile = textService.setDoppieQuadre(paragrafoVisibile);
+                }
+                else {
+                    paragrafoVisibile = titoloGrezzo;
+                }
             }
             if (numVoci > 0) {
                 paragrafoVisibile = setParagrafo(paragrafoVisibile, numVoci);

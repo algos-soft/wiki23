@@ -372,6 +372,7 @@ public class AttivitaBackend extends WikiBackend {
                 attivitaOK.esistePagina = esistePagina(attivitaOK.plurale);
                 attivitaOK.numSingolari = numSingolari;
                 update(attivitaOK);
+
                 if (Pref.debug.is()) {
                     cont++;
                     if (mathService.multiploEsatto(100, cont)) {
@@ -384,7 +385,7 @@ public class AttivitaBackend extends WikiBackend {
             }
         }
 
-        super.fixElaboraSecondi(inizio, "attività");
+        super.fixElaboraMinuti(inizio, "attività");
     }
 
     /**
@@ -418,10 +419,6 @@ public class AttivitaBackend extends WikiBackend {
             }
         }
         super.fixUploadMinuti(inizio, sottoSoglia, daCancellare, nonModificate, modificate, "attività");
-
-        LocalDateTime adesso = LocalDateTime.now();
-        adesso = adesso.plusDays(7);
-        WPref.uploadAttivitaPrevisto.setValue(adesso);
     }
 
     /**
