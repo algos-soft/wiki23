@@ -401,28 +401,6 @@ public class ListaAttivitaTest extends WikiTest {
     }
 
 
-    protected void printMappaSub(LinkedHashMap<String, List<WrapDidascalia>> mappaSub) {
-        int cont = 0;
-        List lista;
-
-        if (mappaSub != null) {
-            for (String key : mappaSub.keySet()) {
-                lista = mappaSub.get(key);
-                cont++;
-                System.out.print(TAB);
-                System.out.print(cont);
-                System.out.print(PARENTESI_TONDA_END);
-                System.out.print(SPAZIO);
-
-                System.out.print(textService.setQuadre(key));
-                System.out.print(SPAZIO);
-
-                System.out.println(VUOTA);
-
-                printWrapDidascalia(lista);
-            }
-        }
-    }
 
 
     protected void printTreeMap(String attivita, TreeMap<String, TreeMap<String, List<String>>> treeMap) {

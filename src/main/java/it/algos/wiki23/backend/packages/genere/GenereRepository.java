@@ -28,14 +28,17 @@ public interface GenereRepository extends MongoRepository<Genere, String> {
     @Override
     List<Genere> findAll();
 
-    <Genere extends AEntity> Genere insert(Genere entity);
+    @Override
+    Genere insert(Genere entity);
 
-    <Genere extends AEntity> Genere save(Genere entity);
+    @Override
+    Genere save(Genere entity);
 
     @Override
     void delete(Genere entity);
 
     List<Genere> findBySingolareStartingWithIgnoreCaseOrderBySingolareAsc(String singolare);
+
     Genere findFirstBySingolare(String singolare);
 
 }// end of crud repository class

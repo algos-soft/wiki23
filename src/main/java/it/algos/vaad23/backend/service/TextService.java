@@ -916,7 +916,7 @@ public class TextService extends AbstractService {
         if (this.isValid(testoOut) && this.isValid(tagIniziale)) {
             tag = tagIniziale.equals(CAPO) ? tagIniziale : tagIniziale.trim();
             if (testoOut.contains(tag)) {
-                testoOut = testoOut.substring(testoOut.indexOf(tag) + tag.length());
+                testoOut = testoOut.substring(testoOut.indexOf(tag));
             }
         }
 
@@ -1253,7 +1253,7 @@ public class TextService extends AbstractService {
         String message;
 
         if (allEnumSelection.contains(PUNTO_VIRGOLA)) {
-            value = this.levaTestoPrimaDi(allEnumSelection, PUNTO_VIRGOLA);
+            value = allEnumSelection.substring(allEnumSelection.indexOf(PUNTO_VIRGOLA)+PUNTO_VIRGOLA.length());
         }
         else {
             message = String.format("La stringa in ingresso non contiene il punto-virgola");

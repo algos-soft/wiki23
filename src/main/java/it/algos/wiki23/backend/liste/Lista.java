@@ -1,7 +1,11 @@
 package it.algos.wiki23.backend.liste;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
@@ -127,6 +131,31 @@ public abstract class Lista {
     @Autowired
     public WikiUtility wikiUtility;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AnnoWikiBackend annoWikiBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public GiornoBackend giornoBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AnnoBackend annoBackend;
+
+
     //--property
     protected List<String> listaNomiSingoli;
 
@@ -177,10 +206,21 @@ public abstract class Lista {
 
     public static Function<WrapDidascalia, String> funNazionalita = wrap -> wrap.getNazionalitaSingola() != null ? wrap.getNazionalitaSingola() : VUOTA;
 
-    public static Function<WrapDidascalia, String> funAttivita = wrap -> wrap.getAttivitaSingola() != null ? wrap.getAttivitaSingola() :
-            VUOTA;
+    public static Function<WrapDidascalia, String> funAttivita = wrap -> wrap.getAttivitaSingola() != null ? wrap.getAttivitaSingola() : VUOTA;
+
+    public static Function<WrapDidascalia, String> funAnnoNato = wrap -> wrap.getAnnoNato() != null ? wrap.getAnnoNato() : VUOTA;
+
+    public static Function<WrapDidascalia, String> funAnnoMorto = wrap -> wrap.getAnnoMorto() != null ? wrap.getAnnoMorto() : VUOTA;
+
+    public static Function<WrapDidascalia, String> funGiornoNato = wrap -> wrap.getGiornoNato() != null ? wrap.getGiornoNato() : VUOTA;
+
+    public static Function<WrapDidascalia, String> funGiornoMorto = wrap -> wrap.getGiornoMorto() != null ? wrap.getGiornoMorto() : VUOTA;
 
     protected String titoloParagrafo;
+
+    protected AETypeCrono typeCrono;
+
+    protected AETypeDidascalia typeDidascalia = AETypeDidascalia.listaAttivitaNazionalita;
 
     /**
      * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
@@ -242,7 +282,12 @@ public abstract class Lista {
                 listaWrap = mappaWrap.get(key2);
                 listaDidascalia = new ArrayList<>();
                 for (WrapDidascalia wrap : listaWrap) {
-                    didascalia = didascaliaService.getDidascaliaLista(wrap.getBio());
+                    didascalia = switch (typeDidascalia) {
+                        case listaAttivitaNazionalita -> didascaliaService.getDidascaliaLista(wrap.getBio());
+                        case giornoNascita -> didascaliaService.getDidascaliaAnnoNato(wrap.getBio());
+                        case giornoMorte -> didascaliaService.getDidascaliaAnnoMorto(wrap.getBio());
+                        default -> VUOTA;
+                    };
                     listaDidascalia.add(didascalia);
                 }
                 mappaDidascalie.get(key1).put(key2, listaDidascalia);
@@ -306,15 +351,36 @@ public abstract class Lista {
     protected WrapDidascalia creaWrapDidascalia(Bio bio) {
         WrapDidascalia wrap = null;
         wrap = new WrapDidascalia();
+        AnnoWiki anno;
 
         wrap.setAttivitaSingola(bio.attivita);
         if (textService.isValid(bio.attivita)) {
-            wrap.setAttivitaParagrafo(attivitaBackend.findFirstBySingolare(bio.attivita).plurale);
+            wrap.setAttivitaParagrafo(attivitaBackend.findFirstBySingolare(bio.attivita).paragrafo);
         }
+
         wrap.setNazionalitaSingola(bio.nazionalita);
         if (textService.isValid(bio.nazionalita)) {
             wrap.setNazionalitaParagrafo(nazionalitaBackend.findFirstBySingolare(bio.nazionalita).plurale);
         }
+
+        wrap.setGiornoNato(bio.giornoNato);
+        if (textService.isValid(bio.giornoNato)) {
+            wrap.setMeseParagrafoNato(fixMese(bio.giornoNato));
+        }
+        wrap.setGiornoMorto(bio.giornoMorto);
+        if (textService.isValid(bio.giornoMorto)) {
+            wrap.setMeseParagrafoMorto(fixMese(bio.giornoMorto));
+        }
+
+        wrap.setAnnoNato(bio.annoNato);
+        if (textService.isValid(bio.annoNato)) {
+            wrap.setSecoloParagrafoNato(fixSecolo(bio.annoNato));
+        }
+        wrap.setAnnoNato(bio.annoMorto);
+        if (textService.isValid(bio.annoMorto)) {
+            wrap.setSecoloParagrafoMorto(fixSecolo(bio.annoMorto));
+        }
+
         wrap.setWikiTitle(bio.wikiTitle);
         wrap.setNome(bio.nome);
         wrap.setCognome(bio.cognome);
@@ -374,5 +440,16 @@ public abstract class Lista {
         sortedList.addAll(listaSenzaCognomeOrdinata);
         return sortedList;
     }
+
+    public String fixMese(final String giornoWiki) {
+        Giorno giorno = giornoBackend.findByNome(giornoWiki);
+        return giorno != null ? giorno.getMese().nome : VUOTA;
+    }
+
+    public String fixSecolo(final String annoWiki) {
+        Anno anno = annoBackend.findByNome(annoWiki);
+        return anno != null ? anno.getSecolo().nome : VUOTA;
+    }
+
 
 }

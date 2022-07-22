@@ -1,7 +1,6 @@
 package it.algos.vaad23.wizard.scripts;
 
 import com.vaadin.flow.spring.annotation.*;
-import static it.algos.vaad23.backend.boot.VaadCost.PROJECT_VAADFLOW;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -40,10 +39,10 @@ public class WizDialogFeedBack extends WizDialog {
         topLayout = fixSezione(TITOLO_FEEDBACK_PROGETTO, "green");
         this.add(topLayout);
 
-        message = String.format("Ricopia la directory %s di %s su %s", TAG_WIZ, currentProject, PROJECT_VAADFLOW);
+        message = String.format("Ricopia la directory %s di %s su %s", TAG_WIZ, currentProject, PROJECT_VAADIN23);
         topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold)));
 
-        message = String.format("Non modifica la sub-directory %s esistente su %s", DIR_SOURCES, PROJECT_VAADFLOW);
+        message = String.format("Non modifica la sub-directory %s esistente su %s", DIR_SOURCES, PROJECT_VAADIN23);
         topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold)));
 
         message = "Le modifiche sono irreversibili";

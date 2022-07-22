@@ -83,8 +83,16 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.text, header = "giorno", widthEM = 8)
     public String giornoNato;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.integer)
+    public int giornoNatoOrd;
+
     @AIField(type = AETypeField.text, header = "anno", widthEM = 6)
     public String annoNato;
+
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.integer)
+    public int annoNatoOrd;
 
     @AIField(type = AETypeField.text)
     public String luogoNato;
@@ -95,8 +103,16 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.text, header = "giorno", widthEM = 8)
     public String giornoMorto;
 
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.integer)
+    public int giornoMortoOrd;
+
     @AIField(type = AETypeField.text, header = "anno", widthEM = 7)
     public String annoMorto;
+
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.integer)
+    public int annoMortoOrd;
 
     @AIField(type = AETypeField.text)
     public String luogoMorto;

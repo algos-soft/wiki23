@@ -279,6 +279,17 @@ public class BioBackend extends WikiBackend {
         return nazLong.intValue();
     }
 
+    public int countAnnoNato(final String annoNato) {
+        Long annoLong = repository.countBioByAnnoNato(annoNato);
+        return annoLong.intValue();
+    }
+
+
+    public int countAnnoMorto(final String annoMorto) {
+        Long annoLong = repository.countBioByAnnoMorto(annoMorto);
+        return annoLong.intValue();
+    }
+
     public Bio findByKey(final long pageId) {
         return repository.findFirstByPageId(pageId);
     }
@@ -344,20 +355,28 @@ public class BioBackend extends WikiBackend {
         String time;
         String message;
         int cont = 0;
+        Bio bioTemp;
 
-        for (int k = 0; k < blocco; k++) {
+        for (int k = 0; k <= blocco; k++) {
             ini = k * dim;
             end = Math.min(ini + dim, lista.size());
+            if (Pref.debug.is()) {
+                logger.info(new WrapLog().message(String.format("Ini %s - End %s", ini, end)).type(AETypeLog.elabora));
+            }
+
             for (Bio bio : lista.subList(ini, end)) {
-                bio = this.findByKey(bio.pageId);
-                bio = elaboraService.esegue(bio);
-                save(bio);
+                bioTemp = this.findByTitle(bio.wikiTitle);
+
+                elaboraService.esegueSave(bioTemp);
                 cont++;
             }
-            size = textService.format(cont);
-            time = dateService.deltaText(inizio);
-            message = String.format("Elaborate finora %s voci biografiche, in %s", size, time);
-            logger.info(new WrapLog().message(message).type(AETypeLog.elabora));
+
+            if (Pref.debug.is()) {
+                size = textService.format(cont);
+                time = dateService.deltaText(inizio);
+                message = String.format("Elaborate finora %s voci biografiche, in %s", size, time);
+                logger.info(new WrapLog().message(message).type(AETypeLog.elabora));
+            }
         }
         super.fixElaboraMinuti(inizio, "biografie");
     }

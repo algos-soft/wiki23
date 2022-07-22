@@ -110,7 +110,7 @@ public class WizardView extends VerticalLayout {
         String srcVaadin23 = System.getProperty("user.dir");
         updateProject = fileService.estraeClasseFinaleSenzaJava(srcVaadin23).toLowerCase();
 
-        return updateProject.equals(PROJECT_VAADFLOW);
+        return updateProject.equals(PROJECT_VAADIN23);
     }
 
     public void titolo() {
@@ -186,7 +186,7 @@ public class WizardView extends VerticalLayout {
 
         layout.add(new Label("Ricopia su Vaadin23 la directory 'wizard' di questo progetto"));
 
-        Button bottone = new Button(String.format("Send back to %s", PROJECT_VAADFLOW));
+        Button bottone = new Button(String.format("Send back to %s", PROJECT_VAADIN23));
         bottone.getElement().setAttribute("theme", "primary");
         bottone.addClickListener(event -> openFeedBack());
 

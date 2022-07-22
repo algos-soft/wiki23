@@ -3,6 +3,7 @@ package it.algos.vaad23.backend.service;
 import com.mongodb.*;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
+import com.mongodb.client.result.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -240,6 +241,33 @@ public class MongoService<capture> extends AbstractService {
 
 
     /**
+     * Controlla che la collezione sia vuota. <br>
+     *
+     * @param entityClazz corrispondente ad una collection sul database mongoDB
+     *
+     * @return true if the collection is null or empty
+     */
+    public boolean isCollectionNullOrEmpty(final Class<? extends AEntity> entityClazz) {
+        return entityClazz == null ? false : isCollectionNullOrEmpty(textService.primaMinuscola(entityClazz.getSimpleName()));
+    }
+
+    /**
+     * Controlla che la collezione sia vuota. <br>
+     *
+     * @param collectionName corrispondente ad una collection sul database mongoDB
+     *
+     * @return true if the collection is null or empty
+     */
+    public boolean isCollectionNullOrEmpty(final String collectionName) {
+        if (isExistsCollection(collectionName)) {
+            return count(collectionName) == 0;
+        }
+        else {
+            return true;
+        }
+    }
+
+    /**
      * Check the existence of a collection. <br>
      *
      * @param entityClazz corrispondente ad una collection sul database mongoDB
@@ -247,7 +275,7 @@ public class MongoService<capture> extends AbstractService {
      * @return true if the collection exist
      */
     public boolean isExistsCollection(final Class<? extends AEntity> entityClazz) {
-        return isExistsCollection(entityClazz != null ? entityClazz.getSimpleName() : VUOTA);
+        return entityClazz == null ? false : isExistsCollection(entityClazz.getSimpleName().toLowerCase());
     }
 
 
@@ -263,8 +291,10 @@ public class MongoService<capture> extends AbstractService {
             logger.info(new WrapLog().exception(new AlgosException("Manca il nome della collection")).usaDb());
         }
 
-        String shortName = fileService.estraeClasseFinale(collectionName).toLowerCase();
-        return collezioni != null && collezioni.contains(shortName);
+        String shortName = fileService.estraeClasseFinale(collectionName);
+        shortName = textService.primaMinuscola(shortName);
+
+        return mongoOp.collectionExists(shortName);
     }
 
 
@@ -279,12 +309,11 @@ public class MongoService<capture> extends AbstractService {
         if (textService.isEmpty(collectionName)) {
             return null;
         }
-
         String shortName = fileService.estraeClasseFinale(collectionName);
         shortName = textService.primaMinuscola(shortName);
 
         if (textService.isValid(shortName)) {
-            if (collezioni != null && collezioni.contains(shortName)) {
+            if (isExistsCollection(shortName)) {
                 return dataBase != null ? dataBase.getCollection(shortName) : null;
             }
             return null;
@@ -348,6 +377,30 @@ public class MongoService<capture> extends AbstractService {
         entities = mongoOp.count(query, entityClazz);
 
         return entities > 0 ? entities.intValue() : 0;
+    }
+
+    /**
+     * Conteggio delle entities di una collection <br>
+     *
+     * @param collectionName corrispondente ad una collection sul database mongoDB
+     *
+     * @return numero di entities totali
+     */
+    public int count(final String collectionName) {
+        String simpleLowerCollectionName = fileService.estraeClasseFinale(collectionName);
+        simpleLowerCollectionName = textService.primaMinuscola(simpleLowerCollectionName);
+        Long entities;
+        Query query = new Query();
+        entities = mongoOp.count(query, simpleLowerCollectionName);
+        return entities > 0 ? entities.intValue() : 0;
+    }
+
+    public void deleteAll(final Class clazz) {
+        mongoOp.dropCollection(clazz);
+    }
+
+    public DeleteResult delete(final Object entityBean) {
+        return mongoOp.remove(entityBean);
     }
 
     public void setDatabaseName(String databaseName) {

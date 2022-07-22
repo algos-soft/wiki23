@@ -35,9 +35,15 @@ public class VaadCost {
 
     public static final String PATH_RISORSE = "src/main/resources/META-INF/resources/";
 
+    public static final String PATH_PREFIX = "src/main/java/it/algos/";
+
+    public static final String PATH_PREFIX_ALGOS = "it/algos/";
+
     public static final String PATH_ALGOS = "it.algos";
 
-    public static final String PROJECT_VAADFLOW = "vaadin23";
+    public static final String PROJECT_VAADIN23 = "vaadin23";
+
+    public static final String MODULO_VAADIN23 = "vaad23";
 
     public static final String TAG_WIZ = "wizard";
 
@@ -198,6 +204,22 @@ public class VaadCost {
     public static final String ROUTE_NAME_GENERIC_LIST = "list";
 
     public static final String ROUTE_NAME_GENERIC_FORM = "form";
+
+    public static final String SUFFIX_LIST = "List";
+
+    public static final String SUFFIX_FORM = "Form";
+
+    public static final String SUFFIX_ENTITY = VUOTA;
+
+    public static final String SUFFIX_BACKEND = "Backend";
+
+    public static final String SUFFIX_REPOSITORY = "Repository";
+
+    public static final String SUFFIX_VIEW = "View";
+
+    public static final String SUFFIX_DIALOG = "Dialog";
+
+    public static final String SUFFIX_SERVICE = "Service";
 
     public static final String SWITCH = "Switch - caso non previsto";
 
@@ -401,14 +423,16 @@ public class VaadCost {
 
     public static final int ANNO_INIZIALE = 2000;
 
-    public static final int ANTE_CRISTO = 1000;
+    public static final int ANTE_CRISTO_MAX = 1000;
 
-    public static final int DOPO_CRISTO = 2030;
+    public static final int DOPO_CRISTO_MAX = 2030;
+
 
     public static final List<String> MASCHI = Arrays.asList("m", "uomo", "maschio", "maschile", "M", "Uomo", "Maschio", "Maschile");
 
     public static final List<String> FEMMINE = Arrays.asList("f", "donna", "femmina", "femminile", "F", "Donna", "Femmina", "Femminile");
 
     public static final List<String> TRANS = Arrays.asList("", "trans", "incerto", "non si sa", "dubbio", "?", "*", "ǝ");
+
 
 }

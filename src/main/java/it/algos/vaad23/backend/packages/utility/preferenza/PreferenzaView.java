@@ -143,7 +143,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     public void fixAlert() {
         spanBlue("Preferenze registrate nel database mongoDB");
         spanRosso("Mostra solo le properties di un programma non multiCompany");
-        span(String.format("Vaad23=true per le preferenze del programma base '%s'", VaadVar.projectVaadFlow));
+        span(String.format("Vaad23=true per le preferenze del programma base '%s'", VaadVar.projectVaadin23));
         span(String.format("Vaad23=false per le preferenze del programma corrente '%s'", VaadVar.projectCurrent));
         span("NeedRiavvio=true se la preferenza ha effetto solo dopo un riavvio del programma");
         spanRosso("Le preferenze sono create/cancellate solo via hardcode (tramite una Enumeration)");

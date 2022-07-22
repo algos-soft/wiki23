@@ -4,7 +4,6 @@ import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.spring.annotation.*;
-import static it.algos.vaad23.backend.boot.VaadCost.PROJECT_VAADFLOW;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -92,7 +91,7 @@ public class WizDialogNewProject extends WizDialog {
         fieldComboProgettiNuovi.setAllowCustomValue(false);
         fieldComboProgettiNuovi.setLabel(LABEL_COMBO_UNO);
 
-        pathDirectory = fileService.findPathDirectory(pathDirectory, PROJECT_VAADFLOW);
+        pathDirectory = fileService.findPathDirectory(pathDirectory, PROJECT_VAADIN23);
         progetti = fileService.getEmptyProjects(pathDirectory);
         if (progetti == null || progetti.size() == 0) {
             progetti = fileService.getAllProjects(pathDirectory);

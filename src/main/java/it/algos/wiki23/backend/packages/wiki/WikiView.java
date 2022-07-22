@@ -45,6 +45,14 @@ public abstract class WikiView extends CrudView {
     @Autowired
     public DownloadService downloadService;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WikiUtility wikiUtility;
+
     protected boolean usaBottoneDownload;
 
     protected Button buttonDownload;
@@ -101,16 +109,21 @@ public abstract class WikiView extends CrudView {
     protected String unitaMisuraElaborazione;
 
     protected String unitaMisuraUpload;
-    //
-    //    protected String singolare;
-    //
-    //    protected String plurale;
+
+    protected boolean usaBottonePaginaNati;
+
+    protected Button buttonPaginaNati;
+
+    protected boolean usaBottonePaginaMorti;
+
+    protected Button buttonPaginaMorti;
 
     protected boolean usaInfoDownload;
 
     protected WPref lastDownload;
 
     protected WPref durataDownload;
+
     protected WPref nextDownload;
 
     protected WPref lastElaborazione;
@@ -120,6 +133,7 @@ public abstract class WikiView extends CrudView {
     protected WPref lastUpload;
 
     protected WPref durataUpload;
+
     protected WPref nextUpload;
 
     protected WikiBackend crudBackend;
@@ -188,6 +202,9 @@ public abstract class WikiView extends CrudView {
         this.usaBottonePaginaWiki = true;
         this.usaBottoneTest = true;
         this.usaInfoDownload = true;
+        this.usaBottonePaginaNati = false;
+        this.usaBottonePaginaMorti = false;
+
         this.unitaMisuraDownload = VUOTA;
         this.unitaMisuraElaborazione = VUOTA;
         this.unitaMisuraUpload = VUOTA;
@@ -237,7 +254,7 @@ public abstract class WikiView extends CrudView {
                         message += String.format(" in circa %d %s.", durata, unitaMisuraDownload);
                     }
                     if (nextDownload != null && nextDownload.get() instanceof LocalDateTime next) {
-                        message += String.format(" Prossimo download previsto %s.",DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next) );
+                        message += String.format(" Prossimo download previsto %s.", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next));
                     }
                 }
                 addSpanVerdeSmall(message);
@@ -265,7 +282,7 @@ public abstract class WikiView extends CrudView {
                         message += String.format(" in circa %d %s.", durata, unitaMisuraUpload);
                     }
                     if (nextUpload != null && nextUpload.get() instanceof LocalDateTime next) {
-                        message += String.format(" Prossimo upload previsto %s.",DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next) );
+                        message += String.format(" Prossimo upload previsto %s.", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next));
                     }
                 }
                 addSpanVerdeSmall(message);
@@ -324,7 +341,6 @@ public abstract class WikiView extends CrudView {
         //            topPlaceHolder.add(buttonModulo);
         //        }
 
-
         if (usaBottoneStatistiche) {
             buttonStatistiche = new Button();
             buttonStatistiche.getElement().setAttribute("theme", "secondary");
@@ -361,6 +377,26 @@ public abstract class WikiView extends CrudView {
             buttonPaginaWiki.setEnabled(false);
             buttonPaginaWiki.addClickListener(event -> wikiPage());
             topPlaceHolder.add(buttonPaginaWiki);
+        }
+
+        if (usaBottonePaginaNati) {
+            buttonPaginaNati = new Button();
+            buttonPaginaNati.getElement().setAttribute("theme", "secondary");
+            buttonPaginaNati.getElement().setProperty("title", "Pagina: lettura della pagina nati esistente su wiki");
+            buttonPaginaNati.setIcon(new Icon(VaadinIcon.SEARCH));
+            buttonPaginaNati.setEnabled(false);
+            buttonPaginaNati.addClickListener(event -> wikiPageNati());
+            topPlaceHolder.add(buttonPaginaNati);
+        }
+
+        if (usaBottonePaginaMorti) {
+            buttonPaginaMorti = new Button();
+            buttonPaginaMorti.getElement().setAttribute("theme", "secondary");
+            buttonPaginaMorti.getElement().setProperty("title", "Pagina: lettura della pagina morti esistente su wiki");
+            buttonPaginaMorti.setIcon(new Icon(VaadinIcon.SEARCH));
+            buttonPaginaMorti.setEnabled(false);
+            buttonPaginaMorti.addClickListener(event -> wikiPageMorti());
+            topPlaceHolder.add(buttonPaginaMorti);
         }
 
         if (usaBottoneTest) {
@@ -417,12 +453,23 @@ public abstract class WikiView extends CrudView {
         if (buttonCategoria != null) {
             buttonCategoria.setEnabled(singoloSelezionato);
         }
+
         if (buttonPaginaWiki != null) {
             buttonPaginaWiki.setEnabled(singoloSelezionato);
         }
+
+        if (buttonPaginaNati != null) {
+            buttonPaginaNati.setEnabled(singoloSelezionato);
+        }
+
+        if (buttonPaginaMorti != null) {
+            buttonPaginaMorti.setEnabled(singoloSelezionato);
+        }
+
         if (buttonTest != null) {
             buttonTest.setEnabled(singoloSelezionato);
         }
+
         if (buttonUploadPagina != null) {
             buttonUploadPagina.setEnabled(singoloSelezionato);
         }
@@ -449,7 +496,6 @@ public abstract class WikiView extends CrudView {
      */
     public void elabora() {
         crudBackend.elabora();
-        sortOrder = Sort.by(Sort.Direction.DESC, "numBio");
         refresh();
         fixInfo();
     }
@@ -534,6 +580,21 @@ public abstract class WikiView extends CrudView {
 
         return entiyBeanUnicoSelezionato;
     }
+
+    /**
+     * Esegue un azione di apertura di una pagina su wiki, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void wikiPageNati() {
+    }
+
+    /**
+     * Esegue un azione di apertura di una pagina su wiki, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void wikiPageMorti() {
+    }
+
 
     /**
      * Scrive una voce di prova su Utente:Biobot/test <br>

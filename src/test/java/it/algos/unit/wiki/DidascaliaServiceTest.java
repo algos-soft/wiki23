@@ -309,6 +309,52 @@ public class DidascaliaServiceTest extends WikiTest {
         WPref.linkCrono.setEnumCurrentObj(oldValue);
     }
 
+
+    @ParameterizedTest
+    @MethodSource(value = "PAGINE_BIO")
+    @Order(7)
+    @DisplayName("7 - Didascalie pagine 'Nati nel xxx(anno)")
+        //--titolo
+        //--pagina valida
+    void didascaliaAnnoNato(final String wikiTitle, final boolean paginaValida) {
+        System.out.println("7 - Didascalie pagine 'Nati nel xxx(anno)");
+        System.out.println(VUOTA);
+
+        if (!paginaValida) {
+            return;
+        }
+        sorgente = wikiTitle;
+        bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
+        assertNotNull(bio);
+
+        ottenuto= service.getDidascaliaAnnoNato(bio);
+        System.out.println(String.format("Biografia: %s", wikiTitle));
+        System.out.println(String.format("Didascalia anno nato: %s", ottenuto));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "PAGINE_BIO")
+    @Order(8)
+    @DisplayName("8 - Didascalie pagine 'Morti nel xxx(anno)")
+        //--titolo
+        //--pagina valida
+    void didascaliaAnnoMorto(final String wikiTitle, final boolean paginaValida) {
+        System.out.println("8 - Didascalie pagine 'Morti nel xxx(anno)");
+        System.out.println(VUOTA);
+
+        if (!paginaValida) {
+            return;
+        }
+        sorgente = wikiTitle;
+        bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
+        assertNotNull(bio);
+
+        ottenuto= service.getDidascaliaAnnoMorto(bio);
+        System.out.println(String.format("Biografia: %s", wikiTitle));
+        System.out.println(String.format("Didascalia anno morto: %s", ottenuto));
+    }
+
     //    @Test
     public void download() {
         System.out.println("*************");

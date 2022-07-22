@@ -4,6 +4,7 @@ import com.vaadin.flow.component.icon.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.wiki23.backend.enumeration.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.*;
@@ -33,8 +34,15 @@ public class Attivita extends AEntity {
     public String singolare;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.text, widthEM = WIDTHEM, caption = "Attività plurale")
-    public String plurale;
+    @AIField(type = AETypeField.text, widthEM = WIDTHEM)
+    public String categoria;
+
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.text, widthEM = WIDTHEM)
+    public String paragrafo;
+
+    @AIField(type = AETypeField.enumeration, enumClazz = AETypeGenere.class)
+    public AETypeGenere type;
 
     @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.ADD_DOCK, caption = "aggiunta (ex-attività)", usaCheckBox3Vie = true)
     public boolean aggiunta;

@@ -37,7 +37,7 @@ public class Wiki23Cost {
 
     public static final String GIORNI = "Giorni";
 
-    public static final String ANNI = "ANNI";
+    public static final String ANNI = "Anni";
 
     public static final String ATT = "Attività";
 
@@ -104,17 +104,20 @@ public class Wiki23Cost {
 
     public static final String PATH_NAZIONALITA = PATH_PROGETTO + NAZ;
 
+    public static final String PATH_GIORNI = PATH_PROGETTO + GIORNI;
+
+    public static final String PATH_ANNI = PATH_PROGETTO + ANNI;
 
     public static final String ATT_LOWER = ATT.toLowerCase();
 
-    public static final String PATH_MODULO_GENERE = PATH_MODULO_PLURALE + ATT_LOWER + SPAZIO + GENERE;
 
     public static final String PATH_MODULO_ATTIVITA = PATH_MODULO_PLURALE + ATT_LOWER;
 
-    public static final String PATH_TABELLA_NOMI_DOPPI = "Progetto:Antroponimi/Nomi_doppi";
+    public static final String PATH_MODULO_GENERE = PATH_MODULO_PLURALE + ATT_LOWER + SPAZIO + GENERE;
 
     public static final String PATH_MODULO_PROFESSIONE = PATH_MODULO_LINK + ATT_LOWER;
 
+    public static final String PATH_TABELLA_NOMI_DOPPI = "Progetto:Antroponimi/Nomi_doppi";
 
     public static final String NAZ_LOWER = NAZ.toLowerCase();
 
@@ -250,8 +253,10 @@ public class Wiki23Cost {
 
     public static final String LISTA_ATTIVITA_UNICA = String.format("Ogni persona è presente in '''una sola [[Progetto:Biografie/Attività|lista]]''', in base a quanto " +
             "riportato nel '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
+
     public static final String LISTA_NAZIONALITA = String.format("Ogni persona è presente in '''una sola [[Progetto:Biografie/Nazionalità|lista]]''', in base a quanto " +
             "riportato nel parametro '''''nazionalità''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
+
     public static final String LISTA_DIFFERENZA = "La '''differenza''' tra le voci della categoria e quelle utilizzate è dovuta allo specifico utilizzo del [[template:Bio|template Bio]] ed in particolare all'uso del parametro Categorie=NO";
 
     public static final String KEY_ERROR_CANCELLANDA = "esistenteDaCancellare";

@@ -243,6 +243,19 @@ public class ArrayService extends AbstractService {
     }
 
     /**
+     * Crea una stringa con i valori dell'array separati da virgola e spazio <br>
+     *
+     * @param array lista di valori
+     *
+     * @return stringa con i singoli valori separati da virgola
+     *
+     * @since Java 9
+     */
+    public String toStringaVirgolaSpazio(final List array) {
+        return toStringaBase(array, VIRGOLA_SPAZIO);
+    }
+
+    /**
      * Costruisce una stringa con i singoli valori separati da un pipe <br>
      *
      * @param array lista di valori

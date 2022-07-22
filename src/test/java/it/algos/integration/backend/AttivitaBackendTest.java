@@ -307,7 +307,7 @@ public class AttivitaBackendTest extends WikiTest {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(attivita.plurale);
+            System.out.println(attivita.categoria);
         }
     }
 

@@ -184,7 +184,7 @@ public class QueryBioTest extends WikiTest {
     @Test
     @Order(7)
     @DisplayName("7 - Test tramite pageid per una biografia esistente")
-    void getWrapPageids2() {
+    void getWrapPageIds2() {
         System.out.println(("7- Test tramite pageid per una biografia esistente"));
 
         sorgenteIntero = 4292050;

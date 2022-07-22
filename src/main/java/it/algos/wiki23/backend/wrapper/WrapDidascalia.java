@@ -14,23 +14,50 @@ import it.algos.wiki23.backend.packages.bio.*;
 public class WrapDidascalia {
 
     private String attivitaSingola;
+
     private String attivitaParagrafo;
+
     private String nazionalitaSingola;
+
     private String nazionalitaParagrafo;
+
     private String wikiTitle;
+
     private String nome;
+
     private String cognome;
+
     private String primoCarattere;
+
     public String giornoNato;
+
     public String annoNato;
+
+
     public String luogoNato;
+
     public String luogoNatoLink;
+
     public String giornoMorto;
+
     public String annoMorto;
+
     public String luogoMorto;
+
     public String luogoMortoLink;
+
+    public String meseParagrafoNato;
+
+    public String meseParagrafoMorto;
+
+    public String secoloParagrafoNato;
+
+    public String secoloParagrafoMorto;
+
     public String attivita2;
+
     public String attivita3;
+
     public Bio bio;
 
     public String getAttivitaSingola() {
@@ -63,6 +90,38 @@ public class WrapDidascalia {
 
     public void setNazionalitaParagrafo(String nazionalitaParagrafo) {
         this.nazionalitaParagrafo = nazionalitaParagrafo;
+    }
+
+    public String getMeseParagrafoNato() {
+        return meseParagrafoNato;
+    }
+
+    public void setMeseParagrafoNato(String meseParagrafoNato) {
+        this.meseParagrafoNato = meseParagrafoNato;
+    }
+
+    public String getMeseParagrafoMorto() {
+        return meseParagrafoMorto;
+    }
+
+    public void setMeseParagrafoMorto(String meseParagrafoMorto) {
+        this.meseParagrafoMorto = meseParagrafoMorto;
+    }
+
+    public String getSecoloParagrafoNato() {
+        return secoloParagrafoNato;
+    }
+
+    public void setSecoloParagrafoNato(String secoloParagrafoNato) {
+        this.secoloParagrafoNato = secoloParagrafoNato;
+    }
+
+    public String getSecoloParagrafoMorto() {
+        return secoloParagrafoMorto;
+    }
+
+    public void setSecoloParagrafoMorto(String secoloParagrafoMorto) {
+        this.secoloParagrafoMorto = secoloParagrafoMorto;
     }
 
     public String getWikiTitle() {

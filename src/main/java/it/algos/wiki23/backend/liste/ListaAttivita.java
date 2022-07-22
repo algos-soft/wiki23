@@ -51,7 +51,7 @@ public class ListaAttivita extends Lista {
 
 
     public ListaAttivita attivita(final Attivita attivita) {
-        listaNomiSingoli = attivitaBackend.findSingolariByPlurale(attivita.plurale);
+        listaNomiSingoli = attivitaBackend.findSingolariByPlurale(attivita.paragrafo);
         return this;
     }
 
@@ -92,7 +92,7 @@ public class ListaAttivita extends Lista {
     @Override
     public List<WrapDidascalia> listaWrapDidascalie() {
         listaWrapDidascalie = super.listaWrapDidascalie();
-        return sortByNazionalita(listaWrapDidascalie);
+        return listaWrapDidascalie != null ? sortByNazionalita(listaWrapDidascalie) : null;
     }
 
     /**
@@ -100,8 +100,7 @@ public class ListaAttivita extends Lista {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie() {
-        super.mappaWrapDidascalie();
+    public LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie() {super.mappaWrapDidascalie();
 
         LinkedHashMap<String, List<WrapDidascalia>> mappaNaz = creaMappaNazionalita(listaWrapDidascalie);
         LinkedHashMap<String, List<WrapDidascalia>> mappaLista;
@@ -165,9 +164,5 @@ public class ListaAttivita extends Lista {
         sortedList.addAll(listaSenzaNazionalitaOrdinata);
         return sortedList;
     }
-
-
-
-
 
 }

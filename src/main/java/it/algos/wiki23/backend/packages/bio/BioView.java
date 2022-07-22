@@ -82,6 +82,7 @@ public class BioView extends WikiView {
         super.formPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "sesso", "nome", "cognome", "ordinamento",
                 "giornoNato",
                 "annoNato", "giornoMorto", "annoMorto",
+                "giornoNatoOrd", "giornoMortoOrd", "annoNatoOrd","annoMortoOrd",
                 "attivita", "attivita2", "attivita3",
                 "nazionalita"
         );

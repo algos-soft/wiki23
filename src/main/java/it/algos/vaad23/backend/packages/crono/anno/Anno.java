@@ -34,8 +34,8 @@ public class Anno extends AEntity {
     @AIField(type = AETypeField.link, widthEM = 10, linkClazz = SecoloBackend.class)
     public Secolo secolo;
 
-    @AIField(type = AETypeField.booleano, header = "a.C.")
-    public boolean anteCristo;
+    @AIField(type = AETypeField.booleano, header = "d.C.")
+    public boolean dopoCristo;
 
     @AIField(type = AETypeField.booleano, header = "BS")
     public boolean bisestile;

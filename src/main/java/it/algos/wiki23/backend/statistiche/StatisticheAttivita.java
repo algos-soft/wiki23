@@ -573,7 +573,7 @@ public class StatisticheAttivita extends Statistiche {
         int numAttivitaTre;
 
         for (Attivita attivita : (List<Attivita>) lista) {
-            singolari = attivitaBackend.findSingolariByPlurale(attivita.plurale);
+            singolari = attivitaBackend.findSingolariByPlurale(attivita.paragrafo);
             numAttivitaUno = 0;
             numAttivitaDue = 0;
             numAttivitaTre = 0;
@@ -584,8 +584,8 @@ public class StatisticheAttivita extends Statistiche {
                 numAttivitaTre += bioBackend.countAttivitaTre(singolare);
             }
 
-            mappaSingola = new MappaStatistiche(attivita.plurale, numAttivitaUno, numAttivitaDue, numAttivitaTre);
-            mappa.put(attivita.plurale, mappaSingola);
+            mappaSingola = new MappaStatistiche(attivita.paragrafo, numAttivitaUno, numAttivitaDue, numAttivitaTre);
+            mappa.put(attivita.paragrafo, mappaSingola);
         }
     }
 

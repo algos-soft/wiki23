@@ -4,6 +4,7 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
@@ -159,7 +160,7 @@ public class QueryWrapBioTest extends WikiTest {
         }
     }
 
-    @Test
+    //    @Test
     @Order(6)
     @DisplayName("6 - Categoria lunga")
     void urlRequestListaCat2() {
@@ -178,6 +179,25 @@ public class QueryWrapBioTest extends WikiTest {
         for (WrapBio wrapBio : listWrapBio.subList(0, Math.min(10, listWrapBio.size()))) {
             printWrapBio(wrapBio);
         }
+    }
+
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - Categoria media bio")
+    void urlRequestListaCatBio() {
+        System.out.println(("7 - Categoria media bio"));
+
+        sorgente = "Nati nel 1782";
+        listaPageIds = queryService.getListaPageIds(sorgente);
+        listBio = appContext.getBean(QueryWrapBio.class).getBio(listaPageIds);
+        assertNotNull(listBio);
+        assertTrue(listBio.size() > 0);
+
+        message = String.format("Lista di %d biografie della categoria [%s] recuperate in %s", listBio.size(), sorgente, getTime());
+        System.out.println(message);
+
+        printBio(listBio.subList(0, Math.min(10, listBio.size())));
     }
 
     /**

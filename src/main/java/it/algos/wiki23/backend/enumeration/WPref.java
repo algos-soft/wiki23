@@ -53,6 +53,12 @@ public enum WPref implements AIGenPref {
     //    downloadProfessione("downloadProfessione", AETypePref.localdatetime, "Download di Modulo:Bio/Link attività.", ROOT_DATA_TIME),
     //    downloadNomi("downloadNomi", AETypePref.localdatetime, "Download di Progetto:Antroponimi/Nomi doppi.", ROOT_DATA_TIME),
 
+    elaboraAnni("elaboraAnni", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutti gli anni."),
+    elaboraAnniTime("elaboraAnniTime", AETypePref.integer, 0, "Durata elaborazione di tutti gli anni in minuti."),
+    elaboraGiorni("elaboraGiorni", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutti i giorni."),
+    elaboraGiorniTime("elaboraGiorniTime", AETypePref.integer, 0, "Durata elaborazione di tutti i giorni in minuti."),
+
+
     categoriaBio("categoriaBio", AETypePref.string, "BioBot", "Categoria di riferimento per le Biografie"),
     sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, 50, "Soglia minima per creare la pagina di una attività o nazionalità sul " +
             "server wiki"),
@@ -67,14 +73,15 @@ public enum WPref implements AIGenPref {
     typeTocAttNaz("typeTocAttNaz", AETypePref.enumerationType, AETypeToc.noToc, "Type di TOC in attività e nazionalità",
             AETypeToc.noToc
     ),
+    typeChiaveNulla("typeChiaveNulla", AETypePref.enumerationType, AETypeChiaveNulla.inCoda, "Posizione del paragrafo 'nullo'",
+            AETypeChiaveNulla.inCoda),
 
 
     simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),
     simboloMorto("simboloMorto", AETypePref.string, "†", "Simbolo della morte nelle didascalie"),
 
     linkCrono("linkCrono", AETypePref.enumerationType, AETypeLinkCrono.voce, "Type di link a giorni/anni nelle didascalie",
-            AETypeLinkCrono.nessuno
-    ),
+            AETypeLinkCrono.nessuno),
     ;
 
     //--codice di riferimento.

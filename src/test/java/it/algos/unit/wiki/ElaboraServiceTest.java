@@ -8,7 +8,9 @@ import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.service.*;
+import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
@@ -497,6 +499,17 @@ public class ElaboraServiceTest extends WikiTest {
         printNome(sorgente, ottenuto);
     }
 
+    @Test
+    @Order(16)
+    @DisplayName("16 - elabora una categoria di voci")
+    void ciclo() {
+//        sorgente = "Nati nel 1782";
+//        listaPageIds = queryService.getListaPageIds(sorgente);
+//        listBio = appContext.getBean(QueryWrapBio.class).getBio(listaPageIds);
+//        assertNotNull(listBio);
+//        assertTrue(listBio.size() > 0);
+//        elaboraService.esegue()
+    }
 
 
     private void printNome(final String tagInput, final String tagValido) {

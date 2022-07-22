@@ -87,7 +87,7 @@ public class ListaNazionalita extends Lista {
     @Override
     public List<WrapDidascalia> listaWrapDidascalie() {
         listaWrapDidascalie = super.listaWrapDidascalie();
-        return sortByAttivita(listaWrapDidascalie);
+        return listaWrapDidascalie != null ? sortByAttivita(listaWrapDidascalie) : null;
     }
 
     /**

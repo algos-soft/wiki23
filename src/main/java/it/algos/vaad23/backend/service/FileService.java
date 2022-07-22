@@ -198,12 +198,12 @@ public class FileService extends AbstractService {
         if (fileToBeChecked.exists()) {
             if (fileToBeChecked.isFile()) {
                 message = String.format("Trovato il file %s", fileToBeChecked.getAbsolutePath());
-                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                //                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
                 return result.validMessage(message);
             }
             else {
                 message = String.format("%s%s%s", NON_E_FILE, FORWARD, fileToBeChecked.getAbsolutePath());
-                logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                //                logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
                 return result.errorMessage(message);
             }
         }
@@ -847,7 +847,6 @@ public class FileService extends AbstractService {
 
         return result;
     }
-
 
 
     /**
@@ -1506,40 +1505,22 @@ public class FileService extends AbstractService {
      * Crea una lista di tutte le Entity esistenti nel modulo indicato <br>
      */
     public List<String> getModuleSubFilesEntity(String moduleName) throws AlgosException {
-        String tagIniziale = "src/main/java/it/algos/";
         String tagFinale = "/backend/packages";
 
-        return getAllSubFilesEntity(tagIniziale + moduleName + tagFinale);
+        return getAllSubFilesEntity(PATH_PREFIX + moduleName + tagFinale);
     }
 
     /**
      * Crea una lista di tutte le Entity esistenti nella directory packages <br>
      */
     public List<String> getAllSubFilesEntity(String path) throws AlgosException {
-        List<String> listaCanonicalNamesOnlyEntity = new ArrayList<>();
-        List<String> listaNamesOnlyFilesJava = getAllSubFilesJava(path);
-        String simpleName;
-
-        if (arrayService.isAllValid(listaNamesOnlyFilesJava)) {
-            for (String canonicalName : listaNamesOnlyFilesJava) {
-                //--estrae la parte significativa
-                simpleName = canonicalName.substring(canonicalName.lastIndexOf(PUNTO) + PUNTO.length());
-
-                //--scarta Enumeration
-                if (simpleName.startsWith("AE")) {
-                    continue;
-                }
-
-                //--scarta 'logic', 'form', 'service', 'view', 'grid'
-                if (simpleName.endsWith("Logic") || simpleName.endsWith("Form") || simpleName.endsWith("Service") || simpleName.endsWith("View") || simpleName.endsWith("Grid")) {
-                    continue;
-                }
-
-                listaCanonicalNamesOnlyEntity.add(canonicalName);
-            }
-        }
-
-        return listaCanonicalNamesOnlyEntity;
+        return getAllSubFilesJava(path)
+                .stream()
+                .filter(n -> !n.endsWith(SUFFIX_BACKEND))
+                .filter(n -> !n.endsWith(SUFFIX_REPOSITORY))
+                .filter(n -> !n.endsWith(SUFFIX_VIEW))
+                .filter(n -> !n.endsWith(SUFFIX_DIALOG))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -1547,10 +1528,9 @@ public class FileService extends AbstractService {
      *
      * @return canonicalName con i PUNTI di separazione e NON lo SLASH
      */
-    public List<String> getAllSubFilesJava(String path) throws AlgosException {
+    public List<String> getAllSubFilesJava(String path) {
         List<String> listaCanonicalNamesOnlyFilesJava = new ArrayList<>();
         List<String> listaPathNamesOnlyFiles = getAllSubPathFiles(path);
-        String tag = ".it.";
         String canonicalName;
 
         if (arrayService.isAllValid(listaPathNamesOnlyFiles)) {
@@ -1558,8 +1538,6 @@ public class FileService extends AbstractService {
                 if (pathName.endsWith(JAVA_SUFFIX)) {
                     canonicalName = textService.levaCoda(pathName, JAVA_SUFFIX);
                     canonicalName = canonicalName.replaceAll(SLASH, PUNTO);
-                    //                    canonicalName = lastDirectory(canonicalName, tag); //@todo non funziona così
-                    canonicalName = canonicalName.substring(1);
                     listaCanonicalNamesOnlyFilesJava.add(canonicalName);
                 }
             }
@@ -1573,21 +1551,23 @@ public class FileService extends AbstractService {
      *
      * @return lista
      */
-    public List<String> getAllSubPathFiles(String path) throws AlgosException {
+    public List<String> getAllSubPathFiles(String path) {
         List<String> listaPathNamesOnlyFiles = new ArrayList<>();
-        List<String> listaAllPathNames;
+        List<String> listaAllPathNames = null;
         File unaDirectory = new File(path);
         Path start = Paths.get(unaDirectory.getAbsolutePath());
 
         try {
             listaAllPathNames = recursionSubPathNames(start);
         } catch (Exception unErrore) {
-            throw AlgosException.crea(unErrore);
+            //            throw AlgosException.crea(unErrore);
+            int a = 87;
         }
 
         if (arrayService.isAllValid(listaAllPathNames)) {
             for (String pathName : listaAllPathNames) {
                 if (isEsisteFile(pathName)) {
+                    pathName = textService.levaTestoPrimaDi(pathName, PATH_PREFIX_ALGOS);
                     listaPathNamesOnlyFiles.add(pathName);
                 }
             }
@@ -1597,41 +1577,57 @@ public class FileService extends AbstractService {
     }
 
     /**
+     * Crea una lista (path completo) di tutti i files della directory package del modulo corrente <br>
+     *
+     * @return lista dei path completi
+     */
+    public List<String> getPathModuloPackageFiles() {
+        return getPathModuloPackageFiles(VaadVar.projectNameModulo);
+    }
+
+
+    /**
      * Crea una lista (path completo) di tutti i files della directory package del modulo indicato <br>
      *
      * @return lista dei path completi
      */
-    public List<String> getPathModuloPackageFiles(final String nomeModulo) throws AlgosException {
+    public List<String> getPathModuloPackageFiles(final String nomeModulo) {
         String pathPackage = VUOTA;
 
+        if (textService.isEmpty(nomeModulo)) {
+            logger.error(new AlgosException("Manca il nome del modulo"));
+            return null;
+        }
+
         pathPackage += System.getProperty("user.dir") + SLASH;
+        pathPackage += "src/main/java/it/algos/";
         pathPackage += nomeModulo + SLASH;
 
         return getAllSubPathFiles(pathPackage);
     }
 
-    /**
-     * Crea una lista (path completo) di tutti i files della directory package del modulo corrente <br>
-     *
-     * @return lista dei path completi
-     */
-    public List<String> getPathAllPackageFiles() throws AlgosException {
-        List<String> lista = new ArrayList<>();
-        String nomeModulo = VUOTA;
-
-        if (textService.isEmpty(nomeModulo)) {
-            logger.error(new AlgosException("Manca il nome del modulo"));
-        }
-        lista.addAll(getPathModuloPackageFiles(nomeModulo));
-
-        nomeModulo = VaadVar.projectNameModulo;
-        if (textService.isEmpty(nomeModulo)) {
-            logger.error(new AlgosException("Manca il nome del modulo"));
-        }
-        lista.addAll(getPathModuloPackageFiles(VaadVar.projectNameModulo));
-
-        return lista;
-    }
+    //    /**
+    //     * Crea una lista (path completo) di tutti i files della directory package del modulo corrente <br>
+    //     *
+    //     * @return lista dei path completi
+    //     */
+    //    public List<String> getPathAllPackageFiles()  {
+    //        List<String> lista = new ArrayList<>();
+    //        String nomeModulo = VUOTA;
+    //
+    ////        if (textService.isEmpty(nomeModulo)) {
+    ////            logger.error(new AlgosException("Manca il nome del modulo"));
+    ////        }
+    ////        lista.addAll(getPathModuloPackageFiles(nomeModulo));
+    //
+    //        nomeModulo = VaadVar.projectNameModulo;
+    //        if (textService.isEmpty(nomeModulo)) {
+    //            logger.error(new AlgosException("Manca il nome del modulo"));
+    //        }
+    //        lista.addAll(getPathModuloPackageFiles(VaadVar.projectNameModulo));
+    //
+    //        return lista;
+    //    }
 
 
     /**
@@ -1640,9 +1636,9 @@ public class FileService extends AbstractService {
      *
      * @return lista dei path completi
      */
-    public List<String> getPathBreveAllPackageFiles() throws AlgosException {
+    public List<String> getPathBreveAllPackageFiles() {
         List<String> listaTroncata = new ArrayList<>();
-        List<String> listaEstesa = getPathAllPackageFiles();
+        List<String> listaEstesa = getPathModuloPackageFiles();
 
         for (String path : listaEstesa) {
             listaTroncata.add(textService.levaCoda(path, JAVA_SUFFIX));
@@ -1705,11 +1701,11 @@ public class FileService extends AbstractService {
 
 
     /**
-     * Nome 'canonicalName' di un file  esistente nella directory package <br>
+     * Nome 'canonicalName' di un file esistente nella directory package <br>
      *
      * @return canonicalName del file
      */
-    public String getCanonicalName(String simpleName) throws AlgosException {
+    public String getCanonicalName(String simpleName) {
         String canonicalName = VUOTA;
         List<String> lista;
         String classeFinalePrevista;

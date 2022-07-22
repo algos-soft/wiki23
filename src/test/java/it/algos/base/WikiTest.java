@@ -451,6 +451,22 @@ public abstract class WikiTest extends AlgosTest {
         }
     }
 
+    protected void printString(List<String> listaString, int max) {
+        int cont = 0;
+
+        if (listaString != null) {
+            System.out.println(VUOTA);
+            System.out.println(String.format("Valori:"));
+            for (String riga : listaString.subList(0, Math.min(max, listaString.size()))) {
+                cont++;
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+                System.out.println(String.format("%s", riga));
+            }
+        }
+    }
+
     protected String getMax(String message) {
         message = message.length() < MAX ? message : message.substring(0, Math.min(MAX, message.length()));
         if (message.contains(CAPO)) {
@@ -614,6 +630,30 @@ public abstract class WikiTest extends AlgosTest {
 
         for (String singolare : listaSingolari) {
             System.out.println(singolare);
+        }
+    }
+
+
+    protected void printMappaSub(LinkedHashMap<String, List<WrapDidascalia>> mappaSub) {
+        int cont = 0;
+        List lista;
+
+        if (mappaSub != null) {
+            for (String key : mappaSub.keySet()) {
+                lista = mappaSub.get(key);
+                cont++;
+                System.out.print(TAB);
+                System.out.print(cont);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+
+                System.out.print(textService.setQuadre(key));
+                System.out.print(SPAZIO);
+
+                System.out.println(VUOTA);
+
+                printWrapDidascalia(lista);
+            }
         }
     }
 

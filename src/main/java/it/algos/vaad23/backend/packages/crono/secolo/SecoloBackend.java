@@ -109,6 +109,7 @@ public class SecoloBackend extends CrudBackend {
         return repository.findFirstByInizioLessThanEqualAndFineGreaterThanEqualAndAnteCristo(anno, anno, false);
     }
 
+
     /**
      * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>

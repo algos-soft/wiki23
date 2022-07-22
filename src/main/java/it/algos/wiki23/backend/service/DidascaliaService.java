@@ -1,5 +1,6 @@
 package it.algos.wiki23.backend.service;
 
+import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -273,6 +274,83 @@ public class DidascaliaService extends WAbstractService {
         }
 
         return tagMorto + annoMortoLinkato;
+    }
+
+    /**
+     * Costruisce la didascalia completa per una lista di nati nell'anno <br>
+     * WikiTitle (sempre)
+     * AttivitàNazionalità (sempre)
+     * Anno di morte (opzionale)
+     *
+     * @param bio completa
+     *
+     * @return didascalia completa
+     */
+    public String getDidascaliaAnnoNato(final Bio bio) {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(textService.setDoppieQuadre(bio.wikiTitle));
+        buffer.append(VIRGOLA_SPAZIO);
+        buffer.append(getAttivitaNazionalita(bio));
+        buffer.append(SPAZIO);
+        buffer.append(getAnnoMorto(bio));
+
+        return buffer.toString();
+    }
+
+    /**
+     * Costruisce la didascalia completa per una lista di morti nell'anno <br>
+     *
+     * @param bio completa
+     *
+     * @return didascalia completa
+     */
+    public String getDidascaliaAnnoMorto(final Bio bio) {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(textService.setDoppieQuadre(bio.wikiTitle));
+        buffer.append(VIRGOLA_SPAZIO);
+        buffer.append(getAttivitaNazionalita(bio));
+        buffer.append(SPAZIO);
+        buffer.append(getAnnoNato(bio));
+
+        return buffer.toString();
+    }
+
+
+    /**
+     * Costruisce (se esiste) la data (anno) di morte <br>
+     *
+     * @param bio completa
+     *
+     * @return data di morte
+     */
+    public String getAnnoMorto(final Bio bio) {
+        String morte = linkAnnoMorto(bio);
+
+        if (textService.isValid(morte)) {
+            morte = textService.setTonde(morte);
+        }
+
+        return morte;
+    }
+
+
+    /**
+     * Costruisce (se esiste) la data (anno) di nascita <br>
+     *
+     * @param bio completa
+     *
+     * @return data di nascita
+     */
+    public String getAnnoNato(final Bio bio) {
+        String nascita = linkAnnoNato(bio);
+
+        if (textService.isValid(nascita)) {
+            nascita = textService.setTonde(nascita);
+        }
+
+        return nascita;
     }
 
     //    /**

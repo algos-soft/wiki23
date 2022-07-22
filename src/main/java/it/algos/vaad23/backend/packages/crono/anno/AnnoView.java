@@ -8,6 +8,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.secolo.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -65,8 +66,9 @@ public class AnnoView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("ordine", "nome", "secolo", "anteCristo", "bisestile");
-        super.formPropertyNamesList = Arrays.asList("ordine", "nome", "secolo", "anteCristo", "bisestile");
+        super.gridPropertyNamesList = Arrays.asList("ordine", "nome", "secolo", "dopoCristo", "bisestile");
+        super.formPropertyNamesList = Arrays.asList("ordine", "nome", "secolo", "dopoCristo", "bisestile");
+        super.sortOrder = Sort.by(Sort.Direction.DESC, "ordine");
 
         super.usaRowIndex = false;
         super.usaBottoneDeleteReset = true;
@@ -107,9 +109,9 @@ public class AnnoView extends CrudView {
         topPlaceHolder.add(comboSecolo);
 
         boxBox = new IndeterminateCheckbox();
-        boxBox.setLabel("Prima di Cristo");
-        boxBox.setIndeterminate(false);
-        boxBox.setValue(false);
+        boxBox.setLabel("Dopo Cristo");
+        boxBox.setIndeterminate(true);
+        boxBox.setValue(true);
         boxBox.addValueChangeListener(event -> sincroFiltri());
         HorizontalLayout layout = new HorizontalLayout(boxBox);
         layout.setAlignItems(Alignment.CENTER);
@@ -137,7 +139,7 @@ public class AnnoView extends CrudView {
         }
 
         if (boxBox != null && !boxBox.isIndeterminate()) {
-            items = items.stream().filter(anno -> anno.anteCristo == boxBox.getValue()).toList();
+            items = items.stream().filter(anno -> anno.dopoCristo == boxBox.getValue()).toList();
         }
 
         if (boxBisestile != null && !boxBisestile.isIndeterminate()) {

@@ -34,10 +34,16 @@ public class VaadVar {
 
 
     /**
-     * Nome identificativo minuscolo del progetto base vaadflow <br>
+     * Nome identificativo minuscolo del progetto base vaadin23 <br>
      * Deve essere regolato in backend.boot.VaadBoot.fixVariabili() del progetto base <br>
      */
-    public static String projectVaadFlow;
+    public static String projectVaadin23;
+
+    /**
+     * Nome identificativo minuscolo del modulo base vaad23 <br>
+     * Deve essere regolato in backend.boot.VaadBoot.fixVariabili() del progetto base <br>
+     */
+    public static String moduloVaadin23;
 
     /**
      * Nome identificativo minuscolo del progetto corrente <br>
@@ -73,9 +79,9 @@ public class VaadVar {
     /**
      * Classe da usare per lo startup del programma <br>
      * Di default VaadData oppure possibile sottoclasse del progetto <br>
-     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabiliRiferimentoIstanzeGenerali() del progetto corrente <br>
      */
-    public static Class dataClazz;
+    public static VaadData istanzaData;
 
 
     /**

@@ -1,5 +1,6 @@
 package it.algos.wiki23.backend.boot;
 
+import com.vaadin.flow.component.map.configuration.*;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.interfaces.*;
@@ -7,12 +8,15 @@ import it.algos.vaad23.backend.packages.geografia.continente.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.doppionome.*;
 import it.algos.wiki23.backend.packages.genere.*;
+import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.packages.professione.*;
+import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
@@ -155,6 +159,8 @@ public class Wiki23Boot extends VaadBoot {
         VaadVar.menuRouteList.add(ProfessioneView.class);
         VaadVar.menuRouteList.add(DoppionomeView.class);
         VaadVar.menuRouteList.add(BioView.class);
+        VaadVar.menuRouteList.add(AnnoWikiView.class);
+        VaadVar.menuRouteList.add(GiornoWikiView.class);
     }
 
     @Override

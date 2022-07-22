@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.json.simple.*;
 import org.springframework.context.annotation.Scope;
@@ -34,6 +35,24 @@ public class QueryWrapBio extends AQuery {
      */
     public List<WrapBio> getWrap(final List<Long> listaPageids) {
         return urlRequest(listaPageids).getLista();
+    }
+
+    /**
+     * Pagine biografiche <br>
+     *
+     * @param listaPageids lista dei pageIds delle pagine wiki da controllare
+     *
+     * @return lista di bio
+     */
+    public List<Bio> getBio(final List<Long> listaPageids) {
+        List<Bio> listaBio = new ArrayList<>();
+        List<WrapBio> listaWrap = urlRequest(listaPageids).getLista();
+
+        for (WrapBio wrap : listaWrap) {
+            listaBio.add(bioBackend.newEntity(wrap));
+        }
+
+        return listaBio;
     }
 
 

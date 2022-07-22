@@ -62,6 +62,15 @@ public class ElaboraService extends WAbstractService {
         return bio;
     }
 
+    /**
+     * Elabora la singola voce biografica <br>
+     * Estrae dal tmplBioServer i singoli parametri previsti nella enumeration ParBio <br>
+     * Ogni parametro viene 'pulito' se presentato in maniera 'impropria' <br>
+     * Quello che resta è affidabile e utilizzabile per le liste <br>
+     */
+    public Bio esegueSave(Bio bio) {
+        return bioBackend.save(esegue(bio));
+    }
 
     //--Inserisce i valori nella entity Bio
     public void setValue(Bio bio, HashMap<String, String> mappa) {
@@ -283,6 +292,22 @@ public class ElaboraService extends WAbstractService {
         return testoValido.trim();
     }
 
+    public int fixGiornoOrd(String testoGrezzo) {
+        int giornoOrdine = 0;
+        Giorno giorno;
+        String testoGiorno = fixGiorno(testoGrezzo);
+
+        if (textService.isEmpty(testoGiorno)) {
+            return giornoOrdine;
+        }
+
+        giorno = giornoBackend.findByNome(testoGiorno);
+        if (giorno != null) {
+            giornoOrdine = giorno.ordine;
+        }
+
+        return giornoOrdine;
+    }
 
     /**
      * Regola la property <br>
@@ -349,6 +374,24 @@ public class ElaboraService extends WAbstractService {
         }
 
         return testoValido.trim();
+    }
+
+
+    public int fixAnnoOrd(String testoGrezzo) {
+        int annoOrdine = 0;
+        Anno anno;
+        String testoAnno = fixAnno(testoGrezzo);
+
+        if (textService.isEmpty(testoAnno)) {
+            return annoOrdine;
+        }
+
+        anno = annoBackend.findByNome(testoAnno);
+        if (anno != null) {
+            annoOrdine = anno.ordine;
+        }
+
+        return annoOrdine;
     }
 
     /**

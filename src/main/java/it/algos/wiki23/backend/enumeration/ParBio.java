@@ -133,6 +133,7 @@ public enum ParBio {
         @Override
         public void setValue(Bio bio, String value) throws Exception {
             bio.giornoNato = value.equals(VUOTA) ? null : elaboraService.fixGiornoValido(value);
+            bio.giornoNatoOrd = value.equals(VUOTA) ? 0 : elaboraService.fixGiornoOrd(value);
         }
 
         @Override
@@ -145,6 +146,7 @@ public enum ParBio {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
             bio.annoNato = value.equals(VUOTA) ? null : elaboraService.fixAnno(value);
+            bio.annoNatoOrd = value.equals(VUOTA) ? 0 : elaboraService.fixAnnoOrd(value);
         }
 
         @Override
@@ -187,6 +189,7 @@ public enum ParBio {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
             bio.giornoMorto = value.equals(VUOTA) ? null : elaboraService.fixGiorno(value);
+            bio.giornoMortoOrd = value.equals(VUOTA) ? 0 : elaboraService.fixGiornoOrd(value);
         }
 
         @Override
@@ -200,6 +203,7 @@ public enum ParBio {
         public void setValue(Bio bio, String value) throws AlgosException {
             if (textService.isValid(value)) {
                 bio.annoMorto = elaboraService.fixAnno(value);
+                bio.annoMortoOrd = value.equals(VUOTA) ? 0 : elaboraService.fixAnnoOrd(value);
             }
         }
 

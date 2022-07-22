@@ -12,6 +12,7 @@ import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.wizard.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.context.event.*;
 import org.springframework.core.env.*;
@@ -46,6 +47,13 @@ public abstract class VaadBoot implements ServletContextListener {
 
     protected boolean allDebugSetup;
 
+    /**
+     * Istanza di una interfaccia SpringBoot <br>
+     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ApplicationContext appContext;
 
     /**
      * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
@@ -54,12 +62,12 @@ public abstract class VaadBoot implements ServletContextListener {
      */
     public AIVers versInstance;
 
-    /**
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
-     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-     */
-    public AIData dataInstance;
+    //    /**
+    //     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
+    //     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+    //     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+    //     */
+    //    public AIData dataInstance;
 
 
     /**
@@ -107,7 +115,7 @@ public abstract class VaadBoot implements ServletContextListener {
         //        this.setLogger(logger)
         //        this.setEnvironment(environment);
         this.setVersInstance(versInstance);
-        this.setDataInstance(dataInstance);
+        //        this.setDataInstance(dataInstance);
         this.setPrefInstance(prefInstance);
     }// end of constructor with @Autowired on setter
 
@@ -140,6 +148,7 @@ public abstract class VaadBoot implements ServletContextListener {
         this.fixEnvironment();
         this.fixDBMongo();
         this.fixVariabili();
+        this.fixVariabiliRiferimentoIstanzeGenerali();
         this.fixPreferenze();
         this.fixMenuRoutes();
         this.fixData();
@@ -194,6 +203,30 @@ public abstract class VaadBoot implements ServletContextListener {
     }
 
     /**
+     * Costruisce alcune istanze generali dell'applicazione e ne mantiene i riferimenti nelle apposite variabili <br>
+     * Le istanze (prototype) sono uniche per tutta l' applicazione <br>
+     * Vengono create SOLO in questa classe o in una sua sottoclasse <br>
+     * La selezione su quale istanza creare tocca a questa sottoclasse xxxBoot <br>
+     * Se la sottoclasse non ha creato l'istanza, ci pensa la superclasse <br>
+     * Può essere sovrascritto, invocando DOPO il metodo della superclasse <br>
+     */
+    protected void fixVariabiliRiferimentoIstanzeGenerali() {
+        /**
+         * Istanza da usare per lo startup del programma <br>
+         * Di default VaadData oppure possibile sottoclasse del progetto xxxData <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabiliRiferimentoIstanzeGenerali() del progetto corrente <br>
+         */
+        VaadVar.istanzaData = VaadVar.istanzaData == null ? appContext.getBean(VaadData.class) : VaadVar.istanzaData;
+
+        /**
+         * Classe da usare per gestire le versioni <br>
+         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.versionClazz = VaadVers.class;
+    }
+
+    /**
      * Regola le variabili generali dell' applicazione con il loro valore iniziale di default <br>
      * Le variabili (static) sono uniche per tutta l' applicazione <br>
      * Il loro valore può essere modificato SOLO in questa classe o in una sua sottoclasse <br>
@@ -202,10 +235,24 @@ public abstract class VaadBoot implements ServletContextListener {
     protected void fixVariabili() {
 
         /**
-         * Nome identificativo minuscolo del progetto base vaadflow <br>
+         * Nome identificativo minuscolo del progetto base vaadin23 <br>
          * Deve essere regolato in backend.boot.VaadBoot.fixVariabili() del progetto base <br>
          */
-        VaadVar.projectVaadFlow = PROJECT_VAADFLOW;
+        VaadVar.projectVaadin23 = PROJECT_VAADIN23;
+
+        /**
+         * Nome identificativo minuscolo del modulo base vaad23 <br>
+         * Deve essere regolato in backend.boot.VaadBoot.fixVariabili() del progetto base <br>
+         */
+        VaadVar.moduloVaadin23 = MODULO_VAADIN23;
+
+        /**
+         * Nome identificativo minuscolo del modulo dell' applicazione <br>
+         * Usato come parte del path delle varie directory <br>
+         * Spesso coincide (non obbligatoriamente) con projectNameIdea <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.projectNameModulo = MODULO_VAADIN23;
 
         /**
          * Lista dei moduli di menu da inserire nel Drawer del MainLayout per le gestione delle @Routes. <br>
@@ -214,19 +261,19 @@ public abstract class VaadBoot implements ServletContextListener {
          */
         VaadVar.menuRouteList = new ArrayList<>();
 
-        /**
-         * Classe da usare per lo startup del programma <br>
-         * Di default FlowData oppure possibile sottoclasse del progetto <br>
-         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() <br>
-         */
-        VaadVar.dataClazz = VaadData.class;
-
-        /**
-         * Classe da usare per gestire le versioni <br>
-         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
-         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
-         */
-        VaadVar.versionClazz = VaadVers.class;
+        //        /**
+        //         * Classe da usare per lo startup del programma <br>
+        //         * Di default FlowData oppure possibile sottoclasse del progetto <br>
+        //         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() <br>
+        //         */
+        //        VaadVar.dataClazz = VaadData.class;
+        //
+        //        /**
+        //         * Classe da usare per gestire le versioni <br>
+        //         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+        //         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+        //         */
+        //        VaadVar.versionClazz = VaadVers.class;
 
         /**
          * Versione dell' applicazione base vaadflow14 <br>
@@ -290,17 +337,17 @@ public abstract class VaadBoot implements ServletContextListener {
         this.versInstance = versInstance;
     }
 
-    /**
-     * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
-     * Chiamata dal costruttore di questa classe con valore nullo <br>
-     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    @Qualifier(QUALIFIER_DATA_VAAD)
-    public void setDataInstance(final AIData dataInstance) {
-        this.dataInstance = dataInstance;
-    }
+    //    /**
+    //     * Set con @Autowired di una property chiamata dal costruttore <br>
+    //     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
+    //     * Chiamata dal costruttore di questa classe con valore nullo <br>
+    //     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+    //     */
+    //    @Autowired
+    //    @Qualifier(QUALIFIER_DATA_VAAD)
+    //    public void setDataInstance(final AIData dataInstance) {
+    //        this.dataInstance = dataInstance;
+    //    }
 
 
     /**
@@ -321,7 +368,7 @@ public abstract class VaadBoot implements ServletContextListener {
      * Inizializzazione dei database del programma specifico <br>
      */
     protected void fixData() {
-        this.dataInstance.inizia();
+        //        this.dataInstance.inizia();
     }
 
     /**

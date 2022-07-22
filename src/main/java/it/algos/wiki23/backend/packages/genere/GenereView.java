@@ -1,10 +1,14 @@
 package it.algos.wiki23.backend.packages.genere;
 
 import ch.carnet.kasparscherrer.*;
+import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -38,6 +42,7 @@ public class GenereView extends WikiView {
     private TextField searchFieldPluraleMaschile;
 
     private TextField searchFieldPluraleFemminile;
+    private ComboBox comboType;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -61,15 +66,15 @@ public class GenereView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("singolare", "pluraleMaschile", "pluraleFemminile", "maschile");
-        super.formPropertyNamesList = Arrays.asList("singolare", "pluraleMaschile", "pluraleFemminile");
+        super.gridPropertyNamesList = Arrays.asList("singolare", "pluraleMaschile", "pluraleFemminile", "type");
+        super.formPropertyNamesList = Arrays.asList("singolare", "pluraleMaschile", "pluraleFemminile", "type");
 
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
         super.lastDownload = WPref.downloadGenere;
         super.wikiModuloTitle = PATH_MODULO_GENERE;
 
         super.usaBottoneUploadAll = false;
-//        super.usaBottoneStatistiche = false;
+        //        super.usaBottoneStatistiche = false;
         super.usaBottoneUploadStatistiche = false;
         super.usaBottonePaginaWiki = false;
         super.usaBottoneTest = false;
@@ -87,9 +92,14 @@ public class GenereView extends WikiView {
     public void fixAlert() {
         super.fixAlert();
 
+        Anchor anchor = new Anchor(VaadCost.PATH_WIKI + PATH_MODULO_GENERE, PATH_MODULO_GENERE);
+        anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+        alertPlaceHolder.add(new Span(anchor));
+
         message = "Contiene la tabella di conversione delle attività passate via parametri 'Attività/Attività2/Attività3',";
-        message += " da singolare maschile e femminile (usati nell'incipit) al plurale maschile e femminile,";
-        message += " per le intestazioni dei paragrafi nelle liste di antroponimi previste nel [Progetto:Antroponimi].";
+        message += " da singolare maschile e femminile (usati nell'incipit) al plurale maschile e femminile.";
+        addSpanVerde(message);
+        message = "Usate per le intestazioni dei paragrafi nelle liste di antroponimi previste nel [Progetto:Antroponimi].";
         addSpanVerde(message);
 
         message = "Le attività sono elencate all'interno del modulo con la seguente sintassi:";
@@ -116,13 +126,13 @@ public class GenereView extends WikiView {
         searchFieldPluraleFemminile.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(searchFieldPluraleFemminile);
 
-        boxBox = new IndeterminateCheckbox();
-        boxBox.setLabel("Uomo / Donna");
-        boxBox.setIndeterminate(true);
-        boxBox.addValueChangeListener(event -> sincroFiltri());
-        HorizontalLayout layout = new HorizontalLayout(boxBox);
-        layout.setAlignItems(Alignment.CENTER);
-        topPlaceHolder.add(layout);
+        comboType = new ComboBox<>();
+        comboType.setPlaceholder("Filter by genere");
+        comboType.getElement().setProperty("title", "Filtro di selezione");
+        comboType.setClearButtonVisible(true);
+        comboType.setItems(AETypeGenere.values());
+        comboType.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(comboType);
     }
 
     /**
@@ -133,25 +143,39 @@ public class GenereView extends WikiView {
 
         final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
         if (textService.isValid(textSearch)) {
-            items = items.stream().filter(gen -> gen.singolare.matches("^(?i)" + textSearch + ".*$")).toList();
+            items = items.stream()
+                    .filter(gen -> gen.singolare.matches("^(?i)" + textSearch + ".*$"))
+                    .toList();
         }
 
         final String textSearchPluraleMaschile = searchFieldPluraleMaschile != null ? searchFieldPluraleMaschile.getValue() : VUOTA;
-        if (textService.isValid(textSearch)) {
-            items = items.stream().filter(gen -> gen.pluraleMaschile.matches("^(?i)" + textSearchPluraleMaschile + ".*$")).toList();
+        if (textService.isValid(textSearchPluraleMaschile)) {
+            items = items.stream()
+                    .filter(gen -> textService.isValid(gen.pluraleMaschile))
+                    .filter(gen -> gen.pluraleMaschile.matches("^(?i)" + textSearchPluraleMaschile + ".*$"))
+                    .toList();
         }
 
         final String textSearchPluraleFemminile = searchFieldPluraleFemminile != null ? searchFieldPluraleFemminile.getValue() : VUOTA;
-        if (textService.isValid(textSearch)) {
-            items = items.stream().filter(gen -> gen.pluraleFemminile.matches("^(?i)" + textSearchPluraleFemminile + ".*$")).toList();
+        if (textService.isValid(textSearchPluraleFemminile)) {
+            items = items.stream()
+                    .filter(gen -> textService.isValid(gen.pluraleFemminile))
+                    .filter(gen -> gen.pluraleFemminile.matches("^(?i)" + textSearchPluraleFemminile + ".*$"))
+                    .toList();
         }
 
-        if (boxBox != null && !boxBox.isIndeterminate()) {
-            items = items.stream().filter(gen -> gen.maschile == boxBox.getValue()).toList();
+        if (comboType != null && comboType.getValue() != null) {
+            if (comboType.getValue() instanceof AETypeGenere genere) {
+                items = items.stream()
+                        .filter(gen -> gen.type.equals(genere))
+                        .toList();
+            }
         }
 
         if (items != null) {
             grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
         }
     }
 

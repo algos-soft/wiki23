@@ -51,8 +51,8 @@ public class AnnoBackend extends CrudBackend {
         this.repository = (AnnoRepository) crudRepository;
     }
 
-    public boolean crea(final int ordine, final String nome, final Secolo secolo, final boolean anteCristo, final boolean bisestile) {
-        Anno anno = newEntity(ordine, nome, secolo, anteCristo, bisestile);
+    public boolean crea(final int ordine, final String nome, final Secolo secolo, final boolean dopoCristo, final boolean bisestile) {
+        Anno anno = newEntity(ordine, nome, secolo, dopoCristo, bisestile);
         return crudRepository.insert(anno) != null;
     }
 
@@ -73,19 +73,20 @@ public class AnnoBackend extends CrudBackend {
      * Eventuali regolazioni iniziali delle property <br>
      * All properties <br>
      *
-     * @param ordine    di presentazione nel popup/combobox (obbligatorio, unico)
-     * @param nome      corrente
-     * @param secolo    di appartenenza
-     * @param bisestile flag per gli anni bisestili
+     * @param ordine     di presentazione nel popup/combobox (obbligatorio, unico)
+     * @param nome       corrente
+     * @param secolo     di appartenenza
+     * @param dopoCristo flag per gli anni prima/dopo cristo
+     * @param bisestile  flag per gli anni bisestili
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public Anno newEntity(final int ordine, final String nome, final Secolo secolo, final boolean anteCristo, final boolean bisestile) {
+    public Anno newEntity(final int ordine, final String nome, final Secolo secolo, final boolean dopoCristo, final boolean bisestile) {
         return Anno.builder()
                 .ordine(ordine)
                 .nome(textService.isValid(nome) ? nome : null)
                 .secolo(secolo)
-                .anteCristo(anteCristo)
+                .dopoCristo(dopoCristo)
                 .bisestile(bisestile)
                 .build();
     }
@@ -110,31 +111,42 @@ public class AnnoBackend extends CrudBackend {
 
         if (super.reset()) {
             //--costruisce gli anni prima di cristo dal 1000
-            for (int k = ANTE_CRISTO; k > 0; k--) {
-                crea(k, true);
+            //--ordine da 1000 a 1999
+            for (int k = 0; k < ANTE_CRISTO_MAX; k++) {
+                creaPrima(k);
             }
 
             //--costruisce gli anni dopo cristo fino al 2030
-            for (int k = 1; k <= DOPO_CRISTO; k++) {
-                crea(k, false);
+            //--ordine da 2001 a 4030
+            for (int k = 1; k <= DOPO_CRISTO_MAX; k++) {
+                creaDopo(k);
             }
         }
 
         return true;
     }
 
-    public void crea(int anno, boolean ante) {
-        int ordine;
-        String prima = " a.C";
-        String dopo = VUOTA;
+    public void creaPrima(int numeroProgressivo) {
+        int delta = 1000;
+        String tagPrima = " a.C";
+        int numeroAnno = delta - numeroProgressivo;
+        int ordine = numeroProgressivo + delta;
+        String nomeVisibile = numeroAnno + tagPrima;
+        Secolo secolo = secoloBackend.getSecoloAC(numeroAnno);
+
+        crea(ordine, nomeVisibile, secolo, false, false);
+    }
+
+    public void creaDopo(int numeroProgressivo) {
+        int delta = 2000;
+        int ordine = numeroProgressivo + delta;
         String nome;
         Secolo secolo;
-        boolean bisestile = ante ? false : dateService.isBisestile(anno);
+        boolean bisestile = dateService.isBisestile(numeroProgressivo);
+        String nomeVisibile = numeroProgressivo + VUOTA;
+        secolo = secoloBackend.getSecoloDC(numeroProgressivo);
 
-        ordine = ANNO_INIZIALE - anno;
-        nome = String.format("%d %s", anno, ante ? prima : dopo);
-        secolo = ante ? secoloBackend.getSecoloAC(anno) : secoloBackend.getSecoloDC(anno);
-        crea(ordine, nome, secolo, ante, bisestile);
+        crea(ordine, nomeVisibile, secolo, true, bisestile);
     }
 
 }// end of crud backend class
