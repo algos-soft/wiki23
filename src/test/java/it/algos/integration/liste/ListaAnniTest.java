@@ -171,12 +171,12 @@ public class ListaAnniTest extends WikiTest {
         }
     }
 
-    //    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(4)
     @DisplayName("4 - Mappa wrapDidascalia di vari anni")
-    //--nome anno
-    //--typeCrono
+        //--nome anno
+        //--typeCrono
     void mappaWrapDidascalie(final String nomeAnno, final AETypeCrono type) {
         System.out.println("4 - Mappa wrapDidascalia di vari anni");
         sorgente = nomeAnno;
@@ -200,12 +200,12 @@ public class ListaAnniTest extends WikiTest {
         }
     }
 
-    //    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(5)
     @DisplayName("5 - Mappa didascalie di vari anni")
-    //--nome anno
-    //--typeCrono
+        //--nome anno
+        //--typeCrono
     void mappaDidascalie(final String nomeAnno, final AETypeCrono type) {
         System.out.println("5 - Mappa didascalie di vari anni");
         sorgente = nomeAnno;
@@ -533,30 +533,42 @@ public class ListaAnniTest extends WikiTest {
             for (String key : mappaSub.keySet()) {
                 lista = mappaSub.get(key);
                 if (lista.size() == 1) {
-                    System.out.print(ASTERISCO);
-                    System.out.print(key);
-                    System.out.print(SEP);
-                    System.out.print(lista.get(0));
-                    System.out.println(VUOTA);
+                    if (textService.isValid(key)) {
+                        System.out.print(ASTERISCO);
+                        System.out.print(key);
+                        System.out.print(SEP);
+                        System.out.print(lista.get(0));
+                        System.out.println(VUOTA);
+                    }
+                    else {
+                        System.out.print(ASTERISCO);
+                        System.out.print(lista.get(0));
+                        System.out.println(VUOTA);
+                    }
                 }
                 else {
-                    System.out.print(ASTERISCO);
-                    System.out.print(key);
-                    System.out.print(SPAZIO);
-
-                    System.out.println(VUOTA);
-
-                    printDidascaliaAnni(lista);
+                    if (textService.isValid(key)) {
+                        System.out.print(ASTERISCO);
+                        System.out.print(key);
+                        System.out.print(SPAZIO);
+                        System.out.println(VUOTA);
+                        printDidascaliaAnni(lista, true);
+                    }
+                    else {
+                        printDidascaliaAnni(lista, false);
+                    }
                 }
             }
         }
     }
 
-    private void printDidascaliaAnni(List<String> lista) {
+    private void printDidascaliaAnni(List<String> lista, boolean doppioAsterisco) {
         if (lista != null) {
             for (String didascalia : lista) {
                 System.out.print(ASTERISCO);
-                System.out.print(ASTERISCO);
+                if (doppioAsterisco) {
+                    System.out.print(ASTERISCO);
+                }
                 System.out.print(didascalia);
                 System.out.print(SPAZIO);
 

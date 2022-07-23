@@ -152,6 +152,10 @@ public class ListaAnni extends Lista {
                     case nascita -> wrap.getGiornoNato();
                     case morte -> wrap.getGiornoMorto();
                 };
+                if (textService.isEmpty(giorno)) {
+                    giorno = VUOTA;
+                }
+
                 if (mappa.containsKey(giorno)) {
                     lista = mappa.get(giorno);
                 }
@@ -178,6 +182,15 @@ public class ListaAnni extends Lista {
                 .filter(wrap -> textService.isValid(wrap.getMeseParagrafoNato()))
                 .sorted(Comparator.comparing(funGiornoNato))
                 .collect(Collectors.toList());
+    }
+
+    public String fixTitolo(String wikiTitleBase, String paragrafo) {
+        if (textService.isValid(paragrafo)) {
+            return wikiUtility.fixTitolo(titoloParagrafo, paragrafo);
+        }
+        else {
+            return "Senza giorno di nascita";
+        }
     }
 
 }

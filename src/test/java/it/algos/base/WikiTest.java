@@ -1,6 +1,8 @@
 package it.algos.base;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
@@ -79,6 +81,12 @@ public abstract class WikiTest extends AlgosTest {
     @Autowired
     public WikiUtility wikiUtility;
 
+    @Autowired
+    public GiornoBackend giornoBackend;
+
+    @Autowired
+    public AnnoBackend annoBackend;
+
     protected final static long BIO_SALVINI_PAGEID = 132555;
 
     protected final static long BIO_RENZI_PAGEID = 134246;
@@ -150,6 +158,7 @@ public abstract class WikiTest extends AlgosTest {
     protected static final String PAGINA_REDIRECT = "Regno di Napoli (1805-1815)";
 
     protected long pageId;
+
     public static final String SINGOLARE = "singolare";
 
     public static final String PLURALE = "plurale";
@@ -171,7 +180,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Louis Winslow Austin", true),
                 Arguments.of("Regno di Napoli (1908-1745)", false),
                 Arguments.of("Regno di Napoli (1806-1815)", false),
-                Arguments.of("Rossi", false)
+                Arguments.of("Rossi", false),
+                Arguments.of("Lucio Anneo Seneca", true)
         );
     }
 
@@ -284,6 +294,8 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(queryService);
         assertNotNull(downloadService);
         assertNotNull(wikiUtility);
+        assertNotNull(giornoBackend);
+        assertNotNull(annoBackend);
     }
 
     /**
@@ -296,6 +308,7 @@ public abstract class WikiTest extends AlgosTest {
         super.fixRiferimentiIncrociati();
 
         elaboraService.wikiBotService = wikiBotService;
+        wikiUtility.queryService = queryService;
     }
 
     /**
@@ -624,6 +637,7 @@ public abstract class WikiTest extends AlgosTest {
             }
         }
     }
+
     protected void printAllSingolari(String plurale, List<String> listaSingolari, String tag) {
         System.out.println(String.format("Ci sono %d %s singolari per %s", listaSingolari.size(), tag, plurale));
         System.out.println(VUOTA);

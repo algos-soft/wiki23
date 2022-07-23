@@ -378,7 +378,7 @@ public abstract class Upload {
             }
         }
 
-        return buffer.toString();
+        return buffer.toString().trim();
     }
 
     protected String mappaToTextSub(String wikiTitle, LinkedHashMap<String, List<String>> mappaSub) {

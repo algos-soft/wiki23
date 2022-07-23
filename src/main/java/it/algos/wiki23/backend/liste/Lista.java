@@ -312,12 +312,16 @@ public abstract class Lista {
         for (String key : mappaDidascalie.keySet()) {
             paragrafo = key;
             mappaSub = mappaDidascalie.get(key);
-            paragrafo = wikiUtility.fixTitolo(titoloParagrafo, paragrafo);
+            paragrafo = fixTitolo(titoloParagrafo, paragrafo);
 
             mappaParagrafi.put(paragrafo, mappaSub);
         }
 
         return mappaParagrafi;
+    }
+
+    public String fixTitolo(String wikiTitleBase, String paragrafo) {
+        return wikiUtility.fixTitolo(titoloParagrafo, paragrafo);
     }
 
 

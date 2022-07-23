@@ -1,10 +1,7 @@
 package it.algos.wiki23.backend.packages.anno;
 
-import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.router.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -13,10 +10,6 @@ import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.data.domain.*;
 
 /**
@@ -143,7 +136,7 @@ public class AnnoWikiView extends WikiView {
     @Override
     protected void wikiPageNati() {
         AnnoWiki anno = (AnnoWiki) super.wikiPage();
-        String path = wikiUtility.nati(anno.nome);
+        String path = wikiUtility.wikiTitleNatiAnno(anno.nome);
         wikiApiService.openWikiPage(path);
     }
 
@@ -154,7 +147,7 @@ public class AnnoWikiView extends WikiView {
     @Override
     protected void wikiPageMorti() {
         AnnoWiki anno = (AnnoWiki) super.wikiPage();
-        String path = wikiUtility.morti(anno.nome);
+        String path = wikiUtility.wikiTitleMortiAnno(anno.nome);
         wikiApiService.openWikiPage(path);
     }
 

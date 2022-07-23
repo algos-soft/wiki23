@@ -2,6 +2,8 @@ package it.algos.wiki23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -58,9 +60,7 @@ public class WikiUtility extends WAbstractService {
                     paragrafoVisibile = titoloGrezzo;
                 }
             }
-            if (numVoci > 0) {
-                paragrafoVisibile = setParagrafo(paragrafoVisibile, numVoci);
-            }
+            paragrafoVisibile = setParagrafo(paragrafoVisibile, numVoci);
         }
         else {
             paragrafoVisibile = "Altre...";
@@ -174,11 +174,18 @@ public class WikiUtility extends WAbstractService {
         return size;
     }
 
-    public String nati(String anno) {
+    public String wikiTitleNatiGiorno(String giorno) {
+        return natiMorti("Nati", giorno);
+    }
+
+    public String wikiTitleMortiGiorno(String giorno) {
+        return natiMorti("Morti", giorno);
+    }
+    public String wikiTitleNatiAnno(String anno) {
         return natiMorti("Nati", anno);
     }
 
-    public String morti(String anno) {
+    public String wikiTitleMortiAnno(String anno) {
         return natiMorti("Morti", anno);
     }
 
@@ -213,6 +220,103 @@ public class WikiUtility extends WAbstractService {
         }
 
         return testo;
+    }
+
+
+    public String linkGiornoNato(final Bio bio, boolean usaIcona) {
+        if (bio != null && textService.isValid(bio.giornoNato)) {
+            return linkGiornoNato(bio.giornoNato, usaIcona);
+        }
+        else {
+            return VUOTA;
+        }
+    }
+    public String linkGiornoNato(String giornoNato, boolean usaIcona) {
+        String giornoNatoLinkato = giornoNato;
+        String tagNato = usaIcona ? WPref.simboloNato.getStr() : VUOTA;
+        Object obj = WPref.linkCrono.getEnumCurrentObj();
+
+        if (obj instanceof AETypeLinkCrono type) {
+            switch (type) {
+                case voce -> giornoNatoLinkato = textService.setDoppieQuadre(giornoNato);
+                case lista -> {
+                    giornoNato = this.wikiTitleNatiAnno(giornoNato) + PIPE + giornoNato;
+                    giornoNatoLinkato = textService.setDoppieQuadre(giornoNato);
+                }
+                case nessuno -> giornoNatoLinkato = giornoNato;
+                default -> giornoNatoLinkato = giornoNato;
+            } ;
+        }
+
+        giornoNatoLinkato = tagNato + giornoNatoLinkato;
+        giornoNatoLinkato = usaIcona ? textService.setTonde(giornoNatoLinkato) : giornoNatoLinkato;
+        return giornoNatoLinkato;
+    }
+
+
+    public String linkAnnoNato(final Bio bio, boolean usaIcona) {
+        if (bio != null && textService.isValid(bio.annoNato)) {
+            return linkAnnoNato(bio.annoNato, usaIcona);
+        }
+        else {
+            return VUOTA;
+        }
+    }
+
+
+    public String linkAnnoNato(String annoNato, boolean usaIcona) {
+        String annoNatoLinkato = annoNato;
+        String tagNato = usaIcona ? WPref.simboloNato.getStr() : VUOTA;
+        Object obj = WPref.linkCrono.getEnumCurrentObj();
+
+        if (obj instanceof AETypeLinkCrono type) {
+            switch (type) {
+                case voce -> annoNatoLinkato = textService.setDoppieQuadre(annoNato);
+                case lista -> {
+                    annoNato = this.wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
+                    annoNatoLinkato = textService.setDoppieQuadre(annoNato);
+                }
+                case nessuno -> annoNatoLinkato = annoNato;
+                default -> annoNatoLinkato = annoNato;
+            } ;
+        }
+
+        annoNatoLinkato = tagNato + annoNatoLinkato;
+        annoNatoLinkato = usaIcona ? textService.setTonde(annoNatoLinkato) : annoNatoLinkato;
+        return annoNatoLinkato;
+    }
+
+    public String linkAnnoMorto(final Bio bio, boolean usaIcona) {
+        if (bio != null && textService.isValid(bio.annoMorto)) {
+            return linkAnnoMorto(bio.annoMorto, usaIcona);
+        }
+        else {
+            return VUOTA;
+        }
+    }
+
+
+    public String linkAnnoMorto(String annoMorto, boolean usaIcona) {
+        String annoMortoLinkato = annoMorto;
+        String tagMorto = usaIcona ? WPref.simboloMorto.getStr() : VUOTA;
+        Object obj = WPref.linkCrono.getEnumCurrentObj();
+
+        if (obj instanceof AETypeLinkCrono type) {
+            switch (type) {
+                case voce -> annoMortoLinkato = textService.setDoppieQuadre(annoMorto);
+                case lista -> {
+                    annoMorto = this.wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
+                    annoMortoLinkato = textService.setDoppieQuadre(annoMorto);
+                }
+                case nessuno -> annoMortoLinkato = annoMorto;
+                default -> annoMortoLinkato = annoMorto;
+            } ;
+
+        }
+
+        annoMortoLinkato = tagMorto + annoMortoLinkato;
+        annoMortoLinkato = usaIcona ? textService.setTonde(annoMortoLinkato) : annoMortoLinkato;
+        return annoMortoLinkato;
     }
 
 }

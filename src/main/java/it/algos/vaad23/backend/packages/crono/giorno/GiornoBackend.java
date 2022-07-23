@@ -98,6 +98,22 @@ public class GiornoBackend extends CrudBackend {
         return repository.findFirstByNome(nome);
     }
 
+    @Override
+    public List<Giorno> findAll() {
+        return super.findAll();
+    }
+
+    public List<String> findAllNomi() {
+        List<String> listaNomi = new ArrayList<>();
+        List<Giorno> listaGiorni = repository.findAllOrderByOrdineAsc();
+
+        for (Giorno giorno : listaGiorni) {
+            listaNomi.add(giorno.nome);
+        }
+
+        return listaNomi;
+    }
+
     /**
      * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>

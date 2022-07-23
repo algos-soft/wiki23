@@ -1,5 +1,6 @@
 package it.algos.wiki23.backend.wrapper;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.packages.bio.*;
 
 /**
@@ -93,7 +94,7 @@ public class WrapDidascalia {
     }
 
     public String getMeseParagrafoNato() {
-        return meseParagrafoNato;
+        return meseParagrafoNato != null ? meseParagrafoNato : VUOTA;
     }
 
     public void setMeseParagrafoNato(String meseParagrafoNato) {
@@ -101,7 +102,7 @@ public class WrapDidascalia {
     }
 
     public String getMeseParagrafoMorto() {
-        return meseParagrafoMorto;
+        return meseParagrafoMorto != null ? meseParagrafoMorto : VUOTA;
     }
 
     public void setMeseParagrafoMorto(String meseParagrafoMorto) {
@@ -109,7 +110,7 @@ public class WrapDidascalia {
     }
 
     public String getSecoloParagrafoNato() {
-        return secoloParagrafoNato;
+        return secoloParagrafoNato != null ? secoloParagrafoNato : VUOTA;
     }
 
     public void setSecoloParagrafoNato(String secoloParagrafoNato) {
@@ -117,7 +118,7 @@ public class WrapDidascalia {
     }
 
     public String getSecoloParagrafoMorto() {
-        return secoloParagrafoMorto;
+        return secoloParagrafoMorto != null ? secoloParagrafoMorto : VUOTA;
     }
 
     public void setSecoloParagrafoMorto(String secoloParagrafoMorto) {
