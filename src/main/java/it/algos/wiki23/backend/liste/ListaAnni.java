@@ -27,7 +27,7 @@ import java.util.stream.*;
  * Il costruttore è senza parametri e serve solo per preparare l'istanza che viene ''attivata'' con mappaDidascalie() <br>
  */
 @SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ListaAnni extends Lista {
 
     private String nomeAnno;
@@ -35,7 +35,7 @@ public class ListaAnni extends Lista {
     /**
      * Costruttore base senza parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(ListaAttivita.class, attivita) per usare tutte le attività che hanno la stessa attivita.plurale <br>
+     * Uso: appContext.getBean(ListaAnni.class) <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune properties. <br>
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
@@ -78,18 +78,6 @@ public class ListaAnni extends Lista {
         return listaBio;
     }
 
-
-    /**
-     * Costruisce una lista dei wrapper per gestire i dati necessari ad una didascalia <br>
-     * La sottoclasse specifica esegue l'ordinamento <br>
-     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public List<WrapDidascalia> listaWrapDidascalie() {
-        return super.listaWrapDidascalie();
-        //        List<WrapDidascalia> pippoz = listaWrapDidascalie != null ? sortByMese(listaWrapDidascalie) : null;
-        //        return listaWrapDidascalie != null ? sortByMese(listaWrapDidascalie) : null;
-    }
 
     /**
      * Mappa ordinata dei wrapper (WrapDidascalia) per gestire i dati necessari ad una didascalia <br>
@@ -149,9 +137,10 @@ public class ListaAnni extends Lista {
         if (listaWrapNonOrdinata != null) {
             for (WrapDidascalia wrap : listaWrapNonOrdinata) {
                 giorno = switch (typeCrono) {
-                    case nascita -> wrap.getGiornoNato();
-                    case morte -> wrap.getGiornoMorto();
+                    case nascita -> wikiUtility.linkGiornoNato(wrap.getGiornoNato(),false);
+                    case morte -> wikiUtility.linkGiornoMorto(wrap.getGiornoMorto(),false);
                 };
+
                 if (textService.isEmpty(giorno)) {
                     giorno = VUOTA;
                 }

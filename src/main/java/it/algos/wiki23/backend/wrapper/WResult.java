@@ -151,6 +151,14 @@ public class WResult extends AResult {
         this.cicli = cicli;
         return this;
     }
+    public WResult content(final String content) {
+        this.content = content;
+        return this;
+    }
+    public WResult intValue(final int intValue) {
+        this.setIntValue(intValue);
+        return this;
+    }
 
     public WResult fine() {
         this.setFine();

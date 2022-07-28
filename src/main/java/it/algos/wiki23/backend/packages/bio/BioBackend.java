@@ -108,11 +108,15 @@ public class BioBackend extends WikiBackend {
                 .ordinamento(doc.getString("ordinamento"))
                 .sesso(doc.getString("sesso"))
                 .giornoNato(doc.getString("giornoNato"))
+                .giornoNatoOrd(doc.getInteger("giornoNatoOrd"))
                 .annoNato(doc.getString("annoNato"))
+                .annoNatoOrd(doc.getInteger("annoNatoOrd"))
                 .luogoNato(doc.getString("luogoNato"))
                 .luogoNatoLink(doc.getString("luogoNatoLink"))
                 .giornoMorto(doc.getString("giornoMorto"))
+                .giornoMortoOrd(doc.getInteger("giornoMortoOrd"))
                 .annoMorto(doc.getString("annoMorto"))
+                .annoMortoOrd(doc.getInteger("annoMortoOrd"))
                 .luogoMorto(doc.getString("luogoMorto"))
                 .luogoMortoLink(doc.getString("luogoMortoLink"))
                 .attivita(doc.getString("attivita"))
@@ -279,6 +283,18 @@ public class BioBackend extends WikiBackend {
         return nazLong.intValue();
     }
 
+    public int countGiornoNato(final String giornoNato) {
+        Long giornoLong = repository.countBioByGiornoNato(giornoNato);
+        return giornoLong.intValue();
+    }
+
+
+    public int countGiornoMorto(final String giornoNato) {
+        Long giornoLong = repository.countBioByGiornoMorto(giornoNato);
+        return giornoLong.intValue();
+    }
+
+
     public int countAnnoNato(final String annoNato) {
         Long annoLong = repository.countBioByAnnoNato(annoNato);
         return annoLong.intValue();
@@ -302,7 +318,9 @@ public class BioBackend extends WikiBackend {
         return mongoService.projectionLong(Bio.class, "pageId");
     }
 
-    @Override
+    public List<Bio> findAllAll() {
+        return super.findAll();
+    }
     public List<Bio> findAll() {
         return findSenzaTmpl();
     }
@@ -332,10 +350,14 @@ public class BioBackend extends WikiBackend {
     public List<Bio> findSenzaTmpl(Sort sort) {
         Document doc = null;
 
-        if (sort != null) {
+        if (sort == null) {
             doc = new Document("ordinamento", 1);
         }
 
+        return mongoService.projectionExclude(Bio.class, this, doc, "tmplBio");
+    }
+
+    public List<Bio> findSenzaTmpl(Document doc) {
         return mongoService.projectionExclude(Bio.class, this, doc, "tmplBio");
     }
 
@@ -356,6 +378,7 @@ public class BioBackend extends WikiBackend {
         String message;
         int cont = 0;
         Bio bioTemp;
+        Bio bioSaved;
 
         for (int k = 0; k <= blocco; k++) {
             ini = k * dim;
@@ -367,7 +390,7 @@ public class BioBackend extends WikiBackend {
             for (Bio bio : lista.subList(ini, end)) {
                 bioTemp = this.findByTitle(bio.wikiTitle);
 
-                elaboraService.esegueSave(bioTemp);
+                bioSaved = elaboraService.esegueSave(bioTemp);
                 cont++;
             }
 

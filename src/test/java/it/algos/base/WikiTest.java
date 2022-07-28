@@ -127,6 +127,8 @@ public abstract class WikiTest extends AlgosTest {
 
     protected List<WrapDidascalia> listWrapDidascalia;
 
+    protected List<WrapLista> listWrapLista;
+
     protected List<WrapTime> listMiniWrap;
 
     protected LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaLista;
@@ -181,6 +183,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Regno di Napoli (1908-1745)", false),
                 Arguments.of("Regno di Napoli (1806-1815)", false),
                 Arguments.of("Rossi", false),
+                Arguments.of("Bartolomeo Giuseppe Amico di Castell'Alfero", true),
                 Arguments.of("Lucio Anneo Seneca", true)
         );
     }
@@ -327,6 +330,7 @@ public abstract class WikiTest extends AlgosTest {
         listWrapBio = null;
         listBio = null;
         listWrapDidascalia = null;
+        listWrapLista = null;
         listMiniWrap = null;
         mappaLista = null;
         typeUser = null;

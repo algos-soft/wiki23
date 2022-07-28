@@ -3,6 +3,8 @@ package it.algos.wiki23.backend.upload;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -99,6 +101,22 @@ public abstract class Upload {
     @Autowired
     public AttivitaBackend attivitaBackend;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AnnoBackend annoBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public GiornoBackend giornoBackend;
+
     protected Lista lista;
 
     /**
@@ -128,6 +146,8 @@ public abstract class Upload {
 
     protected boolean sottoPagina = false;
 
+    protected boolean uploadTest = false;
+
     protected WResult esegue(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = wikiUtility.getSizeAll(mappaDidascalie);
@@ -135,7 +155,7 @@ public abstract class Upload {
         buffer.append(avviso());
         buffer.append(CAPO);
         buffer.append(includeIni());
-        buffer.append(forceToc());
+        buffer.append(fixToc());
         buffer.append(torna(VUOTA));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
@@ -164,7 +184,7 @@ public abstract class Upload {
         buffer.append(avviso());
         buffer.append(CAPO);
         buffer.append(includeIni());
-        buffer.append(forceToc());
+        buffer.append(fixToc());
         buffer.append(torna(wikiTitle));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
@@ -193,7 +213,7 @@ public abstract class Upload {
         buffer.append(avviso());
         buffer.append(CAPO);
         buffer.append(includeIni());
-        buffer.append(forceToc());
+        buffer.append(fixToc());
         buffer.append(torna(wikiTitle));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
@@ -216,7 +236,7 @@ public abstract class Upload {
         return "<noinclude>";
     }
 
-    protected String forceToc() {
+    protected String fixToc() {
         return ((AETypeToc) WPref.typeTocAttNaz.getEnumCurrentObj()).get();
     }
 
@@ -367,6 +387,7 @@ public abstract class Upload {
         StringBuffer buffer = new StringBuffer();
         LinkedHashMap<String, List<String>> mappaSub;
         int numVoci;
+        String testoTemp;
 
         if (mappaTxt != null) {
             for (String key : mappaTxt.keySet()) {
@@ -374,7 +395,11 @@ public abstract class Upload {
                 numVoci = wikiUtility.getSize(mappaSub);
 
                 buffer.append(fixTitoloParagrafo(key, numVoci));
-                buffer.append(fixCorpoParagrafo(wikiTitle, key, numVoci, mappaSub));
+                testoTemp = fixCorpoParagrafo(wikiTitle, key, numVoci, mappaSub);
+                if (Pref.usaNonBreaking.is()) {
+                    testoTemp = testoTemp.replaceAll(SPAZIO, Pref.nonBreaking.getStr());
+                }
+                buffer.append(testoTemp);
             }
         }
 
@@ -423,7 +448,7 @@ public abstract class Upload {
             return wikiUtility.fixTitolo(titoloParagrafo, numVoci);
         }
         else {
-            return wikiUtility.fixTitolo( titoloParagrafo);
+            return wikiUtility.fixTitolo(titoloParagrafo);
         }
     }
 

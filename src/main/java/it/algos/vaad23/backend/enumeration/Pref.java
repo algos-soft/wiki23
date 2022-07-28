@@ -16,9 +16,12 @@ import java.util.*;
  * Time: 21:29
  */
 public enum Pref implements AIGenPref {
-    debug("debug", AETypePref.bool, false, "Flag generale di debug") {},
-    doubleClick("doubleClick", AETypePref.bool, true, "Doppio click abilitato nelle righe della Grid") {},
-    durataAvviso("durataAvviso", AETypePref.integer, 2000, "Durata in millisecondi dell'avviso a video") {},
+    debug("debug", AETypePref.bool, false, "Flag generale di debug"),
+    doubleClick("doubleClick", AETypePref.bool, true, "Doppio click abilitato nelle righe della Grid"),
+    durataAvviso("durataAvviso", AETypePref.integer, 2000, "Durata in millisecondi dell'avviso a video"),
+
+    usaNonBreaking("usaNonBreaking", AETypePref.bool, false, "Uso dello spazio non-breaking"),
+    nonBreaking("nonBreaking", AETypePref.string, "&nbsp;", "Spazio non-breaking"),
     ;
 
 

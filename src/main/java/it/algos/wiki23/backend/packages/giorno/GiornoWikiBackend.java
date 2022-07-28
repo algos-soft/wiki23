@@ -1,21 +1,22 @@
 package it.algos.wiki23.backend.packages.giorno;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.wrapper.*;
+import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.wiki.*;
+import org.bson.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
-
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project wiki23
@@ -32,7 +33,7 @@ import java.util.*;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, esiste già @Service) <br>
  */
 @Service
-public class GiornoWikiBackend extends CrudBackend {
+public class GiornoWikiBackend extends WikiBackend {
 
     public GiornoWikiRepository repository;
 
@@ -61,12 +62,12 @@ public class GiornoWikiBackend extends CrudBackend {
     }
 
 
-    public GiornoWiki creaIfNotExist(final Giorno annoBase) {
-        return checkAndSave(newEntity(annoBase));
+    public GiornoWiki creaIfNotExist(final Giorno giornoBase) {
+        return checkAndSave(newEntity(giornoBase));
     }
 
-    public GiornoWiki checkAndSave(final GiornoWiki annoBase) {
-        return findByNome(annoBase.nome) != null ? null : repository.insert(annoBase);
+    public GiornoWiki checkAndSave(final GiornoWiki giornoWiki) {
+        return findByNome(giornoWiki.nome) != null ? null : repository.insert(giornoWiki);
     }
 
     /**
@@ -91,15 +92,23 @@ public class GiornoWikiBackend extends CrudBackend {
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
     public GiornoWiki newEntity(final Giorno giornoBase) {
-        GiornoWiki annoWiki = GiornoWiki.giornoWikiBuilder().build();
+        GiornoWiki giornoWiki = GiornoWiki.giornoWikiBuilder()
+                .ordine(giornoBase.ordine)
+                .nome(giornoBase.nome)
+                .build();
 
-        annoWiki.ordine = giornoBase.ordine;
-        annoWiki.nome = giornoBase.nome;
-        annoWiki.mese = giornoBase.mese;
-        annoWiki.trascorsi = giornoBase.trascorsi;
-        annoWiki.mancanti = giornoBase.mancanti;
+        return fixProperties(giornoWiki);
+    }
 
-        return annoWiki;
+    public GiornoWiki fixProperties(GiornoWiki giornoWiki) {
+        giornoWiki.pageNati = wikiUtility.wikiTitleNatiGiorno(giornoWiki.nome);
+        giornoWiki.pageMorti = wikiUtility.wikiTitleMortiGiorno(giornoWiki.nome);
+        return giornoWiki;
+    }
+
+    @Override
+    public List<GiornoWiki> findAll() {
+        return repository.findAll();
     }
 
     public GiornoWiki findByNome(final String nome) {
@@ -117,13 +126,14 @@ public class GiornoWikiBackend extends CrudBackend {
     public boolean reset() {
         List<Giorno> giorniBase = null;
 
-        if (mongoService.isCollectionNullOrEmpty(Anno.class)) {
+        if (mongoService.isCollectionNullOrEmpty(Giorno.class)) {
             logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Giorno'")));
             return false;
         }
 
         if (super.reset()) {
-            giorniBase = giornoBackend.findAll();
+            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
+            giorniBase = giornoBackend.findAll(sort);
             for (Giorno giorno : giorniBase) {
                 creaIfNotExist(giorno);
             }
@@ -132,5 +142,24 @@ public class GiornoWikiBackend extends CrudBackend {
         return true;
     }
 
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void elabora() {
+        long inizio = System.currentTimeMillis();
+
+        //--Per ogni anno calcola quante biografie lo usano (nei 2 parametri)
+        //--Memorizza e registra il dato nella entityBean
+        for (GiornoWiki giornoWiki : findAll()) {
+            giornoWiki.bioNati = bioBackend.countGiornoNato(giornoWiki.nome);
+            giornoWiki.bioMorti = bioBackend.countGiornoMorto(giornoWiki.nome);
+
+            update(giornoWiki);
+        }
+
+        super.fixElaboraMinuti(inizio, "giorni");
+    }
 
 }// end of crud backend class

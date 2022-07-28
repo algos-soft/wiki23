@@ -12,5 +12,25 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * Time: 13:54
  */
 public enum AETypeCrono {
-    nascita, morte
+    nascita("Nati", "nati"),
+    morte("Morti", "morti"),
+    ;
+
+    private String tagLower;
+
+    private String tagUpper;
+
+
+    AETypeCrono(String tagUpper, String tagLower) {
+        this.tagUpper = tagUpper;
+        this.tagLower = tagLower;
+    }
+
+    public String getTagLower() {
+        return tagLower;
+    }
+
+    public String getTagUpper() {
+        return tagUpper;
+    }
 }

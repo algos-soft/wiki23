@@ -82,7 +82,7 @@ public class BioView extends WikiView {
         super.formPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "sesso", "nome", "cognome", "ordinamento",
                 "giornoNato",
                 "annoNato", "giornoMorto", "annoMorto",
-                "giornoNatoOrd", "giornoMortoOrd", "annoNatoOrd","annoMortoOrd",
+                "giornoNatoOrd", "giornoMortoOrd", "annoNatoOrd", "annoMortoOrd",
                 "attivita", "attivita2", "attivita3",
                 "nazionalita"
         );
@@ -90,7 +90,7 @@ public class BioView extends WikiView {
 
         super.lastDownload = WPref.downloadBio;
         super.durataDownload = WPref.downloadBioTime;
-        super.nextDownload=WPref.downloadBioPrevisto;
+        super.nextDownload = WPref.downloadBioPrevisto;
         super.lastElaborazione = WPref.elaboraBio;
         super.durataElaborazione = WPref.elaboraBioTime;
 
@@ -98,7 +98,7 @@ public class BioView extends WikiView {
         super.usaBottoneDeleteAll = true;
         super.usaBottoneNew = true;
         super.usaBottoneDelete = true;
-        super.usaBottoneSearch = true;
+        super.usaBottoneSearch = false;
         super.usaBottonePaginaWiki = true;
         super.dialogClazz = BioDialog.class;
         super.unitaMisuraDownload = "minuti";
@@ -125,6 +125,77 @@ public class BioView extends WikiView {
         alertPlaceHolder.add(new Span(anchor));
 
         addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie", categoria, textService.format(numBio)));
+    }
+
+    @Override
+    protected void fixTopLayout() {
+        super.fixTopLayout();
+        fixBottoniTopSpecificiBio();
+    }
+
+
+    protected void fixBottoniTopSpecificiBio() {
+        String widthEM_uno = "16ex";
+        String widthEM_due = "21ex";
+        String tag = TAG_ALTRE + " by ";
+
+        searchFieldWikiTitle = new TextField();
+        searchFieldWikiTitle.setPlaceholder(tag + "wikiTitle");
+        searchFieldWikiTitle.setWidth(widthEM_uno);
+        searchFieldWikiTitle.setClearButtonVisible(true);
+        searchFieldWikiTitle.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldWikiTitle);
+
+        searchFieldOrdinamento = new TextField();
+        searchFieldOrdinamento.setPlaceholder(tag + "ordinamento");
+        searchFieldOrdinamento.setWidth(widthEM_due);
+        searchFieldOrdinamento.setClearButtonVisible(true);
+        searchFieldOrdinamento.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldOrdinamento);
+
+        searchFieldNome = new TextField();
+        searchFieldNome.setPlaceholder(tag + "nome");
+        searchFieldNome.setWidth(widthEM_uno);
+        searchFieldNome.setClearButtonVisible(true);
+        searchFieldNome.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldNome);
+
+        searchFieldCognome = new TextField();
+        searchFieldCognome.setPlaceholder(tag + "cognome");
+        searchFieldCognome.setWidth(widthEM_due);
+        searchFieldCognome.setClearButtonVisible(true);
+        searchFieldCognome.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldCognome);
+
+        searchFieldNascita = new TextField();
+        searchFieldNascita.setPlaceholder(tag + "nascita");
+        searchFieldNascita.setWidth(widthEM_uno);
+        searchFieldNascita.setClearButtonVisible(true);
+        searchFieldNascita.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldNascita);
+
+        searchFieldMorte = new TextField();
+        searchFieldMorte.setPlaceholder(tag + "morte");
+        searchFieldMorte.setWidth(widthEM_uno);
+        searchFieldMorte.setClearButtonVisible(true);
+        searchFieldMorte.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldMorte);
+
+        searchFieldAttivita = new TextField();
+        searchFieldAttivita.setPlaceholder(tag + "attività");
+        searchFieldAttivita.setWidth(widthEM_uno);
+        searchFieldAttivita.setClearButtonVisible(true);
+        searchFieldAttivita.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldAttivita);
+
+        searchFieldNazionalita = new TextField();
+        searchFieldNazionalita.setPlaceholder(tag + "nazionalità");
+        searchFieldNazionalita.setWidth(widthEM_due);
+        searchFieldNazionalita.setClearButtonVisible(true);
+        searchFieldNazionalita.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldNazionalita);
+
+        this.add(topPlaceHolder2);
     }
 
     @Override
@@ -156,48 +227,6 @@ public class BioView extends WikiView {
         //        headerRow.join(nazionalita,nazionalita2).setText("Nazionalità");
     }
 
-    /**
-     * Componenti aggiuntivi oltre quelli base <br>
-     * Tipicamente bottoni di selezione/filtro <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    protected void fixBottoniTopSpecifici() {
-        searchFieldCognome = new TextField();
-        searchFieldCognome.setPlaceholder("Filter by cognome");
-        searchFieldCognome.setClearButtonVisible(true);
-        searchFieldCognome.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(searchFieldCognome);
-
-        searchFieldOrdinamento = new TextField();
-        searchFieldOrdinamento.setPlaceholder("Filter by ordinamento");
-        searchFieldOrdinamento.setClearButtonVisible(true);
-        searchFieldOrdinamento.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(searchFieldOrdinamento);
-
-        searchFieldNascita = new TextField();
-        searchFieldNascita.setPlaceholder("Filter by nato");
-        searchFieldNascita.setClearButtonVisible(true);
-        searchFieldNascita.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(searchFieldNascita);
-
-        searchFieldMorte = new TextField();
-        searchFieldMorte.setPlaceholder("Filter by morto");
-        searchFieldMorte.setClearButtonVisible(true);
-        searchFieldMorte.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(searchFieldMorte);
-
-        searchFieldAttivita = new TextField();
-        searchFieldAttivita.setPlaceholder("Filter by attività");
-        searchFieldAttivita.setClearButtonVisible(true);
-        searchFieldAttivita.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(searchFieldAttivita);
-
-        searchFieldNazionalita = new TextField();
-        searchFieldNazionalita.setPlaceholder("Filter by nazionalità");
-        searchFieldNazionalita.setClearButtonVisible(true);
-        searchFieldNazionalita.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(searchFieldNazionalita);
-    }
 
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
@@ -205,15 +234,48 @@ public class BioView extends WikiView {
     protected void sincroFiltri() {
         List<Bio> items = backend.findAll(sortOrder);
 
-        final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
-        if (textService.isValidNoSpace(textSearch)) {
+        final String textWikiTitle = searchFieldWikiTitle != null ? searchFieldWikiTitle.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textWikiTitle)) {
             items = items
                     .stream()
-                    .filter(bio -> bio.nome != null ? bio.nome.matches("^(?i)" + textSearch + ".*$") : false)
+                    .filter(bio -> bio.wikiTitle != null ? bio.wikiTitle.matches("^(?i)" + textWikiTitle + ".*$") : false)
                     .toList();
         }
         else {
-            if (textSearch.equals(SPAZIO)) {
+            if (textWikiTitle.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.wikiTitle == null)
+                        .toList();
+            }
+        }
+
+        final String textSearchOrdine = searchFieldOrdinamento != null ? searchFieldOrdinamento.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearchOrdine)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.ordinamento != null ? bio.ordinamento.matches("^(?i)" + textSearchOrdine + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearchOrdine.equals(SPAZIO)) {
+                items = items
+                        .stream()
+                        .filter(bio -> bio.ordinamento == null)
+                        .toList();
+            }
+        }
+
+
+        final String textSearchNome = searchFieldNome != null ? searchFieldNome.getValue() : VUOTA;
+        if (textService.isValidNoSpace(textSearchNome)) {
+            items = items
+                    .stream()
+                    .filter(bio -> bio.nome != null ? bio.nome.matches("^(?i)" + textSearchNome + ".*$") : false)
+                    .toList();
+        }
+        else {
+            if (textSearchNome.equals(SPAZIO)) {
                 items = items
                         .stream()
                         .filter(bio -> bio.nome == null)
@@ -233,23 +295,6 @@ public class BioView extends WikiView {
                 items = items
                         .stream()
                         .filter(bio -> bio.cognome == null)
-                        .toList();
-            }
-        }
-
-
-        final String textSearchOrdine = searchFieldOrdinamento != null ? searchFieldOrdinamento.getValue() : VUOTA;
-        if (textService.isValidNoSpace(textSearchOrdine)) {
-            items = items
-                    .stream()
-                    .filter(bio -> bio.ordinamento != null ? bio.ordinamento.matches("^(?i)" + textSearchOrdine + ".*$") : false)
-                    .toList();
-        }
-        else {
-            if (textSearchOrdine.equals(SPAZIO)) {
-                items = items
-                        .stream()
-                        .filter(bio -> bio.ordinamento == null)
                         .toList();
             }
         }

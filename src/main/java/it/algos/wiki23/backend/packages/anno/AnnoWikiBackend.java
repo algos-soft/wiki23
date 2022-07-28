@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project wiki23
@@ -30,13 +31,6 @@ import java.util.*;
 @Service
 public class AnnoWikiBackend extends WikiBackend {
 
-    /**
-     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    public WikiUtility wikiUtility;
 
     public AnnoWikiRepository repository;
 
@@ -47,6 +41,7 @@ public class AnnoWikiBackend extends WikiBackend {
      */
     @Autowired
     public AnnoBackend annoBackend;
+
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -68,8 +63,8 @@ public class AnnoWikiBackend extends WikiBackend {
         return checkAndSave(newEntity(annoBase));
     }
 
-    public AnnoWiki checkAndSave(final AnnoWiki annoBase) {
-        return findByNome(annoBase.nome) != null ? null : repository.insert(annoBase);
+    public AnnoWiki checkAndSave(final AnnoWiki annoWiki) {
+        return findByNome(annoWiki.nome) != null ? null : repository.insert(annoWiki);
     }
 
     /**
@@ -156,18 +151,28 @@ public class AnnoWikiBackend extends WikiBackend {
         String size;
         String time;
         int tot = count();
+        Anno anno;
+        String wikiTitleNati;
+        String wikiTitleMorti;
 
         //--Per ogni anno calcola quante biografie lo usano (nei 2 parametri)
         //--Memorizza e registra il dato nella entityBean
-        for (AnnoWiki anno : findAll()) {
-            anno.bioNati = bioBackend.countAnnoNato(anno.nome);
-            anno.bioMorti = bioBackend.countAnnoMorto(anno.nome);
+        for (AnnoWiki annoWiki : findAll()) {
+            anno = annoBackend.findByNome(annoWiki.nome);
+            annoWiki.bioNati = bioBackend.countAnnoNato(annoWiki.nome);
+            annoWiki.bioMorti = bioBackend.countAnnoMorto(annoWiki.nome);
 
-            update(anno);
+            wikiTitleNati = wikiUtility.wikiTitleNatiAnno(anno.nome);
+            wikiTitleMorti = wikiUtility.wikiTitleMortiAnno(anno.nome);
+
+            annoWiki.nati = queryService.isEsiste(wikiTitleNati);
+            annoWiki.morti = queryService.isEsiste(wikiTitleMorti);
+
+            update(annoWiki);
 
             if (Pref.debug.is()) {
                 cont++;
-                if (mathService.multiploEsatto(500, cont)) {
+                if (mathService.multiploEsatto(303, cont)) {
                     size = textService.format(cont);
                     time = dateService.deltaText(inizio);
                     message = String.format("Finora controllata l'esistenza di %s/%s anni, in %s", size, tot, time);

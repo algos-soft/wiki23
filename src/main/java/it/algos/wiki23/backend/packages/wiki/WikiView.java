@@ -110,6 +110,10 @@ public abstract class WikiView extends CrudView {
 
     protected String unitaMisuraUpload;
 
+    protected boolean usaBottoneGiornoAnno;
+
+    protected Button buttonGiornoAnno;
+
     protected boolean usaBottonePaginaNati;
 
     protected Button buttonPaginaNati;
@@ -117,6 +121,22 @@ public abstract class WikiView extends CrudView {
     protected boolean usaBottonePaginaMorti;
 
     protected Button buttonPaginaMorti;
+
+    protected boolean usaBottoneTestNati;
+
+    protected Button buttonTestNati;
+
+    protected boolean usaBottoneTestMorti;
+
+    protected Button buttonTestMorti;
+
+    protected boolean usaBottoneUploadNati;
+
+    protected Button buttonUploadNati;
+
+    protected boolean usaBottoneUploadMorti;
+
+    protected Button buttonUploadMorti;
 
     protected boolean usaInfoDownload;
 
@@ -150,9 +170,13 @@ public abstract class WikiView extends CrudView {
 
     protected TextField searchFieldPlurale;
 
-    protected TextField searchFieldCognome;
+    protected TextField searchFieldWikiTitle;
 
     protected TextField searchFieldOrdinamento;
+
+    protected TextField searchFieldNome;
+
+    protected TextField searchFieldCognome;
 
     protected TextField searchFieldNascita;
 
@@ -161,6 +185,8 @@ public abstract class WikiView extends CrudView {
     protected TextField searchFieldAttivita;
 
     protected TextField searchFieldNazionalita;
+
+    protected HorizontalLayout topPlaceHolder2 = new HorizontalLayout();
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -202,8 +228,13 @@ public abstract class WikiView extends CrudView {
         this.usaBottonePaginaWiki = true;
         this.usaBottoneTest = true;
         this.usaInfoDownload = true;
+        this.usaBottoneGiornoAnno = false;
         this.usaBottonePaginaNati = false;
         this.usaBottonePaginaMorti = false;
+        this.usaBottoneTestNati = false;
+        this.usaBottoneTestMorti = false;
+        this.usaBottoneUploadNati = false;
+        this.usaBottoneUploadMorti = false;
 
         this.unitaMisuraDownload = VUOTA;
         this.unitaMisuraElaborazione = VUOTA;
@@ -290,6 +321,31 @@ public abstract class WikiView extends CrudView {
         }
     }
 
+    /**
+     * Costruisce un layout per i componenti al Top della view <br>
+     * I componenti possono essere (nell'ordine):
+     * Bottoni standard (solo icone) Reset, New, Edit, Delete, ecc.. <br>
+     * SearchField per il filtro testuale di ricerca <br>
+     * ComboBox e CheckBox di filtro <br>
+     * Bottoni specifici non standard <br>
+     * <p>
+     * Metodo chiamato da CrudView.afterNavigation() <br>
+     * Costruisce tutti i componenti in metodi che possono essere sovrascritti <br>
+     * Inserisce la istanza in topPlaceHolder della view <br>
+     * Aggiunge tutti i listeners dei bottoni, searchField, comboBox, checkBox <br>
+     * <p>
+     * Non può essere sovrascritto <br>
+     */
+    @Override
+    protected void fixTopLayout() {
+        super.fixTopLayout();
+        this.topPlaceHolder2 = new HorizontalLayout();
+        topPlaceHolder2.setClassName("buttons");
+        topPlaceHolder2.setPadding(false);
+        topPlaceHolder2.setSpacing(true);
+        topPlaceHolder2.setMargin(false);
+        topPlaceHolder2.setClassName("confirm-dialog-buttons");
+    }
 
     /**
      * Bottoni standard (solo icone) Reset, New, Edit, Delete, ecc.. <br>
@@ -379,6 +435,16 @@ public abstract class WikiView extends CrudView {
             topPlaceHolder.add(buttonPaginaWiki);
         }
 
+        if (usaBottoneGiornoAnno) {
+            buttonGiornoAnno = new Button();
+            buttonGiornoAnno.getElement().setAttribute("theme", "secondary");
+            buttonGiornoAnno.getElement().setProperty("title", "Pagina: lettura della pagina giorno/anno esistente su wiki");
+            buttonGiornoAnno.setIcon(new Icon(VaadinIcon.SEARCH));
+            buttonGiornoAnno.setEnabled(false);
+            buttonGiornoAnno.addClickListener(event -> wikiPageGiornoAnno());
+            topPlaceHolder.add(buttonGiornoAnno);
+        }
+
         if (usaBottonePaginaNati) {
             buttonPaginaNati = new Button();
             buttonPaginaNati.getElement().setAttribute("theme", "secondary");
@@ -409,6 +475,26 @@ public abstract class WikiView extends CrudView {
             topPlaceHolder.add(buttonTest);
         }
 
+        if (usaBottoneTestNati) {
+            buttonTestNati = new Button();
+            buttonTestNati.getElement().setAttribute("theme", "secondary");
+            buttonTestNati.getElement().setProperty("title", "Test: scrittura di una voce 'nati' su Utente:Biobot");
+            buttonTestNati.setIcon(new Icon(VaadinIcon.SERVER));
+            buttonTestNati.setEnabled(false);
+            buttonTestNati.addClickListener(event -> testPaginaNati());
+            topPlaceHolder.add(buttonTestNati);
+        }
+
+        if (usaBottoneTestMorti) {
+            buttonTestMorti = new Button();
+            buttonTestMorti.getElement().setAttribute("theme", "secondary");
+            buttonTestMorti.getElement().setProperty("title", "Test: scrittura di una voce 'morti' su Utente:Biobot");
+            buttonTestMorti.setIcon(new Icon(VaadinIcon.SERVER));
+            buttonTestMorti.setEnabled(false);
+            buttonTestMorti.addClickListener(event -> testPaginaMorti());
+            topPlaceHolder.add(buttonTestMorti);
+        }
+
         if (usaBottoneUploadPagina) {
             buttonUploadPagina = new Button();
             buttonUploadPagina.getElement().setAttribute("theme", "error");
@@ -417,6 +503,26 @@ public abstract class WikiView extends CrudView {
             buttonUploadPagina.setEnabled(false);
             buttonUploadPagina.addClickListener(event -> uploadPagina());
             topPlaceHolder.add(buttonUploadPagina);
+        }
+
+        if (usaBottoneUploadNati) {
+            buttonUploadNati = new Button();
+            buttonUploadNati.getElement().setAttribute("theme", "error");
+            buttonUploadNati.getElement().setProperty("title", "Upload: scrittura della singola pagina 'nati' sul server wiki");
+            buttonUploadNati.setIcon(new Icon(VaadinIcon.UPLOAD));
+            buttonUploadNati.setEnabled(false);
+            buttonUploadNati.addClickListener(event -> uploadPaginaNati());
+            topPlaceHolder.add(buttonUploadNati);
+        }
+
+        if (usaBottoneUploadMorti) {
+            buttonUploadMorti = new Button();
+            buttonUploadMorti.getElement().setAttribute("theme", "error");
+            buttonUploadMorti.getElement().setProperty("title", "Upload: scrittura della singola pagina 'morti' sul server wiki");
+            buttonUploadMorti.setIcon(new Icon(VaadinIcon.UPLOAD));
+            buttonUploadMorti.setEnabled(false);
+            buttonUploadMorti.addClickListener(event -> uploadPaginaMorti());
+            topPlaceHolder.add(buttonUploadMorti);
         }
 
         super.fixBottoniTopStandard();
@@ -458,6 +564,10 @@ public abstract class WikiView extends CrudView {
             buttonPaginaWiki.setEnabled(singoloSelezionato);
         }
 
+        if (buttonGiornoAnno != null) {
+            buttonGiornoAnno.setEnabled(singoloSelezionato);
+        }
+
         if (buttonPaginaNati != null) {
             buttonPaginaNati.setEnabled(singoloSelezionato);
         }
@@ -470,8 +580,24 @@ public abstract class WikiView extends CrudView {
             buttonTest.setEnabled(singoloSelezionato);
         }
 
+        if (buttonTestNati != null) {
+            buttonTestNati.setEnabled(singoloSelezionato);
+        }
+
+        if (buttonTestMorti != null) {
+            buttonTestMorti.setEnabled(singoloSelezionato);
+        }
+
         if (buttonUploadPagina != null) {
             buttonUploadPagina.setEnabled(singoloSelezionato);
+        }
+
+        if (buttonUploadNati != null) {
+            buttonUploadNati.setEnabled(singoloSelezionato);
+        }
+
+        if (buttonUploadMorti != null) {
+            buttonUploadMorti.setEnabled(singoloSelezionato);
         }
 
         return singoloSelezionato;
@@ -585,6 +711,13 @@ public abstract class WikiView extends CrudView {
      * Esegue un azione di apertura di una pagina su wiki, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
+    protected void wikiPageGiornoAnno() {
+    }
+
+    /**
+     * Esegue un azione di apertura di una pagina su wiki, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
     protected void wikiPageNati() {
     }
 
@@ -605,10 +738,42 @@ public abstract class WikiView extends CrudView {
     }
 
     /**
+     * Scrive una voce di prova su Utente:Biobot/test <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void testPaginaNati() {
+        reload();
+    }
+
+    /**
+     * Scrive una voce di prova su Utente:Biobot/test <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void testPaginaMorti() {
+        reload();
+    }
+
+    /**
      * Scrive una pagina definitiva sul server wiki <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void uploadPagina() {
+        reload();
+    }
+
+    /**
+     * Scrive una pagina definitiva sul server wiki <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void uploadPaginaNati() {
+        reload();
+    }
+
+    /**
+     * Scrive una pagina definitiva sul server wiki <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void uploadPaginaMorti() {
         reload();
     }
 

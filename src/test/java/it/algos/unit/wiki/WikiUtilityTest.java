@@ -73,17 +73,77 @@ public class WikiUtilityTest extends WikiTest {
         super.setUpEach();
     }
 
-    @Test
+
+
+//    @Test
     @Order(1)
-    @DisplayName("1 - WikiTitle di tutti i 366 giorni di nascita")
-    void wikiTitleNatiGiorno() {
-        System.out.println("1 - WikiTitle di tutti i 366 giorni di nascita");
-        listaStr = giornoBackend.findAll();
+    @DisplayName("1 - WikiTitle di tutte le 366 pagine giorni di nascita e morte")
+    void wikiTitleGiorno() {
+        System.out.println("1 - WikiTitle di tutte le 366 pagine giorni di nascita e morte");
+        System.out.println(VUOTA);
+        listaStr = giornoBackend.findAllNomi();
+        int contNati = 0;
+        int contMorti = 0;
+        StringBuffer buffer = new StringBuffer();
 
         for (String giorno : listaStr) {
             ottenuto = service.wikiTitleNatiGiorno(giorno);
-            System.out.println(String.format("%s%s%s", giorno, FORWARD, ottenuto));
+            ottenuto2 = service.wikiTitleMortiGiorno(giorno);
+            System.out.println(String.format("%s%s'%s' e '%s'", giorno, FORWARD, ottenuto, ottenuto2));
+            ottenutoBooleano = queryService.isEsiste(ottenuto);
+            if (!ottenutoBooleano) {
+                buffer.append(String.format("La pagina %s non esiste", ottenuto));
+                buffer.append(CAPO);
+                contNati++;
+            }
+            ottenutoBooleano = queryService.isEsiste(ottenuto2);
+            if (!ottenutoBooleano) {
+                buffer.append(String.format("La pagina %s non esiste", ottenuto2));
+                buffer.append(CAPO);
+                contMorti++;
+            }
         }
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d pagine di nati che non esistono", contNati));
+        System.out.println(String.format("Ci sono %d pagine di morti che non esistono", contMorti));
+        System.out.println(VUOTA);
+        System.out.println(buffer.toString());
+    }
+
+
+//    @Test
+    @Order(2)
+    @DisplayName("2 - WikiTitle di tutte le 3030 (circa) pagine anni di nascita e morte")
+    void wikiTitleAnno() {
+        System.out.println("2 - WikiTitle di tutte le 3030 (circa) pagine anni di nascita e morte");
+        System.out.println(VUOTA);
+        listaStr = annoBackend.findAllNomi();
+        int contNati = 0;
+        int contMorti = 0;
+        StringBuffer buffer = new StringBuffer();
+
+        for (String anno : listaStr) {
+            ottenuto = service.wikiTitleNatiAnno(anno);
+            ottenuto2 = service.wikiTitleMortiAnno(anno);
+            System.out.println(String.format("%s%s'%s' e '%s'", anno, FORWARD, ottenuto, ottenuto2));
+            ottenutoBooleano = queryService.isEsiste(ottenuto);
+            if (!ottenutoBooleano) {
+                buffer.append(String.format("La pagina %s non esiste", ottenuto));
+                buffer.append(CAPO);
+                contNati++;
+            }
+            ottenutoBooleano = queryService.isEsiste(ottenuto2);
+            if (!ottenutoBooleano) {
+                buffer.append(String.format("La pagina %s non esiste", ottenuto2));
+                buffer.append(CAPO);
+                contMorti++;
+            }
+        }
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d pagine di nati che non esistono", contNati));
+        System.out.println(String.format("Ci sono %d pagine di morti che non esistono", contMorti));
+        System.out.println(VUOTA);
+        System.out.println(buffer.toString());
     }
 
     @Test
@@ -187,14 +247,14 @@ public class WikiUtilityTest extends WikiTest {
         bio = queryService.getBio(sorgente);
 
         previsto = "(†[[Morti nel 1863|1863]])";
-        ottenuto = service.linkAnnoMorto(bio, true);
+        ottenuto = service.linkAnnoMortoCoda(bio.annoMorto);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));
         System.out.println(VUOTA);
 
         previsto = "[[Morti nel 1863|1863]]";
-        ottenuto = service.linkAnnoMorto(bio, false);
+        ottenuto = service.linkAnnoMortoCoda(bio.annoMorto);
         assertEquals(previsto, ottenuto);
         System.out.println("Senza icona e senza parentesi (usato prima della didascalia in giorni)");
         System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));

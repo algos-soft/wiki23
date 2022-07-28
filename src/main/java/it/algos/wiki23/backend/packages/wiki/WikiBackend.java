@@ -87,6 +87,22 @@ public abstract class WikiBackend extends CrudBackend {
     @Autowired
     public ElaboraService elaboraService;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public WikiUtility wikiUtility;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public QueryService queryService;
+
     public WikiBackend(final MongoRepository crudRepository, final Class<? extends AEntity> entityClazz) {
         super(crudRepository, entityClazz);
     }// end of constructor with @Autowired

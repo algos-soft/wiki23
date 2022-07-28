@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -105,7 +106,7 @@ public class GiornoBackend extends CrudBackend {
 
     public List<String> findAllNomi() {
         List<String> listaNomi = new ArrayList<>();
-        List<Giorno> listaGiorni = repository.findAllOrderByOrdineAsc();
+        List<Giorno> listaGiorni = repository.findAll(Sort.by("ordine"));
 
         for (Giorno giorno : listaGiorni) {
             listaNomi.add(giorno.nome);

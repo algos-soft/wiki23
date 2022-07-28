@@ -71,6 +71,10 @@ public class VaadCost {
 
     public static final String ESCLAMATIVO = "!";
 
+    public static final String UGUALE = "=";
+
+    public static final String DOPPIO_UGUALE = UGUALE + UGUALE;
+
     public static final String DOPPIO_ESCLAMATIVO = ESCLAMATIVO + ESCLAMATIVO;
 
     public static final String PIPE_REGEX = "\\|";
@@ -90,6 +94,8 @@ public class VaadCost {
     public static final String TRE_PUNTI = "...";
 
     public static final String SPAZIO = " ";
+
+    public static final String SPAZIO_NON_BREAKING = "&nbsp;";
 
     public static final String UNDERSCORE = "_";
 

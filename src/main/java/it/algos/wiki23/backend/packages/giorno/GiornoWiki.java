@@ -30,29 +30,41 @@ import com.vaadin.flow.component.textfield.TextField;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Document
 //Lombok
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "giornoWikiBuilder")
 @EqualsAndHashCode(callSuper = false)
-public class GiornoWiki extends Giorno {
+public class GiornoWiki extends AEntity {
+
+    @Indexed(unique = true, direction = IndexDirection.ASCENDING)
+    @AIField(type = AETypeField.integer, header = "#", widthEM = 3, caption = "Ordinamento da inizio anno")
+    public int ordine;
+
+    @AIField(type = AETypeField.text, caption = "Nome corrente", sortProperty = "ordine")
+    public String nome;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano questi giorni", widthEM = 6)
-    public int numBio;
+    @AIField(type = AETypeField.integer, header = "nati", caption = "Numero di biografie che utilizzano i nati in questo giorno", widthEM = 6)
+    public int bioNati;
 
-    @AIField(type = AETypeField.text, widthEM = 7, caption = "Giorno di nascita")
-    public String nati;
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.integer, header = "morti", caption = "Numero di biografie che utilizzano i morti in questo giorno", widthEM = 6)
+    public int bioMorti;
 
-    @AIField(type = AETypeField.text, widthEM = 7, caption = "Giorno di morte")
-    public String morti;
+    @AIField(type = AETypeField.text, widthEM = 10, header = "nati", caption = "Anno di nascita")
+    public String pageNati;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.PENCIL)
-    public boolean superaSoglia;
+    @AIField(type = AETypeField.text, widthEM = 10, header = "morti", caption = "Anno di morte")
+    public String pageMorti;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.SEARCH)
-    public boolean esistePagina;
+    @AIField(type = AETypeField.booleano, widthEM = 6)
+    public boolean nati;
+
+    @AIField(type = AETypeField.booleano, widthEM = 6)
+    public boolean morti;
 
     @Override
     public String toString() {

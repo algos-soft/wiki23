@@ -70,8 +70,6 @@ public class AttivitaView extends WikiView {
     //--per eventuali metodi specifici
     private AttivitaDialog dialog;
 
-    private HorizontalLayout topPlaceHolder2 = new HorizontalLayout();
-
     /**
      * Costruttore @Autowired (facoltativo) <br>
      * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
@@ -159,6 +157,7 @@ public class AttivitaView extends WikiView {
         addSpanRossoBold(message);
     }
 
+    @Override
     protected void fixTopLayout() {
         super.fixTopLayout();
         fixBottoniTopSpecificiAttivita();
@@ -175,29 +174,29 @@ public class AttivitaView extends WikiView {
         topPlaceHolder2.setClassName("confirm-dialog-buttons");
 
         searchFieldSingolare = new TextField();
-        searchFieldSingolare.setWidth(widthEM);
         searchFieldSingolare.setPlaceholder(tag + "singolare");
+        searchFieldSingolare.setWidth(widthEM);
         searchFieldSingolare.setClearButtonVisible(true);
         searchFieldSingolare.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder2.add(searchFieldSingolare);
 
         searchFieldCategoria = new TextField();
-        searchFieldCategoria.setWidth(widthEM);
         searchFieldCategoria.setPlaceholder(tag + "categoria");
+        searchFieldCategoria.setWidth(widthEM);
         searchFieldCategoria.setClearButtonVisible(true);
         searchFieldCategoria.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder2.add(searchFieldCategoria);
 
         searchFieldParagrafo = new TextField();
-        searchFieldParagrafo.setWidth(widthEM);
         searchFieldParagrafo.setPlaceholder(tag + "paragrafo");
+        searchFieldParagrafo.setWidth(widthEM);
         searchFieldParagrafo.setClearButtonVisible(true);
         searchFieldParagrafo.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder2.add(searchFieldParagrafo);
 
         comboType = new ComboBox<>();
-        comboType.setWidth(widthEM);
         comboType.setPlaceholder(tag + "genere");
+        comboType.setWidth(widthEM);
         comboType.getElement().setProperty("title", "Filtro di selezione");
         comboType.setClearButtonVisible(true);
         comboType.setItems(AETypeGenere.values());

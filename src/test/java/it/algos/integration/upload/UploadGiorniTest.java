@@ -1,39 +1,45 @@
 package it.algos.integration.upload;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.upload.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.junit.jupiter.api.extension.*;
 import org.springframework.boot.test.context.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.test.context.junit.jupiter.*;
 
 /**
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Fri, 22-Jul-2022
- * Time: 10:22
+ * Date: Tue, 26-Jul-2022
+ * Time: 08:49
+ * Unit test di una classe service o backend o query <br>
+ * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
+ * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
+ * Nella superclasse AlgosTest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("upload")
-@DisplayName("Anni upload")
+@DisplayName("Giorni upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UploadAnniTest extends WikiTest {
+public class UploadGiorniTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private UploadAnni istanza;
+    private UploadGiorni istanza;
 
 
     /**
@@ -62,57 +68,30 @@ public class UploadAnniTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1- Costruttore base senza parametri")
+    @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new UploadAnni();
+        istanza = new UploadGiorni();
         assertNotNull(istanza);
-        System.out.println(("1- Costruttore base senza parametri"));
+        System.out.println(("1 - Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-//    @Test
+    @Test
     @Order(2)
-    @DisplayName("2 - Upload di un anno nati")
+    @DisplayName("2 - Upload di un giorno nati")
     void uploadNati() {
-        System.out.println("2 - Upload di un anno nati");
-        //        sorgente = "Nati nel 1318";
-        //        sorgente2 = "1318";
-        sorgente = "1523";
-        appContext.getBean(UploadAnni.class).uploadTestNascita(sorgente);
+        System.out.println("2 - Upload di un giorno nati");
+        sorgente = "3 luglio";
+        appContext.getBean(UploadGiorni.class).uploadTestNascita(sorgente);
     }
-
-//    @Test
+    @Test
     @Order(3)
-    @DisplayName("3 - Upload di un anno morti")
+    @DisplayName("3 - Upload di un giorno morti")
     void uploadMorti() {
-        System.out.println("3 - Upload di un anno morti");
-        //        sorgente = "Morti nel 1782";
-        //        sorgente2 = "1782";
-        //        sorgente = "Morti nel 169 a.C.";
-        //        sorgente2 = "169 a.C.";
-        sorgente = "169 a.C.";
-        sorgente = "1997";
-        appContext.getBean(UploadAnni.class).uploadTestMorte(sorgente);
-    }
-
-    @Test
-    @Order(4)
-    @DisplayName("4 - Upload reale di un anno nati")
-    void uploadNatiReale() {
-        System.out.println("4 - Upload reale di un anno nati");
-        sorgente = "1234";
-        appContext.getBean(UploadAnni.class).uploadNascita(sorgente);
-    }
-
-
-    @Test
-    @Order(5)
-    @DisplayName("5 - Upload reale di un anno morti")
-    void uploadMortiReale() {
-        System.out.println("5 - Upload reale di un anno morti");
-        sorgente = "459";
-        appContext.getBean(UploadAnni.class).uploadMorte(sorgente);
+        System.out.println("2 - Upload di un giorno morti");
+        sorgente = "3 luglio";
+        appContext.getBean(UploadGiorni.class).uploadTestMorte(sorgente);
     }
 
     /**

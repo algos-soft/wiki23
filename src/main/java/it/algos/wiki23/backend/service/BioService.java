@@ -596,6 +596,110 @@ public class BioService extends WAbstractService {
         return sortedList;
     }
 
+
+
+
+    /**
+     * Cerca tutte le entities di una collection filtrate con per giorno di nascita. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     *
+     * @param giornoNato per costruire la query
+     *
+     * @return lista di entityBeans ordinata per cognome
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchGiornoNato(String giornoNato) {
+        List<Bio> listaOrdinata = new ArrayList<>();
+        List<Bio> listaOrdinataNonSuddivisa;
+        List<Bio> listaConAnnoNato;
+        List<Bio> listaSenzaAnnoNato;
+
+        if (textService.isEmpty(giornoNato)) {
+            logger.info(new WrapLog().exception(new AlgosException("Manca l'indicazione del giorno")));
+            return null;
+        }
+
+        listaOrdinataNonSuddivisa = repository.findAllByGiornoNatoOrderByAnnoNatoOrdAscOrdinamentoAsc(giornoNato);
+        listaSenzaAnnoNato = listaOrdinataNonSuddivisa
+                .stream()
+                .filter(bio -> bio.annoNatoOrd == 0)
+                .sorted(Comparator.comparing(forzaOrdinamento))
+                .collect(Collectors.toList());
+
+        listaConAnnoNato = listaOrdinataNonSuddivisa
+                .stream()
+                .filter(bio -> bio.annoNatoOrd > 0)
+                .sorted(Comparator.comparing(bio -> bio.annoNatoOrd))
+                .collect(Collectors.toList());
+
+        switch ((AETypeChiaveNulla) WPref.typeChiaveNulla.getEnumCurrentObj()) {
+            case inTesta -> {
+                listaOrdinata.addAll(listaSenzaAnnoNato);
+                listaOrdinata.addAll(listaConAnnoNato);
+            }
+
+            case inCoda -> {
+                listaOrdinata.addAll(listaConAnnoNato);
+                listaOrdinata.addAll(listaSenzaAnnoNato);
+            }
+        }
+
+        return listaOrdinata;
+    }
+
+
+    /**
+     * Cerca tutte le entities di una collection filtrate con per giorno di morte. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     *
+     * @param giornoMorto per costruire la query
+     *
+     * @return lista di entityBeans ordinata per cognome
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchGiornoMorto(String giornoMorto) {
+        List<Bio> listaOrdinata = new ArrayList<>();
+        List<Bio> listaOrdinataNonSuddivisa;
+        List<Bio> listaConAnnoMorto;
+        List<Bio> listaSenzaAnnoMorto;
+
+        if (textService.isEmpty(giornoMorto)) {
+            logger.info(new WrapLog().exception(new AlgosException("Manca l'indicazione del giorno")));
+            return null;
+        }
+
+        listaOrdinataNonSuddivisa = repository.findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(giornoMorto);
+        listaSenzaAnnoMorto = listaOrdinataNonSuddivisa
+                .stream()
+                .filter(bio -> bio.annoMortoOrd == 0)
+                .sorted(Comparator.comparing(forzaOrdinamento))
+                .collect(Collectors.toList());
+
+        listaConAnnoMorto = listaOrdinataNonSuddivisa
+                .stream()
+                .filter(bio -> bio.annoMortoOrd > 0)
+                .sorted(Comparator.comparing(bio -> bio.annoMortoOrd))
+                .collect(Collectors.toList());
+
+        switch ((AETypeChiaveNulla) WPref.typeChiaveNulla.getEnumCurrentObj()) {
+            case inTesta -> {
+                listaOrdinata.addAll(listaSenzaAnnoMorto);
+                listaOrdinata.addAll(listaConAnnoMorto);
+            }
+
+            case inCoda -> {
+                listaOrdinata.addAll(listaConAnnoMorto);
+                listaOrdinata.addAll(listaSenzaAnnoMorto);
+            }
+        }
+
+        return listaOrdinata;
+    }
+
+
+
     /**
      * Cerca tutte le entities di una collection filtrate con un anno di nascita. <br>
      * Selects documents in a collection or view and returns a list of the selected documents. <br>
@@ -609,8 +713,8 @@ public class BioService extends WAbstractService {
     public List<Bio> fetchAnnoNato(String annoNato) {
         List<Bio> listaOrdinata = new ArrayList<>();
         List<Bio> listaOrdinataNonSuddivisa;
-        List<Bio> listaConGiornoMorto;
-        List<Bio> listaSenzaGiornoMorto;
+        List<Bio> listaConGiornoNato;
+        List<Bio> listaSenzaGiornoNato;
 
         if (textService.isEmpty(annoNato)) {
             logger.info(new WrapLog().exception(new AlgosException("Manca l'indicazione dell'anno")));
@@ -618,13 +722,13 @@ public class BioService extends WAbstractService {
         }
 
         listaOrdinataNonSuddivisa = repository.findAllByAnnoNatoOrderByGiornoNatoOrdAscOrdinamentoAsc(annoNato);
-        listaSenzaGiornoMorto = listaOrdinataNonSuddivisa
+        listaSenzaGiornoNato = listaOrdinataNonSuddivisa
                 .stream()
                 .filter(bio -> bio.giornoNatoOrd == 0)
                 .sorted(Comparator.comparing(forzaOrdinamento))
                 .collect(Collectors.toList());
 
-        listaConGiornoMorto = listaOrdinataNonSuddivisa
+        listaConGiornoNato = listaOrdinataNonSuddivisa
                 .stream()
                 .filter(bio -> bio.giornoNatoOrd > 0)
                 .sorted(Comparator.comparing(bio -> bio.giornoNatoOrd))
@@ -632,13 +736,13 @@ public class BioService extends WAbstractService {
 
         switch ((AETypeChiaveNulla) WPref.typeChiaveNulla.getEnumCurrentObj()) {
             case inTesta -> {
-                listaOrdinata.addAll(listaSenzaGiornoMorto);
-                listaOrdinata.addAll(listaConGiornoMorto);
+                listaOrdinata.addAll(listaSenzaGiornoNato);
+                listaOrdinata.addAll(listaConGiornoNato);
             }
 
             case inCoda -> {
-                listaOrdinata.addAll(listaConGiornoMorto);
-                listaOrdinata.addAll(listaSenzaGiornoMorto);
+                listaOrdinata.addAll(listaConGiornoNato);
+                listaOrdinata.addAll(listaSenzaGiornoNato);
             }
         }
 

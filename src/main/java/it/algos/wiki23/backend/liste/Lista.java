@@ -4,6 +4,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
@@ -181,7 +182,7 @@ public abstract class Lista {
      * Ogni valore della mappa è costituito da una lista di didascalie per ogni paragrafo <br>
      * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
      */
-    protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+    protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalieOld;
 
     /**
      * Mappa dei paragrafi delle didascalie che hanno una valore valido per la pagina specifica <br>
@@ -199,6 +200,15 @@ public abstract class Lista {
      * La visualizzazione dei paragrafi può anche essere esclusa, ma questi sono comunque presenti <br>
      */
     protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
+
+    /**
+     * Lista ordinata dei wrapper (WrapLista) per gestire i dati necessari ad una didascalia <br>
+     */
+    protected List<WrapLista> listaWrap;
+
+    protected LinkedHashMap<String, List<WrapLista>> mappaWrap;
+
+    protected LinkedHashMap<String, List<String>> mappaDidascalia;
 
     public static Function<WrapDidascalia, String> funCognome = wrap -> wrap.getCognome() != null ? wrap.getCognome() : VUOTA;
 
@@ -220,7 +230,7 @@ public abstract class Lista {
 
     protected AETypeCrono typeCrono;
 
-    protected AETypeDidascalia typeDidascalia = AETypeDidascalia.listaAttivitaNazionalita;
+    protected AETypeDidascalia typeDidascalia = AETypeDidascalia.listaBreve;
 
     /**
      * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
@@ -228,6 +238,63 @@ public abstract class Lista {
     public List<Bio> listaBio() {
         listaBio = new ArrayList<>();
         return listaBio;
+    }
+
+
+    /**
+     * Lista ordinata di tutti i wrapLista che hanno una valore valido per la pagina specifica <br>
+     */
+    public List<WrapLista> listaWrap() {
+        listaWrap = new ArrayList<>();
+
+        if (listaBio == null || listaBio.size() > 0) {
+            this.listaBio();
+        }
+
+        return listaWrap;
+    }
+
+
+    /**
+     * Mappa ordinata di tutti i wrapLista che hanno una valore valido per la pagina specifica <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public LinkedHashMap<String, List<WrapLista>> mappaWrap() {
+        mappaWrap = new LinkedHashMap<>();
+
+        if (listaWrap == null || listaWrap.size() > 0) {
+            this.listaWrap();
+        }
+
+        return mappaWrap;
+    }
+
+    /**
+     * Mappa ordinata di tutti le didascalie che hanno una valore valido per la pagina specifica <br>
+     * Le didascalie usano SPAZIO_NON_BREAKING al posto di SPAZIO (se previsto) <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public LinkedHashMap<String, List<String>> mappaDidascalia() {
+        mappaDidascalia = new LinkedHashMap<>();
+
+        if (mappaWrap == null || mappaWrap.size() > 0) {
+            this.mappaWrap();
+        }
+
+        return mappaDidascalia;
+    }
+
+    /**
+     * Testo del body di upload con paragrafi e righe <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public WResult testoBody() {
+        String testoBody = VUOTA;
+
+        if (mappaDidascalia == null || mappaDidascalia.size() > 0) {
+            this.mappaDidascalia();
+        }
+        return null;
     }
 
     /**
@@ -268,7 +335,7 @@ public abstract class Lista {
      */
     public LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie() {
         this.mappaWrapDidascalie();
-        mappaDidascalie = new LinkedHashMap<>();
+        mappaDidascalieOld = new LinkedHashMap<>();
         LinkedHashMap<String, List<WrapDidascalia>> mappaWrap;
         List<WrapDidascalia> listaWrap;
         List<String> listaDidascalia;
@@ -276,25 +343,27 @@ public abstract class Lista {
 
         for (String key1 : mappaWrapDidascalie.keySet()) {
             mappaWrap = mappaWrapDidascalie.get(key1);
-            mappaDidascalie.put(key1, new LinkedHashMap<>());
+            mappaDidascalieOld.put(key1, new LinkedHashMap<>());
 
             for (String key2 : mappaWrap.keySet()) {
                 listaWrap = mappaWrap.get(key2);
                 listaDidascalia = new ArrayList<>();
                 for (WrapDidascalia wrap : listaWrap) {
                     didascalia = switch (typeDidascalia) {
-                        case listaAttivitaNazionalita -> didascaliaService.getDidascaliaLista(wrap.getBio());
+                        case listaBreve -> didascaliaService.getDidascaliaLista(wrap.getBio());
                         case giornoNascita -> didascaliaService.getDidascaliaAnnoNato(wrap.getBio());
                         case giornoMorte -> didascaliaService.getDidascaliaAnnoMorto(wrap.getBio());
+                        case annoNascita -> didascaliaService.getDidascaliaGiornoNato(wrap.getBio());
+                        case annoMorte -> didascaliaService.getDidascaliaGiornoMorto(wrap.getBio());
                         default -> VUOTA;
                     };
                     listaDidascalia.add(didascalia);
                 }
-                mappaDidascalie.get(key1).put(key2, listaDidascalia);
+                mappaDidascalieOld.get(key1).put(key2, listaDidascalia);
             }
         }
 
-        return mappaDidascalie;
+        return mappaDidascalieOld;
     }
 
     /**
@@ -309,9 +378,9 @@ public abstract class Lista {
         LinkedHashMap<String, List<String>> mappaSub;
         String paragrafo;
 
-        for (String key : mappaDidascalie.keySet()) {
+        for (String key : mappaDidascalieOld.keySet()) {
             paragrafo = key;
-            mappaSub = mappaDidascalie.get(key);
+            mappaSub = mappaDidascalieOld.get(key);
             paragrafo = fixTitolo(titoloParagrafo, paragrafo);
 
             mappaParagrafi.put(paragrafo, mappaSub);
@@ -339,9 +408,9 @@ public abstract class Lista {
         String paragrafoDimensionato;
         int size;
 
-        for (String key : mappaDidascalie.keySet()) {
+        for (String key : mappaDidascalieOld.keySet()) {
             paragrafoDimensionato = key;
-            mappaSub = mappaDidascalie.get(key);
+            mappaSub = mappaDidascalieOld.get(key);
             size = wikiUtility.getSize(mappaSub);
             paragrafoDimensionato = wikiUtility.fixTitolo(titoloParagrafo, paragrafoDimensionato, size);
 
@@ -353,8 +422,7 @@ public abstract class Lista {
 
 
     protected WrapDidascalia creaWrapDidascalia(Bio bio) {
-        WrapDidascalia wrap = null;
-        wrap = new WrapDidascalia();
+        WrapDidascalia wrap = new WrapDidascalia();
         AnnoWiki anno;
 
         wrap.setAttivitaSingola(bio.attivita);
@@ -380,7 +448,7 @@ public abstract class Lista {
         if (textService.isValid(bio.annoNato)) {
             wrap.setSecoloParagrafoNato(fixSecolo(bio.annoNato));
         }
-        wrap.setAnnoNato(bio.annoMorto);
+        wrap.setAnnoMorto(bio.annoMorto);
         if (textService.isValid(bio.annoMorto)) {
             wrap.setSecoloParagrafoMorto(fixSecolo(bio.annoMorto));
         }

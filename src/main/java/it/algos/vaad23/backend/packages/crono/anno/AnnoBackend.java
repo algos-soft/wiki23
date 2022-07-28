@@ -6,8 +6,11 @@ import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.packages.crono.secolo.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
+
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -94,6 +97,21 @@ public class AnnoBackend extends CrudBackend {
     public Anno findByNome(final String nome) {
         return repository.findFirstByNome(nome);
     }
+    @Override
+    public List<Anno> findAll() {
+        return super.findAll();
+    }
+
+    public List<String> findAllNomi() {
+        List<String> listaNomi = new ArrayList<>();
+        List<Anno> listaAnni = repository.findAll(Sort.by("ordine"));
+
+        for (Anno anno : listaAnni) {
+            listaNomi.add(anno.nome);
+        }
+
+        return listaNomi;
+    }
 
     /**
      * Creazione di alcuni dati iniziali <br>
@@ -128,7 +146,7 @@ public class AnnoBackend extends CrudBackend {
 
     public void creaPrima(int numeroProgressivo) {
         int delta = 1000;
-        String tagPrima = " a.C";
+        String tagPrima = " a.C.";
         int numeroAnno = delta - numeroProgressivo;
         int ordine = numeroProgressivo + delta;
         String nomeVisibile = numeroAnno + tagPrima;

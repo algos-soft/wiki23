@@ -68,7 +68,6 @@ public class ListaAnniTest extends WikiTest {
                 Arguments.of("4 a.C.", AETypeCrono.morte),
                 Arguments.of("12", AETypeCrono.nascita),
                 Arguments.of("12", AETypeCrono.morte)
-
         );
     }
 
@@ -171,7 +170,7 @@ public class ListaAnniTest extends WikiTest {
         }
     }
 
-//    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(4)
     @DisplayName("4 - Mappa wrapDidascalia di vari anni")
@@ -200,7 +199,7 @@ public class ListaAnniTest extends WikiTest {
         }
     }
 
-//    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(5)
     @DisplayName("5 - Mappa didascalie di vari anni")

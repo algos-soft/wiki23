@@ -42,8 +42,9 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     long countBioByAttivita3(String attivita);
     long countBioByNazionalita(String nazionalita);
 
+    long countBioByGiornoNato(String giornoNato);
+    long countBioByGiornoMorto(String giornoMorto);
     long countBioByAnnoNato(String annoNato);
-
     long countBioByAnnoMorto(String annoMorto);
 
     @Query(value = "{ 'nome' : ?0 }", fields = "{ 'nome' : 1, 'cognome' : 1 }")
@@ -56,5 +57,9 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     List<Bio> findAllByNazionalitaOrderByCognome(String nazionalita);
     List<Bio> findAllByAnnoNatoOrderByGiornoNatoOrdAscOrdinamentoAsc(String annoNato);
     List<Bio> findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(String annoMorto);
+
+
+    List<Bio> findAllByGiornoNatoOrderByAnnoNatoOrdAscOrdinamentoAsc(String annoNato);
+    List<Bio> findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(String annoNato);
 
 }// end of crud repository class

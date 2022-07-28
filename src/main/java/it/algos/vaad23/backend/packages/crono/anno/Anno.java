@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.packages.crono.secolo.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.*;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.data.mongodb.core.mapping.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Document
 //Lombok
 @Data
 @NoArgsConstructor
@@ -24,6 +26,7 @@ import org.springframework.data.mongodb.core.mapping.*;
 @EqualsAndHashCode(callSuper = false)
 public class Anno extends AEntity {
 
+    @Indexed(unique = true, direction = IndexDirection.ASCENDING)
     @AIField(type = AETypeField.integer, header = "#", widthEM = 5, caption = "Ordine a partire dal 1.000 a.C.")
     public int ordine;
 
