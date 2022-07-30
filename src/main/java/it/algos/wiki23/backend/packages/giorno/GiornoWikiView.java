@@ -7,6 +7,7 @@ import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.upload.*;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
@@ -199,7 +200,7 @@ public class GiornoWikiView extends WikiView {
     @Override
     public void uploadPaginaNati() {
         GiornoWiki giorno = (GiornoWiki) super.wikiPage();
-        //        appContext.getBean(UploadGiorni.class).uploadNascita(giorno);
+        appContext.getBean(UploadGiorni.class).uploadNascita(giorno.nome);
         reload();
     }
 
@@ -209,7 +210,7 @@ public class GiornoWikiView extends WikiView {
      */
     public void uploadPaginaMorti() {
         GiornoWiki giorno = (GiornoWiki) super.wikiPage();
-        //        appContext.getBean(UploadGiorni.class).uploadMorte(giorno);
+        appContext.getBean(UploadGiorni.class).uploadMorte(giorno.nome);
         reload();
     }
 

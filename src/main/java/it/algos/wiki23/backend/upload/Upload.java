@@ -148,6 +148,8 @@ public abstract class Upload {
 
     protected boolean uploadTest = false;
 
+    protected String summary;
+
     protected WResult esegue(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = wikiUtility.getSizeAll(mappaDidascalie);
@@ -380,7 +382,7 @@ public abstract class Upload {
 
     protected WResult registra(String wikiTitle, String newText) {
         String newTextSignificativo = newText.substring(newText.indexOf("</noinclude>"));
-        return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo);
+        return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
     }
 
     protected String mappaToText(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaTxt) {

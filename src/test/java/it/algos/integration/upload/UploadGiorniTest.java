@@ -82,15 +82,16 @@ public class UploadGiorniTest extends WikiTest {
     @DisplayName("2 - Upload di un giorno nati")
     void uploadNati() {
         System.out.println("2 - Upload di un giorno nati");
-        sorgente = "3 luglio";
+        sorgente = "7 ottobre";
         appContext.getBean(UploadGiorni.class).uploadTestNascita(sorgente);
     }
+
     @Test
     @Order(3)
     @DisplayName("3 - Upload di un giorno morti")
     void uploadMorti() {
         System.out.println("2 - Upload di un giorno morti");
-        sorgente = "3 luglio";
+        sorgente = "7 ottobre";
         appContext.getBean(UploadGiorni.class).uploadTestMorte(sorgente);
     }
 

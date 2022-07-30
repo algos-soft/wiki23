@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
@@ -195,21 +196,20 @@ public class WikiUtility extends WAbstractService {
         return natiMortiGiorno("Morti", giorno);
     }
 
+    //    public String linkNatiAnno(String annoNato) {
+    //        if (textService.isEmpty(annoNato)) {
+    //            return VUOTA;
+    //        }
+    //        else {
+    //            annoNato = wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
+    //            return textService.isValid(annoNato) ? textService.setDoppieQuadre(annoNato) : VUOTA;
+    //        }
+    //    }
 
-    public String linkNatiAnno(String annoNato) {
-        if (textService.isEmpty(annoNato)) {
-            return VUOTA;
-        }
-        else {
-            annoNato = wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
-            return textService.isValid(annoNato) ? textService.setDoppieQuadre(annoNato) : VUOTA;
-        }
-    }
-
-    public String linkMortiAnno(String annoMorto) {
-        annoMorto = wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
-        return textService.setDoppieQuadre(annoMorto);
-    }
+    //    public String linkMortiAnno(String annoMorto) {
+    //        annoMorto = wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
+    //        return textService.setDoppieQuadre(annoMorto);
+    //    }
 
     public String wikiTitleNatiAnno(String anno) {
         return natiMortiAnno("Nati", anno);
@@ -219,10 +219,28 @@ public class WikiUtility extends WAbstractService {
         return natiMortiAnno("Morti", anno);
     }
 
-    public String fixSecolo(final String annoWiki) {
+    public String fixSecoloNato(final Bio bio) {
         String tag = "Senza anno specificato";
-        Anno anno = annoBackend.findByNome(annoWiki);
+        Anno anno = annoBackend.findByNome(bio.annoNato);
         return anno != null ? anno.getSecolo().nome : tag;
+    }
+
+    public String fixSecoloMorto(final Bio bio) {
+        String tag = "Senza anno specificato";
+        Anno anno = annoBackend.findByNome(bio.annoMorto);
+        return anno != null ? anno.getSecolo().nome : tag;
+    }
+
+    public String fixMeseNato(final Bio bio) {
+        String tag = "Senza giorno specificato";
+        Giorno giorno = giornoBackend.findByNome(bio.giornoNato);
+        return giorno != null ? textService.primaMaiuscola(giorno.getMese().nome) : tag;
+    }
+
+    public String fixMeseMorto(final Bio bio) {
+        String tag = "Senza giorno specificato";
+        Giorno giorno = giornoBackend.findByNome(bio.giornoMorto);
+        return giorno != null ? textService.primaMaiuscola(giorno.getMese().nome) : tag;
     }
 
     /**
@@ -289,181 +307,100 @@ public class WikiUtility extends WAbstractService {
     }
 
 
-    public String linkGiornoNato(final Bio bio, boolean usaIcona) {
-        if (bio != null && textService.isValid(bio.giornoNato)) {
-            return linkGiornoNato(bio.giornoNato, usaIcona);
-        }
-        else {
-            return VUOTA;
-        }
-    }
-
-    public String linkGiornoNato(String giornoNato, boolean usaIcona) {
-        String giornoNatoLinkato = giornoNato;
-        String tagNato = usaIcona ? WPref.simboloNato.getStr() : VUOTA;
-        Object obj = WPref.linkCrono.getEnumCurrentObj();
-
+    public String linkGiornoNatoTesta(final Bio bio) {
+        String giornoNato = bio.giornoNato;
         if (textService.isEmpty(giornoNato)) {
             return VUOTA;
         }
 
-        if (obj instanceof AETypeLinkCrono type) {
-            switch (type) {
-                case voce -> giornoNatoLinkato = textService.setDoppieQuadre(giornoNato);
-                case lista -> {
-                    giornoNato = this.wikiTitleNatiGiorno(giornoNato) + PIPE + giornoNato;
-                    giornoNatoLinkato = textService.setDoppieQuadre(giornoNato);
-                }
-                case nessuno -> giornoNatoLinkato = giornoNato;
-                default -> giornoNatoLinkato = giornoNato;
-            } ;
-        }
-
-        giornoNatoLinkato = tagNato + giornoNatoLinkato;
-        giornoNatoLinkato = usaIcona ? textService.setTonde(giornoNatoLinkato) : giornoNatoLinkato;
-        return giornoNatoLinkato;
+        return switch ((AETypeLinkCrono) WPref.linkCrono.getEnumCurrentObj()) {
+            case voce -> textService.setDoppieQuadre(giornoNato);
+            case lista -> {
+                giornoNato = this.wikiTitleNatiGiorno(giornoNato) + PIPE + giornoNato;
+                yield textService.setDoppieQuadre(giornoNato);
+            }
+            case nessuno -> giornoNato;
+        };
     }
 
-    public String linkGiornoMorto(final Bio bio, boolean usaIcona) {
-        if (bio != null && textService.isValid(bio.giornoMorto)) {
-            return linkGiornoMorto(bio.giornoMorto, usaIcona);
-        }
-        else {
-            return VUOTA;
-        }
+    public String linkGiornoNatoCoda(final Bio bio) {
+        String tagNato = WPref.usaSimboliCrono.is() ? WPref.simboloNato.getStr() : VUOTA;
+        String giornoNatoLinkato = linkGiornoNatoTesta(bio);
+        giornoNatoLinkato = textService.isValid(tagNato) ? tagNato + SPAZIO_NON_BREAKING + giornoNatoLinkato : giornoNatoLinkato;
+        return textService.isValid(bio.giornoNato) ? textService.setTonde(giornoNatoLinkato) : VUOTA;
     }
 
-    public String linkGiornoMorto(String giornoMorto, boolean usaIcona) {
-        String giornoMortoLinkato = giornoMorto;
-        String tagMorto = usaIcona ? WPref.simboloMorto.getStr() : VUOTA;
-        Object obj = WPref.linkCrono.getEnumCurrentObj();
 
+    public String linkGiornoMortoTesta(final Bio bio) {
+        String giornoMorto = bio.giornoMorto;
         if (textService.isEmpty(giornoMorto)) {
             return VUOTA;
         }
 
-        if (obj instanceof AETypeLinkCrono type) {
-            switch (type) {
-                case voce -> giornoMortoLinkato = textService.setDoppieQuadre(giornoMorto);
-                case lista -> {
-                    giornoMorto = this.wikiTitleMortiGiorno(giornoMorto) + PIPE + giornoMorto;
-                    giornoMortoLinkato = textService.setDoppieQuadre(giornoMorto);
-                }
-                case nessuno -> giornoMortoLinkato = giornoMorto;
-                default -> giornoMortoLinkato = giornoMorto;
-            } ;
-        }
-
-        giornoMortoLinkato = tagMorto + giornoMortoLinkato;
-        giornoMortoLinkato = usaIcona ? textService.setTonde(giornoMortoLinkato) : giornoMortoLinkato;
-        return giornoMortoLinkato;
+        return switch ((AETypeLinkCrono) WPref.linkCrono.getEnumCurrentObj()) {
+            case voce -> textService.setDoppieQuadre(giornoMorto);
+            case lista -> {
+                giornoMorto = this.wikiTitleMortiGiorno(giornoMorto) + PIPE + giornoMorto;
+                yield textService.setDoppieQuadre(giornoMorto);
+            }
+            case nessuno -> giornoMorto;
+        };
     }
 
-    @Deprecated
-    public String linkAnnoNato(final Bio bio, boolean usaIcona) {
-        if (bio != null && textService.isValid(bio.annoNato)) {
-            return linkAnnoNato(bio.annoNato, usaIcona);
-        }
-        else {
+    public String linkGiornoMortoCoda(final Bio bio) {
+        String tagMorto = WPref.usaSimboliCrono.is() ? WPref.simboloMorto.getStr() : VUOTA;
+        String giornoMortoLinkato = linkGiornoMortoTesta(bio);
+        giornoMortoLinkato = textService.isValid(tagMorto) ? tagMorto + SPAZIO_NON_BREAKING + giornoMortoLinkato : giornoMortoLinkato;
+        return textService.isValid(bio.giornoMorto) ? textService.setTonde(giornoMortoLinkato) : VUOTA;
+    }
+
+
+    public String linkAnnoNatoTesta(final Bio bio) {
+        String annoNato = bio.annoNato;
+        if (textService.isEmpty(annoNato)) {
             return VUOTA;
         }
-    }
 
-    @Deprecated
-    public String linkAnnoNato(String annoNato, boolean usaIcona) {
-        String annoNatoLinkato = annoNato;
-        String tagNato = usaIcona ? WPref.simboloNato.getStr() : VUOTA;
-        Object obj = WPref.linkCrono.getEnumCurrentObj();
-
-        if (obj instanceof AETypeLinkCrono type) {
-            switch (type) {
-                case voce -> annoNatoLinkato = textService.setDoppieQuadre(annoNato);
-                case lista -> {
-                    annoNato = this.wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
-                    annoNatoLinkato = textService.setDoppieQuadre(annoNato);
-                }
-                case nessuno -> annoNatoLinkato = annoNato;
-                default -> annoNatoLinkato = annoNato;
-            } ;
-        }
-
-        annoNatoLinkato = tagNato + SPAZIO_NON_BREAKING + annoNatoLinkato;
-        annoNatoLinkato = usaIcona ? textService.setTonde(annoNatoLinkato) : annoNatoLinkato;
-        return annoNatoLinkato;
-    }
-
-    //    @Deprecated
-    //    public String linkAnnoMorto(final Bio bio, boolean usaIcona) {
-    //        if (bio != null && textService.isValid(bio.annoMorto)) {
-    //            return linkAnnoMorto(bio.annoMorto, usaIcona);
-    //        }
-    //        else {
-    //            return VUOTA;
-    //        }
-    //    }
-
-    //    @Deprecated
-    //    public String linkAnnoMorto(String annoMorto, boolean usaIcona) {
-    //        String annoMortoLinkato = annoMorto;
-    //
-    //        String tagMorto = usaIcona ? WPref.simboloMorto.getStr() : VUOTA;
-    //        Object obj = WPref.linkCrono.getEnumCurrentObj();
-    //
-    //        if (obj instanceof AETypeLinkCrono type) {
-    //            switch (type) {
-    //                case voce -> annoMortoLinkato = textService.setDoppieQuadre(annoMorto);
-    //                case lista -> {
-    //                    annoMorto = this.wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
-    //                    annoMortoLinkato = textService.setDoppieQuadre(annoMorto);
-    //                }
-    //                case nessuno -> annoMortoLinkato = annoMorto;
-    //                default -> annoMortoLinkato = annoMorto;
-    //            } ;
-    //
-    //        }
-    //
-    //        annoMortoLinkato = tagMorto + SPAZIO_NON_BREAKING + annoMortoLinkato;
-    //        annoMortoLinkato = usaIcona ? textService.setTonde(annoMortoLinkato) : annoMortoLinkato;
-    //        return annoMortoLinkato;
-    //    }
-
-
-    public String linkAnnoNatoTesta(String annoNato) {
         return switch ((AETypeLinkCrono) WPref.linkCrono.getEnumCurrentObj()) {
-            case voce ->  textService.setDoppieQuadre(annoNato);
+            case voce -> textService.setDoppieQuadre(annoNato);
             case lista -> {
                 annoNato = this.wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
                 yield textService.setDoppieQuadre(annoNato);
             }
-            case nessuno ->  annoNato;
-        } ;
+            case nessuno -> annoNato;
+        };
     }
 
-    public String linkAnnoNatoCoda(final String annoNato) {
+    public String linkAnnoNatoCoda(final Bio bio) {
         String tagNato = WPref.usaSimboliCrono.is() ? WPref.simboloNato.getStr() : VUOTA;
-        String annoNatoLinkato = linkAnnoNatoTesta(annoNato);
+        String annoNatoLinkato = linkAnnoNatoTesta(bio);
         annoNatoLinkato = textService.isValid(tagNato) ? tagNato + SPAZIO_NON_BREAKING + annoNatoLinkato : annoNatoLinkato;
-        return textService.isValid(annoNato) ? textService.setTonde(annoNatoLinkato) : VUOTA;
+        return textService.isValid(bio.annoNato) ? textService.setTonde(annoNatoLinkato) : VUOTA;
     }
 
 
-    public String linkAnnoMortoTesta( String annoMorto) {
+    public String linkAnnoMortoTesta(final Bio bio) {
+        String annoMorto = bio.annoMorto;
+        if (textService.isEmpty(annoMorto)) {
+            return VUOTA;
+        }
+
         return switch ((AETypeLinkCrono) WPref.linkCrono.getEnumCurrentObj()) {
-            case voce ->  textService.setDoppieQuadre(annoMorto);
+            case voce -> textService.setDoppieQuadre(annoMorto);
             case lista -> {
                 annoMorto = this.wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
-                yield  textService.setDoppieQuadre(annoMorto);
+                yield textService.setDoppieQuadre(annoMorto);
             }
-            case nessuno ->  annoMorto;
-        } ;
+            case nessuno -> annoMorto;
+        };
     }
 
 
-    public String linkAnnoMortoCoda(final String annoMorto) {
+    public String linkAnnoMortoCoda(final Bio bio) {
         String tagMorto = WPref.usaSimboliCrono.is() ? WPref.simboloMorto.getStr() : VUOTA;
-        String annoMortoLinkato = linkAnnoMortoTesta(annoMorto);
+        String annoMortoLinkato = linkAnnoMortoTesta(bio);
         annoMortoLinkato = textService.isValid(tagMorto) ? tagMorto + SPAZIO_NON_BREAKING + annoMortoLinkato : annoMortoLinkato;
-        return textService.isValid(annoMorto) ? textService.setTonde(annoMortoLinkato) : VUOTA;
+        return textService.isValid(bio.annoMorto) ? textService.setTonde(annoMortoLinkato) : VUOTA;
     }
 
 

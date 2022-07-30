@@ -597,8 +597,6 @@ public class BioService extends WAbstractService {
     }
 
 
-
-
     /**
      * Cerca tutte le entities di una collection filtrate con per giorno di nascita. <br>
      * Selects documents in a collection or view and returns a list of the selected documents. <br>
@@ -699,7 +697,6 @@ public class BioService extends WAbstractService {
     }
 
 
-
     /**
      * Cerca tutte le entities di una collection filtrate con un anno di nascita. <br>
      * Selects documents in a collection or view and returns a list of the selected documents. <br>
@@ -797,6 +794,21 @@ public class BioService extends WAbstractService {
         }
 
         return listaOrdinata;
+    }
+
+    public List<Bio> fetchListe(AETypeCrono typeCrono, String nome) {
+        try {
+            return switch (typeCrono) {
+                case giornoNascita -> bioService.fetchGiornoNato(nome);
+                case giornoMorte -> bioService.fetchGiornoMorto(nome);
+                case annoNascita -> bioService.fetchAnnoNato(nome);
+                case annoMorte -> bioService.fetchAnnoMorto(nome);
+                default -> null;
+            };
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+            return null;
+        }
     }
 
 }

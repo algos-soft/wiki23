@@ -26,8 +26,7 @@ import java.util.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("integration")
-@Tag("liste")
+//@Tag("liste")
 @DisplayName("Attività lista")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ListaAttivitaTest extends WikiTest {

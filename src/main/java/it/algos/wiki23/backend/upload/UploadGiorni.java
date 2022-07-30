@@ -21,21 +21,7 @@ import java.util.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class UploadGiorni extends Upload {
-
-    private static final boolean SENZA_PARAGRAFI = false;
-
-    protected AETypeCrono typeCrono;
-
-    protected AETypeDidascalia typeDidascalia;
-
-    private String nomeGiorno;
-
-    private int ordineGiorno;
-
-    private boolean senzaParagrafi;
-
-    private String wikiTitle;
+public class UploadGiorni extends UploadGiorniAnni {
 
 
     /**
@@ -45,76 +31,65 @@ public class UploadGiorni extends Upload {
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      */
     public UploadGiorni() {
+        super.summary="[[Utente:Biobot/giorniBio|giorniBio]]";
     }// end of constructor
 
+    //    /**
+    //     * Esegue la scrittura base della pagina <br>
+    //     */
+    //    public void uploxxxxad(String nomeGiorno) {
+    //        Giorno giorno = giornoBackend.findByNome(nomeGiorno);
+    //        this.nomeGiornoAnno = nomeGiorno;
+    //        this.ordineGiornoAnno = giorno != null ? giorno.getOrdine() : 0;
+    //
+    //        WResult result = appContext.getBean(ListaGiorni.class).nascita(nomeGiorno).testoBody();
+    //        this.esegue(wikiTitle, result.getContent(), result.getIntValue());
+    //    }
 
-    protected WResult esegue(String wikiTitle, String testoBody, int numVoci) {
-        StringBuffer buffer = new StringBuffer();
 
-        buffer.append(avviso());
-        buffer.append(CAPO);
-        buffer.append(includeIni());
-        buffer.append(fixToc());
-        buffer.append(torna(VUOTA));
-        buffer.append(tmpListaBio(numVoci));
-        buffer.append(includeEnd());
-        buffer.append(CAPO);
-        buffer.append(tmpListaPersoneIni(numVoci));
-        buffer.append(testoBody);
-        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
-        buffer.append(includeIni());
-        buffer.append(portale());
-        buffer.append(categorie());
-        buffer.append(includeEnd());
-
-        return registra(wikiTitle, buffer.toString().trim());
+    /**
+     * Esegue la scrittura della pagina <br>
+     */
+    public void uploadNascita(String nomeGiorno) {
+        Giorno giorno;
+        WResult result;
+        this.typeCrono = AETypeCrono.giornoNascita;
+        this.nomeGiornoAnno = nomeGiorno;
+        giorno = giornoBackend.findByNome(nomeGiorno);
+        this.ordineGiornoAnno = giorno != null ? giorno.getOrdine() : 0;
+        this.wikiTitle = wikiUtility.wikiTitleNatiGiorno(nomeGiorno);
+        result = appContext.getBean(ListaGiorni.class).nascita(nomeGiorno).testoBody();
+        this.esegue(wikiTitle, result.getContent(), result.getIntValue());
     }
 
-
-    protected String tmpListaPersoneIni(int numVoci) {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("{{Lista persone per giorno");
-        buffer.append(CAPO);
-        buffer.append("|titolo=");
-        buffer.append(wikiTitle);
-        buffer.append(CAPO);
-        buffer.append("|voci=");
-        buffer.append(numVoci);
-        buffer.append(CAPO);
-        buffer.append("|testo=");
-        buffer.append(senzaParagrafi ? VUOTA : "<nowiki></nowiki>");
-        buffer.append(CAPO);
-
-        return uploadTest ? VUOTA : buffer.toString();
-    }
-
-    protected String categorie() {
-        StringBuffer buffer = new StringBuffer();
-        String tag = typeCrono.getTagUpper();
-        String title = wikiUtility.natiMortiGiorno(tag, nomeGiorno);
-
-        buffer.append(CAPO);
-        buffer.append(String.format("*[[Categoria:Liste di %s per giorno| %s]]", typeCrono.getTagLower(), ordineGiorno));
-        buffer.append(CAPO);
-        buffer.append(String.format("*[[Categoria:%s| ]]", title));
-        buffer.append(CAPO);
-
-        return buffer.toString();
+    /**
+     * Esegue la scrittura della pagina <br>
+     */
+    public void uploadMorte(String nomeGiorno) {
+        Giorno giorno;
+        WResult result;
+        this.typeCrono = AETypeCrono.giornoMorte;
+        this.nomeGiornoAnno = nomeGiorno;
+        giorno = giornoBackend.findByNome(nomeGiorno);
+        this.ordineGiornoAnno = giorno != null ? giorno.getOrdine() : 0;
+        this.wikiTitle = wikiUtility.wikiTitleMortiGiorno(nomeGiorno);
+        result = appContext.getBean(ListaGiorni.class).morte(nomeGiorno).testoBody();
+        this.esegue(wikiTitle, result.getContent(), result.getIntValue());
     }
 
     /**
      * Esegue la scrittura della pagina <br>
      */
     public void uploadTestNascita(String nomeGiorno) {
-        Giorno giorno = giornoBackend.findByNome(nomeGiorno);
+        Giorno giorno;
+        WResult result;
+        this.typeCrono = AETypeCrono.giornoNascita;
+        this.nomeGiornoAnno = nomeGiorno;
         this.uploadTest = true;
-        this.nomeGiorno = nomeGiorno;
+        giorno = giornoBackend.findByNome(nomeGiorno);
+        this.ordineGiornoAnno = giorno != null ? giorno.getOrdine() : 0;
         this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiUtility.wikiTitleNatiGiorno(nomeGiorno);
-        this.ordineGiorno = giorno != null ? giorno.getOrdine() : 0;
-        typeCrono = AETypeCrono.nascita;
-        typeDidascalia = AETypeDidascalia.giornoNascita;
-        WResult result = appContext.getBean(ListaGiorni.class).nascita(nomeGiorno).testoBody();
+        result = appContext.getBean(ListaGiorni.class).nascita(nomeGiorno).testoBody();
         this.esegue(wikiTitle, result.getContent(), result.getIntValue());
     }
 
@@ -122,15 +97,17 @@ public class UploadGiorni extends Upload {
      * Esegue la scrittura della pagina <br>
      */
     public void uploadTestMorte(String nomeGiorno) {
-        Giorno giorno = giornoBackend.findByNome(nomeGiorno);
+        Giorno giorno;
+        WResult result;
+        this.typeCrono = AETypeCrono.giornoMorte;
+        this.nomeGiornoAnno = nomeGiorno;
         this.uploadTest = true;
-        this.nomeGiorno = nomeGiorno;
+        giorno = giornoBackend.findByNome(nomeGiorno);
+        this.ordineGiornoAnno = giorno != null ? giorno.getOrdine() : 0;
         this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiUtility.wikiTitleMortiGiorno(nomeGiorno);
-        this.ordineGiorno = giorno != null ? giorno.getOrdine() : 0;
-        typeCrono = AETypeCrono.morte;
-        typeDidascalia = AETypeDidascalia.giornoMorte;
-        WResult result = appContext.getBean(ListaGiorni.class).morte(nomeGiorno).testoBody();
+        result = appContext.getBean(ListaGiorni.class).morte(nomeGiorno).testoBody();
         this.esegue(wikiTitle, result.getContent(), result.getIntValue());
+
     }
 
 }

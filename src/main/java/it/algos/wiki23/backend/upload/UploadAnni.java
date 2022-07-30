@@ -32,8 +32,6 @@ public class UploadAnni extends Upload {
 
     protected AETypeCrono typeCrono;
 
-    protected AETypeDidascalia typeDidascalia;
-
     private String nomeAnno;
 
     private int ordineAnno;
@@ -122,7 +120,7 @@ public class UploadAnni extends Upload {
             titoloVisibile = wikiUtility.fixTitolo(titoloParagrafo, numeroVisibile);
         }
         else {
-            titoloVisibile = switch (typeDidascalia) {
+            titoloVisibile = switch (typeCrono) {
                 case annoNascita, annoMorte -> wikiUtility.setParagrafo("Senza giorno specificato", numeroVisibile);
                 case giornoNascita, giornoMorte -> wikiUtility.setParagrafo("Senza anno specificato", numeroVisibile);
                 default -> VUOTA;
@@ -190,12 +188,12 @@ public class UploadAnni extends Upload {
 
         buffer.append(CAPO);
         switch (typeCrono) {
-            case nascita -> {
+            case annoNascita -> {
                 buffer.append(String.format("*[[Categoria:Liste di nati per anno| %s]]", ordineAnno));
                 buffer.append(CAPO);
                 buffer.append(String.format("*[[Categoria:Nati nel %s| ]]", nomeAnno));
             }
-            case morte -> {
+            case annoMorte -> {
                 buffer.append(String.format("*[[Categoria:Liste di morti per anno| %s]]", ordineAnno));
                 buffer.append(CAPO);
                 buffer.append(String.format("*[[Categoria:Morti nel %s| ]]", nomeAnno));
@@ -215,8 +213,7 @@ public class UploadAnni extends Upload {
         this.nomeAnno = nomeAnno;
         this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiUtility.wikiTitleNatiAnno(nomeAnno);
         this.ordineAnno = anno != null ? anno.getOrdine() : 0;
-        typeCrono = AETypeCrono.nascita;
-        typeDidascalia = AETypeDidascalia.annoNascita;
+        typeCrono = AETypeCrono.annoNascita;
         mappaDidascalie = appContext.getBean(ListaAnni.class).nascita(nomeAnno).mappaDidascalie();
         this.esegue(wikiTitle, mappaDidascalie);
     }
@@ -230,8 +227,7 @@ public class UploadAnni extends Upload {
         this.nomeAnno = nomeAnno;
         this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiUtility.wikiTitleMortiAnno(nomeAnno);
         this.ordineAnno = anno != null ? anno.getOrdine() : 0;
-        typeCrono = AETypeCrono.morte;
-        typeDidascalia = AETypeDidascalia.annoMorte;
+        typeCrono = AETypeCrono.annoMorte;
         mappaDidascalie = appContext.getBean(ListaAnni.class).morte(nomeAnno).mappaDidascalie();
         this.esegue(wikiTitle, mappaDidascalie);
     }
@@ -252,8 +248,7 @@ public class UploadAnni extends Upload {
         this.nomeAnno = nomeAnno;
         this.wikiTitle = wikiUtility.wikiTitleNatiAnno(nomeAnno);
         this.ordineAnno = anno != null ? anno.getOrdine() : 0;
-        typeCrono = AETypeCrono.nascita;
-        typeDidascalia = AETypeDidascalia.annoNascita;
+        typeCrono = AETypeCrono.annoNascita;
         mappaDidascalie = appContext.getBean(ListaAnni.class).nascita(nomeAnno).mappaDidascalie();
         this.esegue(wikiTitle, mappaDidascalie);
     }
@@ -276,8 +271,7 @@ public class UploadAnni extends Upload {
         this.nomeAnno = nomeAnno;
         this.wikiTitle = wikiUtility.wikiTitleMortiAnno(nomeAnno);
         this.ordineAnno = anno != null ? anno.getOrdine() : 0;
-        typeCrono = AETypeCrono.morte;
-        typeDidascalia = AETypeDidascalia.annoMorte;
+        typeCrono = AETypeCrono.annoMorte;
         mappaDidascalie = appContext.getBean(ListaAnni.class).morte(nomeAnno).mappaDidascalie();
         this.esegue(wikiTitle, mappaDidascalie);
     }

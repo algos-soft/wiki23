@@ -38,7 +38,6 @@ import java.util.stream.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("integration")
 @Tag("liste")
 @DisplayName("Anni lista")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -54,20 +53,20 @@ public class ListaAnniTest extends WikiTest {
     //--typeCrono
     protected static Stream<Arguments> ANNI() {
         return Stream.of(
-                Arguments.of(VUOTA, AETypeCrono.nascita),
-                Arguments.of(VUOTA, AETypeCrono.morte),
-                Arguments.of("1782", AETypeCrono.nascita),
-                Arguments.of("1782", AETypeCrono.morte),
-                Arguments.of("325", AETypeCrono.nascita),
-                Arguments.of("325", AETypeCrono.morte),
-                Arguments.of("1318", AETypeCrono.nascita),
-                Arguments.of("1318", AETypeCrono.morte),
-                Arguments.of("245 a.C.", AETypeCrono.nascita),
-                Arguments.of("245 a.C.", AETypeCrono.morte),
-                Arguments.of("4 a.C.", AETypeCrono.nascita),
-                Arguments.of("4 a.C.", AETypeCrono.morte),
-                Arguments.of("12", AETypeCrono.nascita),
-                Arguments.of("12", AETypeCrono.morte)
+                Arguments.of(VUOTA, AETypeCrono.annoNascita),
+                Arguments.of(VUOTA, AETypeCrono.annoMorte),
+                Arguments.of("1782", AETypeCrono.annoNascita),
+                Arguments.of("1782", AETypeCrono.annoMorte),
+                Arguments.of("325", AETypeCrono.annoNascita),
+                Arguments.of("325", AETypeCrono.annoMorte),
+                Arguments.of("1318", AETypeCrono.annoNascita),
+                Arguments.of("1318", AETypeCrono.annoMorte),
+                Arguments.of("245 a.C.", AETypeCrono.annoNascita),
+                Arguments.of("245 a.C.", AETypeCrono.annoMorte),
+                Arguments.of("4 a.C.", AETypeCrono.annoNascita),
+                Arguments.of("4 a.C.", AETypeCrono.annoMorte),
+                Arguments.of("12", AETypeCrono.annoNascita),
+                Arguments.of("12", AETypeCrono.annoMorte)
         );
     }
 
@@ -108,19 +107,20 @@ public class ListaAnniTest extends WikiTest {
     }
 
 
-    //    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(2)
     @DisplayName("2 - Lista bio di vari anni")
-    //--nome anno
-    //--typeCrono
+        //--nome anno
+        //--typeCrono
     void listaBio(final String nomeAnno, final AETypeCrono type) {
         System.out.println("2 - Lista bio di vari anni");
         sorgente = nomeAnno;
 
         listBio = switch (type) {
-            case nascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).listaBio();
-            case morte -> appContext.getBean(ListaAnni.class).morte(sorgente).listaBio();
+            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).listaBio();
+            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).listaBio();
+            default -> null;
         };
 
         if (listBio != null && listBio.size() > 0) {
@@ -128,8 +128,8 @@ public class ListaAnniTest extends WikiTest {
             System.out.println(message);
             System.out.println(VUOTA);
             switch (type) {
-                case nascita -> printBioListaAnniNato(listBio);
-                case morte -> printBioListaAnniMorto(listBio);
+                case annoNascita -> printBioListaAnniNato(listBio);
+                case annoMorte -> printBioListaAnniMorto(listBio);
             }
         }
         else {
@@ -138,66 +138,66 @@ public class ListaAnniTest extends WikiTest {
         }
     }
 
-
-    //    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(3)
-    @DisplayName("3 - Lista wrapDidascalia di vari anni")
-    //--nome anno
-    //--typeCrono
-    void listaWrapDidascalie(final String nomeAnno, final AETypeCrono type) {
-        System.out.println("3 - Lista wrapDidascalia di vari anni");
+    @DisplayName("3 - Lista wrapLista di vari anni")
+        //--nome anno
+        //--typeCrono
+    void listaWrap(final String nomeAnno, final AETypeCrono type) {
+        System.out.println("3 - Lista wrapLista di vari anni");
         sorgente = nomeAnno;
+        int size = 0;
 
-        listWrapDidascalia = switch (type) {
-            case nascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).listaWrapDidascalie();
-            case morte -> appContext.getBean(ListaAnni.class).morte(sorgente).listaWrapDidascalie();
+        listWrapLista = switch (type) {
+            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).listaWrap();
+            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).listaWrap();
             default -> null;
         };
 
-        if (listWrapDidascalia != null) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano l'anno di %s %s", listWrapDidascalia.size(), type, sorgente);
+        if (listWrapLista != null && listWrapLista.size() > 0) {
+            message = String.format("Ci sono %d wrapDidascalia che implementano l'anno %s %s", listWrapLista.size(), type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
-            switch (type) {
-                case nascita -> printWrapListaAnniNato(listWrapDidascalia);
-                case morte -> printWrapListaAnniMorto(listWrapDidascalia);
-            }
+            printWrapLista(listWrapLista);
+            size = listWrapLista.size();
+
         }
         else {
-            message = "La mappa è nulla";
+            message = "La lista è nulla";
             System.out.println(message);
         }
     }
+
 
     @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(4)
-    @DisplayName("4 - Mappa wrapDidascalia di vari anni")
+    @DisplayName("4 - Mappa wrapLista di vari anni")
         //--nome anno
         //--typeCrono
-    void mappaWrapDidascalie(final String nomeAnno, final AETypeCrono type) {
-        System.out.println("4 - Mappa wrapDidascalia di vari anni");
+    void mappaWrap(final String nomeAnno, final AETypeCrono type) {
+        System.out.println("4 - Mappa wrapLista di vari anni");
         sorgente = nomeAnno;
-        LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie;
 
-        mappaWrapDidascalie = switch (type) {
-            case nascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaWrapDidascalie();
-            case morte -> appContext.getBean(ListaAnni.class).morte(sorgente).mappaWrapDidascalie();
+        mappaWrap = switch (type) {
+            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaWrap();
+            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).mappaWrap();
             default -> null;
         };
 
-        if (mappaWrapDidascalie != null) {
-            message = String.format("WrapDidascalie che implementano l'anno di %s %s", type, sorgente);
+        if (mappaWrap != null && mappaWrap.size() > 0) {
+            message = String.format("Ci sono %d wrapDidascalia che implementano l'anno %s %s", mappaWrap.size(), type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
-            printMappaWrapDidascalia(sorgente, mappaWrapDidascalie);
+            printMappaWrap(mappaWrap);
         }
         else {
             message = "La mappa è nulla";
             System.out.println(message);
         }
     }
+
 
     @ParameterizedTest
     @MethodSource(value = "ANNI")
@@ -205,59 +205,48 @@ public class ListaAnniTest extends WikiTest {
     @DisplayName("5 - Mappa didascalie di vari anni")
         //--nome anno
         //--typeCrono
-    void mappaDidascalie(final String nomeAnno, final AETypeCrono type) {
+    void mappaDidascalia(final String nomeAnno, final AETypeCrono type) {
         System.out.println("5 - Mappa didascalie di vari anni");
         sorgente = nomeAnno;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
 
-        mappaDidascalie = switch (type) {
-            case nascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaDidascalie();
-            case morte -> appContext.getBean(ListaAnni.class).morte(sorgente).mappaDidascalie();
+        mappa = switch (type) {
+            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaDidascalia();
+            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).mappaDidascalia();
             default -> null;
         };
 
-        if (mappaDidascalie != null) {
-            message = String.format("Didascalie che implementano l'anno di %s %s", type, sorgente);
+        if (mappa != null && mappa.size() > 0) {
+            message = String.format("Ci sono %d wrapDidascalia che implementano l'anno %s %s", mappa.size(), type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
-            printMappaDidascaliaAnni("l'anno", sorgente, mappaDidascalie);
+            printMappa(mappa);
         }
         else {
             message = "La mappa è nulla";
             System.out.println(message);
         }
     }
-
 
     @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(6)
-    @DisplayName("6 - Mappa paragrafi di varie attivita")
+    @DisplayName("6 - Testo body di vari anni")
         //--nome anno
         //--typeCrono
-    void mappaParagrafi(final String nomeAnno, final AETypeCrono type) {
-        System.out.println("6 - Mappa paragrafi di varie attivita");
+    void testoBody(final String nomeAnno, final AETypeCrono type) {
+        System.out.println("6 - Testo body di vari anni");
+        System.out.println(VUOTA);
         sorgente = nomeAnno;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi;
 
-        mappaParagrafi = switch (type) {
-            case nascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaParagrafi();
-            case morte -> appContext.getBean(ListaAnni.class).morte(sorgente).mappaParagrafi();
+        ottenutoRisultato = switch (type) {
+            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).testoBody();
+            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).testoBody();
             default -> null;
         };
-
-        if (mappaParagrafi != null) {
-            message = String.format("Didascalie che implementano l'anno di %s %s", type, sorgente);
-            System.out.println(message);
-            System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
-            System.out.println(VUOTA);
-            printMappaDidascaliaAnni("l'anno", sorgente, mappaParagrafi);
-        }
-        else {
-            message = "La mappa è nulla";
-            System.out.println(message);
-        }
+        System.out.println(ottenutoRisultato.getContent());
     }
+
+
 
     //        @Test
     @Order(12)
@@ -383,196 +372,6 @@ public class ListaAnniTest extends WikiTest {
             System.out.print(SPAZIO);
 
             System.out.println(SPAZIO);
-        }
-    }
-
-
-    protected void printWrapListaAnniNato(List<WrapDidascalia> wrapLista) {
-        String message;
-        int max = 10;
-        int tot = wrapLista.size();
-        int iniA = 0;
-        int endA = Math.min(max, tot);
-        int iniB = tot - max > 0 ? tot - max : 0;
-        int endB = tot;
-
-        if (wrapLista != null) {
-            message = String.format("Faccio vedere le prime e le ultime %d wrapDidascalie", max);
-            System.out.println(message);
-            message = "Parametri di ordinamento (nell'ordine):";
-            System.out.println(message);
-            message = "Mese, giorno, wikiTitle";
-            System.out.println(message);
-            System.out.println(VUOTA);
-
-            printWrapListaBaseAnniNato(wrapLista.subList(iniA, endA), iniA);
-            System.out.println(TRE_PUNTI);
-            printWrapListaBaseAnniNato(wrapLista.subList(iniB, endB), iniB);
-        }
-    }
-
-    protected void printWrapListaAnniMorto(List<WrapDidascalia> wrapLista) {
-        String message;
-        int max = 10;
-        int tot = wrapLista.size();
-        int iniA = 0;
-        int endA = Math.min(max, tot);
-        int iniB = tot - max > 0 ? tot - max : 0;
-        int endB = tot;
-
-        if (wrapLista != null) {
-            message = String.format("Faccio vedere le prime e le ultime %d wrapDidascalie", max);
-            System.out.println(message);
-            message = "Parametri di ordinamento (nell'ordine):";
-            System.out.println(message);
-            message = "Mese, giorno, wikiTitle";
-            System.out.println(message);
-            System.out.println(VUOTA);
-
-            printWrapListaBaseAnniMorto(wrapLista.subList(iniA, endA), iniA);
-            System.out.println(TRE_PUNTI);
-            printWrapListaBaseAnniMorto(wrapLista.subList(iniB, endB), iniB);
-        }
-    }
-
-    protected void printWrapListaBaseAnniNato(List<WrapDidascalia> wrapLista, final int inizio) {
-        int cont = inizio;
-
-        for (WrapDidascalia wrap : wrapLista) {
-            cont++;
-            System.out.print(cont);
-            System.out.print(PARENTESI_TONDA_END);
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getMeseParagrafoNato()) ? wrap.getMeseParagrafoNato() : NULL));
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getGiornoNato()) ? wrap.getGiornoNato() : NULL));
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getWikiTitle()) ? wrap.getWikiTitle() : NULL));
-            System.out.print(SPAZIO);
-
-            System.out.println(SPAZIO);
-        }
-    }
-
-    protected void printWrapListaBaseAnniMorto(List<WrapDidascalia> wrapLista, final int inizio) {
-        int cont = inizio;
-
-        for (WrapDidascalia wrap : wrapLista) {
-            cont++;
-            System.out.print(cont);
-            System.out.print(PARENTESI_TONDA_END);
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getMeseParagrafoMorto()) ? wrap.getMeseParagrafoMorto() : NULL));
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getGiornoMorto()) ? wrap.getGiornoMorto() : NULL));
-            System.out.print(SPAZIO);
-
-            System.out.print(textService.setQuadre(textService.isValid(wrap.getWikiTitle()) ? wrap.getWikiTitle() : NULL));
-            System.out.print(SPAZIO);
-
-            System.out.println(SPAZIO);
-        }
-    }
-
-    protected void printMappaWrapDidascalia(String anno, LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrap) {
-        LinkedHashMap<String, List<WrapDidascalia>> mappaSub;
-
-        if (mappaWrap != null) {
-            message = String.format("WrapDidascalie per l'anno %s", anno);
-            System.out.println(message);
-            message = "Mese, giorno, cognome";
-            System.out.println(message);
-            System.out.println(VUOTA);
-
-            for (String key : mappaWrap.keySet()) {
-                mappaSub = mappaWrap.get(key);
-
-                System.out.print(textService.setQuadre(key));
-                System.out.print(SPAZIO);
-
-                System.out.println(VUOTA);
-
-                printMappaSub(mappaSub);
-                System.out.println(VUOTA);
-            }
-        }
-    }
-
-
-    private void printMappaDidascaliaAnni(String tag, String anno, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
-        LinkedHashMap<String, List<String>> mappaSub;
-
-        if (mappaDidascalie != null) {
-            message = String.format("Didascalie per %s %s", tag, anno);
-            System.out.println(message);
-            message = "Mese, giorno, didascalia";
-            System.out.println(message);
-            System.out.println(VUOTA);
-
-            for (String key : mappaDidascalie.keySet()) {
-                mappaSub = mappaDidascalie.get(key);
-                System.out.print(wikiUtility.setParagrafo(key));
-
-                printMappaSubDidascalieAnni(mappaSub);
-                System.out.println(VUOTA);
-            }
-        }
-    }
-
-
-    private void printMappaSubDidascalieAnni(LinkedHashMap<String, List<String>> mappaSub) {
-        List<String> lista;
-
-        if (mappaSub != null) {
-            for (String key : mappaSub.keySet()) {
-                lista = mappaSub.get(key);
-                if (lista.size() == 1) {
-                    if (textService.isValid(key)) {
-                        System.out.print(ASTERISCO);
-                        System.out.print(key);
-                        System.out.print(SEP);
-                        System.out.print(lista.get(0));
-                        System.out.println(VUOTA);
-                    }
-                    else {
-                        System.out.print(ASTERISCO);
-                        System.out.print(lista.get(0));
-                        System.out.println(VUOTA);
-                    }
-                }
-                else {
-                    if (textService.isValid(key)) {
-                        System.out.print(ASTERISCO);
-                        System.out.print(key);
-                        System.out.print(SPAZIO);
-                        System.out.println(VUOTA);
-                        printDidascaliaAnni(lista, true);
-                    }
-                    else {
-                        printDidascaliaAnni(lista, false);
-                    }
-                }
-            }
-        }
-    }
-
-    private void printDidascaliaAnni(List<String> lista, boolean doppioAsterisco) {
-        if (lista != null) {
-            for (String didascalia : lista) {
-                System.out.print(ASTERISCO);
-                if (doppioAsterisco) {
-                    System.out.print(ASTERISCO);
-                }
-                System.out.print(didascalia);
-                System.out.print(SPAZIO);
-
-                System.out.println(VUOTA);
-            }
         }
     }
 

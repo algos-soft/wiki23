@@ -230,7 +230,6 @@ public abstract class Lista {
 
     protected AETypeCrono typeCrono;
 
-    protected AETypeDidascalia typeDidascalia = AETypeDidascalia.listaBreve;
 
     /**
      * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
@@ -294,7 +293,7 @@ public abstract class Lista {
         if (mappaDidascalia == null || mappaDidascalia.size() > 0) {
             this.mappaDidascalia();
         }
-        return null;
+        return WResult.errato();
     }
 
     /**
@@ -349,12 +348,12 @@ public abstract class Lista {
                 listaWrap = mappaWrap.get(key2);
                 listaDidascalia = new ArrayList<>();
                 for (WrapDidascalia wrap : listaWrap) {
-                    didascalia = switch (typeDidascalia) {
-                        case listaBreve -> didascaliaService.getDidascaliaLista(wrap.getBio());
+                    didascalia = switch (typeCrono) {
                         case giornoNascita -> didascaliaService.getDidascaliaAnnoNato(wrap.getBio());
                         case giornoMorte -> didascaliaService.getDidascaliaAnnoMorto(wrap.getBio());
                         case annoNascita -> didascaliaService.getDidascaliaGiornoNato(wrap.getBio());
                         case annoMorte -> didascaliaService.getDidascaliaGiornoMorto(wrap.getBio());
+                        case listaBreve -> didascaliaService.getDidascaliaLista(wrap.getBio());
                         default -> VUOTA;
                     };
                     listaDidascalia.add(didascalia);

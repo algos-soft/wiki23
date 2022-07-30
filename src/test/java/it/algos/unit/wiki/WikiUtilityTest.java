@@ -199,18 +199,44 @@ public class WikiUtilityTest extends WikiTest {
         sorgente = PAGINA_OTTO;
         bio = queryService.getBio(sorgente);
 
-        previsto = "(n.[[Nati il 20 ottobre|20 ottobre]])";
-        ottenuto = service.linkGiornoNato(bio, true);
+        previsto = "[[Nati il 20 ottobre|20 ottobre]]";
+        ottenuto = service.linkGiornoNatoTesta(bio);
+        assertEquals(previsto, ottenuto);
+        System.out.println("Senza icona e senza parentesi (usato prima della didascalia in anni)");
+        System.out.println(String.format("%s (nato il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
+
+        previsto = "(n.&nbsp;[[Nati il 20 ottobre|20 ottobre]])";
+        ottenuto = service.linkGiornoNatoCoda(bio);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (nato il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
         System.out.println(VUOTA);
+    }
 
-        previsto = "[[Nati il 20 ottobre|20 ottobre]]";
-        ottenuto = service.linkGiornoNato(bio, false);
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Link giorno morto")
+    void linkGiornoMorto() {
+        System.out.println("6 - Link giorno morto usato nelle didascalie (prima e dopo)");
+        System.out.println(VUOTA);
+        sorgente = PAGINA_DIECI;
+        bio = queryService.getBio(sorgente);
+
+        previsto = "[[Morti l'8 novembre|8 novembre]]";
+        ottenuto = service.linkGiornoMortoTesta(bio);
         assertEquals(previsto, ottenuto);
         System.out.println("Senza icona e senza parentesi (usato prima della didascalia in anni)");
-        System.out.println(String.format("%s (nato il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
+        System.out.println(String.format("%s (morto il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
+
+        previsto = "(†&nbsp;[[Morti l'8 novembre|8 novembre]])";
+        ottenuto = service.linkGiornoMortoCoda(bio);
+        assertEquals(previsto, ottenuto);
+        System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
+        System.out.println(String.format("%s (morto il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
+        System.out.println(VUOTA);
+
     }
 
     @Test
@@ -222,18 +248,19 @@ public class WikiUtilityTest extends WikiTest {
         sorgente = PAGINA_OTTO;
         bio = queryService.getBio(sorgente);
 
-        previsto = "(n.[[Nati nel 1792|1792]])";
-        ottenuto = service.linkAnnoNato(bio, true);
+        previsto = "[[Nati nel 1792|1792]]";
+        ottenuto = service.linkAnnoNatoTesta(bio);
+        assertEquals(previsto, ottenuto);
+        System.out.println("Senza icona e senza parentesi (usato prima della didascalia in giorni)");
+        System.out.println(String.format("%s (nato nel %s)%s%s", bio.getWikiTitle(), bio.annoNato, FORWARD, ottenuto));
+
+        previsto = "(n.&nbsp;[[Nati nel 1792|1792]])";
+        ottenuto = service.linkAnnoNatoCoda(bio);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (nato nel %s)%s%s", bio.getWikiTitle(), bio.annoNato, FORWARD, ottenuto));
         System.out.println(VUOTA);
 
-        previsto = "[[Nati nel 1792|1792]]";
-        ottenuto = service.linkAnnoNato(bio, false);
-        assertEquals(previsto, ottenuto);
-        System.out.println("Senza icona e senza parentesi (usato prima della didascalia in giorni)");
-        System.out.println(String.format("%s (nato nel %s)%s%s", bio.getWikiTitle(), bio.annoNato, FORWARD, ottenuto));
     }
 
 
@@ -243,21 +270,23 @@ public class WikiUtilityTest extends WikiTest {
     void linkAnnoMorto() {
         System.out.println("8 - Link anno morto usato nelle didascalie (prima e dopo)");
         System.out.println(VUOTA);
-        sorgente = PAGINA_OTTO;
+        sorgente = PAGINA_UNDICI;
         bio = queryService.getBio(sorgente);
 
-        previsto = "(†[[Morti nel 1863|1863]])";
-        ottenuto = service.linkAnnoMortoCoda(bio.annoMorto);
+        previsto = "[[Morti nell'835|835]]";
+        ottenuto = service.linkAnnoMortoTesta(bio);
+        assertEquals(previsto, ottenuto);
+        System.out.println("Senza icona e senza parentesi (usato prima della didascalia in giorni)");
+        System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));
+
+
+        previsto = "(†&nbsp;[[Morti nell'835|835]])";
+        ottenuto = service.linkAnnoMortoCoda(bio);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));
         System.out.println(VUOTA);
 
-        previsto = "[[Morti nel 1863|1863]]";
-        ottenuto = service.linkAnnoMortoCoda(bio.annoMorto);
-        assertEquals(previsto, ottenuto);
-        System.out.println("Senza icona e senza parentesi (usato prima della didascalia in giorni)");
-        System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));
     }
 
 

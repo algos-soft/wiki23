@@ -159,11 +159,15 @@ public abstract class WikiTest extends AlgosTest {
 
     protected static final String PAGINA_REDIRECT = "Regno di Napoli (1805-1815)";
 
+    protected static final String PAGINA_UNDICI = "Muhammad ibn Ali al-Taqi al-Jawad";
+
     protected long pageId;
 
     public static final String SINGOLARE = "singolare";
 
     public static final String PLURALE = "plurale";
+
+    protected LinkedHashMap<String, List<WrapLista>> mappaWrap;
 
     //--titolo
     //--pagina valida
@@ -332,6 +336,7 @@ public abstract class WikiTest extends AlgosTest {
         listWrapDidascalia = null;
         listWrapLista = null;
         listMiniWrap = null;
+        mappaWrap = null;
         mappaLista = null;
         typeUser = null;
         pageId = 0L;
@@ -671,6 +676,70 @@ public abstract class WikiTest extends AlgosTest {
                 System.out.println(VUOTA);
 
                 printWrapDidascalia(lista);
+            }
+        }
+    }
+
+
+    protected void printWrapLista(List<WrapLista> listWrapLista) {
+        int max = 15;
+        if (listWrapLista != null) {
+            message = String.format("Faccio vedere una lista delle prime %d didascalie", max);
+            System.out.println(message);
+            message = "Paragrafo, riga, didascaliaBreve";
+            System.out.println(message);
+            System.out.println(VUOTA);
+            printSub(listWrapLista.subList(0, Math.min(max, listWrapLista.size())));
+        }
+    }
+
+    protected void printSub(List<WrapLista> listWrapLista) {
+        for (WrapLista wrap : listWrapLista) {
+            System.out.print(wrap.titoloParagrafo);
+            System.out.print(SEP);
+            if (textService.isValid(wrap.titoloRiga)) {
+                System.out.print(wrap.titoloRiga);
+                System.out.print(SEP);
+            }
+            System.out.println(wrap.didascaliaBreve);
+        }
+        System.out.println(VUOTA);
+    }
+
+    protected void printMappaWrap(LinkedHashMap<String, List<WrapLista>> mappaWrap) {
+        List<WrapLista> lista;
+
+        if (mappaWrap != null) {
+            message = String.format("Faccio vedere una mappa delle didascalie");
+            System.out.println(VUOTA);
+            for (String paragrafo : mappaWrap.keySet()) {
+                System.out.print("==");
+                System.out.print(paragrafo);
+                System.out.print("==");
+                System.out.print(CAPO);
+                lista = mappaWrap.get(paragrafo);
+                printSub(lista);
+            }
+        }
+    }
+
+    protected void printMappa(Map<String, List<String>> mappa) {
+        List<String> lista;
+
+        if (mappa != null) {
+            message = String.format("Faccio vedere una mappa delle didascalie");
+            System.out.println(message);
+            System.out.println(VUOTA);
+            for (String paragrafo : mappa.keySet()) {
+                System.out.print("==");
+                System.out.print(paragrafo);
+                System.out.print("==");
+                System.out.print(CAPO);
+                lista = mappa.get(paragrafo);
+                for (String didascalia : lista) {
+                    System.out.println(didascalia);
+                }
+                System.out.println(VUOTA);
             }
         }
     }
