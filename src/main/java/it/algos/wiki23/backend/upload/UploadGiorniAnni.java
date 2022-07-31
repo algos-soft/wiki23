@@ -2,10 +2,15 @@ package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+
+import java.time.*;
 
 /**
  * Project wiki23
@@ -70,7 +75,7 @@ public abstract class UploadGiorniAnni extends Upload {
     protected String tmpListaPersoneIni(int numVoci) {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("{{Lista persone per giorno");
+        buffer.append(String.format("{{Lista persone per %s", typeCrono.getGiornoAnno()));
         buffer.append(CAPO);
         buffer.append("|titolo=");
         buffer.append(wikiTitle);
@@ -89,15 +94,49 @@ public abstract class UploadGiorniAnni extends Upload {
     protected String categorie() {
         StringBuffer buffer = new StringBuffer();
         String tag = typeCrono.getTagUpper();
-        String title = wikiUtility.natiMortiGiorno(tag, nomeGiornoAnno);
+
+        String title = switch (typeCrono) {
+            case giornoNascita -> wikiUtility.wikiTitleNatiGiorno(nomeGiornoAnno);
+            case giornoMorte -> wikiUtility.wikiTitleMortiGiorno(nomeGiornoAnno);
+            case annoNascita -> wikiUtility.wikiTitleNatiAnno(nomeGiornoAnno);
+            case annoMorte -> wikiUtility.wikiTitleMortiAnno(nomeGiornoAnno);
+            default -> VUOTA;
+        };
 
         buffer.append(CAPO);
-        buffer.append(String.format("*[[Categoria:Liste di %s per giorno| %s]]", typeCrono.getTagLower(), ordineGiornoAnno));
+        buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
         buffer.append(CAPO);
         buffer.append(String.format("*[[Categoria:%s| ]]", title));
         buffer.append(CAPO);
 
         return buffer.toString();
+    }
+
+
+    public void fixUploadMinuti(final long inizio) {
+        long fine = System.currentTimeMillis();
+        String message;
+        Long delta = fine - inizio;
+
+        if (lastUpload != null) {
+            lastUpload.setValue(LocalDateTime.now());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("lastUpload è nullo")));
+            return;
+        }
+
+        if (durataUpload != null) {
+            delta = delta / 1000 / 60;
+            durataUpload.setValue(delta.intValue());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("durataUpload è nullo")));
+            return;
+        }
+
+        message = String.format("Check");
+        logger.info(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
     }
 
 }

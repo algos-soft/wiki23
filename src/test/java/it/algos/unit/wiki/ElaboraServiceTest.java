@@ -5,7 +5,9 @@ import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
+import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.wiki.query.*;
@@ -350,7 +352,7 @@ public class ElaboraServiceTest extends WikiTest {
         System.out.println("5 - fixGiornoLink (come Giorno esistente)");
 
         sorgente = giorno;
-        ottenutoGiorno = null;
+        GiornoWiki ottenutoGiorno = null;
         try {
             ottenutoGiorno = service.fixGiornoLink(sorgente);
         } catch (Exception unErrore) {
@@ -393,7 +395,7 @@ public class ElaboraServiceTest extends WikiTest {
         System.out.println("8 - fixAnnoLink (come Anno esistente)");
 
         sorgente = anno;
-        ottenutoAnno = null;
+        AnnoWiki ottenutoAnno = null;
         try {
             ottenutoAnno = service.fixAnnoLink(sorgente);
         } catch (Exception unErrore) {
@@ -522,7 +524,7 @@ public class ElaboraServiceTest extends WikiTest {
         System.out.println(VUOTA);
     }
 
-    private void printGiorno(final String tagInput, final Giorno giornoValido) {
+    private void printGiorno(final String tagInput, final GiornoWiki giornoValido) {
         if (giornoValido != null) {
             System.out.println(String.format("'%s' -> '%s'", tagInput, giornoValido.nome));
             System.out.println(VUOTA);
@@ -533,7 +535,7 @@ public class ElaboraServiceTest extends WikiTest {
         }
     }
 
-    private void printAnno(final String tagInput, final Anno annoValido) {
+    private void printAnno(final String tagInput, final AnnoWiki annoValido) {
         if (annoValido != null) {
             System.out.println(String.format("'%s' -> [%s]", tagInput, annoValido.nome));
             System.out.println(VUOTA);

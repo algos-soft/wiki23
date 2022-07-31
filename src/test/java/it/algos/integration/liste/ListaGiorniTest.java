@@ -101,12 +101,12 @@ public class ListaGiorniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(2)
     @DisplayName("2 - Lista bio di vari giorni")
-        //--nome giorno
-        //--typeCrono
+    //--nome giorno
+    //--typeCrono
     void listaBio(final String nomeGiorno, final AETypeCrono type) {
         System.out.println("2 - Lista bio di vari giorni");
         sorgente = nomeGiorno;
@@ -133,13 +133,12 @@ public class ListaGiorniTest extends WikiTest {
     }
 
 
-
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(3)
     @DisplayName("3 - Lista wrapLista di vari giorni")
-        //--nome giorno
-        //--typeCrono
+    //--nome giorno
+    //--typeCrono
     void listaWrap(final String nomeGiorno, final AETypeCrono type) {
         System.out.println("3 - Lista wrapLista di vari giorni");
         sorgente = nomeGiorno;
@@ -152,7 +151,7 @@ public class ListaGiorniTest extends WikiTest {
         };
 
         if (listWrapLista != null && listWrapLista.size() > 0) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano il giorno di %s %s", listWrapLista.size(), type, sorgente);
+            message = String.format("Ci sono %d wrapLista che implementano il giorno di %s %s", listWrapLista.size(), type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
             printWrapLista(listWrapLista);
@@ -165,7 +164,7 @@ public class ListaGiorniTest extends WikiTest {
         }
     }
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(4)
     @DisplayName("4 - Mappa wrapLista di vari giorni")
@@ -174,6 +173,7 @@ public class ListaGiorniTest extends WikiTest {
     void mappaWrap(final String nomeGiorno, final AETypeCrono type) {
         System.out.println("4 - Mappa wrapLista di vari giorni");
         sorgente = nomeGiorno;
+        int numVoci;
 
         mappaWrap = switch (type) {
             case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(sorgente).mappaWrap();
@@ -182,7 +182,8 @@ public class ListaGiorniTest extends WikiTest {
         };
 
         if (mappaWrap != null && mappaWrap.size() > 0) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano il giorno di %s %s", mappaWrap.size(), type, sorgente);
+            numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
+            message = String.format("Ci sono %d wrapLista che implementano il giorno di %s %s", numVoci, type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
             printMappaWrap(mappaWrap);
@@ -194,7 +195,7 @@ public class ListaGiorniTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(5)
     @DisplayName("5 - Mappa didascalie di vari giorni")
@@ -203,6 +204,7 @@ public class ListaGiorniTest extends WikiTest {
     void mappaDidascalia(final String nomeGiorno, final AETypeCrono type) {
         System.out.println("5 - Mappa didascalie di vari giorni");
         sorgente = nomeGiorno;
+        int numVoci;
 
         mappa = switch (type) {
             case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(sorgente).mappaDidascalia();
@@ -211,7 +213,8 @@ public class ListaGiorniTest extends WikiTest {
         };
 
         if (mappa != null && mappa.size() > 0) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano il giorno di %s %s", mappa.size(), type, sorgente);
+            numVoci = wikiUtility.getSizeAll(mappa);
+            message = String.format("Ci sono %d didascalie che implementano il giorno di %s %s", numVoci, type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
             printMappa(mappa);
@@ -241,9 +244,6 @@ public class ListaGiorniTest extends WikiTest {
         };
         System.out.println(ottenutoRisultato.getContent());
     }
-
-
-
 
 
     protected void printBioListaGiorniNato(List<Bio> listaBio) {

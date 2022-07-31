@@ -6,6 +6,8 @@ import it.algos.vaad23.backend.packages.crono.giorno.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.wrapper.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -23,6 +25,24 @@ import java.util.regex.*;
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class WikiUtility extends WAbstractService {
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public GiornoBackend giornoBackend;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AnnoBackend annoBackend;
 
     public String fixTitolo(String titoloGrezzo) {
         return fixTitolo(VUOTA, titoloGrezzo, 0);
@@ -176,6 +196,19 @@ public class WikiUtility extends WAbstractService {
         return size;
     }
 
+    public int getSizeAllWrap(Map<String, List<WrapLista>> mappa) {
+        int size = 0;
+
+        if (mappa != null) {
+            for (String key : mappa.keySet()) {
+                size += mappa.get(key).size();
+            }
+        }
+
+        return size;
+    }
+
+
     public int getSize(LinkedHashMap<String, List<String>> mappa) {
         int size = 0;
 
@@ -196,20 +229,6 @@ public class WikiUtility extends WAbstractService {
         return natiMortiGiorno("Morti", giorno);
     }
 
-    //    public String linkNatiAnno(String annoNato) {
-    //        if (textService.isEmpty(annoNato)) {
-    //            return VUOTA;
-    //        }
-    //        else {
-    //            annoNato = wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
-    //            return textService.isValid(annoNato) ? textService.setDoppieQuadre(annoNato) : VUOTA;
-    //        }
-    //    }
-
-    //    public String linkMortiAnno(String annoMorto) {
-    //        annoMorto = wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
-    //        return textService.setDoppieQuadre(annoMorto);
-    //    }
 
     public String wikiTitleNatiAnno(String anno) {
         return natiMortiAnno("Nati", anno);

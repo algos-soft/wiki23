@@ -184,6 +184,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Gaetano Anzalone", true),
                 Arguments.of("Colin Campbell (generale)", true),
                 Arguments.of("Louis Winslow Austin", true),
+                Arguments.of("San Nicanore", true),
                 Arguments.of("Regno di Napoli (1908-1745)", false),
                 Arguments.of("Regno di Napoli (1806-1815)", false),
                 Arguments.of("Rossi", false),

@@ -6,8 +6,10 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -69,6 +71,13 @@ public abstract class Statistiche {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
+    public MathService mathService;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
     public BioBackend bioBackend;
 
     /**
@@ -86,6 +95,22 @@ public abstract class Statistiche {
      */
     @Autowired
     public NazionalitaBackend nazionalitaBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public GiornoWikiBackend giornoWikiBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AnnoWikiBackend annoWikiBackend;
 
     protected AETypeToc typeToc;
 
@@ -109,6 +134,12 @@ public abstract class Statistiche {
         this.creaMappa();
     }
 
+    protected void esegue() {
+        this.fixPreferenze();
+        this.creaLista();
+        this.creaMappa();
+    }
+
     /**
      * Preferenze usate da questa 'view' <br>
      * Primo metodo chiamato dopo init() (implicito del costruttore) e postConstruct() (facoltativo) <br>
@@ -122,13 +153,16 @@ public abstract class Statistiche {
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(avviso());
-        buffer.append(noToc());
+        buffer.append(CAPO);
+        buffer.append(includeIni());
+        buffer.append(fixToc());
         buffer.append(tmpStatBio());
+        buffer.append(includeEnd());
+        buffer.append(incipit());
         buffer.append(body());
         buffer.append(note());
         buffer.append(correlate());
         buffer.append(categorie());
-
         return registra(wikiTitle, buffer.toString());
     }
 
@@ -136,22 +170,49 @@ public abstract class Statistiche {
         return "<!-- NON MODIFICATE DIRETTAMENTE QUESTA PAGINA - GRAZIE -->";
     }
 
-    protected String noToc() {
+    protected String fixToc() {
         return typeToc.get();
+    }
+
+    protected String includeIni() {
+        return "<noinclude>";
     }
 
     protected String tmpStatBio() {
         StringBuffer buffer = new StringBuffer();
         String data = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMM yyy")); ;
 
-        buffer.append(CAPO);
         buffer.append(String.format("{{StatBio|data=%s}}", data));
-
         return buffer.toString();
     }
 
-    protected String body() {
+    protected String includeEnd() {
+        return "</noinclude>";
+    }
+
+    protected String incipit() {
         return CAPO;
+    }
+    /**
+     * Prima tabella <br>
+     */
+    protected String body() {
+        StringBuffer buffer = new StringBuffer();
+
+
+        buffer.append(inizioTabella());
+        buffer.append(colonne());
+        buffer.append(corpo());
+        buffer.append(fineTabella());
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+    protected String colonne() {
+        return VUOTA;
+    }
+    protected String corpo() {
+        return VUOTA;
     }
 
     protected String note() {
@@ -219,9 +280,9 @@ public abstract class Statistiche {
     }
 
     protected WResult registra(String wikiTitle, String newText) {
-        if (Pref.debug.is()) {
-            wikiTitle = WIKI_TITLE_DEBUG;
-        }
+        //        if (Pref.debug.is()) {
+        //            wikiTitle = WIKI_TITLE_DEBUG;
+        //        }
         return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText);
     }
 

@@ -8,9 +8,12 @@ import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -217,10 +220,10 @@ public class ElaboraService extends WAbstractService {
      */
     public String fixGiornoValido(String testoGrezzo) {
         String testoValido = fixGiorno(testoGrezzo);
-        Giorno giorno = null;
+        GiornoWiki giorno = null;
 
         try {
-            giorno = giornoBackend.findByNome(testoValido);
+            giorno = giornoWikiBackend.findByNome(testoValido);
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }
@@ -294,14 +297,14 @@ public class ElaboraService extends WAbstractService {
 
     public int fixGiornoOrd(String testoGrezzo) {
         int giornoOrdine = 0;
-        Giorno giorno;
+        GiornoWiki giorno;
         String testoGiorno = fixGiorno(testoGrezzo);
 
         if (textService.isEmpty(testoGiorno)) {
             return giornoOrdine;
         }
 
-        giorno = giornoBackend.findByNome(testoGiorno);
+        giorno = giornoWikiBackend.findByNome(testoGiorno);
         if (giorno != null) {
             giornoOrdine = giorno.ordine;
         }
@@ -322,12 +325,12 @@ public class ElaboraService extends WAbstractService {
      *
      * @return istanza di giorno valido
      */
-    public Giorno fixGiornoLink(String testoGrezzo) throws Exception {
-        Giorno giorno = null;
+    public GiornoWiki fixGiornoLink(String testoGrezzo) throws Exception {
+        GiornoWiki giorno = null;
         String testoValido = fixGiorno(testoGrezzo);
 
         if (textService.isValid(testoValido)) {
-            giorno = giornoBackend.findByNome(testoValido);
+            giorno = giornoWikiBackend.findByNome(testoValido);
         }
 
         return giorno;
@@ -379,14 +382,14 @@ public class ElaboraService extends WAbstractService {
 
     public int fixAnnoOrd(String testoGrezzo) {
         int annoOrdine = 0;
-        Anno anno;
+        AnnoWiki anno;
         String testoAnno = fixAnno(testoGrezzo);
 
         if (textService.isEmpty(testoAnno)) {
             return annoOrdine;
         }
 
-        anno = annoBackend.findByNome(testoAnno);
+        anno = annoWikiBackend.findByNome(testoAnno);
         if (anno != null) {
             annoOrdine = anno.ordine;
         }
@@ -407,8 +410,8 @@ public class ElaboraService extends WAbstractService {
      *
      * @return istanza di anno valido
      */
-    public Anno fixAnnoLink(final String testoGrezzo) throws Exception {
-        Anno anno = null;
+    public AnnoWiki fixAnnoLink(final String testoGrezzo) throws Exception {
+        AnnoWiki anno = null;
         String titoloAncheAnteCristo = fixAnno(testoGrezzo);
 
         if (textService.isValid(titoloAncheAnteCristo)) {
@@ -427,8 +430,8 @@ public class ElaboraService extends WAbstractService {
      *
      * @return the entity with the given id or {@literal null} if none found
      */
-    public Anno findAnnoByKey(final String titoloAncheAnteCristo) throws Exception {
-        Anno anno = null;
+    public AnnoWiki findAnnoByKey(final String titoloAncheAnteCristo) throws Exception {
+        AnnoWiki anno = null;
         String titoloEsatto = titoloAncheAnteCristo;
         String tagA = "a";
         String tagC = "C";
@@ -454,7 +457,7 @@ public class ElaboraService extends WAbstractService {
             titoloEsatto = titoloEsatto.replace(tagC, tagC + PUNTO);
         }
 
-        anno = annoBackend.findByNome(titoloEsatto);
+        anno = annoWikiBackend.findByNome(titoloEsatto);
 
         return anno;
     }

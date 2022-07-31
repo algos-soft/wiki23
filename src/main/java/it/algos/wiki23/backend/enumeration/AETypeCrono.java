@@ -13,20 +13,23 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * Time: 13:54
  */
 public enum AETypeCrono {
-    giornoNascita("nati"),
-    giornoMorte("morti"),
-    annoNascita("nati"),
-    annoMorte("morti"),
-    listaBreve(VUOTA),
-    listaEstesa(VUOTA);
+    giornoNascita("nati", "giorno"),
+    giornoMorte("morti", "giorno"),
+    annoNascita("nati", "anno"),
+    annoMorte("morti", "anno"),
+    listaBreve(VUOTA, VUOTA),
+    listaEstesa(VUOTA, VUOTA);
 
     private String tagLower;
 
     private String tagUpper;
 
+    private String giornoAnno;
 
-    AETypeCrono(String tag) {
+
+    AETypeCrono(String tag, String giornoAnno) {
         this.tagLower = tag;
+        this.giornoAnno = giornoAnno;
         this.tagUpper = tag != null && tag.length() > 0 ? tag.substring(0, 1).toUpperCase() + tag.substring(1) : VUOTA;
     }
 
@@ -36,5 +39,9 @@ public enum AETypeCrono {
 
     public String getTagUpper() {
         return tagUpper;
+    }
+
+    public String getGiornoAnno() {
+        return giornoAnno;
     }
 }

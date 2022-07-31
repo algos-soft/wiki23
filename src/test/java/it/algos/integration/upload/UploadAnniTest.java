@@ -73,46 +73,65 @@ public class UploadAnniTest extends WikiTest {
 
 //    @Test
     @Order(2)
-    @DisplayName("2 - Upload di un anno nati")
-    void uploadNati() {
-        System.out.println("2 - Upload di un anno nati");
-        //        sorgente = "Nati nel 1318";
-        //        sorgente2 = "1318";
-        sorgente = "1523";
-        appContext.getBean(UploadAnni.class).uploadTestNascita(sorgente);
+    @DisplayName("2 - Upload di un anno morti")
+    void uploadMortiTest() {
+        System.out.println("2 - Upload di un anno morti");
+        sorgente = "214 a.C.";
+        appContext.getBean(UploadAnni.class).uploadTestMorte(sorgente);
     }
 
 //    @Test
     @Order(3)
     @DisplayName("3 - Upload di un anno morti")
-    void uploadMorti() {
+    void uploadMortiTest2() {
         System.out.println("3 - Upload di un anno morti");
-        //        sorgente = "Morti nel 1782";
-        //        sorgente2 = "1782";
-        //        sorgente = "Morti nel 169 a.C.";
-        //        sorgente2 = "169 a.C.";
-        sorgente = "169 a.C.";
-        sorgente = "1997";
+        sorgente = "1318";
         appContext.getBean(UploadAnni.class).uploadTestMorte(sorgente);
+    }
+
+//    @Test
+    @Order(4)
+    @DisplayName("4 - Upload di un anno nati")
+    void uploadNatiTest() {
+        System.out.println("4 - Upload di un anno nati");
+        sorgente = "1785";
+        appContext.getBean(UploadAnni.class).uploadTestNascita(sorgente);
+    }
+
+//    @Test
+    @Order(5)
+    @DisplayName("5 - Upload reale di un anno morto")
+    void uploadMortiReale() {
+        System.out.println("5 - Upload reale di un anno morto");
+        sorgente = "214 a.C.";
+        appContext.getBean(UploadAnni.class).uploadMorte(sorgente);
+    }
+
+
+//    @Test
+    @Order(6)
+    @DisplayName("6 - Upload reale di un anno morti")
+    void uploadMortiReale2() {
+        System.out.println("6 - Upload reale di un anno morti");
+        sorgente = "1318";
+        appContext.getBean(UploadAnni.class).uploadMorte(sorgente);
+    }
+
+//    @Test
+    @Order(7)
+    @DisplayName("7 - Upload reale di un anno nati")
+    void uploadNatiReale() {
+        System.out.println("7 - Upload reale di un anno nati");
+        sorgente = "1785";
+        appContext.getBean(UploadAnni.class).uploadNascita(sorgente);
     }
 
     @Test
     @Order(4)
-    @DisplayName("4 - Upload reale di un anno nati")
-    void uploadNatiReale() {
-        System.out.println("4 - Upload reale di un anno nati");
-        sorgente = "1234";
-        appContext.getBean(UploadAnni.class).uploadNascita(sorgente);
-    }
-
-
-    @Test
-    @Order(5)
-    @DisplayName("5 - Upload reale di un anno morti")
-    void uploadMortiReale() {
-        System.out.println("5 - Upload reale di un anno morti");
-        sorgente = "459";
-        appContext.getBean(UploadAnni.class).uploadMorte(sorgente);
+    @DisplayName("4 - Upload all")
+    void uploadAll() {
+        System.out.println("4 - Upload all");
+        appContext.getBean(UploadAnni.class).uploadAll();
     }
 
     /**

@@ -108,6 +108,10 @@ public class AnnoWikiBackend extends WikiBackend {
         return repository.findAll();
     }
 
+    public List<String> findAllNomi() {
+        return annoBackend.findAllNomi();
+    }
+
     public AnnoWiki findByNome(final String nome) {
         return repository.findFirstByNome(nome);
     }

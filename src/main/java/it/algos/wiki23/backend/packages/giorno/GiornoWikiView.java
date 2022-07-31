@@ -72,6 +72,9 @@ public class GiornoWikiView extends WikiView {
 
         super.lastElaborazione = WPref.elaboraGiorni;
         super.durataElaborazione = WPref.elaboraGiorniTime;
+        super.lastUpload = WPref.uploadGiorni;
+        super.durataUpload = WPref.uploadGiorniTime;
+        super.nextUpload = WPref.uploadGiorniPrevisto;
         super.usaBottoneDeleteReset = true;
         super.usaReset = true;
         super.usaBottoneElabora = true;
@@ -192,6 +195,13 @@ public class GiornoWikiView extends WikiView {
         reload();
     }
 
+    /**
+     * Esegue un azione di upload, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void upload() {
+        appContext.getBean(UploadGiorni.class).uploadAll();
+    }
 
     /**
      * Scrive una pagina definitiva sul server wiki <br>

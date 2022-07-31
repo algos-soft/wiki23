@@ -4,6 +4,8 @@ import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
+import java.text.*;
+
 /**
  * Project vaadin23
  * Created by Algos
@@ -32,6 +34,43 @@ public class MathService extends AbstractService {
         else {
             return corrente % multiplo == 0;
         }
+    }
+
+    /**
+     * Divisione tra due numeri double <br>
+     *
+     * @param dividendo quantità da dividere
+     * @param divisore  quantità che divide
+     *
+     * @return valore risultante di tipo double
+     */
+    public double divisione(double dividendo, double divisore) {
+        double quoziente = dividendo / divisore;
+        return quoziente;
+    }
+
+    /**
+     * Percentuale tra due numeri interi <br>
+     *
+     * @param dividendo quantità da dividere
+     * @param divisore  quantità che divide
+     *
+     * @return valore risultante di tipo double
+     */
+    public double percentuale(int dividendo, int divisore) {
+        return divisione((double) dividendo, (double) divisore) * 100;
+    }
+
+    /**
+     * Percentuale tra due numeri interi <br>
+     *
+     * @param dividendo quantità da dividere
+     * @param divisore  quantità che divide
+     *
+     * @return valore risultante di tipo String
+     */
+    public String percentualeDueDecimali(int dividendo, int divisore) {
+        return new DecimalFormat("0.00").format(percentuale(dividendo, divisore)) + "%";
     }
 
 }

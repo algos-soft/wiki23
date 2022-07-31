@@ -149,34 +149,69 @@ public abstract class ListaGiorniAnni extends Lista {
     @Override
     public WResult testoBody() {
         StringBuffer buffer = new StringBuffer();
+        String newText = VUOTA;
         List<String> lista;
-        int numVoci = wikiUtility.getSizeAll(mappaDidascalia); ;
-        boolean usaDiv;
+        int numVoci = 0;
 
         super.testoBody();
 
         if (mappaDidascalia != null && mappaDidascalia.size() > 0) {
             numVoci = wikiUtility.getSizeAll(mappaDidascalia);
-            for (String paragrafo : mappaDidascalia.keySet()) {
-                lista = mappaDidascalia.get(paragrafo);
-                usaDiv = lista.size() > 3;
 
-                buffer.append(DOPPIO_UGUALE);
-                buffer.append(paragrafo);
-                buffer.append(DOPPIO_UGUALE);
-                buffer.append(CAPO);
-                buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
-                for (String didascalia : lista) {
-                    buffer.append(ASTERISCO + didascalia);
-                    buffer.append(CAPO);
-                }
-                buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
-                buffer.append(CAPO);
+            if (numVoci < 200) {
+                newText = testoSenzaParagrafi(numVoci);
             }
-
+            else {
+                newText = testoConParagrafi(numVoci);
+            }
         }
 
-        return WResult.crea().content(buffer.toString().trim()).intValue(numVoci);
+        return WResult.crea().content(newText).intValue(numVoci);
+    }
+
+
+    public String testoSenzaParagrafi(int numVoci) {
+        StringBuffer buffer = new StringBuffer();
+        List<String> lista;
+        boolean usaDiv = numVoci > 3;
+
+        buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+        for (String paragrafo : mappaDidascalia.keySet()) {
+            lista = mappaDidascalia.get(paragrafo);
+            for (String didascalia : lista) {
+                buffer.append(ASTERISCO + didascalia);
+                buffer.append(CAPO);
+            }
+        }
+        buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+
+        return buffer.toString().trim();
+    }
+
+
+    public String testoConParagrafi(int numVoci) {
+        StringBuffer buffer = new StringBuffer();
+        List<String> lista;
+        boolean usaDiv;
+
+        for (String paragrafo : mappaDidascalia.keySet()) {
+            lista = mappaDidascalia.get(paragrafo);
+            usaDiv = lista.size() > 3;
+
+            buffer.append(DOPPIO_UGUALE);
+            buffer.append(paragrafo);
+            buffer.append(DOPPIO_UGUALE);
+            buffer.append(CAPO);
+            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+            for (String didascalia : lista) {
+                buffer.append(ASTERISCO + didascalia);
+                buffer.append(CAPO);
+            }
+            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+            buffer.append(CAPO);
+        }
+
+        return buffer.toString().trim();
     }
 
 }

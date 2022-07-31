@@ -327,7 +327,7 @@ public class DidascaliaServiceTest extends WikiTest {
         bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
         assertNotNull(bio);
 
-        ottenuto= service.getDidascaliaAnnoNato(bio);
+        ottenuto = service.getDidascaliaAnnoNato(bio);
         System.out.println(String.format("Biografia: %s", wikiTitle));
         System.out.println(String.format("Didascalia anno nato: %s", ottenuto));
     }
@@ -350,7 +350,7 @@ public class DidascaliaServiceTest extends WikiTest {
         bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
         assertNotNull(bio);
 
-        ottenuto= service.getDidascaliaAnnoMorto(bio);
+        ottenuto = service.getDidascaliaAnnoMorto(bio);
         System.out.println(String.format("Biografia: %s", wikiTitle));
         System.out.println(String.format("Didascalia anno morto: %s", ottenuto));
     }

@@ -458,8 +458,10 @@ public class DidascaliaService extends WAbstractService {
         boolean nonBreaking = Pref.usaNonBreaking.is();
 
         buffer.append(getWikiTitle(bio));
-        buffer.append(VIRGOLA_SPAZIO);
-        buffer.append(getAttivitaNazionalita(bio));
+        if (textService.isValid(getAttivitaNazionalita(bio))) {
+            buffer.append(VIRGOLA_SPAZIO);
+            buffer.append(getAttivitaNazionalita(bio));
+        }
         buffer.append(nonBreaking ? Pref.nonBreaking.getStr() : SPAZIO);
         buffer.append(wikiUtility.linkAnnoNatoCoda(bio));
 

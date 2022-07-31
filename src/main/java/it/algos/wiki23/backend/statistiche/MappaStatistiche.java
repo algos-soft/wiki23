@@ -35,6 +35,17 @@ public class MappaStatistiche {
     private int numAnnoMorto = 0;
 
     private int ordine;
+    private int pos;
+
+    private String nome;
+
+    private int nati = 0;
+
+    private int morti = 0;
+
+    private String percNati ;
+
+    private String percMorti ;
 
 
     public MappaStatistiche(String chiave) {
@@ -72,6 +83,12 @@ public class MappaStatistiche {
         this.numAnnoMorto = numAnnoMorto;
     }
 
+    public MappaStatistiche(int pos, String nome, int nati, int morti) {
+        this.pos = pos;
+        this.nome = nome;
+        this.nati = nati;
+        this.morti = morti;
+    }
 
     public String getChiave() {
         return chiave;
@@ -155,5 +172,36 @@ public class MappaStatistiche {
         return numAttivitaTotali < 1;
     }
 
+    public int getPos() {
+        return pos;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int getNati() {
+        return nati;
+    }
+
+    public int getMorti() {
+        return morti;
+    }
+
+    public String getPercNati() {
+        return percNati;
+    }
+
+    public void setPercNati(String percNati) {
+        this.percNati = percNati;
+    }
+
+    public String getPercMorti() {
+        return percMorti;
+    }
+
+    public void setPercMorti(String percMorti) {
+        this.percMorti = percMorti;
+    }
 
 }// end of class

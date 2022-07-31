@@ -55,8 +55,8 @@ public class ListaAnniTest extends WikiTest {
         return Stream.of(
                 Arguments.of(VUOTA, AETypeCrono.annoNascita),
                 Arguments.of(VUOTA, AETypeCrono.annoMorte),
-                Arguments.of("1782", AETypeCrono.annoNascita),
-                Arguments.of("1782", AETypeCrono.annoMorte),
+                Arguments.of("1785", AETypeCrono.annoNascita),
+                Arguments.of("1785", AETypeCrono.annoMorte),
                 Arguments.of("325", AETypeCrono.annoNascita),
                 Arguments.of("325", AETypeCrono.annoMorte),
                 Arguments.of("1318", AETypeCrono.annoNascita),
@@ -107,7 +107,7 @@ public class ListaAnniTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(2)
     @DisplayName("2 - Lista bio di vari anni")
@@ -138,7 +138,7 @@ public class ListaAnniTest extends WikiTest {
         }
     }
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(3)
     @DisplayName("3 - Lista wrapLista di vari anni")
@@ -170,7 +170,7 @@ public class ListaAnniTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(4)
     @DisplayName("4 - Mappa wrapLista di vari anni")
@@ -179,6 +179,7 @@ public class ListaAnniTest extends WikiTest {
     void mappaWrap(final String nomeAnno, final AETypeCrono type) {
         System.out.println("4 - Mappa wrapLista di vari anni");
         sorgente = nomeAnno;
+        int numVoci;
 
         mappaWrap = switch (type) {
             case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaWrap();
@@ -187,7 +188,8 @@ public class ListaAnniTest extends WikiTest {
         };
 
         if (mappaWrap != null && mappaWrap.size() > 0) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano l'anno %s %s", mappaWrap.size(), type, sorgente);
+            numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
+            message = String.format("Ci sono %d wrapLista che implementano l'anno %s %s", numVoci, type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
             printMappaWrap(mappaWrap);
@@ -208,6 +210,7 @@ public class ListaAnniTest extends WikiTest {
     void mappaDidascalia(final String nomeAnno, final AETypeCrono type) {
         System.out.println("5 - Mappa didascalie di vari anni");
         sorgente = nomeAnno;
+        int numVoci;
 
         mappa = switch (type) {
             case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaDidascalia();
@@ -216,7 +219,8 @@ public class ListaAnniTest extends WikiTest {
         };
 
         if (mappa != null && mappa.size() > 0) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano l'anno %s %s", mappa.size(), type, sorgente);
+            numVoci = wikiUtility.getSizeAll(mappa);
+            message = String.format("Ci sono %d didascalie che implementano l'anno %s %s", numVoci, type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
             printMappa(mappa);
@@ -248,26 +252,6 @@ public class ListaAnniTest extends WikiTest {
 
 
 
-    //        @Test
-    @Order(12)
-    @DisplayName("12 - elaborazione anno 1782")
-    void urlRequestListaCatBio() {
-        System.out.println(("12 - elaborazione anno 1782"));
-        System.out.println(VUOTA);
-        List<Bio> lista2 = new ArrayList<>();
-
-        sorgente = "1782";
-        listBio = appContext.getBean(ListaAnni.class).morte(sorgente).listaBio();
-        assertNotNull(listBio);
-        assertTrue(listBio.size() > 0);
-        printBioListaAnniMorto(listBio);
-
-        System.out.println(VUOTA);
-        for (Bio bio : listBio) {
-            lista2.add(elaboraService.esegueSave(bio));
-        }
-        printBioListaAnniMorto(lista2);
-    }
 
 
     protected void printBioListaAnniNato(List<Bio> listaBio) {
@@ -328,8 +312,14 @@ public class ListaAnniTest extends WikiTest {
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
 
-            System.out.print(textService.setQuadre(bio.giornoNato + SPAZIO + "(" + bio.giornoNatoOrd + ")"));
-            System.out.print(SPAZIO);
+            if (textService.isValid(bio.giornoNato)) {
+                System.out.print(textService.setQuadre(bio.giornoNato + SPAZIO + "(" + bio.giornoNatoOrd + ")"));
+                System.out.print(SPAZIO);
+            }
+            else {
+                System.out.print(SPAZIO + "(null)");
+                System.out.print(SPAZIO);
+            }
 
             System.out.print(textService.setQuadre(bio.ordinamento));
             System.out.print(SPAZIO);
@@ -356,9 +346,14 @@ public class ListaAnniTest extends WikiTest {
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
 
-            System.out.print(textService.setQuadre(bio.giornoMorto + SPAZIO + "(" + bio.giornoMortoOrd + ")"));
-            System.out.print(SPAZIO);
-
+            if (textService.isValid(bio.giornoMorto)) {
+                System.out.print(textService.setQuadre(bio.giornoMorto + SPAZIO + "(" + bio.giornoMortoOrd + ")"));
+                System.out.print(SPAZIO);
+            }
+            else {
+                System.out.print(SPAZIO + "(null)");
+                System.out.print(SPAZIO);
+            }
             System.out.print(textService.setQuadre(bio.ordinamento));
             System.out.print(SPAZIO);
 
