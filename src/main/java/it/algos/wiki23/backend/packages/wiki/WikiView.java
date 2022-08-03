@@ -8,6 +8,7 @@ import com.vaadin.flow.data.selection.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.views.*;
@@ -155,6 +156,7 @@ public abstract class WikiView extends CrudView {
     protected WPref durataUpload;
 
     protected WPref nextUpload;
+    protected WPref lastStatistica;
 
     protected WikiBackend crudBackend;
 
@@ -315,6 +317,15 @@ public abstract class WikiView extends CrudView {
                     if (nextUpload != null && nextUpload.get() instanceof LocalDateTime next) {
                         message += String.format(" Prossimo upload previsto %s.", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next));
                     }
+                }
+                addSpanVerdeSmall(message);
+            }
+            if (lastStatistica != null && lastStatistica.get() instanceof LocalDateTime statistica) {
+                if (statistica.equals(ROOT_DATA_TIME)) {
+                    message = "Statistiche non ancora registrate sul server";
+                }
+                else {
+                    message = String.format("Ultime statistiche registrate il %s", dateService.get(statistica));
                 }
                 addSpanVerdeSmall(message);
             }
@@ -785,4 +796,19 @@ public abstract class WikiView extends CrudView {
         alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).weight(AEFontWeight.bold)));
     }
 
+    public void fixStatisticheMinuti(final long inizio) {
+        long fine = System.currentTimeMillis();
+        String message;
+
+        if (lastStatistica != null) {
+            lastStatistica.setValue(LocalDateTime.now());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("lastStatistica è nullo")));
+            return;
+        }
+
+        message = String.format("Check");
+        logger.info(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
+    }
 }

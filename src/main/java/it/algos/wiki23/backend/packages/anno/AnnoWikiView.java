@@ -10,6 +10,7 @@ import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.statistiche.*;
 import it.algos.wiki23.backend.upload.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -71,6 +72,7 @@ public class AnnoWikiView extends WikiView {
 
         super.lastElaborazione = WPref.elaboraAnni;
         super.durataElaborazione = WPref.elaboraAnniTime;
+        super.lastStatistica = WPref.statisticaAnni;
         super.usaBottoneDeleteReset = true;
         super.usaReset = true;
         super.usaBottoneElabora = true;
@@ -148,21 +150,6 @@ public class AnnoWikiView extends WikiView {
     @Override
     protected void fixBodyLayout() {
         super.fixBodyLayout();
-
-        //        HeaderRow headerRow = grid.prependHeaderRow();
-        //        Grid.Column ordine = grid.getColumnByKey("ordine");
-        //        Grid.Column nome = grid.getColumnByKey("nome");
-        //        Grid.Column bioNati = grid.getColumnByKey("bioNati");
-        //        Grid.Column bioMorti = grid.getColumnByKey("bioMorti");
-        //        Grid.Column pageNati = grid.getColumnByKey("pageNati");
-        //        Grid.Column pageMorti = grid.getColumnByKey("pageMorti");
-        //        Grid.Column nati = grid.getColumnByKey("nati");
-        //        Grid.Column morti = grid.getColumnByKey("morti");
-        //
-        //        headerRow.join(ordine, nome).setText("Wiki");
-        //        headerRow.join(bioNati, bioMorti).setText("Numero biografie");
-        //        headerRow.join(pageNati, pageMorti).setText("Titolo pagine su wikipedia");
-        //        headerRow.join(nati, morti).setText("Esistenza pagine");
     }
 
 
@@ -173,6 +160,19 @@ public class AnnoWikiView extends WikiView {
     public void viewStatistiche() {
         wikiApiService.openWikiPage(PATH_ANNI);
     }
+
+    /**
+     * Esegue un azione di upload delle statistiche, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando DOPO il metodo della superclasse <br>
+     */
+    @Override
+    public void uploadStatistiche() {
+        long inizio = System.currentTimeMillis();
+        appContext.getBean(StatisticheAnni.class).upload();
+        super.fixStatisticheMinuti(inizio);
+        super.uploadStatistiche();
+    }
+
 
     /**
      * Esegue un azione di apertura di una pagina su wiki, specifica del programma/package in corso <br>

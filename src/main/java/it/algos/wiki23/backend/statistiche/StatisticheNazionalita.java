@@ -7,6 +7,7 @@ import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
+import static it.algos.wiki23.backend.upload.Upload.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -21,7 +22,7 @@ import java.util.*;
  * Time: 20:26
  */
 @SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class StatisticheNazionalita extends Statistiche {
 
     private int nazionalitaUsate;
@@ -34,11 +35,12 @@ public class StatisticheNazionalita extends Statistiche {
     /**
      * Costruttore base con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(UploadStatisticheAttivita.class, upload()) <br>
-     * Non rimanda al costruttore della superclasse. <br>
+     * Uso: appContext.getBean(StatisticheNazionalita.class) <br>
+     * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      */
     public StatisticheNazionalita() {
     }// end of constructor
+
 
     /**
      * Preferenze usate da questa 'view' <br>
@@ -51,12 +53,6 @@ public class StatisticheNazionalita extends Statistiche {
         super.typeToc = AETypeToc.forceToc;
     }
 
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public WResult upload() {
-        return super.upload(PATH_NAZIONALITA);
-    }
 
     protected String body() {
         StringBuffer buffer = new StringBuffer();
@@ -351,6 +347,7 @@ public class StatisticheNazionalita extends Statistiche {
     @Override
     protected void creaLista() {
         lista = nazionalitaBackend.findNazionalitaDistinctByPlurali();
+        int a=87;
     }
 
     /**
@@ -374,6 +371,24 @@ public class StatisticheNazionalita extends Statistiche {
             mappaSingola = new MappaStatistiche(nazionalita.plurale, numNazionalita);
             mappa.put(nazionalita.plurale, mappaSingola);
         }
+    }
+
+
+    /**
+     * Esegue la scrittura della pagina <br>
+     */
+    public WResult upload() {
+        super.esegue();
+        return super.upload(PATH_NAZIONALITA);
+    }
+
+
+    /**
+     * Esegue la scrittura della pagina <br>
+     */
+    public WResult uploadTest() {
+        super.esegue();
+        return super.upload(UPLOAD_TITLE_DEBUG + NAZ);
     }
 
 }

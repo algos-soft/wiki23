@@ -72,7 +72,7 @@ public class DidascaliaService extends WAbstractService {
         String attivitaNazionalita = this.getAttivitaNazionalita(bio);
         String natoMorto = this.getNatoMorto(bio);
 
-        return String.format("%s%s%s%s%s%s", ASTERISCO, nomeCognome, VIRGOLA_SPAZIO, attivitaNazionalita, SPAZIO, natoMorto);
+        return String.format("%s%s%s%s%s", nomeCognome, VIRGOLA_SPAZIO, attivitaNazionalita, SPAZIO, natoMorto);
     }
 
     /**
@@ -616,6 +616,25 @@ public class DidascaliaService extends WAbstractService {
         return new WrapLista(paragrafo, riga, didascalia);
     }
 
+
+    /**
+     * Costruisce una wrapLista specializzata per le righe delle pagine 'Nazionalità' <br>
+     * Contiene il paragrafo 'attivita'
+     * Contiene il sotto-paragrafo 'primoCarattere'
+     * Contiene la didascalia con 'wikiTitle', 'attività/nazionalità', 'luogo e anno di nascita', 'luogo e anno di morte'
+     *
+     * @param bio completa
+     *
+     * @return wrapLista
+     */
+    public WrapLista getWrapNazionalita(final Bio bio) {
+        String paragrafo = wikiUtility.fixParagrafoAttivita(bio);
+        String sottoParagrafo = bio.ordinamento.substring(0, 1);
+        String didascalia = this.getDidascaliaLista(bio);
+
+        return new WrapLista(paragrafo, sottoParagrafo, didascalia);
+    }
+
     /**
      * Costruisce una wrapLista <br>
      *
@@ -623,12 +642,13 @@ public class DidascaliaService extends WAbstractService {
      *
      * @return wrapLista
      */
-    public WrapLista getWrap(final Bio bio, AETypeCrono typeCrono) {
-        return switch (typeCrono) {
+    public WrapLista getWrap(final AETypeLista typeLista,final Bio bio ) {
+        return switch (typeLista) {
             case giornoNascita -> this.getWrapGiornoNato(bio);
             case giornoMorte -> this.getWrapGiornoMorto(bio);
             case annoNascita -> this.getWrapAnnoNato(bio);
             case annoMorte -> this.getWrapAnnoMorto(bio);
+            case nazionalitaSingolare,nazionalitaPlurale -> this.getWrapNazionalita(bio);
             case listaBreve -> null;
             case listaEstesa -> null;
             default -> null;

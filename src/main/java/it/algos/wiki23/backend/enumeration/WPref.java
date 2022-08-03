@@ -58,17 +58,20 @@ public enum WPref implements AIGenPref {
     elaboraGiorni("elaboraGiorni", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutti i giorni."),
     elaboraGiorniTime("elaboraGiorniTime", AETypePref.integer, 0, "Durata elaborazione di tutti i giorni in minuti."),
 
+    statisticaAttivita("statisticaAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per le attività."),
+    statisticaNazionalita("statisticaNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per le nazionalità."),
 
 
     uploadGiorni("uploadGiorni", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutti i nati/morti nei giorni."),
     uploadGiorniTime("uploadGiorniTime", AETypePref.integer, 0, "Durata upload dei giorni in minuti."),
     uploadGiorniPrevisto("uploadGiorniPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per i giorni."),
+    statisticaGiorni("statisticaGiorni", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per i giorni."),
 
 
     uploadAnni("uploadAnni", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutti i nati/morti negli anni."),
     uploadAnniTime("uploadAnniTime", AETypePref.integer, 0, "Durata upload degli anni in minuti."),
     uploadAnniPrevisto("uploadAnniPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per gli anni."),
-
+    statisticaAnni("statisticaAnni", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per gli anni."),
 
 
     categoriaBio("categoriaBio", AETypePref.string, "BioBot", "Categoria di riferimento per le Biografie"),
@@ -86,7 +89,8 @@ public enum WPref implements AIGenPref {
             AETypeToc.noToc
     ),
     typeChiaveNulla("typeChiaveNulla", AETypePref.enumerationType, AETypeChiaveNulla.inCoda, "Posizione del paragrafo 'nullo'",
-            AETypeChiaveNulla.inCoda),
+            AETypeChiaveNulla.inCoda
+    ),
 
 
     simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),
@@ -94,7 +98,8 @@ public enum WPref implements AIGenPref {
     usaSimboliCrono("usaSimboliCrono", AETypePref.bool, true, "Uso dei simboli crono per nati e morti"),
 
     linkCrono("linkCrono", AETypePref.enumerationType, AETypeLinkCrono.voce, "Type di link a giorni/anni nelle didascalie",
-            AETypeLinkCrono.nessuno),
+            AETypeLinkCrono.nessuno
+    ),
     ;
 
     //--codice di riferimento.

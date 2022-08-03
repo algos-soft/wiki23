@@ -84,9 +84,9 @@ public class UploadNazionalitaTest extends WikiTest {
     void getListaDidascalie() {
         System.out.println("2 - Upload di una nazionalità plurale");
         System.out.println(VUOTA);
-        sorgente = "azeri";
+        sorgente = "arabi";
         int oldValue;
-        int tempValue = 30;
+        int tempValue = 50;
 
         System.out.println("Metto da parte il valore della preferenza");
         oldValue = WPref.sogliaSottoPagina.getInt();

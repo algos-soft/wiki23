@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
@@ -260,6 +261,11 @@ public class WikiUtility extends WAbstractService {
         String tag = "Senza giorno specificato";
         Giorno giorno = giornoBackend.findByNome(bio.giornoMorto);
         return giorno != null ? textService.primaMaiuscola(giorno.getMese().nome) : tag;
+    }
+
+    public String fixParagrafoAttivita(final Bio bio) {
+        Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
+        return attivita != null ? textService.primaMaiuscola(attivita.paragrafo) : ALTRE;
     }
 
     /**

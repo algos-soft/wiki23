@@ -79,15 +79,16 @@ public class StatisticheNazionalitaTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - Upload")
-    void upload2() {
-        System.out.println(("2 - Crea la pagina di test"));
-        System.out.println(VUOTA);
+    @DisplayName("2 - Upload test")
+    void uploadTest() {
+        System.out.println(("2 - Upload test"));
 
-        ottenutoRisultato = appContext.getBean(StatisticheNazionalita.class).upload();
+        System.out.println(VUOTA);
+        ottenutoRisultato = appContext.getBean(StatisticheNazionalita.class).uploadTest();
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
     }
+
 
     /**
      * Qui passa al termine di ogni singolo test <br>

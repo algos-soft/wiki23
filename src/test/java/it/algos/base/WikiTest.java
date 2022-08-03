@@ -249,12 +249,14 @@ public abstract class WikiTest extends AlgosTest {
     //--flag singolare versus plurale
     protected static Stream<Arguments> NAZIONALITA() {
         return Stream.of(
-                Arguments.of("azeri", false),
-                Arguments.of("libanesi", false),
-                Arguments.of("cingalese", true),
-                Arguments.of("pakistana", true),
-                Arguments.of("mongoli", false),
-                Arguments.of("persiani", false)
+                Arguments.of(VUOTA, AETypeLista.listaBreve),
+                Arguments.of(VUOTA, AETypeLista.nazionalitaSingolare),
+                Arguments.of("arabi", AETypeLista.nazionalitaPlurale),
+                Arguments.of("libanesi", AETypeLista.nazionalitaPlurale),
+                Arguments.of("cingalese", AETypeLista.nazionalitaSingolare),
+                Arguments.of("pakistana", AETypeLista.nazionalitaSingolare),
+                Arguments.of("mongoli", AETypeLista.nazionalitaPlurale),
+                Arguments.of("persiani", AETypeLista.nazionalitaPlurale)
 
         );
     }

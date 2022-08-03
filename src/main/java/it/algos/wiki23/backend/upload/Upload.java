@@ -112,7 +112,6 @@ public abstract class Upload {
     public AttivitaBackend attivitaBackend;
 
 
-
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -129,6 +128,7 @@ public abstract class Upload {
     @Autowired
     public AnnoWikiBackend annoWikiBackend;
 
+    protected AETypeLista typeCrono;
 
     protected Lista lista;
 
@@ -144,6 +144,8 @@ public abstract class Upload {
     protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
 
     protected String titoloLinkParagrafo;
+
+    protected String nomeLista;
 
     protected String attNazUpper;
 
@@ -169,6 +171,34 @@ public abstract class Upload {
 
     protected WPref nextUpload;
 
+
+    protected WResult esegue(String wikiTitle, String testoBody, int numVoci) {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(avviso());
+        buffer.append(CAPO);
+        buffer.append(includeIni());
+        buffer.append(fixToc());
+        buffer.append(torna(wikiTitle));
+        buffer.append(tmpListaBio(numVoci));
+        buffer.append(includeEnd());
+        buffer.append(CAPO);
+        //        buffer.append(tmpListaPersoneIni(numVoci));
+        buffer.append(testoBody);
+        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
+        buffer.append(includeIni());
+        buffer.append(note());
+        buffer.append(CAPO);
+        buffer.append(correlate());
+        buffer.append(CAPO);
+        buffer.append(portale());
+        buffer.append(categorie());
+        buffer.append(includeEnd());
+
+        return registra(wikiTitle, buffer.toString().trim());
+    }
+
+    @Deprecated
     protected WResult esegue(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = wikiUtility.getSizeAll(mappaDidascalie);
@@ -313,7 +343,7 @@ public abstract class Upload {
 
         buffer.append(" nell'enciclopedia che hanno");
         buffer.append(incipitAttNaz());
-        message = String.format(" quella di '''%s'''", nomeAttivitaNazionalitaPlurale);
+        message = String.format(" quella di '''%s'''", nomeLista);
         buffer.append(message);
         if (sottoPagina) {
             buffer.append(sottoPaginaAttNaz());
@@ -401,7 +431,8 @@ public abstract class Upload {
 
     protected WResult registra(String wikiTitle, String newText) {
         String newTextSignificativo = newText.substring(newText.indexOf("</noinclude>"));
-        return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
+//        return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
+        return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
     }
 
     protected String mappaToText(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaTxt) {

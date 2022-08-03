@@ -43,6 +43,8 @@ public class Wiki23Cost {
 
     public static final String NAZ = "Nazionalità";
 
+    public static final String ALTRE = "Altre...";
+
 
     public static final String PATH_WIKI = "https://it.wikipedia.org/wiki/";
 

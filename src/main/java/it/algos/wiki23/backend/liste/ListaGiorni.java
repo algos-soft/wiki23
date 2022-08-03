@@ -1,17 +1,9 @@
 package it.algos.wiki23.backend.liste;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.packages.bio.*;
-import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-
-import java.util.*;
 
 /**
  * Project wiki23
@@ -43,14 +35,14 @@ public class ListaGiorni extends ListaGiorniAnni {
 
 
     public ListaGiorni nascita(final String nomeGiorno) {
-        this.nomeGiornoAnno = nomeGiorno;
-        super.typeCrono = AETypeCrono.giornoNascita;
+        this.nomeLista = nomeGiorno;
+        super.typeLista = AETypeLista.giornoNascita;
         return this;
     }
 
     public ListaGiorni morte(final String nomeGiorno) {
-        this.nomeGiornoAnno = nomeGiorno;
-        super.typeCrono = AETypeCrono.giornoMorte;
+        this.nomeLista = nomeGiorno;
+        super.typeLista = AETypeLista.giornoMorte;
         return this;
     }
 

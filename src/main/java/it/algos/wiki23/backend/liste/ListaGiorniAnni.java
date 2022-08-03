@@ -1,14 +1,9 @@
 package it.algos.wiki23.backend.liste;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import java.util.*;
 
@@ -23,8 +18,6 @@ import java.util.*;
  */
 public abstract class ListaGiorniAnni extends Lista {
 
-    protected String nomeGiornoAnno;
-
 
     /**
      * Costruttore base senza parametri <br>
@@ -37,74 +30,6 @@ public abstract class ListaGiorniAnni extends Lista {
     }// end of constructor
 
 
-    /**
-     * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
-     */
-    @Override
-    public List<Bio> listaBio() {
-        super.listaBio();
-
-        try {
-            listaBio = bioService.fetchListe(typeCrono, nomeGiornoAnno);
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-            return null;
-        }
-
-        return listaBio;
-    }
-
-    /**
-     * Lista ordinata di tutti i wrapLista che hanno una valore valido per la pagina specifica <br>
-     */
-    @Override
-    public List<WrapLista> listaWrap() {
-        WrapLista wrap;
-
-        super.listaWrap();
-
-        if (listaBio != null && listaWrap != null) {
-            for (Bio bio : listaBio) {
-                wrap = didascaliaService.getWrap(bio, typeCrono);
-                if (wrap != null) {
-                    listaWrap.add(wrap);
-                }
-            }
-        }
-
-        return listaWrap;
-    }
-
-
-    /**
-     * Mappa ordinata di tutti i wrapLista che hanno una valore valido per la pagina specifica <br>
-     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public LinkedHashMap<String, List<WrapLista>> mappaWrap() {
-        String paragrafo;
-        List<WrapLista> lista;
-
-        super.mappaWrap();
-
-        if (listaWrap != null && mappaWrap != null) {
-            for (WrapLista wrap : listaWrap) {
-                paragrafo = wrap.titoloParagrafo;
-
-                if (mappaWrap.containsKey(paragrafo)) {
-                    lista = mappaWrap.get(paragrafo);
-                }
-                else {
-                    lista = new ArrayList();
-                }
-                lista.add(wrap);
-                mappaWrap.put(paragrafo, lista);
-
-            }
-        }
-
-        return mappaWrap;
-    }
 
     /**
      * Mappa ordinata di tutti le didascalie che hanno una valore valido per la pagina specifica <br>

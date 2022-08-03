@@ -49,6 +49,7 @@ public class NazionalitaView extends WikiView {
     protected IndeterminateCheckbox boxEsistePagina;
 
     protected Checkbox boxDistinctPlurali;
+
     protected Checkbox boxPagineDaCancellare;
 
     /**
@@ -85,6 +86,7 @@ public class NazionalitaView extends WikiView {
         super.lastUpload = WPref.uploadNazionalita;
         super.durataUpload = WPref.uploadNazionalitaTime;
         super.nextUpload = WPref.uploadNazionalitaPrevisto;
+        super.lastStatistica = WPref.statisticaNazionalita;
         super.wikiModuloTitle = PATH_MODULO_NAZIONALITA;
         super.usaBottoneStatistiche = true;
         super.usaBottoneUploadStatistiche = true;
@@ -273,7 +275,9 @@ public class NazionalitaView extends WikiView {
      * Deve essere sovrascritto, invocando DOPO il metodo della superclasse <br>
      */
     public void uploadStatistiche() {
+        long inizio = System.currentTimeMillis();
         appContext.getBean(StatisticheNazionalita.class).upload();
+        super.fixStatisticheMinuti(inizio);
         super.uploadStatistiche();
     }
 
@@ -317,6 +321,7 @@ public class NazionalitaView extends WikiView {
 
         return null;
     }
+
     public Nazionalita getNazionalitaCorrente() {
         Nazionalita nazionalita = null;
 

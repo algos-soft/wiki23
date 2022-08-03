@@ -1,14 +1,11 @@
 package it.algos.wiki23.backend.upload;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import java.time.*;
 
@@ -23,7 +20,6 @@ import java.time.*;
  */
 public abstract class UploadGiorniAnni extends Upload {
 
-    protected AETypeCrono typeCrono;
 
     protected String nomeGiornoAnno;
 
@@ -67,6 +63,9 @@ public abstract class UploadGiorniAnni extends Upload {
         return registra(wikiTitle, buffer.toString().trim());
     }
 
+    protected String fixToc() {
+        return AETypeToc.noToc.get();
+    }
 
     protected String torna() {
         return textService.isValid(nomeGiornoAnno) ? String.format("{{Torna a|%s}}", nomeGiornoAnno) : VUOTA;

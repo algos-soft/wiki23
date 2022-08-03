@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import static it.algos.wiki23.backend.upload.UploadAttivita.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -39,13 +40,39 @@ public class UploadNazionalita extends Upload {
         super.attNazRevertUpper = "Attività";
     }// end of constructor
 
+
+    protected WResult esegue(String wikiTitle, String testoBody, int numVoci) {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(avviso());
+        buffer.append(CAPO);
+        buffer.append(includeIni());
+        buffer.append(fixToc());
+        buffer.append(tmpListaBio(numVoci));
+        buffer.append(includeEnd());
+        buffer.append(CAPO);
+        buffer.append(incipit());
+        buffer.append(CAPO);
+        buffer.append(testoBody);
+        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
+        buffer.append(note());
+        buffer.append(CAPO);
+        buffer.append(correlate());
+        buffer.append(CAPO);
+        buffer.append(portale());
+        buffer.append(categorie());
+
+        return registra(wikiTitle, buffer.toString().trim());
+    }
+
+
     protected String sottoPaginaAttNaz() {
         return String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita));
     }
 
     protected String correlate() {
         StringBuffer buffer = new StringBuffer();
-        String cat = textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
+        String cat = textService.primaMaiuscola(nomeLista);
 
         buffer.append(wikiUtility.setParagrafo("Voci correlate"));
         buffer.append(String.format("*[[:Categoria:%s]]", cat));
@@ -57,7 +84,7 @@ public class UploadNazionalita extends Upload {
 
     protected String categorie() {
         StringBuffer buffer = new StringBuffer();
-        String cat = textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
+        String cat = textService.primaMaiuscola(nomeLista);
 
         buffer.append(CAPO);
         buffer.append(String.format("*[[Categoria:Bio nazionalità|%s]]", cat));
@@ -79,11 +106,14 @@ public class UploadNazionalita extends Upload {
     /**
      * Esegue la scrittura della pagina <br>
      */
-    public void uploadTest(String nomeAttivitaNazionalitaPlurale) {
-        String wikiTitle = UPLOAD_TITLE_DEBUG + textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
-        this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
-        mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
-        super.esegue(wikiTitle, mappaDidascalie);
+    public void uploadTest(String nazionalitaPlurale) {
+        WResult result;
+        this.typeCrono = AETypeLista.nazionalitaPlurale;
+        this.nomeLista = nazionalitaPlurale;
+        this.uploadTest = true;
+        String wikiTitle = UPLOAD_TITLE_DEBUG + textService.primaMaiuscola(nazionalitaPlurale);
+        result = appContext.getBean(ListaNazionalita.class).plurale(nazionalitaPlurale).testoBody();
+        this.esegue(wikiTitle, result.getContent(), result.getIntValue());
     }
 
     /**

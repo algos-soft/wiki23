@@ -4,11 +4,12 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.packages.giorno.*;
+import it.algos.wiki23.backend.packages.anno.*;
 import static it.algos.wiki23.backend.upload.Upload.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -16,22 +17,22 @@ import java.util.*;
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Sun, 31-Jul-2022
- * Time: 11:23
+ * Date: Mon, 01-Aug-2022
+ * Time: 13:32
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class StatisticheGiorni extends Statistiche {
-
+public class StatisticheAnni extends Statistiche {
 
     /**
      * Costruttore base con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(StatisticheGiorni.class) <br>
+     * Uso: appContext.getBean(UploadAttivita.class, attivita) <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      */
-    public StatisticheGiorni() {
+    public StatisticheAnni() {
     }// end of constructor
+
 
     /**
      * Preferenze usate da questa 'view' <br>
@@ -44,17 +45,18 @@ public class StatisticheGiorni extends Statistiche {
         super.typeToc = AETypeToc.noToc;
     }
 
+
     @Override
     protected String incipit() {
         StringBuffer buffer = new StringBuffer();
         String message;
 
-        buffer.append(wikiUtility.setParagrafo("Giorni"));
-        buffer.append("Statistiche dei nati e morti per ogni giorno dell'anno");
-        message = String.format("Previsto il [[29 febbraio]] per gli [[Anno bisestile|anni bisestili]]");
+        buffer.append(wikiUtility.setParagrafo("Anni"));
+        buffer.append("Statistiche dei nati e morti per ogni anno");
+        message = String.format("Potenzialmente dal [[1000 a.C.]] al [[{{CURRENTYEAR}}]], anche se non tutti gli anni hanno una propria pagina di nati o morti");
         buffer.append(textService.setRef(message));
         buffer.append(PUNTO + SPAZIO);
-        buffer.append("Vengono prese in considerazione '''solo''' le voci biografiche che hanno valori '''validi e certi''' dei giorni di nascita e morte della persona.");
+        buffer.append("Vengono prese in considerazione '''solo''' le voci biografiche che hanno valori '''validi e certi''' degli anni di nascita e morte della persona.");
 
         return buffer.toString();
     }
@@ -64,8 +66,9 @@ public class StatisticheGiorni extends Statistiche {
      */
     @Override
     protected void creaLista() {
-        lista = giornoWikiBackend.findAll();
+        lista = annoWikiBackend.findAll(Sort.by(Sort.Direction.DESC, "ordine"));
     }
+
 
     /**
      * Costruisce la mappa <br>
@@ -80,68 +83,43 @@ public class StatisticheGiorni extends Statistiche {
         int morti;
         totNati = 0;
         totMorti = 0;
-        String percNati;
-        String percMorti;
 
-        for (GiornoWiki giorno : (List<GiornoWiki>) lista) {
-            nati = giorno.bioNati;
-            morti = giorno.bioMorti;
-            mappaSingola = new MappaStatistiche(++pos, giorno.nome, nati, morti);
-            mappa.put(giorno.nome, mappaSingola);
+        for (AnnoWiki anno : (List<AnnoWiki>) lista) {
+            nati = anno.bioNati;
+            morti = anno.bioMorti;
+            mappaSingola = new MappaStatistiche(++pos, anno.nome, nati, morti);
+            mappa.put(anno.nome, mappaSingola);
             totNati += nati;
             totMorti += morti;
         }
-
-        for (String key : mappa.keySet()) {
-            mappaSingola = mappa.get(key);
-            nati = mappaSingola.getNati();
-            morti = mappaSingola.getMorti();
-            percNati = mathService.percentualeDueDecimali(nati, totNati);
-            percMorti = mathService.percentualeDueDecimali(morti, totMorti);
-            mappaSingola.setPercNati(percNati);
-            mappaSingola.setPercMorti(percMorti);
-            mappa.put(key, mappaSingola);
-        }
     }
+
 
     @Override
     protected String colonne() {
         StringBuffer buffer = new StringBuffer();
-        String message;
         String color = "! style=\"background-color:#CCC;\" |";
-        String natiTxt = textService.format(totNati);
-        String mortiTxt = textService.format(totMorti);
+        String message;
 
         buffer.append(color);
         buffer.append("#");
         buffer.append(CAPO);
         buffer.append(color);
-        buffer.append("Giorno");
+        buffer.append("Anno");
         buffer.append(CAPO);
         buffer.append(color);
         buffer.append("Nati");
-        message = "Il [[template:Bio|template Bio]] della voce biografica deve avere un valore valido al parametro '''giornoMeseNascita'''";
+        message = "Il [[template:Bio|template Bio]] della voce biografica deve avere un valore valido al parametro '''annoNascita'''";
         buffer.append(textService.setRef(message));
         buffer.append(CAPO);
         buffer.append(color);
         buffer.append("Morti");
-        message = "Il [[template:Bio|template Bio]] della voce biografica deve avere un valore valido al parametro '''giornoMeseMorte'''";
-        buffer.append(textService.setRef(message));
-        buffer.append(CAPO);
-        buffer.append(color);
-        buffer.append("% nati ");
-        message = String.format("Percentuale dei nati in questo giorno, rispetto al totale (%s) dei nati nell'intero anno", natiTxt);
-        buffer.append(textService.setRef(message));
-        buffer.append(CAPO);
-        buffer.append(color);
-        buffer.append("% morti ");
-        message = String.format("Percentuale dei nati in questo giorno, rispetto al totale (%s) dei morti nell'intero anno", mortiTxt);
+        message = "Il [[template:Bio|template Bio]] della voce biografica deve avere un valore valido al parametro '''annoMorte'''";
         buffer.append(textService.setRef(message));
         buffer.append(CAPO);
 
         return buffer.toString();
     }
-
 
     protected String riga(MappaStatistiche mappa) {
         StringBuffer buffer = new StringBuffer();
@@ -164,33 +142,26 @@ public class StatisticheGiorni extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagDex);
-        nato = wikiUtility.wikiTitleNatiGiorno(mappa.getNome()) + PIPE + mappa.getNati();
+        nato = wikiUtility.wikiTitleNatiAnno(mappa.getNome()) + PIPE + mappa.getNati();
         buffer.append(textService.setDoppieQuadre(nato));
 
         buffer.append(doppioTag);
         buffer.append(tagDex);
-        morto = wikiUtility.wikiTitleMortiGiorno(mappa.getNome()) + PIPE + mappa.getMorti();
+        morto = wikiUtility.wikiTitleMortiAnno(mappa.getNome()) + PIPE + mappa.getMorti();
         buffer.append(textService.setDoppieQuadre(morto));
-
-        buffer.append(doppioTag);
-        buffer.append(tagDex);
-        buffer.append(mappa.getPercNati());
-
-        buffer.append(doppioTag);
-        buffer.append(tagDex);
-        buffer.append(mappa.getPercMorti());
 
         buffer.append(CAPO);
 
         return buffer.toString();
     }
 
+
     /**
      * Esegue la scrittura della pagina <br>
      */
     public WResult upload() {
         super.esegue();
-        return super.upload(PATH_GIORNI);
+        return super.upload(PATH_ANNI);
     }
 
     /**
@@ -198,7 +169,7 @@ public class StatisticheGiorni extends Statistiche {
      */
     public WResult uploadTest() {
         super.esegue();
-        return super.upload(UPLOAD_TITLE_DEBUG + GIORNI);
+        return super.upload(UPLOAD_TITLE_DEBUG + ANNI);
     }
 
 }

@@ -111,7 +111,7 @@ public class AttivitaBackend extends WikiBackend {
     public List<Attivita> findAttivitaDistinctByPlurali() {
         List<Attivita> lista = new ArrayList<>();
         Set<String> set = new HashSet();
-        Sort sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+        Sort sortOrder = Sort.by(Sort.Direction.DESC, "plurale");
         List<Attivita> listaAll = repository.findAll(sortOrder);
 
         for (Attivita attivita : listaAll) {

@@ -6,19 +6,13 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.bio.*;
-import it.algos.wiki23.backend.wrapper.*;
-import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.test.context.junit.jupiter.*;
 
 import java.util.*;
@@ -53,20 +47,20 @@ public class ListaAnniTest extends WikiTest {
     //--typeCrono
     protected static Stream<Arguments> ANNI() {
         return Stream.of(
-                Arguments.of(VUOTA, AETypeCrono.annoNascita),
-                Arguments.of(VUOTA, AETypeCrono.annoMorte),
-                Arguments.of("1785", AETypeCrono.annoNascita),
-                Arguments.of("1785", AETypeCrono.annoMorte),
-                Arguments.of("325", AETypeCrono.annoNascita),
-                Arguments.of("325", AETypeCrono.annoMorte),
-                Arguments.of("1318", AETypeCrono.annoNascita),
-                Arguments.of("1318", AETypeCrono.annoMorte),
-                Arguments.of("245 a.C.", AETypeCrono.annoNascita),
-                Arguments.of("245 a.C.", AETypeCrono.annoMorte),
-                Arguments.of("4 a.C.", AETypeCrono.annoNascita),
-                Arguments.of("4 a.C.", AETypeCrono.annoMorte),
-                Arguments.of("12", AETypeCrono.annoNascita),
-                Arguments.of("12", AETypeCrono.annoMorte)
+                Arguments.of(VUOTA, AETypeLista.annoNascita),
+                Arguments.of(VUOTA, AETypeLista.annoMorte),
+                Arguments.of("1785", AETypeLista.annoNascita),
+                Arguments.of("1785", AETypeLista.annoMorte),
+                Arguments.of("325", AETypeLista.annoNascita),
+                Arguments.of("325", AETypeLista.annoMorte),
+                Arguments.of("1318", AETypeLista.annoNascita),
+                Arguments.of("1318", AETypeLista.annoMorte),
+                Arguments.of("245 a.C.", AETypeLista.annoNascita),
+                Arguments.of("245 a.C.", AETypeLista.annoMorte),
+                Arguments.of("4 a.C.", AETypeLista.annoNascita),
+                Arguments.of("4 a.C.", AETypeLista.annoMorte),
+                Arguments.of("12", AETypeLista.annoNascita),
+                Arguments.of("12", AETypeLista.annoMorte)
         );
     }
 
@@ -107,13 +101,13 @@ public class ListaAnniTest extends WikiTest {
     }
 
 
-//    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(2)
     @DisplayName("2 - Lista bio di vari anni")
         //--nome anno
-        //--typeCrono
-    void listaBio(final String nomeAnno, final AETypeCrono type) {
+        //--typeLista
+    void listaBio(final String nomeAnno, final AETypeLista type) {
         System.out.println("2 - Lista bio di vari anni");
         sorgente = nomeAnno;
 
@@ -138,13 +132,13 @@ public class ListaAnniTest extends WikiTest {
         }
     }
 
-//    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(3)
     @DisplayName("3 - Lista wrapLista di vari anni")
         //--nome anno
-        //--typeCrono
-    void listaWrap(final String nomeAnno, final AETypeCrono type) {
+        //--typeLista
+    void listaWrap(final String nomeAnno, final AETypeLista type) {
         System.out.println("3 - Lista wrapLista di vari anni");
         sorgente = nomeAnno;
         int size = 0;
@@ -170,13 +164,13 @@ public class ListaAnniTest extends WikiTest {
     }
 
 
-//    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @Order(4)
     @DisplayName("4 - Mappa wrapLista di vari anni")
         //--nome anno
-        //--typeCrono
-    void mappaWrap(final String nomeAnno, final AETypeCrono type) {
+        //--typeLista
+    void mappaWrap(final String nomeAnno, final AETypeLista type) {
         System.out.println("4 - Mappa wrapLista di vari anni");
         sorgente = nomeAnno;
         int numVoci;
@@ -206,8 +200,8 @@ public class ListaAnniTest extends WikiTest {
     @Order(5)
     @DisplayName("5 - Mappa didascalie di vari anni")
         //--nome anno
-        //--typeCrono
-    void mappaDidascalia(final String nomeAnno, final AETypeCrono type) {
+        //--typeLista
+    void mappaDidascalia(final String nomeAnno, final AETypeLista type) {
         System.out.println("5 - Mappa didascalie di vari anni");
         sorgente = nomeAnno;
         int numVoci;
@@ -236,8 +230,8 @@ public class ListaAnniTest extends WikiTest {
     @Order(6)
     @DisplayName("6 - Testo body di vari anni")
         //--nome anno
-        //--typeCrono
-    void testoBody(final String nomeAnno, final AETypeCrono type) {
+        //--typeLista
+    void testoBody(final String nomeAnno, final AETypeLista type) {
         System.out.println("6 - Testo body di vari anni");
         System.out.println(VUOTA);
         sorgente = nomeAnno;

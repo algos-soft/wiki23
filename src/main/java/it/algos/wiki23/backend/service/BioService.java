@@ -3,7 +3,6 @@ package it.algos.wiki23.backend.service;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -11,8 +10,6 @@ import it.algos.wiki23.backend.packages.bio.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.*;
-import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
@@ -519,30 +516,6 @@ public class BioService extends WAbstractService {
     }
 
 
-    /**
-     * Cerca tutte le entities di una collection filtrate con una serie di nazionalità. <br>
-     * Selects documents in a collection or view and returns a list of the selected documents. <br>
-     *
-     * @param listaNomiSingoli per costruire la query
-     *
-     * @return lista di entityBeans ordinata per cognome
-     *
-     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
-     */
-    public List<Bio> fetchNazionalita(List<String> listaNomiSingoli) {
-        List<Bio> listaNonOrdinata = new ArrayList<>();
-
-        if (listaNomiSingoli == null) {
-            logger.info(new WrapLog().exception(new AlgosException("Non ci sono nazionalità singole")).usaDb());
-            return null;
-        }
-
-        for (String nomeNazionalitaSingola : listaNomiSingoli) {
-            listaNonOrdinata.addAll(repository.findAllByNazionalitaOrderByCognome(nomeNazionalitaSingola));
-        }
-
-        return sortByForzaOrdinamento(listaNonOrdinata);
-    }
 
 
     public List<Bio> sortByNazionalita(List<Bio> listaNonOrdinata) {
@@ -796,13 +769,93 @@ public class BioService extends WAbstractService {
         return listaOrdinata;
     }
 
-    public List<Bio> fetchListe(AETypeCrono typeCrono, String nome) {
+
+
+    /**
+     * Cerca tutte le entities di una collection filtrate con una serie di nazionalità. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     *
+     * @param listaNomiSingoli per costruire la query
+     *
+     * @return lista di entityBeans ordinata per cognome
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchNazionalita(List<String> listaNomiSingoli) {
+        List<Bio> listaNonOrdinata = new ArrayList<>();
+
+        if (listaNomiSingoli == null) {
+            logger.info(new WrapLog().exception(new AlgosException("Non ci sono nazionalità singole")).usaDb());
+            return null;
+        }
+
+        for (String nomeNazionalitaSingola : listaNomiSingoli) {
+            listaNonOrdinata.addAll(repository.findAllByNazionalitaOrderByCognome(nomeNazionalitaSingola));
+        }
+
+        return sortByForzaOrdinamento(listaNonOrdinata);
+    }
+
+    /**
+     * Cerca tutte le entities di una collection filtrate con una serie di nazionalità. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     *
+     * @param nazionalitaPlurale per costruire la query
+     *
+     * @return lista di entityBeans ordinata per cognome
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchNazionalita(String nazionalitaPlurale) {
+//        List<Bio> listaOrdinata = new ArrayList<>();
+//        List<Bio> listaOrdinataNonSuddivisa;
+//        List<Bio> listaConGiornoMorto;
+//        List<Bio> listaSenzaGiornoMorto;
+        List<String> listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
+
+        return fetchNazionalita(listaNomiSingoli);
+//        if (textService.isEmpty(nazionalitaPlurale)) {
+//            logger.info(new WrapLog().exception(new AlgosException("Manca l'indicazione dell'anno")));
+//            return null;
+//        }
+//
+//        listaOrdinataNonSuddivisa = repository.findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(annoMorto);
+//        listaSenzaGiornoMorto = listaOrdinataNonSuddivisa
+//                .stream()
+//                .filter(bio -> bio.giornoMortoOrd == 0)
+//                .sorted(Comparator.comparing(forzaOrdinamento))
+//                .collect(Collectors.toList());
+//
+//        listaConGiornoMorto = listaOrdinataNonSuddivisa
+//                .stream()
+//                .filter(bio -> bio.giornoMortoOrd > 0)
+//                .sorted(Comparator.comparing(bio -> bio.giornoMortoOrd))
+//                .collect(Collectors.toList());
+//
+//        switch ((AETypeChiaveNulla) WPref.typeChiaveNulla.getEnumCurrentObj()) {
+//            case inTesta -> {
+//                listaOrdinata.addAll(listaSenzaGiornoMorto);
+//                listaOrdinata.addAll(listaConGiornoMorto);
+//            }
+//
+//            case inCoda -> {
+//                listaOrdinata.addAll(listaConGiornoMorto);
+//                listaOrdinata.addAll(listaSenzaGiornoMorto);
+//            }
+//        }
+//
+//        return listaOrdinata;
+    }
+
+    public List<Bio> fetchListe(AETypeLista typeLista, String nomeLista) {
         try {
-            return switch (typeCrono) {
-                case giornoNascita -> bioService.fetchGiornoNato(nome);
-                case giornoMorte -> bioService.fetchGiornoMorto(nome);
-                case annoNascita -> bioService.fetchAnnoNato(nome);
-                case annoMorte -> bioService.fetchAnnoMorto(nome);
+            return switch (typeLista) {
+                case giornoNascita -> bioService.fetchGiornoNato(nomeLista);
+                case giornoMorte -> bioService.fetchGiornoMorto(nomeLista);
+                case annoNascita -> bioService.fetchAnnoNato(nomeLista);
+                case annoMorte -> bioService.fetchAnnoMorto(nomeLista);
+                case nazionalitaSingolare -> repository.findAllByNazionalitaOrderByOrdinamento(nomeLista);
+                case nazionalitaPlurale -> bioService.fetchNazionalita(nomeLista);
                 default -> null;
             };
         } catch (Exception unErrore) {

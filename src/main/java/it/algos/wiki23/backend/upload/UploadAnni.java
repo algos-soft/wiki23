@@ -1,10 +1,6 @@
 package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaad23.backend.boot.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.anno.*;
@@ -12,8 +8,6 @@ import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
-import java.time.*;
-import java.time.format.*;
 import java.util.*;
 
 /**
@@ -66,7 +60,7 @@ public class UploadAnni extends UploadGiorniAnni {
     public void uploadNascita(String nomeAnno) {
         AnnoWiki anno;
         WResult result;
-        this.typeCrono = AETypeCrono.annoNascita;
+        this.typeCrono = AETypeLista.annoNascita;
         this.nomeGiornoAnno = nomeAnno;
         anno = annoWikiBackend.findByNome(nomeAnno);
         this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
@@ -84,7 +78,7 @@ public class UploadAnni extends UploadGiorniAnni {
     public void uploadMorte(String nomeAnno) {
         AnnoWiki anno;
         WResult result;
-        this.typeCrono = AETypeCrono.annoMorte;
+        this.typeCrono = AETypeLista.annoMorte;
         this.nomeGiornoAnno = nomeAnno;
         anno = annoWikiBackend.findByNome(nomeAnno);
         this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
@@ -102,7 +96,7 @@ public class UploadAnni extends UploadGiorniAnni {
     public void uploadTestNascita(String nomeAnno) {
         AnnoWiki anno;
         WResult result;
-        this.typeCrono = AETypeCrono.annoNascita;
+        this.typeCrono = AETypeLista.annoNascita;
         this.nomeGiornoAnno = nomeAnno;
         this.uploadTest = true;
         anno = annoWikiBackend.findByNome(nomeAnno);
@@ -120,7 +114,7 @@ public class UploadAnni extends UploadGiorniAnni {
     public void uploadTestMorte(String nomeAnno) {
         AnnoWiki anno;
         WResult result;
-        this.typeCrono = AETypeCrono.annoMorte;
+        this.typeCrono = AETypeLista.annoMorte;
         this.nomeGiornoAnno = nomeAnno;
         this.uploadTest = true;
         anno = annoWikiBackend.findByNome(nomeAnno);

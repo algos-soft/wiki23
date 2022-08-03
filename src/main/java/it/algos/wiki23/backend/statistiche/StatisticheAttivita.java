@@ -7,6 +7,7 @@ import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
+import static it.algos.wiki23.backend.upload.Upload.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -21,7 +22,7 @@ import java.util.*;
  * Time: 10:35
  */
 @SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class StatisticheAttivita extends Statistiche {
 
     private int attivitaUsate;
@@ -52,12 +53,6 @@ public class StatisticheAttivita extends Statistiche {
         super.typeToc = AETypeToc.forceToc;
     }
 
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public WResult upload() {
-        return super.upload(PATH_ATTIVITA);
-    }
 
     protected String body() {
         StringBuffer buffer = new StringBuffer();
@@ -587,6 +582,23 @@ public class StatisticheAttivita extends Statistiche {
             mappaSingola = new MappaStatistiche(attivita.paragrafo, numAttivitaUno, numAttivitaDue, numAttivitaTre);
             mappa.put(attivita.paragrafo, mappaSingola);
         }
+    }
+
+
+    /**
+     * Esegue la scrittura della pagina <br>
+     */
+    public WResult upload() {
+        super.esegue();
+        return super.upload(PATH_ATTIVITA);
+    }
+
+    /**
+     * Esegue la scrittura della pagina <br>
+     */
+    public WResult uploadTest() {
+        super.esegue();
+        return super.upload(UPLOAD_TITLE_DEBUG + ATT);
     }
 
 }

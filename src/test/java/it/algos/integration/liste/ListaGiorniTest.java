@@ -6,18 +6,13 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.bio.*;
-import it.algos.wiki23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.test.context.junit.jupiter.*;
 
 import java.util.*;
@@ -53,16 +48,16 @@ public class ListaGiorniTest extends WikiTest {
     //--typeCrono
     protected static Stream<Arguments> GIORNI() {
         return Stream.of(
-                Arguments.of(VUOTA, AETypeCrono.giornoNascita),
-                Arguments.of(VUOTA, AETypeCrono.giornoMorte),
-                Arguments.of("3 luglio", AETypeCrono.giornoNascita),
-                Arguments.of("3 luglio", AETypeCrono.giornoMorte),
-                Arguments.of("1º gennaio", AETypeCrono.giornoNascita),
-                Arguments.of("1º gennaio", AETypeCrono.giornoMorte),
-                Arguments.of("25 ottobre", AETypeCrono.giornoNascita),
-                Arguments.of("25 ottobre", AETypeCrono.giornoMorte),
-                Arguments.of("29 febbraio", AETypeCrono.giornoNascita),
-                Arguments.of("29 febbraio", AETypeCrono.giornoMorte)
+                Arguments.of(VUOTA, AETypeLista.giornoNascita),
+                Arguments.of(VUOTA, AETypeLista.giornoMorte),
+                Arguments.of("3 luglio", AETypeLista.giornoNascita),
+                Arguments.of("3 luglio", AETypeLista.giornoMorte),
+                Arguments.of("1º gennaio", AETypeLista.giornoNascita),
+                Arguments.of("1º gennaio", AETypeLista.giornoMorte),
+                Arguments.of("25 ottobre", AETypeLista.giornoNascita),
+                Arguments.of("25 ottobre", AETypeLista.giornoMorte),
+                Arguments.of("29 febbraio", AETypeLista.giornoNascita),
+                Arguments.of("29 febbraio", AETypeLista.giornoMorte)
         );
     }
 
@@ -101,13 +96,13 @@ public class ListaGiorniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    //    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(2)
     @DisplayName("2 - Lista bio di vari giorni")
-    //--nome giorno
-    //--typeCrono
-    void listaBio(final String nomeGiorno, final AETypeCrono type) {
+        //--nome giorno
+        //--typeLista
+    void listaBio(final String nomeGiorno, final AETypeLista type) {
         System.out.println("2 - Lista bio di vari giorni");
         sorgente = nomeGiorno;
 
@@ -133,16 +128,16 @@ public class ListaGiorniTest extends WikiTest {
     }
 
 
-    //    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(3)
     @DisplayName("3 - Lista wrapLista di vari giorni")
-    //--nome giorno
-    //--typeCrono
-    void listaWrap(final String nomeGiorno, final AETypeCrono type) {
+        //--nome giorno
+        //--typeLista
+    void listaWrap(final String nomeGiorno, final AETypeLista type) {
         System.out.println("3 - Lista wrapLista di vari giorni");
         sorgente = nomeGiorno;
-        int size = 0;
+        int size;
 
         listWrapLista = switch (type) {
             case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(sorgente).listaWrap();
@@ -151,11 +146,11 @@ public class ListaGiorniTest extends WikiTest {
         };
 
         if (listWrapLista != null && listWrapLista.size() > 0) {
+            size = listWrapLista.size();
             message = String.format("Ci sono %d wrapLista che implementano il giorno di %s %s", listWrapLista.size(), type, sorgente);
             System.out.println(message);
             System.out.println(VUOTA);
             printWrapLista(listWrapLista);
-            size = listWrapLista.size();
             printWrapLista(listWrapLista.subList(size - 5, size));
         }
         else {
@@ -164,13 +159,13 @@ public class ListaGiorniTest extends WikiTest {
         }
     }
 
-//    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(4)
     @DisplayName("4 - Mappa wrapLista di vari giorni")
         //--nome giorno
-        //--typeCrono
-    void mappaWrap(final String nomeGiorno, final AETypeCrono type) {
+        //--typeLista
+    void mappaWrap(final String nomeGiorno, final AETypeLista type) {
         System.out.println("4 - Mappa wrapLista di vari giorni");
         sorgente = nomeGiorno;
         int numVoci;
@@ -195,13 +190,13 @@ public class ListaGiorniTest extends WikiTest {
     }
 
 
-//    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(5)
     @DisplayName("5 - Mappa didascalie di vari giorni")
         //--nome giorno
-        //--typeCrono
-    void mappaDidascalia(final String nomeGiorno, final AETypeCrono type) {
+        //--typeLista
+    void mappaDidascalia(final String nomeGiorno, final AETypeLista type) {
         System.out.println("5 - Mappa didascalie di vari giorni");
         sorgente = nomeGiorno;
         int numVoci;
@@ -231,8 +226,8 @@ public class ListaGiorniTest extends WikiTest {
     @Order(6)
     @DisplayName("6 - Testo body di vari giorni")
         //--nome giorno
-        //--typeCrono
-    void testoBody(final String nomeGiorno, final AETypeCrono type) {
+        //--typeLista
+    void testoBody(final String nomeGiorno, final AETypeLista type) {
         System.out.println("6 - Testo body di vari giorni");
         System.out.println(VUOTA);
         sorgente = nomeGiorno;

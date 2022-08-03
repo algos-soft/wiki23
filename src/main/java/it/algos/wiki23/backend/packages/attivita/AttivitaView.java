@@ -53,6 +53,7 @@ public class AttivitaView extends WikiView {
     private AttivitaBackend backend;
 
     protected TextField searchFieldSingolare;
+
     protected TextField searchFieldCategoria;
 
     protected TextField searchFieldParagrafo;
@@ -104,6 +105,7 @@ public class AttivitaView extends WikiView {
         super.lastUpload = WPref.uploadAttivita;
         super.durataUpload = WPref.uploadAttivitaTime;
         super.nextUpload = WPref.uploadAttivitaPrevisto;
+        super.lastStatistica = WPref.statisticaAttivita;
         super.wikiModuloTitle = PATH_MODULO_ATTIVITA;
         super.usaBottoneStatistiche = true;
         super.usaBottoneUploadStatistiche = true;
@@ -388,7 +390,9 @@ public class AttivitaView extends WikiView {
      * Deve essere sovrascritto, invocando DOPO il metodo della superclasse <br>
      */
     public void uploadStatistiche() {
+        long inizio = System.currentTimeMillis();
         appContext.getBean(StatisticheAttivita.class).upload();
+        super.fixStatisticheMinuti(inizio);
         super.uploadStatistiche();
     }
 

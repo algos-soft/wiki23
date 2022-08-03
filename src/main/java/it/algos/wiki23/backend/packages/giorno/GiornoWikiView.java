@@ -7,6 +7,7 @@ import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.statistiche.*;
 import it.algos.wiki23.backend.upload.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -75,6 +76,7 @@ public class GiornoWikiView extends WikiView {
         super.lastUpload = WPref.uploadGiorni;
         super.durataUpload = WPref.uploadGiorniTime;
         super.nextUpload = WPref.uploadGiorniPrevisto;
+        super.lastStatistica = WPref.statisticaGiorni;
         super.usaBottoneDeleteReset = true;
         super.usaReset = true;
         super.usaBottoneElabora = true;
@@ -143,6 +145,17 @@ public class GiornoWikiView extends WikiView {
         wikiApiService.openWikiPage(PATH_GIORNI);
     }
 
+    /**
+     * Esegue un azione di upload delle statistiche, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando DOPO il metodo della superclasse <br>
+     */
+    @Override
+    public void uploadStatistiche() {
+        long inizio = System.currentTimeMillis();
+        appContext.getBean(StatisticheGiorni.class).upload();
+        super.fixStatisticheMinuti(inizio);
+        super.uploadStatistiche();
+    }
 
     /**
      * Esegue un azione di apertura di una pagina su wiki, specifica del programma/package in corso <br>

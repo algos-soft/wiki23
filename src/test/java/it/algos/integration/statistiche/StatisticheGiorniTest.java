@@ -79,9 +79,9 @@ public class StatisticheGiorniTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - Upload")
-    void upload2() {
-        System.out.println(("2 - Upload"));
+    @DisplayName("2 - Upload test")
+    void uploadTest() {
+        System.out.println(("2 - Upload test"));
 
         System.out.println(VUOTA);
         ottenutoRisultato = appContext.getBean(StatisticheGiorni.class).uploadTest();

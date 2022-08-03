@@ -3,6 +3,7 @@ package it.algos.integration.liste;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
@@ -34,7 +35,7 @@ import java.util.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@Tag("liste")
+@Tag("liste")
 @DisplayName("Nazionalità lista")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ListaNazionalitaTest extends WikiTest {
@@ -82,31 +83,28 @@ public class ListaNazionalitaTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(2)
     @DisplayName("2 - Lista bio di varie nazionalità")
         //--nome nazionalità
-        //--flag singolare versus plurale
-    void listaBio(final String nazionalità, final boolean flagSingola) {
+        //--typeLista
+    void listaBio(final String nazionalità, final AETypeLista type) {
         System.out.println("2 - Lista bio di varie nazionalità");
         sorgente = nazionalità;
-        String flag;
 
-        if (flagSingola) {
-            listBio = appContext.getBean(ListaNazionalita.class).singolare(sorgente).listaBio();
-            flag = " (singolare)";
-        }
-        else {
-            listBio = appContext.getBean(ListaNazionalita.class).plurale(sorgente).listaBio();
-            flag = " (plurale)";
-        }
+        listBio = switch (type) {
+            case nazionalitaSingolare -> appContext.getBean(ListaNazionalita.class).singolare(sorgente).listaBio();
+            case nazionalitaPlurale -> appContext.getBean(ListaNazionalita.class).plurale(sorgente).listaBio();
+            default -> null;
+        };
 
         if (listBio != null && listBio.size() > 0) {
-            message = String.format("Ci sono %d biografie che implementano la nazionalità %s%s", listBio.size(), sorgente, flag);
+            message = String.format("Ci sono %d biografie che implementano la nazionalità %s%s", listBio.size(), sorgente, type.getTagLower());
             System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
+            if (type == AETypeLista.nazionalitaPlurale) {
+                List<String> listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(sorgente);
+                System.out.println(listaNomiSingoli);
             }
             System.out.println(VUOTA);
             printBioLista(listBio);
@@ -120,31 +118,31 @@ public class ListaNazionalitaTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(3)
-    @DisplayName("3 - Lista wrapDidascalia di varie nazionalità")
+    @DisplayName("3 - Lista wrapLista di varie nazionalità")
         //--nome nazionalità
-        //--flag singolare versus plurale
-    void listaWrapDidascalie(final String nazionalità, final boolean flagSingola) {
-        System.out.println("3 - Lista wrapDidascalia di varie nazionalità");
+        //--typeLista
+    void listaWrapDidascalie(final String nazionalità, final AETypeLista type) {
+        System.out.println("3 - Lista wrapLista di varie nazionalità");
         sorgente = nazionalità;
-        String flag;
+        int size ;
 
-        if (flagSingola) {
-            listWrapDidascalia = appContext.getBean(ListaNazionalita.class).singolare(sorgente).listaWrapDidascalie();
-            flag = "(singolare)";
-        }
-        else {
-            listWrapDidascalia = appContext.getBean(ListaNazionalita.class).plurale(sorgente).listaWrapDidascalie();
-            flag = "(plurale)";
-        }
+        listWrapLista = switch (type) {
+            case nazionalitaSingolare -> appContext.getBean(ListaNazionalita.class).singolare(sorgente).listaWrap();
+            case nazionalitaPlurale -> appContext.getBean(ListaNazionalita.class).plurale(sorgente).listaWrap();
+            default -> null;
+        };
 
-        if (listWrapDidascalia != null) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano la nazionalità %s %s", listWrapDidascalia.size(), sorgente, flag);
+        if (listWrapLista != null && listWrapLista.size() > 0) {
+            size = listWrapLista.size();
+            message = String.format("Ci sono %d wrapLista che implementano la nazionalità %s%s", listWrapLista.size(), sorgente, type.getTagLower());
             System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
+            if (type == AETypeLista.nazionalitaPlurale) {
+                List<String> listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(sorgente);
+                System.out.println(listaNomiSingoli);
             }
             System.out.println(VUOTA);
-            printWrapListaNazionalita(listWrapDidascalia);
+            printWrapLista(listWrapLista);
+            printWrapLista(listWrapLista.subList(size - 5, size));
         }
         else {
             message = "La mappa è nulla";
@@ -157,30 +155,28 @@ public class ListaNazionalitaTest extends WikiTest {
     @Order(4)
     @DisplayName("4 - Mappa wrapDidascalia di varie nazionalità")
         //--nome nazionalità
-        //--flag singolare versus plurale
-    void mappaWrapDidascalie(final String nazionalità, final boolean flagSingola) {
+        //--typeLista
+    void mappaWrapDidascalie(final String nazionalità, final AETypeLista type) {
         System.out.println("4 - Mappa wrapDidascalia di varie nazionalità");
         sorgente = nazionalità;
-        String flag;
-        LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie;
+        int numVoci;
 
-        if (flagSingola) {
-            mappaWrapDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaWrapDidascalie();
-            flag = "(singolare)";
-        }
-        else {
-            mappaWrapDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaWrapDidascalie();
-            flag = "(plurale)";
-        }
+        mappaWrap = switch (type) {
+            case nazionalitaSingolare -> appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaWrap();
+            case nazionalitaPlurale -> appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaWrap();
+            default -> null;
+        };
 
-        if (mappaWrapDidascalie != null) {
-            message = String.format("WrapDidascalie che implementano la nazionalità %s %s", sorgente, flag);
+        if (mappaWrap != null && mappaWrap.size() > 0) {
+            numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
+            message = String.format("Ci sono %d wrapLista che implementano la nazionalità %s%s", numVoci, sorgente, type.getTagLower());
             System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
+            if (type == AETypeLista.nazionalitaPlurale) {
+                List<String> listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(sorgente);
+                System.out.println(listaNomiSingoli);
             }
             System.out.println(VUOTA);
-            printMappaWrapDidascalia(sorgente, mappaWrapDidascalie);
+            printMappaWrap(mappaWrap);
         }
         else {
             message = "La mappa è nulla";
@@ -189,36 +185,31 @@ public class ListaNazionalitaTest extends WikiTest {
     }
 
 
-
     @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(5)
     @DisplayName("5 - Mappa didascalie di varie nazionalità")
         //--nome nazionalità
-        //--flag singolare versus plurale
-    void mappaDidascalie(final String nazionalità, final boolean flagSingola) {
+        //--typeLista
+    void mappaDidascalie(final String nazionalità, final AETypeLista type) {
         System.out.println("5 - Mappa didascalie di varie nazionalità");
         sorgente = nazionalità;
-        String flag;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
 
-        if (flagSingola) {
-            mappaDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaDidascalie();
-            flag = "(singolare)";
-        }
-        else {
-            mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaDidascalie();
-            flag = "(plurale)";
-        }
+        mappa = switch (type) {
+            case nazionalitaSingolare -> appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaDidascalia();
+            case nazionalitaPlurale -> appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaDidascalia();
+            default -> null;
+        };
 
-        if (mappaDidascalie != null) {
-            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
+        if (mappa != null && mappa.size() > 0) {
+            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, type.getTagLower());
             System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
+            if (type == AETypeLista.nazionalitaPlurale) {
+                List<String> listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(sorgente);
+                System.out.println(listaNomiSingoli);
             }
             System.out.println(VUOTA);
-            printMappaDidascalia("la nazionalità",sorgente, mappaDidascalie);
+            printMappa(mappa);
         }
         else {
             message = "La mappa è nulla";
@@ -230,97 +221,84 @@ public class ListaNazionalitaTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(6)
-    @DisplayName("6 - Mappa paragrafi di varie nazionalità")
+    @DisplayName("6 - Testo body di varie nazionalità")
         //--nome nazionalità
-        //--flag singolare versus plurale
-    void mappaParagrafi(final String nazionalità, final boolean flagSingola) {
-        System.out.println("6 - Mappa paragrafi di varie nazionalità");
+        //--typeLista
+    void testoBody(final String nazionalità, final AETypeLista type) {
+        System.out.println("6 - Testo body di vari giorni");
+        System.out.println(VUOTA);
         sorgente = nazionalità;
-        String flag;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi;
 
-        if (flagSingola) {
-            mappaParagrafi = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaParagrafi();
-            flag = "(singolare)";
+        ottenutoRisultato = switch (type) {
+            case nazionalitaSingolare -> appContext.getBean(ListaNazionalita.class).singolare(sorgente).testoBody();
+            case nazionalitaPlurale -> appContext.getBean(ListaNazionalita.class).plurale(sorgente).testoBody();
+            default -> WResult.errato("AETypeLista errato");
+        };
+        if (ottenutoRisultato.isValido()) {
+            System.out.println(ottenutoRisultato.getContent());
         }
         else {
-            mappaParagrafi = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaParagrafi();
-            flag = "(plurale)";
-        }
-
-        if (mappaParagrafi != null) {
-            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
-            System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
-            }
-            System.out.println(VUOTA);
-            printMappaDidascalia("la nazionalità",sorgente, mappaParagrafi);
-        }
-        else {
-            message = "La mappa è nulla";
-            System.out.println(message);
+            printRisultato(ottenutoRisultato);
         }
     }
 
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(7)
     @DisplayName("7 - Mappa paragrafi dimensionati di varie nazionalità")
         //--nome nazionalità
-        //--flag singolare versus plurale
-    void mappaParagrafiDimensionati(final String nazionalità, final boolean flagSingola) {
+        //--typeLista
+    void mappaParagrafiDimensionati(final String nazionalità, final AETypeLista type) {
         System.out.println("7 - Mappa paragrafi dimensionati di varie nazionalità");
         sorgente = nazionalità;
         String flag;
         LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
 
-        if (flagSingola) {
-            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaParagrafiDimensionati();
-            flag = "(singolare)";
-        }
-        else {
-            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaParagrafiDimensionati();
-            flag = "(plurale)";
-        }
+//        if (flagSingola) {
+//            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaParagrafiDimensionati();
+//            flag = "(singolare)";
+//        }
+//        else {
+//            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaParagrafiDimensionati();
+//            flag = "(plurale)";
+//        }
 
-        if (mappaParagrafiDimensionati != null) {
-            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
-            System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
-            }
-            System.out.println(VUOTA);
-            printMappaDidascalia("la nazionalità",sorgente, mappaParagrafiDimensionati);
-        }
-        else {
-            message = "La mappa è nulla";
-            System.out.println(message);
-        }
+//        if (mappaParagrafiDimensionati != null) {
+//            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
+//            System.out.println(message);
+//            if (!flagSingola) {
+//                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
+//            }
+//            System.out.println(VUOTA);
+//            printMappaDidascalia("la nazionalità", sorgente, mappaParagrafiDimensionati);
+//        }
+//        else {
+//            message = "La mappa è nulla";
+//            System.out.println(message);
+//        }
     }
 
 
-
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(8)
     @DisplayName("8 - Mappa sottoPagine")
         //--nome attivita
-        //--flag singolare versus plurale
-    void mappaSottoPagine(final String attività, final boolean flagSingola) {
+        //--typeLista
+    void mappaSottoPagine(final String attività, final AETypeLista type) {
         System.out.println("8 - Mappa sottoPagine");
         int soglia = 50;
         sorgente = attività;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie=null;
         int size;
 
-        if (flagSingola) {
-            mappaDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaDidascalie();
-        }
-        else {
-            mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaDidascalie();
-        }
+//        if (flagSingola) {
+//            mappaDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaDidascalie();
+//        }
+//        else {
+//            mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaDidascalie();
+//        }
 
         System.out.println(VUOTA);
         System.out.println(String.format("Solo le attività di '%s' che superano la soglia di %s", sorgente, soglia));
@@ -431,8 +409,6 @@ public class ListaNazionalitaTest extends WikiTest {
             }
         }
     }
-
-
 
 
     /**

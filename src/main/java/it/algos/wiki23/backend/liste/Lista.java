@@ -1,10 +1,13 @@
 package it.algos.wiki23.backend.liste;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
@@ -226,16 +229,28 @@ public abstract class Lista {
 
     public static Function<WrapDidascalia, String> funGiornoMorto = wrap -> wrap.getGiornoMorto() != null ? wrap.getGiornoMorto() : VUOTA;
 
+    protected String nomeLista;
+
     protected String titoloParagrafo;
 
-    protected AETypeCrono typeCrono;
+    protected AETypeLista typeLista;
 
 
     /**
-     * Lista ordinata (per cognome) delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
+     * Lista ordinata delle biografie (Bio) che hanno una valore valido per la pagina specifica <br>
      */
     public List<Bio> listaBio() {
-        listaBio = new ArrayList<>();
+        if (textService.isEmpty(nomeLista)) {
+            logger.info(new WrapLog().message("Manca il nomeLista"));
+            return null;
+        }
+
+        try {
+            listaBio = bioService.fetchListe(typeLista, nomeLista);
+        } catch (Exception unErrore) {
+            return null;
+        }
+
         return listaBio;
     }
 
@@ -245,9 +260,19 @@ public abstract class Lista {
      */
     public List<WrapLista> listaWrap() {
         listaWrap = new ArrayList<>();
+        WrapLista wrap;
 
-        if (listaBio == null || listaBio.size() > 0) {
-            this.listaBio();
+        if (listaBio == null || listaBio.size() == 0) {
+            listaBio();
+        }
+
+        if (listaBio != null && listaBio.size() > 0) {
+            for (Bio bio : listaBio) {
+                wrap = didascaliaService.getWrap(typeLista, bio);
+                if (wrap != null) {
+                    listaWrap.add(wrap);
+                }
+            }
         }
 
         return listaWrap;
@@ -260,13 +285,56 @@ public abstract class Lista {
      */
     public LinkedHashMap<String, List<WrapLista>> mappaWrap() {
         mappaWrap = new LinkedHashMap<>();
+        String paragrafo;
+        List<WrapLista> lista;
+        List<WrapLista> listaAltre;
 
-        if (listaWrap == null || listaWrap.size() > 0) {
+        if (listaWrap == null || listaWrap.size() == 0) {
             this.listaWrap();
+        }
+
+        if (listaWrap != null && listaWrap.size() > 0) {
+            for (WrapLista wrap : listaWrap) {
+                paragrafo = wrap.titoloParagrafo;
+
+                if (mappaWrap.containsKey(paragrafo)) {
+                    lista = mappaWrap.get(paragrafo);
+                }
+                else {
+                    lista = new ArrayList();
+                }
+                lista.add(wrap);
+                mappaWrap.put(paragrafo, lista);
+
+            }
+        }
+        if (mappaWrap.containsKey(ALTRE)) {
+            listaAltre=mappaWrap.get(ALTRE);
+            mappaWrap.remove(ALTRE);
+            mappaWrap = sort(mappaWrap);
+            mappaWrap.put(ALTRE,listaAltre);
+        }
+        else {
+            mappaWrap = sort(mappaWrap);
         }
 
         return mappaWrap;
     }
+
+    //    /**
+    //     * Mappa ordinata di tutti le didascalie che hanno una valore valido per la pagina specifica <br>
+    //     * Le didascalie usano SPAZIO_NON_BREAKING al posto di SPAZIO (se previsto) <br>
+    //     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    //     */
+    //    public LinkedHashMap<String, List<String>> mappaDidascalia() {
+    //        mappaDidascalia = new LinkedHashMap<>();
+    //
+    //        if (mappaWrap == null || mappaWrap.size() > 0) {
+    //            this.mappaWrap();
+    //        }
+    //
+    //        return mappaDidascalia;
+    //    }
 
     /**
      * Mappa ordinata di tutti le didascalie che hanno una valore valido per la pagina specifica <br>
@@ -275,13 +343,38 @@ public abstract class Lista {
      */
     public LinkedHashMap<String, List<String>> mappaDidascalia() {
         mappaDidascalia = new LinkedHashMap<>();
+        String didascalia;
+        List<WrapLista> listaWrap;
+        List<String> listaDidascalie;
 
-        if (mappaWrap == null || mappaWrap.size() > 0) {
+        if (mappaWrap == null || mappaWrap.size() == 0) {
             this.mappaWrap();
+        }
+
+        if (mappaWrap != null && mappaWrap.size() > 0) {
+            for (String paragrafo : mappaWrap.keySet()) {
+                listaWrap = mappaWrap.get(paragrafo);
+                if (listaWrap != null) {
+                    listaDidascalie = new ArrayList<>();
+                    for (WrapLista wrap : listaWrap) {
+                        didascalia = switch (typeLista) {
+                            case giornoNascita, giornoMorte, annoNascita, annoMorte -> wrap.didascaliaLunga;
+                            case nazionalitaSingolare, nazionalitaPlurale -> wrap.didascaliaBreve;
+                            default -> VUOTA;
+                        };
+                        if (Pref.usaNonBreaking.is()) {
+                            didascalia = didascalia.replaceAll(SPAZIO, SPAZIO_NON_BREAKING);
+                        }
+                        listaDidascalie.add(didascalia);
+                    }
+                    mappaDidascalia.put(paragrafo, listaDidascalie);
+                }
+            }
         }
 
         return mappaDidascalia;
     }
+
 
     /**
      * Testo del body di upload con paragrafi e righe <br>
@@ -348,7 +441,7 @@ public abstract class Lista {
                 listaWrap = mappaWrap.get(key2);
                 listaDidascalia = new ArrayList<>();
                 for (WrapDidascalia wrap : listaWrap) {
-                    didascalia = switch (typeCrono) {
+                    didascalia = switch (typeLista) {
                         case giornoNascita -> didascaliaService.getDidascaliaAnnoNato(wrap.getBio());
                         case giornoMorte -> didascaliaService.getDidascaliaAnnoMorto(wrap.getBio());
                         case annoNascita -> didascaliaService.getDidascaliaGiornoNato(wrap.getBio());
@@ -520,6 +613,32 @@ public abstract class Lista {
     public String fixSecolo(final String annoWiki) {
         Anno anno = annoBackend.findByNome(annoWiki);
         return anno != null ? anno.getSecolo().nome : VUOTA;
+    }
+
+    /**
+     * Ordina la mappa secondo la chiave
+     *
+     * @param mappaDisordinata in ingresso
+     *
+     * @return mappa ordinata, null se mappaDisordinata è null
+     */
+    public LinkedHashMap sort(final LinkedHashMap<String, List<WrapLista>> mappaDisordinata) {
+        LinkedHashMap mappaOrdinata = new LinkedHashMap();
+        Object[] listaChiavi;
+
+        listaChiavi = mappaDisordinata.keySet().toArray();
+
+        try {
+            Arrays.sort(listaChiavi);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        for (Object chiave : listaChiavi) {
+            mappaOrdinata.put(chiave, mappaDisordinata.get(chiave));
+        }
+
+        return mappaOrdinata;
     }
 
 

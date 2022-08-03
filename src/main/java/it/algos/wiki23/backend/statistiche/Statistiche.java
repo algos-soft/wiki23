@@ -112,6 +112,10 @@ public abstract class Statistiche {
     @Autowired
     public AnnoWikiBackend annoWikiBackend;
 
+    protected int totNati = 0;
+
+    protected  int totMorti = 0;
+
     protected AETypeToc typeToc;
 
     protected List lista;
@@ -204,14 +208,29 @@ public abstract class Statistiche {
         buffer.append(colonne());
         buffer.append(corpo());
         buffer.append(fineTabella());
-        buffer.append(CAPO);
 
         return buffer.toString();
     }
     protected String colonne() {
         return VUOTA;
     }
+
     protected String corpo() {
+        StringBuffer buffer = new StringBuffer();
+        String riga;
+        MappaStatistiche mappaSingola;
+
+        for (String key : mappa.keySet()) {
+            mappaSingola = mappa.get(key);
+            riga = riga(mappaSingola);
+            if (textService.isValid(riga)) {
+                buffer.append(riga);
+            }
+        }
+
+        return buffer.toString();
+    }
+    protected String riga(MappaStatistiche mappa) {
         return VUOTA;
     }
 
