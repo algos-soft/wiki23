@@ -83,7 +83,7 @@ public class ListaNazionalitaTest extends WikiTest {
     }
 
 
-//    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(2)
     @DisplayName("2 - Lista bio di varie nazionalità")
@@ -124,7 +124,7 @@ public class ListaNazionalitaTest extends WikiTest {
     void listaWrapDidascalie(final String nazionalità, final AETypeLista type) {
         System.out.println("3 - Lista wrapLista di varie nazionalità");
         sorgente = nazionalità;
-        int size ;
+        int size;
 
         listWrapLista = switch (type) {
             case nazionalitaSingolare -> appContext.getBean(ListaNazionalita.class).singolare(sorgente).listaWrap();
@@ -145,7 +145,7 @@ public class ListaNazionalitaTest extends WikiTest {
             printWrapLista(listWrapLista.subList(size - 5, size));
         }
         else {
-            message = "La mappa è nulla";
+            message = "La lista è nulla";
             System.out.println(message);
         }
     }
@@ -153,11 +153,11 @@ public class ListaNazionalitaTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(4)
-    @DisplayName("4 - Mappa wrapDidascalia di varie nazionalità")
+    @DisplayName("4 - Mappa wrapLista di varie nazionalità")
         //--nome nazionalità
         //--typeLista
     void mappaWrapDidascalie(final String nazionalità, final AETypeLista type) {
-        System.out.println("4 - Mappa wrapDidascalia di varie nazionalità");
+        System.out.println("4 - Mappa wrapLista di varie nazionalità");
         sorgente = nazionalità;
         int numVoci;
 
@@ -185,12 +185,12 @@ public class ListaNazionalitaTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(5)
     @DisplayName("5 - Mappa didascalie di varie nazionalità")
-        //--nome nazionalità
-        //--typeLista
+    //--nome nazionalità
+    //--typeLista
     void mappaDidascalie(final String nazionalità, final AETypeLista type) {
         System.out.println("5 - Mappa didascalie di varie nazionalità");
         sorgente = nazionalità;
@@ -218,12 +218,12 @@ public class ListaNazionalitaTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(6)
     @DisplayName("6 - Testo body di varie nazionalità")
-        //--nome nazionalità
-        //--typeLista
+    //--nome nazionalità
+    //--typeLista
     void testoBody(final String nazionalità, final AETypeLista type) {
         System.out.println("6 - Testo body di vari giorni");
         System.out.println(VUOTA);
@@ -243,62 +243,62 @@ public class ListaNazionalitaTest extends WikiTest {
     }
 
 
-//    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(7)
     @DisplayName("7 - Mappa paragrafi dimensionati di varie nazionalità")
-        //--nome nazionalità
-        //--typeLista
+    //--nome nazionalità
+    //--typeLista
     void mappaParagrafiDimensionati(final String nazionalità, final AETypeLista type) {
         System.out.println("7 - Mappa paragrafi dimensionati di varie nazionalità");
         sorgente = nazionalità;
         String flag;
         LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
 
-//        if (flagSingola) {
-//            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaParagrafiDimensionati();
-//            flag = "(singolare)";
-//        }
-//        else {
-//            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaParagrafiDimensionati();
-//            flag = "(plurale)";
-//        }
+        //        if (flagSingola) {
+        //            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaParagrafiDimensionati();
+        //            flag = "(singolare)";
+        //        }
+        //        else {
+        //            mappaParagrafiDimensionati = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaParagrafiDimensionati();
+        //            flag = "(plurale)";
+        //        }
 
-//        if (mappaParagrafiDimensionati != null) {
-//            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
-//            System.out.println(message);
-//            if (!flagSingola) {
-//                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
-//            }
-//            System.out.println(VUOTA);
-//            printMappaDidascalia("la nazionalità", sorgente, mappaParagrafiDimensionati);
-//        }
-//        else {
-//            message = "La mappa è nulla";
-//            System.out.println(message);
-//        }
+        //        if (mappaParagrafiDimensionati != null) {
+        //            message = String.format("Didascalie che implementano la nazionalità %s %s", sorgente, flag);
+        //            System.out.println(message);
+        //            if (!flagSingola) {
+        //                System.out.println(nazionalitaBackend.findFirstByPlurale(sorgente));
+        //            }
+        //            System.out.println(VUOTA);
+        //            printMappaDidascalia("la nazionalità", sorgente, mappaParagrafiDimensionati);
+        //        }
+        //        else {
+        //            message = "La mappa è nulla";
+        //            System.out.println(message);
+        //        }
     }
 
 
-//    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "NAZIONALITA")
     @Order(8)
     @DisplayName("8 - Mappa sottoPagine")
-        //--nome attivita
-        //--typeLista
+    //--nome attivita
+    //--typeLista
     void mappaSottoPagine(final String attività, final AETypeLista type) {
         System.out.println("8 - Mappa sottoPagine");
         int soglia = 50;
         sorgente = attività;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie=null;
+        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie = null;
         int size;
 
-//        if (flagSingola) {
-//            mappaDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaDidascalie();
-//        }
-//        else {
-//            mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaDidascalie();
-//        }
+        //        if (flagSingola) {
+        //            mappaDidascalie = appContext.getBean(ListaNazionalita.class).singolare(sorgente).mappaDidascalie();
+        //        }
+        //        else {
+        //            mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(sorgente).mappaDidascalie();
+        //        }
 
         System.out.println(VUOTA);
         System.out.println(String.format("Solo le attività di '%s' che superano la soglia di %s", sorgente, soglia));

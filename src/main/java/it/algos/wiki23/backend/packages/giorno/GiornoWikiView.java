@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.packages.giorno;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -163,8 +164,7 @@ public class GiornoWikiView extends WikiView {
      */
     @Override
     protected void wikiPageGiornoAnno() {
-        GiornoWiki giorno = (GiornoWiki) super.wikiPage();
-        wikiApiService.openWikiPage(giorno.nome);
+        wikiApiService.openWikiPage(getNomeGiorno());
     }
 
     /**
@@ -193,7 +193,7 @@ public class GiornoWikiView extends WikiView {
      */
     @Override
     public void testPaginaNati() {
-        GiornoWiki giorno = (GiornoWiki) super.wikiPage();
+        appContext.getBean(UploadGiorni.class).nascita().test().upload(getNomeGiorno());
         reload();
     }
 
@@ -204,7 +204,7 @@ public class GiornoWikiView extends WikiView {
      */
     @Override
     public void testPaginaMorti() {
-        GiornoWiki giorno = (GiornoWiki) super.wikiPage();
+        appContext.getBean(UploadGiorni.class).morte().test().upload(getNomeGiorno());
         reload();
     }
 
@@ -222,8 +222,7 @@ public class GiornoWikiView extends WikiView {
      */
     @Override
     public void uploadPaginaNati() {
-        GiornoWiki giorno = (GiornoWiki) super.wikiPage();
-        appContext.getBean(UploadGiorni.class).uploadNascita(giorno.nome);
+        appContext.getBean(UploadGiorni.class).nascita().upload(getNomeGiorno());
         reload();
     }
 
@@ -232,9 +231,13 @@ public class GiornoWikiView extends WikiView {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void uploadPaginaMorti() {
-        GiornoWiki giorno = (GiornoWiki) super.wikiPage();
-        appContext.getBean(UploadGiorni.class).uploadMorte(giorno.nome);
+        appContext.getBean(UploadGiorni.class).morte().upload(getNomeGiorno());
         reload();
+    }
+
+    public String getNomeGiorno() {
+        GiornoWiki giorno = (GiornoWiki) super.wikiPage();
+        return giorno != null ? giorno.nome : VUOTA;
     }
 
 }// end of crud @Route view class

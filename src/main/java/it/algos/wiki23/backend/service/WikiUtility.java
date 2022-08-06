@@ -1,12 +1,15 @@
 package it.algos.wiki23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
@@ -239,33 +242,38 @@ public class WikiUtility extends WAbstractService {
         return natiMortiAnno("Morti", anno);
     }
 
+    public String wikiTitleAttivita(String attivitaPlurale) {
+        return PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivitaPlurale);
+    }
+
+    public String wikiTitleNazionalita(String nazionalitaPlurale) {
+        return PATH_NAZIONALITA + SLASH + textService.primaMaiuscola(nazionalitaPlurale);
+    }
+
     public String fixSecoloNato(final Bio bio) {
-        String tag = "Senza anno specificato";
         Anno anno = annoBackend.findByNome(bio.annoNato);
-        return anno != null ? anno.getSecolo().nome : tag;
+        return anno != null ? anno.getSecolo().nome : VUOTA;
     }
 
     public String fixSecoloMorto(final Bio bio) {
-        String tag = "Senza anno specificato";
         Anno anno = annoBackend.findByNome(bio.annoMorto);
-        return anno != null ? anno.getSecolo().nome : tag;
+        return anno != null ? anno.getSecolo().nome : VUOTA;
     }
 
     public String fixMeseNato(final Bio bio) {
-        String tag = "Senza giorno specificato";
         Giorno giorno = giornoBackend.findByNome(bio.giornoNato);
-        return giorno != null ? textService.primaMaiuscola(giorno.getMese().nome) : tag;
+        return giorno != null ? textService.primaMaiuscola(giorno.getMese().nome) : VUOTA;
     }
 
     public String fixMeseMorto(final Bio bio) {
-        String tag = "Senza giorno specificato";
         Giorno giorno = giornoBackend.findByNome(bio.giornoMorto);
-        return giorno != null ? textService.primaMaiuscola(giorno.getMese().nome) : tag;
+        return giorno != null ? textService.primaMaiuscola(giorno.getMese().nome) : VUOTA;
     }
 
-    public String fixParagrafoAttivita(final Bio bio) {
-        Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
-        return attivita != null ? textService.primaMaiuscola(attivita.paragrafo) : ALTRE;
+
+    public String fixParagrafoNazionalita(final Bio bio) {
+        Nazionalita nazionalita = nazionalitaBackend.findFirstBySingolare(bio.nazionalita);
+        return nazionalita != null ? textService.primaMaiuscola(nazionalita.plurale) : TAG_LISTA_ALTRE;
     }
 
     /**
@@ -428,5 +436,28 @@ public class WikiUtility extends WAbstractService {
         return textService.isValid(bio.annoMorto) ? textService.setTonde(annoMortoLinkato) : VUOTA;
     }
 
+    /**
+     * Ordina la mappa secondo la chiave
+     *
+     * @param mappaDisordinata in ingresso
+     *
+     * @return mappa ordinata, null se mappaDisordinata è null
+     */
+    public LinkedHashMap<String, List<WrapLista>> sort(final LinkedHashMap<String, List<WrapLista>> mappaDisordinata) {
+        LinkedHashMap<String, List<WrapLista>> mappaOrdinata = new LinkedHashMap();
+        Object[] listaChiavi;
+
+        try {
+            listaChiavi = mappaDisordinata.keySet().toArray();
+            Arrays.sort(listaChiavi);
+            for (Object chiave : listaChiavi) {
+                mappaOrdinata.put((String) chiave, mappaDisordinata.get(chiave));
+            }
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        return mappaOrdinata;
+    }
 
 }

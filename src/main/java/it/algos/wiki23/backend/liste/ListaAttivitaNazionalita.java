@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.liste;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -18,7 +19,13 @@ import java.util.*;
  */
 public abstract class ListaAttivitaNazionalita extends Lista {
 
-    protected static final String TITOLO_LINK_PARAGRAFO = "Progetto:Biografie/Attività/";
+    protected static final String TITOLO_LINK_PARAGRAFO_ATTIVITA = "Progetto:Biografie/Attività/";
+
+    protected static final String TITOLO_LINK_PARAGRAFO_NAZIONALITA = "Progetto:Biografie/Nazionalità/";
+
+    protected String titoloLinkParagrafo;
+
+    protected String titoloLinkVediAnche;
 
     /**
      * Costruttore base senza parametri <br>
@@ -54,16 +61,31 @@ public abstract class ListaAttivitaNazionalita extends Lista {
     public String testoConParagrafi() {
         StringBuffer buffer = new StringBuffer();
         List<String> lista;
+        int max = WPref.sogliaSottoPagina.getInt();
+        int numVoci;
+        String nomeListaUpper = textService.primaMaiuscola(nomeLista);
+        String keyParagrafoUpper;
+        String parente;
 
         for (String keyParagrafo : mappaDidascalia.keySet()) {
             lista = mappaDidascalia.get(keyParagrafo);
+            numVoci = lista.size();
+            keyParagrafoUpper = textService.primaMaiuscola(keyParagrafo);
+            buffer.append(wikiUtility.fixTitolo(titoloLinkParagrafo, keyParagrafo, numVoci));
 
-            buffer.append(wikiUtility.fixTitolo(TITOLO_LINK_PARAGRAFO,keyParagrafo, lista.size()));
-
-            for (String didascalia : lista) {
-                buffer.append(ASTERISCO + didascalia);
-                buffer.append(CAPO);
+            if (numVoci > max) {
+                parente = String.format("%s%s%s%s", titoloLinkVediAnche, nomeListaUpper, SLASH, keyParagrafoUpper);
+                String vedi = String.format("{{Vedi anche|%s}}", parente);
+                buffer.append(vedi + CAPO);
+                //                this.uploadSottoPagina(parente, numVoci, mappaSub);
             }
+            else {
+                for (String didascalia : lista) {
+                    buffer.append(ASTERISCO + didascalia);
+                    buffer.append(CAPO);
+                }
+            }
+
         }
 
         return buffer.toString().trim();

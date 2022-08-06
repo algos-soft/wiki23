@@ -3,6 +3,7 @@ package it.algos.integration.liste;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
@@ -26,7 +27,7 @@ import java.util.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@Tag("liste")
+@Tag("liste")
 @DisplayName("Attività lista")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ListaAttivitaTest extends WikiTest {
@@ -63,7 +64,7 @@ public class ListaAttivitaTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1- Costruttore base senza parametri")
+    @DisplayName("1 - Costruttore base senza parametri")
     void costruttore() {
         istanza = appContext.getBean(ListaAttivita.class);
         assertNotNull(istanza);
@@ -78,26 +79,23 @@ public class ListaAttivitaTest extends WikiTest {
     @Order(2)
     @DisplayName("2 - Lista bio di varie attivita")
         //--nome attivita
-        //--flag singolare versus plurale
-    void listaBio(final String attività, final boolean flagSingola) {
+        //--typeLista
+    void listaBio(final String attività, final AETypeLista type) {
         System.out.println("2 - Lista bio di varie attivita");
         sorgente = attività;
-        String flag;
 
-        if (flagSingola) {
-            listBio = appContext.getBean(ListaAttivita.class).singolare(sorgente).listaBio();
-            flag = "(singolare)";
-        }
-        else {
-            listBio = appContext.getBean(ListaAttivita.class).plurale(sorgente).listaBio();
-            flag = "(plurale)";
-        }
+        listBio = switch (type) {
+            case attivitaSingolare -> appContext.getBean(ListaAttivita.class).singolare(sorgente).listaBio();
+            case attivitaPlurale -> appContext.getBean(ListaAttivita.class).plurale(sorgente).listaBio();
+            default -> null;
+        };
 
         if (listBio != null && listBio.size() > 0) {
-            message = String.format("Ci sono %d biografie che implementano l'attività %s %s", listBio.size(), sorgente, flag);
+            message = String.format("Ci sono %d biografie che implementano l'attività %s %s", listBio.size(), sorgente, type.getTagLower());
             System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
+            if (type == AETypeLista.attivitaPlurale) {
+                List<String> listaNomiSingoli = attivitaBackend.findSingolariByPlurale(sorgente);
+                System.out.println(listaNomiSingoli);
             }
             System.out.println(VUOTA);
             printBioLista(listBio);
@@ -112,67 +110,79 @@ public class ListaAttivitaTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA")
     @Order(3)
-    @DisplayName("3 - Lista wrapDidascalia di varie attivita")
+    @DisplayName("3 - Lista wrapLista di varie attivita")
         //--nome attivita
-        //--flag singolare versus plurale
-    void listaWrapDidascalie(final String attività, final boolean flagSingola) {
-        System.out.println("3 - Lista wrapDidascalia di varie attivita");
+        //--typeLista
+    void listaWrapDidascalie(final String attività, final AETypeLista type) {
+        System.out.println("3 - Lista wrapLista di varie attivita");
         sorgente = attività;
-        String flag;
+        int size;
 
-        if (flagSingola) {
-            listWrapDidascalia = appContext.getBean(ListaAttivita.class).singolare(sorgente).listaWrapDidascalie();
-            flag = "(singolare)";
-        }
-        else {
-            listWrapDidascalia = appContext.getBean(ListaAttivita.class).plurale(sorgente).listaWrapDidascalie();
-            flag = "(plurale)";
-        }
+        listWrapLista = switch (type) {
+            case attivitaSingolare -> appContext.getBean(ListaAttivita.class).singolare(sorgente).listaWrap();
+            case attivitaPlurale -> appContext.getBean(ListaAttivita.class).plurale(sorgente).listaWrap();
+            default -> null;
+        };
 
-        if (listWrapDidascalia != null) {
-            message = String.format("Ci sono %d wrapDidascalia che implementano l'attività %s %s", listWrapDidascalia.size(), sorgente, flag);
+        if (listWrapLista != null && listWrapLista.size() > 0) {
+            size = listWrapLista.size();
+            message = String.format("Ci sono %d wrapLista che implementano l'attività %s%s", listWrapLista.size(), sorgente, type.getTagLower());
             System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
+            if (type == AETypeLista.attivitaPlurale) {
+                List<String> listaNomiSingoli = attivitaBackend.findSingolariByPlurale(sorgente);
+                System.out.println(listaNomiSingoli);
             }
             System.out.println(VUOTA);
-            printWrapListaAttivita(listWrapDidascalia);
+            printWrapLista(listWrapLista);
+            printWrapLista(listWrapLista.subList(size - 5, size));
         }
         else {
-            message = "La mappa è nulla";
+            message = "La lista è nulla";
             System.out.println(message);
         }
+//        if (listWrapDidascalia != null) {
+//            message = String.format("Ci sono %d wrapLista che implementano l'attività %s %s", listWrapDidascalia.size(), sorgente, flag);
+//            System.out.println(message);
+//            if (!flagSingola) {
+//                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
+//            }
+//            System.out.println(VUOTA);
+//            printWrapListaAttivita(listWrapDidascalia);
+//        }
+//        else {
+//            message = "La mappa è nulla";
+//            System.out.println(message);
+//        }
     }
+
 
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA")
     @Order(4)
-    @DisplayName("4 - Mappa wrapDidascalia di varie attivita")
+    @DisplayName("4 - Mappa wrapLista di varie attivita")
         //--nome attivita
-        //--flag singolare versus plurale
-    void mappaWrapDidascalie(final String attività, final boolean flagSingola) {
-        System.out.println("4 - Mappa wrapDidascalia di varie attivita");
+        //--typeLista
+    void mappaWrapDidascalie(final String attività, final AETypeLista type) {
+        System.out.println("4 - Mappa wrapLista di varie attivita");
         sorgente = attività;
-        String flag;
-        LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie;
+        int numVoci;
 
-        if (flagSingola) {
-            mappaWrapDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaWrapDidascalie();
-            flag = "(singolare)";
-        }
-        else {
-            mappaWrapDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaWrapDidascalie();
-            flag = "(plurale)";
-        }
+        mappaWrap = switch (type) {
+            case attivitaSingolare -> appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaWrap();
+            case attivitaPlurale -> appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaWrap();
+            default -> null;
+        };
 
-        if (mappaWrapDidascalie != null) {
-            message = String.format("WrapDidascalie che implementano l'attività %s %s", sorgente, flag);
+        if (mappaWrap != null && mappaWrap.size() > 0) {
+            numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
+            message = String.format("Ci sono %d wrapLista che implementano l'attività %s %s", numVoci, sorgente, type.getTagLower());
             System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
+            if (type == AETypeLista.attivitaPlurale) {
+                List<String> listaNomiSingoli = attivitaBackend.findSingolariByPlurale(sorgente);
+                System.out.println(listaNomiSingoli);
             }
             System.out.println(VUOTA);
-            printMappaWrapDidascalia(sorgente, mappaWrapDidascalie);
+            printMappaWrap(mappaWrap);
         }
         else {
             message = "La mappa è nulla";
@@ -180,148 +190,184 @@ public class ListaAttivitaTest extends WikiTest {
         }
     }
 
-
-    @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
-    @Order(5)
-    @DisplayName("5 - Mappa didascalie di varie attivita")
-        //--nome attivita
-        //--flag singolare versus plurale
-    void mappaDidascalie(final String attività, final boolean flagSingola) {
-        System.out.println("5 - Mappa didascalie di varie attivita");
-        sorgente = attività;
-        String flag;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
-
-        if (flagSingola) {
-            mappaDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaDidascalie();
-            flag = "(singolare)";
-        }
-        else {
-            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaDidascalie();
-            flag = "(plurale)";
-        }
-
-        if (mappaDidascalie != null) {
-            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
-            System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
-            }
-            System.out.println(VUOTA);
-            printMappaDidascalia("l'attività", sorgente, mappaDidascalie);
-        }
-        else {
-            message = "La mappa è nulla";
-            System.out.println(message);
-        }
-    }
-
-
-    @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
-    @Order(6)
-    @DisplayName("6 - Mappa paragrafi di varie attivita")
-        //--nome attivita
-        //--flag singolare versus plurale
-    void mappaParagrafi(final String attività, final boolean flagSingola) {
-        System.out.println("6 - Mappa paragrafi di varie attivita");
-        sorgente = attività;
-        String flag;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi;
-
-        if (flagSingola) {
-            mappaParagrafi = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaParagrafi();
-            flag = "(singolare)";
-        }
-        else {
-            mappaParagrafi = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaParagrafi();
-            flag = "(plurale)";
-        }
-
-        if (mappaParagrafi != null) {
-            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
-            System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
-            }
-            System.out.println(VUOTA);
-            printMappaDidascalia("l'attività", sorgente, mappaParagrafi);
-        }
-        else {
-            message = "La mappa è nulla";
-            System.out.println(message);
-        }
-    }
+//    //    @ParameterizedTest
+//    @MethodSource(value = "ATTIVITA")
+//    @Order(4)
+//    @DisplayName("4 - Mappa wrapDidascalia di varie attivita")
+//        //--nome attivita
+//        //--flag singolare versus plurale
+//    void mappaWrapDidascalie(final String attività, final boolean flagSingola) {
+//        System.out.println("4 - Mappa wrapDidascalia di varie attivita");
+//        sorgente = attività;
+//        String flag;
+//        LinkedHashMap<String, LinkedHashMap<String, List<WrapDidascalia>>> mappaWrapDidascalie;
+//
+//        if (flagSingola) {
+//            mappaWrapDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaWrapDidascalie();
+//            flag = "(singolare)";
+//        }
+//        else {
+//            mappaWrapDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaWrapDidascalie();
+//            flag = "(plurale)";
+//        }
+//
+//        if (mappaWrapDidascalie != null) {
+//            message = String.format("WrapDidascalie che implementano l'attività %s %s", sorgente, flag);
+//            System.out.println(message);
+//            if (!flagSingola) {
+//                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
+//            }
+//            System.out.println(VUOTA);
+//            printMappaWrapDidascalia(sorgente, mappaWrapDidascalie);
+//        }
+//        else {
+//            message = "La mappa è nulla";
+//            System.out.println(message);
+//        }
+//    }
 
 
-    @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
-    @Order(7)
-    @DisplayName("7 - Mappa paragrafi dimensionati di varie attivita")
-        //--nome attivita
-        //--flag singolare versus plurale
-    void mappaParagrafiDimensionati(final String attività, final boolean flagSingola) {
-        System.out.println("7 - Mappa paragrafi dimensionati di varie attivita");
-        sorgente = attività;
-        String flag;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
+//    @ParameterizedTest
+//    @MethodSource(value = "ATTIVITA")
+//    @Order(5)
+//    @DisplayName("5 - Mappa didascalie di varie attivita")
+//        //--nome attivita
+//        //--flag singolare versus plurale
+//    void mappaDidascalie(final String attività, final boolean flagSingola) {
+//        System.out.println("5 - Mappa didascalie di varie attivita");
+//        sorgente = attività;
+//        String flag;
+//        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+//
+//        if (flagSingola) {
+//            mappaDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaDidascalie();
+//            flag = "(singolare)";
+//        }
+//        else {
+//            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaDidascalie();
+//            flag = "(plurale)";
+//        }
+//
+//        if (mappaDidascalie != null) {
+//            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+//            System.out.println(message);
+//            if (!flagSingola) {
+//                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
+//            }
+//            System.out.println(VUOTA);
+//            printMappaDidascalia("l'attività", sorgente, mappaDidascalie);
+//        }
+//        else {
+//            message = "La mappa è nulla";
+//            System.out.println(message);
+//        }
+//    }
 
-        if (flagSingola) {
-            mappaParagrafiDimensionati = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaParagrafiDimensionati();
-            flag = "(singolare)";
-        }
-        else {
-            mappaParagrafiDimensionati = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaParagrafiDimensionati();
-            flag = "(plurale)";
-        }
 
-        if (mappaParagrafiDimensionati != null) {
-            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
-            System.out.println(message);
-            if (!flagSingola) {
-                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
-            }
-            System.out.println(VUOTA);
-            printMappaDidascalia("l'attività", sorgente, mappaParagrafiDimensionati);
-        }
-        else {
-            message = "La mappa è nulla";
-            System.out.println(message);
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource(value = "ATTIVITA")
+//    @Order(6)
+//    @DisplayName("6 - Mappa paragrafi di varie attivita")
+//        //--nome attivita
+//        //--flag singolare versus plurale
+//    void mappaParagrafi(final String attività, final boolean flagSingola) {
+//        System.out.println("6 - Mappa paragrafi di varie attivita");
+//        sorgente = attività;
+//        String flag;
+//        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafi;
+//
+//        if (flagSingola) {
+//            mappaParagrafi = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaParagrafi();
+//            flag = "(singolare)";
+//        }
+//        else {
+//            mappaParagrafi = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaParagrafi();
+//            flag = "(plurale)";
+//        }
+//
+//        if (mappaParagrafi != null) {
+//            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+//            System.out.println(message);
+//            if (!flagSingola) {
+//                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
+//            }
+//            System.out.println(VUOTA);
+//            printMappaDidascalia("l'attività", sorgente, mappaParagrafi);
+//        }
+//        else {
+//            message = "La mappa è nulla";
+//            System.out.println(message);
+//        }
+//    }
 
 
-    @ParameterizedTest
-    @MethodSource(value = "ATTIVITA")
-    @Order(8)
-    @DisplayName("8 - Mappa sottoPagine")
-        //--nome attivita
-        //--flag singolare versus plurale
-    void mappaSottoPagine(final String attività, final boolean flagSingola) {
-        System.out.println("8 - Mappa sottoPagine");
-        int soglia = 50;
-        sorgente = attività;
-        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
-        int size;
+//    @ParameterizedTest
+//    @MethodSource(value = "ATTIVITA")
+//    @Order(7)
+//    @DisplayName("7 - Mappa paragrafi dimensionati di varie attivita")
+//        //--nome attivita
+//        //--flag singolare versus plurale
+//    void mappaParagrafiDimensionati(final String attività, final boolean flagSingola) {
+//        System.out.println("7 - Mappa paragrafi dimensionati di varie attivita");
+//        sorgente = attività;
+//        String flag;
+//        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaParagrafiDimensionati;
+//
+//        if (flagSingola) {
+//            mappaParagrafiDimensionati = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaParagrafiDimensionati();
+//            flag = "(singolare)";
+//        }
+//        else {
+//            mappaParagrafiDimensionati = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaParagrafiDimensionati();
+//            flag = "(plurale)";
+//        }
+//
+//        if (mappaParagrafiDimensionati != null) {
+//            message = String.format("Didascalie che implementano l'attività %s %s", sorgente, flag);
+//            System.out.println(message);
+//            if (!flagSingola) {
+//                System.out.println(attivitaBackend.findFirstByPlurale(sorgente));
+//            }
+//            System.out.println(VUOTA);
+//            printMappaDidascalia("l'attività", sorgente, mappaParagrafiDimensionati);
+//        }
+//        else {
+//            message = "La mappa è nulla";
+//            System.out.println(message);
+//        }
+//    }
 
-        if (flagSingola) {
-            mappaDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaDidascalie();
-        }
-        else {
-            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaDidascalie();
-        }
 
-        System.out.println(VUOTA);
-        System.out.println(String.format("Solo le nazionalità di '%s' che superano la soglia di %s", sorgente, soglia));
-        for (String key : mappaDidascalie.keySet()) {
-            size = wikiUtility.getSize(mappaDidascalie.get(key));
-            if (size > soglia) {
-                message = String.format("%s%s%d", key, FORWARD, size);
-                System.out.println(message);
-            }
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource(value = "ATTIVITA")
+//    @Order(8)
+//    @DisplayName("8 - Mappa sottoPagine")
+//        //--nome attivita
+//        //--flag singolare versus plurale
+//    void mappaSottoPagine(final String attività, final boolean flagSingola) {
+//        System.out.println("8 - Mappa sottoPagine");
+//        int soglia = 50;
+//        sorgente = attività;
+//        LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
+//        int size;
+//
+//        if (flagSingola) {
+//            mappaDidascalie = appContext.getBean(ListaAttivita.class).singolare(sorgente).mappaDidascalie();
+//        }
+//        else {
+//            mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(sorgente).mappaDidascalie();
+//        }
+//
+//        System.out.println(VUOTA);
+//        System.out.println(String.format("Solo le nazionalità di '%s' che superano la soglia di %s", sorgente, soglia));
+//        for (String key : mappaDidascalie.keySet()) {
+//            size = wikiUtility.getSize(mappaDidascalie.get(key));
+//            if (size > soglia) {
+//                message = String.format("%s%s%d", key, FORWARD, size);
+//                System.out.println(message);
+//            }
+//        }
+//    }
 
     protected void printWrapListaAttivita(List<WrapDidascalia> wrapLista) {
         String message;

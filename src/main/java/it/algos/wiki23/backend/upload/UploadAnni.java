@@ -33,7 +33,20 @@ public class UploadAnni extends UploadGiorniAnni {
         super.lastUpload = WPref.uploadAnni;
         super.durataUpload = WPref.uploadAnniTime;
         super.nextUpload = WPref.uploadAttivitaPrevisto;
+        super.usaParagrafi = WPref.usaParagrafiAnni.is();
     }// end of constructor
+
+
+    public UploadAnni nascita() {
+        this.typeCrono = AETypeLista.annoNascita;
+        return this;
+    }
+
+    public UploadAnni morte() {
+        this.typeCrono = AETypeLista.annoMorte;
+        return this;
+    }
+
 
     /**
      * Esegue la scrittura di tutte le pagine <br>
@@ -46,84 +59,12 @@ public class UploadAnni extends UploadGiorniAnni {
 
         List<String> anni = annoWikiBackend.findAllNomi();
         for (String nomeAnno : anni.subList(1075, 1077)) {
-            uploadNascita(nomeAnno);
-            uploadMorte(nomeAnno);
+            nascita().upload(nomeAnno);
+            morte().upload(nomeAnno);
         }
 
         fixUploadMinuti(inizio);
         return result;
-    }
-
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public void uploadNascita(String nomeAnno) {
-        AnnoWiki anno;
-        WResult result;
-        this.typeCrono = AETypeLista.annoNascita;
-        this.nomeGiornoAnno = nomeAnno;
-        anno = annoWikiBackend.findByNome(nomeAnno);
-        this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
-        this.wikiTitle = wikiUtility.wikiTitleNatiAnno(nomeAnno);
-        result = appContext.getBean(ListaAnni.class).nascita(nomeAnno).testoBody();
-        if (result.getIntValue() > 0) {
-            this.esegue(wikiTitle, result.getContent(), result.getIntValue());
-        }
-    }
-
-
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public void uploadMorte(String nomeAnno) {
-        AnnoWiki anno;
-        WResult result;
-        this.typeCrono = AETypeLista.annoMorte;
-        this.nomeGiornoAnno = nomeAnno;
-        anno = annoWikiBackend.findByNome(nomeAnno);
-        this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
-        this.wikiTitle = wikiUtility.wikiTitleMortiAnno(nomeAnno);
-        result = appContext.getBean(ListaAnni.class).morte(nomeAnno).testoBody();
-        if (result.getIntValue() > 0) {
-            this.esegue(wikiTitle, result.getContent(), result.getIntValue());
-        }
-    }
-
-
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public void uploadTestNascita(String nomeAnno) {
-        AnnoWiki anno;
-        WResult result;
-        this.typeCrono = AETypeLista.annoNascita;
-        this.nomeGiornoAnno = nomeAnno;
-        this.uploadTest = true;
-        anno = annoWikiBackend.findByNome(nomeAnno);
-        this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
-        this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiUtility.wikiTitleNatiAnno(nomeAnno);
-        result = appContext.getBean(ListaAnni.class).nascita(nomeAnno).testoBody();
-        if (result.getIntValue() > 0) {
-            this.esegue(wikiTitle, result.getContent(), result.getIntValue());
-        }
-    }
-
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public void uploadTestMorte(String nomeAnno) {
-        AnnoWiki anno;
-        WResult result;
-        this.typeCrono = AETypeLista.annoMorte;
-        this.nomeGiornoAnno = nomeAnno;
-        this.uploadTest = true;
-        anno = annoWikiBackend.findByNome(nomeAnno);
-        this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
-        this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiUtility.wikiTitleMortiAnno(nomeAnno);
-        result = appContext.getBean(ListaAnni.class).morte(nomeAnno).testoBody();
-        if (result.getIntValue() > 0) {
-            this.esegue(wikiTitle, result.getContent(), result.getIntValue());
-        }
     }
 
 

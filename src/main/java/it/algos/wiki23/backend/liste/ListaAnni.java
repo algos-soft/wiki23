@@ -14,19 +14,19 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * <p>
  * Lista delle biografie per anni <br>
  * <p>
- * La lista è un semplice testo (formattato secondo i possibili tipi di raggruppamento) <br>
- * Usata fondamentalmente da UploadAnni con appContext.getBean(ListaAnni.class).nascita(nomeAnno).testoBody() <br>
- * Il costruttore è senza parametri e serve solo per preparare l'istanza che viene ''attivata'' con nascita(nomeGiorno) <br>
+ * La lista è una mappa di WrapLista suddivisa in paragrafi, che contiene tutte le informazioni per scrivere le righe della pagina <br>
+ * Usata fondamentalmente da UploadAnni con appContext.getBean(ListaAnni.class).nascita/morte(nomeAnno).mappaWrap() <br>
+ * Il costruttore è senza parametri e serve solo per preparare l'istanza che viene ''attivata'' con nascita/morte(nomeAnno) <br>
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ListaAnni extends ListaGiorniAnni {
+public class ListaAnni extends Lista {
 
 
     /**
      * Costruttore base senza parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(ListaAnni.class) <br>
+     * Uso: appContext.getBean(ListaAnni.class).nascita/morte(nomeAnno).mappaWrap() <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune properties. <br>
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */

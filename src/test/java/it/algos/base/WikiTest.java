@@ -230,27 +230,30 @@ public abstract class WikiTest extends AlgosTest {
     }
 
     //--nome attività
-    //--flag singolare versus plurale
+    //--typeLista
     protected static Stream<Arguments> ATTIVITA() {
         return Stream.of(
-                Arguments.of("abati e badesse", false),
-                Arguments.of("bassisti", false),
-                Arguments.of("allevatori", false),
-                Arguments.of("diplomatici", false),
-                Arguments.of("soprano", true),
-                Arguments.of("romanziere", true),
-                Arguments.of("accademici", false)
+                Arguments.of(VUOTA, AETypeLista.listaBreve),
+                Arguments.of(VUOTA, AETypeLista.nazionalitaSingolare),
+                Arguments.of("abati e badesse", AETypeLista.attivitaPlurale),
+                Arguments.of("bassisti", AETypeLista.attivitaPlurale),
+                Arguments.of("allevatori", AETypeLista.attivitaPlurale),
+                Arguments.of("diplomatici", AETypeLista.attivitaPlurale),
+                Arguments.of("soprano", AETypeLista.attivitaSingolare),
+                Arguments.of("romanziere", AETypeLista.attivitaSingolare),
+                Arguments.of("accademici", AETypeLista.attivitaPlurale)
 
         );
     }
 
 
     //--nome nazionalità
-    //--flag singolare versus plurale
+    //--typeLista
     protected static Stream<Arguments> NAZIONALITA() {
         return Stream.of(
                 Arguments.of(VUOTA, AETypeLista.listaBreve),
                 Arguments.of(VUOTA, AETypeLista.nazionalitaSingolare),
+                Arguments.of("azeri", AETypeLista.nazionalitaPlurale),
                 Arguments.of("arabi", AETypeLista.nazionalitaPlurale),
                 Arguments.of("libanesi", AETypeLista.nazionalitaPlurale),
                 Arguments.of("cingalese", AETypeLista.nazionalitaSingolare),
@@ -689,7 +692,7 @@ public abstract class WikiTest extends AlgosTest {
         if (listWrapLista != null) {
             message = String.format("Faccio vedere una lista delle prime %d didascalie", max);
             System.out.println(message);
-            message = "Paragrafo, riga, didascaliaBreve";
+            message = "Paragrafo, paragrafoLink, sottoParagrafo, didascaliaBreve";
             System.out.println(message);
             System.out.println(VUOTA);
             printSub(listWrapLista.subList(0, Math.min(max, listWrapLista.size())));
@@ -700,8 +703,12 @@ public abstract class WikiTest extends AlgosTest {
         for (WrapLista wrap : listWrapLista) {
             System.out.print(wrap.titoloParagrafo);
             System.out.print(SEP);
-            if (textService.isValid(wrap.titoloRiga)) {
-                System.out.print(wrap.titoloRiga);
+            if (textService.isValid(wrap.titoloParagrafoLink)) {
+                System.out.print(wrap.titoloParagrafoLink);
+                System.out.print(SEP);
+            }
+            if (textService.isValid(wrap.titoloSottoParagrafo)) {
+                System.out.print(wrap.titoloSottoParagrafo);
                 System.out.print(SEP);
             }
             System.out.println(wrap.didascaliaBreve);

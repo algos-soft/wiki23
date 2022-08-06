@@ -118,8 +118,8 @@ public class UploadAttivita extends Upload {
     public WResult upload(String nomeAttivitaNazionalitaPlurale) {
         this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
         String wikiTitle = UPLOAD_TITLE_PROJECT_ATTIVITA + textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
-        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
-        return super.esegue(wikiTitle, mappaDidascalie);
+//        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
+        return null;
     }
 
     /**
@@ -128,8 +128,7 @@ public class UploadAttivita extends Upload {
     public void uploadTest(String nomeAttivitaNazionalitaPlurale) {
         String wikiTitle = UPLOAD_TITLE_DEBUG + textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
         this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
-        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
-        super.esegue(wikiTitle, mappaDidascalie);
+//        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
     }
 
     /**

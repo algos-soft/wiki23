@@ -78,6 +78,7 @@
     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    * Deve essere sovrascritto, SENZA invocare il metodo della superclasse <br>
     * Non può essere sovrascritto <br>
 
     public static final String XXX = "";

@@ -21,7 +21,7 @@ import java.util.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class UploadNazionalita extends Upload {
+public class UploadNazionalita extends UploadAttivitaNazionalita {
 
     public static final String UPLOAD_TITLE_PROJECT_NAZIONALITA = UPLOAD_TITLE_PROJECT + "Nazionalità/";
 
@@ -33,38 +33,49 @@ public class UploadNazionalita extends Upload {
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
     public UploadNazionalita() {
-        super.titoloLinkParagrafo = "Progetto:Biografie/Attività/";
-        super.attNazUpper = "Nazionalità";
-        super.attNaz = "nazionalità";
-        super.attNazRevert = "attività";
-        super.attNazRevertUpper = "Attività";
+        super.titoloLinkParagrafo = TITOLO_LINK_PARAGRAFO_ATTIVITA;
+        super.titoloLinkVediAnche = TITOLO_LINK_PARAGRAFO_NAZIONALITA;
+//        super.attNazUpper = "Nazionalità";
+//        super.attNaz = "nazionalità";
+//        super.attNazRevert = "attività";
+//        super.attNazRevertUpper = "Attività";
+        super.typeCrono = AETypeLista.nazionalitaPlurale;
     }// end of constructor
 
-
-    protected WResult esegue(String wikiTitle, String testoBody, int numVoci) {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append(avviso());
-        buffer.append(CAPO);
-        buffer.append(includeIni());
-        buffer.append(fixToc());
-        buffer.append(tmpListaBio(numVoci));
-        buffer.append(includeEnd());
-        buffer.append(CAPO);
-        buffer.append(incipit());
-        buffer.append(CAPO);
-        buffer.append(testoBody);
-        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
-        buffer.append(note());
-        buffer.append(CAPO);
-        buffer.append(correlate());
-        buffer.append(CAPO);
-        buffer.append(portale());
-        buffer.append(categorie());
-
-        return registra(wikiTitle, buffer.toString().trim());
+    public UploadNazionalita singolare() {
+        this.typeCrono = AETypeLista.nazionalitaSingolare;
+        return this;
     }
 
+    public UploadNazionalita plurale() {
+        this.typeCrono = AETypeLista.nazionalitaPlurale;
+        return this;
+    }
+
+
+    protected String incipit() {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("Questa");
+        buffer.append(textService.setRef(INFO_PAGINA_NAZIONALITA));
+        buffer.append(" è una lista");
+        buffer.append(textService.setRef(INFO_DIDASCALIE));
+        buffer.append(textService.setRef(INFO_ORDINE));
+        buffer.append(" di persone");
+        buffer.append(textService.setRef(INFO_PERSONA));
+        buffer.append(" presenti");
+        buffer.append(textService.setRef(INFO_LISTA));
+        buffer.append(" nell'enciclopedia che hanno come nazionalità");
+        buffer.append(textService.setRef(INFO_NAZIONALITA_PREVISTE));
+        buffer.append(String.format(" quella di '''%s'''.", nomeLista));
+        buffer.append(" Le persone sono suddivise");
+        buffer.append(textService.setRef(INFO_PARAGRAFI_ATTIVITA));
+        buffer.append(String.format(" per %s.", attNazRevert));
+        buffer.append(textService.setRef(INFO_ATTIVITA_PREVISTE));
+        buffer.append(textService.setRef(INFO_ALTRE_ATTIVITA));
+
+        return buffer.toString();
+    }
 
     protected String sottoPaginaAttNaz() {
         return String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita));
@@ -92,44 +103,35 @@ public class UploadNazionalita extends Upload {
         return buffer.toString();
     }
 
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public WResult upload(String nomeAttivitaNazionalitaPlurale) {
-        this.nomeAttivitaNazionalitaPlurale = nomeAttivitaNazionalitaPlurale;
-        String wikiTitle = UPLOAD_TITLE_PROJECT_NAZIONALITA + textService.primaMaiuscola(nomeAttivitaNazionalitaPlurale);
-        mappaDidascalie = appContext.getBean(ListaNazionalita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
-        return super.esegue(wikiTitle, mappaDidascalie);
-    }
+//    /**
+//     * Esegue la scrittura della pagina <br>
+//     */
+//    public void uploadTest(String nazionalitaPlurale) {
+//        WResult result;
+//        this.typeCrono = AETypeLista.nazionalitaPlurale;
+//        this.nomeLista = nazionalitaPlurale;
+//        this.uploadTest = true;
+//        String wikiTitle = UPLOAD_TITLE_DEBUG + textService.primaMaiuscola(nazionalitaPlurale);
+//        //        result = appContext.getBean(ListaNazionalita.class).plurale(nazionalitaPlurale).testoBody();
+//        //        this.esegue(wikiTitle, result.getContent(), result.getIntValue());
+//
+//        Map<String, List<String>> mappa = appContext.getBean(ListaNazionalita.class).plurale(nazionalitaPlurale).mappaDidascalia();
+//    }
 
-
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public void uploadTest(String nazionalitaPlurale) {
-        WResult result;
-        this.typeCrono = AETypeLista.nazionalitaPlurale;
-        this.nomeLista = nazionalitaPlurale;
-        this.uploadTest = true;
-        String wikiTitle = UPLOAD_TITLE_DEBUG + textService.primaMaiuscola(nazionalitaPlurale);
-        result = appContext.getBean(ListaNazionalita.class).plurale(nazionalitaPlurale).testoBody();
-        this.esegue(wikiTitle, result.getContent(), result.getIntValue());
-    }
-
-    /**
-     * Esegue la scrittura della sotto-pagina <br>
-     */
-    public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
-        UploadNazionalita sottoPagina = appContext.getBean(UploadNazionalita.class);
-        sottoPagina.esegueSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, mappaSub);
-    }
-
-    /**
-     * Esegue la scrittura della sotto-sotto-pagina <br>
-     */
-    public void uploadSottoSottoPagina(String wikiTitleParente, List<String> listaSub) {
-        UploadNazionalita sottoSottoPagina = appContext.getBean(UploadNazionalita.class);
-        sottoSottoPagina.esegueSubSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, listaSub);
-    }
+//    /**
+//     * Esegue la scrittura della sotto-pagina <br>
+//     */
+//    public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
+//        UploadNazionalita sottoPagina = appContext.getBean(UploadNazionalita.class);
+//        sottoPagina.esegueSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, mappaSub);
+//    }
+//
+//    /**
+//     * Esegue la scrittura della sotto-sotto-pagina <br>
+//     */
+//    public void uploadSottoSottoPagina(String wikiTitleParente, List<String> listaSub) {
+//        UploadNazionalita sottoSottoPagina = appContext.getBean(UploadNazionalita.class);
+//        sottoSottoPagina.esegueSubSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, listaSub);
+//    }
 
 }

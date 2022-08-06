@@ -5,9 +5,13 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.liste.*;
+import it.algos.wiki23.backend.packages.anno.*;
+import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.wrapper.*;
 
 import java.time.*;
+import java.util.*;
 
 /**
  * Project wiki23
@@ -21,28 +25,105 @@ import java.time.*;
 public abstract class UploadGiorniAnni extends Upload {
 
 
-    protected String nomeGiornoAnno;
-
-    protected boolean senzaParagrafi;
-
-
     protected int ordineGiornoAnno;
 
-    protected String wikiTitle;
+    private GiornoWiki giorno;
+
+    private AnnoWiki anno;
 
 
     /**
      * Costruttore base con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(UploadAttivita.class, attivita) <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      */
     public UploadGiorniAnni() {
+        super.typeUpload = AETypeUpload.pagina;
+        this.uploadTest = false;
+        super.usaParagrafi = true;
     }// end of constructor
 
 
-    protected WResult esegue(String wikiTitle, String testoBody, int numVoci) {
+    public UploadGiorniAnni nascita() {
+        return this;
+    }
+
+    public UploadGiorniAnni morte() {
+        return this;
+    }
+
+    public UploadGiorniAnni conParagrafi() {
+        this.usaParagrafi = true;
+        return this;
+    }
+
+    public UploadGiorniAnni senzaParagrafi() {
+        this.usaParagrafi = false;
+        return this;
+    }
+
+    public UploadGiorniAnni test() {
+        this.uploadTest = true;
+        return this;
+    }
+
+
+    /**
+     * Esegue la scrittura della pagina <br>
+     */
+    public WResult upload(final String nomeGiornoAnno) {
+        this.nomeLista = nomeGiornoAnno;
+
+        if (textService.isValid(nomeGiornoAnno)) {
+            wikiTitle = switch (typeCrono) {
+                case giornoNascita -> wikiUtility.wikiTitleNatiGiorno(nomeGiornoAnno);
+                case giornoMorte -> wikiUtility.wikiTitleMortiGiorno(nomeGiornoAnno);
+                case annoNascita -> wikiUtility.wikiTitleNatiAnno(nomeGiornoAnno);
+                case annoMorte -> wikiUtility.wikiTitleMortiAnno(nomeGiornoAnno);
+                default -> VUOTA;
+            };
+
+            switch (typeCrono) {
+                case giornoNascita, giornoMorte -> {
+                    giorno = giornoWikiBackend.findByNome(nomeLista);
+                    this.ordineGiornoAnno = giorno != null ? giorno.getOrdine() : 0;
+                }
+                case annoNascita, annoMorte -> {
+                    anno = annoWikiBackend.findByNome(nomeLista);
+                    this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
+                }
+                default -> {}
+            }
+            mappaWrap = switch (typeCrono) {
+                case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(nomeLista).mappaWrap();
+                case giornoMorte -> appContext.getBean(ListaGiorni.class).morte(nomeLista).mappaWrap();
+                case annoNascita -> appContext.getBean(ListaAnni.class).nascita(nomeLista).mappaWrap();
+                case annoMorte -> appContext.getBean(ListaAnni.class).morte(nomeLista).mappaWrap();
+                default -> null;
+            };
+
+            if (uploadTest) {
+                this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiTitle;
+            }
+
+            if (textService.isValid(wikiTitle) && mappaWrap != null) {
+                this.esegueUpload(wikiTitle, mappaWrap);
+            }
+        }
+
+        return WResult.crea();
+    }
+
+
+    /**
+     * Esegue la scrittura della pagina <br>
+     */
+    public void upload() {
+    }
+
+    protected WResult esegueUpload(String wikiTitle, LinkedHashMap<String, List<WrapLista>> mappa) {
         StringBuffer buffer = new StringBuffer();
+        int numVoci = wikiUtility.getSizeAllWrap(mappa);
 
         buffer.append(avviso());
         buffer.append(CAPO);
@@ -53,7 +134,7 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(includeEnd());
         buffer.append(CAPO);
         buffer.append(tmpListaPersoneIni(numVoci));
-        buffer.append(testoBody);
+        buffer.append(testoBody(mappa));
         buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
         buffer.append(includeIni());
         buffer.append(portale());
@@ -68,7 +149,7 @@ public abstract class UploadGiorniAnni extends Upload {
     }
 
     protected String torna() {
-        return textService.isValid(nomeGiornoAnno) ? String.format("{{Torna a|%s}}", nomeGiornoAnno) : VUOTA;
+        return textService.isValid(nomeLista) ? String.format("{{Torna a|%s}}", nomeLista) : VUOTA;
     }
 
     protected String tmpListaPersoneIni(int numVoci) {
@@ -83,22 +164,88 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(numVoci);
         buffer.append(CAPO);
         buffer.append("|testo=");
-        buffer.append(senzaParagrafi ? VUOTA : "<nowiki></nowiki>");
+        buffer.append("<nowiki></nowiki>");
         buffer.append(CAPO);
 
         return uploadTest ? VUOTA : buffer.toString();
     }
 
 
+    public String testoBody(Map<String, List<WrapLista>> mappa) {
+        String testo;
+
+        if (usaParagrafi) {
+            testo = conParagrafi(mappa);
+        }
+        else {
+            testo = senzaParagrafi(mappa);
+        }
+
+        return testo;
+    }
+
+
+    public String conParagrafi(Map<String, List<WrapLista>> mappa) {
+        StringBuffer buffer = new StringBuffer();
+        List<WrapLista> lista;
+        int numVoci;
+        boolean usaDiv;
+        String titoloParagrafoLink;
+
+        for (String keyParagrafo : mappa.keySet()) {
+            lista = mappa.get(keyParagrafo);
+            numVoci = lista.size();
+            usaDiv = lista.size() > 3;
+            titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
+            buffer.append(wikiUtility.fixTitolo(VUOTA, titoloParagrafoLink, numVoci));
+            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+            for (WrapLista wrap : lista) {
+                buffer.append(ASTERISCO);
+                if (textService.isValid(wrap.titoloSottoParagrafo)) {
+                    buffer.append(wrap.titoloSottoParagrafo);
+                    buffer.append(SEP);
+                }
+                buffer.append(wrap.didascaliaBreve);
+                buffer.append(CAPO);
+            }
+            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+        }
+
+        return buffer.toString().trim();
+    }
+
+    public String senzaParagrafi(Map<String, List<WrapLista>> mappa) {
+        StringBuffer buffer = new StringBuffer();
+        List<WrapLista> lista;
+
+        buffer.append("{{Div col}}" + CAPO);
+        for (String keyParagrafo : mappa.keySet()) {
+            lista = mappa.get(keyParagrafo);
+            for (WrapLista wrap : lista) {
+                buffer.append(ASTERISCO);
+
+                if (textService.isValid(wrap.titoloSottoParagrafo)) {
+                    buffer.append(wrap.titoloSottoParagrafo);
+                    buffer.append(SEP);
+                }
+                buffer.append(wrap.didascaliaBreve);
+                buffer.append(CAPO);
+            }
+        }
+        buffer.append("{{Div col end}}" + CAPO);
+
+        return buffer.toString().trim();
+    }
+
     protected String categorie() {
         StringBuffer buffer = new StringBuffer();
         String tag = typeCrono.getTagUpper();
 
         String title = switch (typeCrono) {
-            case giornoNascita -> wikiUtility.wikiTitleNatiGiorno(nomeGiornoAnno);
-            case giornoMorte -> wikiUtility.wikiTitleMortiGiorno(nomeGiornoAnno);
-            case annoNascita -> wikiUtility.wikiTitleNatiAnno(nomeGiornoAnno);
-            case annoMorte -> wikiUtility.wikiTitleMortiAnno(nomeGiornoAnno);
+            case giornoNascita -> wikiUtility.wikiTitleNatiGiorno(nomeLista);
+            case giornoMorte -> wikiUtility.wikiTitleMortiGiorno(nomeLista);
+            case annoNascita -> wikiUtility.wikiTitleNatiAnno(nomeLista);
+            case annoMorte -> wikiUtility.wikiTitleMortiAnno(nomeLista);
             default -> VUOTA;
         };
 
@@ -111,31 +258,5 @@ public abstract class UploadGiorniAnni extends Upload {
         return buffer.toString();
     }
 
-
-    public void fixUploadMinuti(final long inizio) {
-        long fine = System.currentTimeMillis();
-        String message;
-        Long delta = fine - inizio;
-
-        if (lastUpload != null) {
-            lastUpload.setValue(LocalDateTime.now());
-        }
-        else {
-            logger.warn(new WrapLog().exception(new AlgosException("lastUpload è nullo")));
-            return;
-        }
-
-        if (durataUpload != null) {
-            delta = delta / 1000 / 60;
-            durataUpload.setValue(delta.intValue());
-        }
-        else {
-            logger.warn(new WrapLog().exception(new AlgosException("durataUpload è nullo")));
-            return;
-        }
-
-        message = String.format("Check");
-        logger.info(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
-    }
 
 }

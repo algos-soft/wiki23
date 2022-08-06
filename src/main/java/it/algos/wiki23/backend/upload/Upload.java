@@ -1,11 +1,10 @@
 package it.algos.wiki23.backend.upload;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
@@ -16,11 +15,8 @@ import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
-import org.checkerframework.checker.units.qual.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import java.time.*;
 import java.time.format.*;
@@ -41,19 +37,37 @@ import java.util.*;
  * <p>
  * Necessita del login come bot <br>
  * Sovrascritta nelle sottoclassi concrete <br>
- * Not annotated with @SpringComponent (sbagliato) perché è una classe astratta <br>
- * Punto d'inizio @PostConstruct inizia() nella superclasse <br>
- * <p>
- * La (List<Bio>) listaBio, la (List<String>) listaDidascalie, la (Map<String, List>) mappa e (String) testoConParagrafi
- * vengono tutte regolate alla creazione dell'istanza in @PostConstruct e sono disponibili da subito <br>
- * Si usa SOLO la chiamata appContext.getBean(UploadXxx.class, yyy) per caricare l'istanza ListaXxx.class <br>
- * L'effettivo upload su wiki avviene SOLO con uploadPagina() o uploadPaginaTest() <br>
  */
 public abstract class Upload {
+
+    protected static final String INFO_DIDASCALIE = "Le didascalie delle voci sono quelle previste nel [[Progetto:Biografie/Didascalie|progetto biografie]]";
+
+    protected static final String INFO_ORDINE = "Le voci, all'interno di ogni paragrafo, sono in ordine alfabetico per '''forzaOrdinamento''' oppure per '''cognome''' oppure per '''titolo''' della pagina su wikipedia.";
+
+    protected static final String INFO_LISTA = "La lista non è esaustiva e contiene '''solo''' le persone che sono citate nell'enciclopedia e per le quali è stato implementato correttamente il '''[[template:Bio|template Bio]]'''";
+
+    protected static final String INFO_PAGINA_NAZIONALITA = "La pagina di una singola '''nazionalità''' viene creata solo se le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
+
+    protected static final String INFO_PARAGRAFI_ATTIVITA = "La lista è suddivisa in paragrafi per ogni '''attività''' individuata. Se il numero di voci biografiche nel" +
+            " paragrafo supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità, viene creata una '''sottopagina'''.";
+
+    protected static final String INFO_ATTIVITA_PREVISTE = "Le '''attività''' sono quelle [[Discussioni progetto:Biografie/Attività|'''convenzionalmente''' previste]] dalla comunità ed [[Modulo:Bio/Plurale attività|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
+
+    protected static final String INFO_NAZIONALITA_PREVISTE = "Le '''nazionalità''' sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla comunità ed [[Modulo:Bio/Plurale nazionalità|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
+
+    protected static final String INFO_PERSONA = "Ogni persona è presente in una sola [[Discussioni progetto:Biografie/Nazionalità|lista]], in base a quanto riportato nel parametro ''nazionalità'' utilizzato dal [[template:Bio|template Bio]]";
+
+    protected static final String INFO_ALTRE_ATTIVITA = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
+            "parametro ''attività'' oppure che usano una attività di difficile elaborazione da parte del '''[[Utente:Biobot|<span " +
+            "style=\"color:green;\">bot</span>]]'''";
 
     public static final String UPLOAD_TITLE_DEBUG = "Utente:Biobot/";
 
     public static final String UPLOAD_TITLE_PROJECT = "Progetto:Biografie/";
+
+    protected static final String TITOLO_LINK_PARAGRAFO_ATTIVITA = UPLOAD_TITLE_PROJECT + ATT;
+
+    protected static final String TITOLO_LINK_PARAGRAFO_NAZIONALITA = UPLOAD_TITLE_PROJECT + NAZ;
 
     /**
      * Istanza di una interfaccia <br>
@@ -141,9 +155,13 @@ public abstract class Upload {
      */
     protected TreeMap<String, TreeMap<String, List<String>>> mappa;
 
+    protected LinkedHashMap<String, List<WrapLista>> mappaWrap;
+
     protected LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie;
 
     protected String titoloLinkParagrafo;
+
+    protected String titoloLinkVediAnche;
 
     protected String nomeLista;
 
@@ -171,6 +189,82 @@ public abstract class Upload {
 
     protected WPref nextUpload;
 
+    protected boolean usaParagrafi;
+
+    protected String wikiTitle;
+
+    protected AETypeUpload typeUpload;
+
+
+    protected WResult esegueUpload(String wikiTitle, LinkedHashMap<String, List<WrapLista>> mappa) {
+        return null;
+    }
+
+    //    protected WResult esegueMappa(String wikiTitle, Map<String, List<String>> mappa) {
+    //        StringBuffer buffer = new StringBuffer();
+    //        int numVoci = wikiUtility.getSizeAll(mappa);
+    //
+    //        buffer.append(avviso());
+    //        buffer.append(CAPO);
+    //        buffer.append(includeIni());
+    //        buffer.append(fixToc());
+    //        buffer.append(tmpListaBio(numVoci));
+    //        buffer.append(includeEnd());
+    //        buffer.append(CAPO);
+    //        buffer.append(incipit());
+    //        buffer.append(CAPO);
+    //        buffer.append(testoBody(mappa));
+    //        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
+    //        buffer.append(note());
+    //        buffer.append(CAPO);
+    //        buffer.append(correlate());
+    //        buffer.append(CAPO);
+    //        buffer.append(portale());
+    //        buffer.append(categorie());
+    //
+    //        return registra(wikiTitle, buffer.toString().trim());
+    //    }
+
+    /**
+     * Testo del body di upload con paragrafi e righe <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public String testoBody(Map<String, List<WrapLista>> mappa) {
+        StringBuffer buffer = new StringBuffer();
+        List<WrapLista> lista;
+        int max = WPref.sogliaSottoPagina.getInt();
+        int numVoci;
+        String nomeListaUpper = textService.primaMaiuscola(nomeLista);
+        String keyParagrafoUpper;
+        String parente;
+        boolean usaDiv;
+
+        for (String keyParagrafo : mappa.keySet()) {
+            lista = mappa.get(keyParagrafo);
+            numVoci = lista.size();
+            keyParagrafoUpper = textService.primaMaiuscola(keyParagrafo);
+            buffer.append(wikiUtility.fixTitolo(titoloLinkParagrafo, keyParagrafo, numVoci));
+
+            if (numVoci > max && !keyParagrafo.equals(TAG_LISTA_ALTRE)) {
+                parente = String.format("%s%s%s%s%s", titoloLinkVediAnche, SLASH, nomeListaUpper, SLASH, keyParagrafoUpper);
+                String vedi = String.format("{{Vedi anche|%s}}", parente);
+                buffer.append(vedi + CAPO);
+                //                this.uploadSottoPagina(parente, numVoci, mappaSub);
+            }
+            else {
+                usaDiv = lista.size() > 3;
+                buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+                //                for (String didascalia : lista) {
+                //                    buffer.append(ASTERISCO + didascalia);
+                //                    buffer.append(CAPO);
+                //                }
+                buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+            }
+
+        }
+
+        return buffer.toString().trim();
+    }
 
     protected WResult esegue(String wikiTitle, String testoBody, int numVoci) {
         StringBuffer buffer = new StringBuffer();
@@ -199,7 +293,7 @@ public abstract class Upload {
     }
 
     @Deprecated
-    protected WResult esegue(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
+    protected WResult esegueOld(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaDidascalie) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = wikiUtility.getSizeAll(mappaDidascalie);
 
@@ -431,8 +525,9 @@ public abstract class Upload {
 
     protected WResult registra(String wikiTitle, String newText) {
         String newTextSignificativo = newText.substring(newText.indexOf("</noinclude>"));
-//        return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
+        //        return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
         return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
+        //        return null;
     }
 
     protected String mappaToText(String wikiTitle, LinkedHashMap<String, LinkedHashMap<String, List<String>>> mappaTxt) {
@@ -633,5 +728,30 @@ public abstract class Upload {
         return testo;
     }
 
+    public void fixUploadMinuti(final long inizio) {
+        long fine = System.currentTimeMillis();
+        String message;
+        Long delta = fine - inizio;
+
+        if (lastUpload != null) {
+            lastUpload.setValue(LocalDateTime.now());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("lastUpload è nullo")));
+            return;
+        }
+
+        if (durataUpload != null) {
+            delta = delta / 1000 / 60;
+            durataUpload.setValue(delta.intValue());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("durataUpload è nullo")));
+            return;
+        }
+
+        message = String.format("Check");
+        logger.info(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
+    }
 
 }

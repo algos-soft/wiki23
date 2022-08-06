@@ -50,16 +50,10 @@ public class ListaAnniTest extends WikiTest {
                 Arguments.of(VUOTA, AETypeLista.annoNascita),
                 Arguments.of(VUOTA, AETypeLista.annoMorte),
                 Arguments.of("1785", AETypeLista.annoNascita),
-                Arguments.of("1785", AETypeLista.annoMorte),
-                Arguments.of("325", AETypeLista.annoNascita),
                 Arguments.of("325", AETypeLista.annoMorte),
                 Arguments.of("1318", AETypeLista.annoNascita),
-                Arguments.of("1318", AETypeLista.annoMorte),
-                Arguments.of("245 a.C.", AETypeLista.annoNascita),
                 Arguments.of("245 a.C.", AETypeLista.annoMorte),
                 Arguments.of("4 a.C.", AETypeLista.annoNascita),
-                Arguments.of("4 a.C.", AETypeLista.annoMorte),
-                Arguments.of("12", AETypeLista.annoNascita),
                 Arguments.of("12", AETypeLista.annoMorte)
         );
     }
@@ -195,54 +189,54 @@ public class ListaAnniTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
-    @MethodSource(value = "ANNI")
-    @Order(5)
-    @DisplayName("5 - Mappa didascalie di vari anni")
-        //--nome anno
-        //--typeLista
-    void mappaDidascalia(final String nomeAnno, final AETypeLista type) {
-        System.out.println("5 - Mappa didascalie di vari anni");
-        sorgente = nomeAnno;
-        int numVoci;
+////    @ParameterizedTest
+//    @MethodSource(value = "ANNI")
+//    @Order(5)
+//    @DisplayName("5 - Mappa didascalie di vari anni")
+//        //--nome anno
+//        //--typeLista
+//    void mappaDidascalia(final String nomeAnno, final AETypeLista type) {
+//        System.out.println("5 - Mappa didascalie di vari anni");
+//        sorgente = nomeAnno;
+//        int numVoci;
+//
+//        mappa = switch (type) {
+//            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaDidascalia();
+//            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).mappaDidascalia();
+//            default -> null;
+//        };
+//
+//        if (mappa != null && mappa.size() > 0) {
+//            numVoci = wikiUtility.getSizeAll(mappa);
+//            message = String.format("Ci sono %d didascalie che implementano l'anno %s %s", numVoci, type, sorgente);
+//            System.out.println(message);
+//            System.out.println(VUOTA);
+//            printMappa(mappa);
+//        }
+//        else {
+//            message = "La mappa è nulla";
+//            System.out.println(message);
+//        }
+//    }
 
-        mappa = switch (type) {
-            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).mappaDidascalia();
-            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).mappaDidascalia();
-            default -> null;
-        };
-
-        if (mappa != null && mappa.size() > 0) {
-            numVoci = wikiUtility.getSizeAll(mappa);
-            message = String.format("Ci sono %d didascalie che implementano l'anno %s %s", numVoci, type, sorgente);
-            System.out.println(message);
-            System.out.println(VUOTA);
-            printMappa(mappa);
-        }
-        else {
-            message = "La mappa è nulla";
-            System.out.println(message);
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "ANNI")
-    @Order(6)
-    @DisplayName("6 - Testo body di vari anni")
-        //--nome anno
-        //--typeLista
-    void testoBody(final String nomeAnno, final AETypeLista type) {
-        System.out.println("6 - Testo body di vari anni");
-        System.out.println(VUOTA);
-        sorgente = nomeAnno;
-
-        ottenutoRisultato = switch (type) {
-            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).testoBody();
-            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).testoBody();
-            default -> null;
-        };
-        System.out.println(ottenutoRisultato.getContent());
-    }
+////    @ParameterizedTest
+//    @MethodSource(value = "ANNI")
+//    @Order(6)
+//    @DisplayName("6 - Testo body di vari anni")
+//        //--nome anno
+//        //--typeLista
+//    void testoBody(final String nomeAnno, final AETypeLista type) {
+//        System.out.println("6 - Testo body di vari anni");
+//        System.out.println(VUOTA);
+//        sorgente = nomeAnno;
+//
+//        ottenutoRisultato = switch (type) {
+//            case annoNascita -> appContext.getBean(ListaAnni.class).nascita(sorgente).testoBody();
+//            case annoMorte -> appContext.getBean(ListaAnni.class).morte(sorgente).testoBody();
+//            default -> null;
+//        };
+//        System.out.println(ottenutoRisultato.getContent());
+//    }
 
 
 

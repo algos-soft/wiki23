@@ -187,8 +187,13 @@ public class AttivitaBackend extends WikiBackend {
 
 
     public List<Attivita> findAllByPlurale(final String plurale) {
-        return repository.findAllByParagrafoOrderBySingolareAsc(plurale);
+        return repository.findAllByCategoriaOrderBySingolareAsc(plurale);
     }
+
+    public List<Attivita> findAllByParagrafo(final String paragrafo) {
+        return repository.findAllByParagrafoOrderBySingolareAsc(paragrafo);
+    }
+
 
     /**
      * Crea una lista di singolari che hanno lo stesso plurale. <br>
@@ -200,6 +205,14 @@ public class AttivitaBackend extends WikiBackend {
     public List<String> findSingolariByPlurale(final String attivitaPlurale) {
         List<String> listaNomi = new ArrayList<>();
         List<Attivita> listaAttivita = findAllByPlurale(attivitaPlurale);
+        Attivita attivitaSingola;
+
+        if (listaAttivita.size() == 0) {
+            attivitaSingola = findFirstBySingolare(attivitaPlurale);
+            if (attivitaSingola != null) {
+                listaAttivita.add(attivitaSingola);
+            }
+        }
 
         for (Attivita attivita : listaAttivita) {
             listaNomi.add(attivita.singolare);
@@ -326,7 +339,7 @@ public class AttivitaBackend extends WikiBackend {
                     yield genere.pluraleMaschile;
                 }
                 else {
-                    yield genere.pluraleMaschile ;
+                    yield genere.pluraleMaschile;
                 }
             }
             case nessuno -> categoria;

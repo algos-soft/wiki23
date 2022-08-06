@@ -354,7 +354,7 @@ public class NazionalitaBackend extends WikiBackend {
         String wikiTitle = "Progetto:Biografie/Nazionalità/" + pluraleNazionalitaMaiuscola;
 
         if (numVoci > soglia) {
-            result = appContext.getBean(UploadNazionalita.class).upload(pluraleNazionalitaMinuscola);
+            appContext.getBean(UploadNazionalita.class).pagina().upload(pluraleNazionalitaMinuscola);
             if (result.isValido()) {
                 if (result.isModificata()) {
                     message = String.format("Lista %s utilizzati in %s voci biografiche", pluraleNazionalitaMinuscola, voci);

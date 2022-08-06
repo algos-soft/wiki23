@@ -2,7 +2,9 @@ package it.algos.wiki23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
@@ -468,42 +470,41 @@ public class DidascaliaService extends WAbstractService {
         return buffer.toString();
     }
 
+    //    /**
+    //     * Costruisce (se esiste) la data (anno) di nascita <br>
+    //     *
+    //     * @param bio completa
+    //     *
+    //     * @return data di nascita
+    //     */
+    //    @Deprecated
+    //    public String getAnnoNato(final Bio bio) {
+    //        String nascita = linkAnnoNato(bio);
+    //
+    //        if (textService.isValid(nascita)) {
+    //            nascita = textService.setTonde(nascita);
+    //        }
+    //
+    //        return nascita;
+    //    }
 
-//    /**
-//     * Costruisce (se esiste) la data (anno) di nascita <br>
-//     *
-//     * @param bio completa
-//     *
-//     * @return data di nascita
-//     */
-//    @Deprecated
-//    public String getAnnoNato(final Bio bio) {
-//        String nascita = linkAnnoNato(bio);
-//
-//        if (textService.isValid(nascita)) {
-//            nascita = textService.setTonde(nascita);
-//        }
-//
-//        return nascita;
-//    }
-
-//    /**
-//     * Costruisce (se esiste) la data (anno) di morte <br>
-//     *
-//     * @param bio completa
-//     *
-//     * @return data di morte
-//     */
-//    @Deprecated
-//    public String getAnnoMorto(final Bio bio) {
-//        String morte = wikiUtility.linkAnnoMorto(bio, true);
-//
-//        if (textService.isValid(morte)) {
-//            morte = textService.setTonde(morte);
-//        }
-//
-//        return morte;
-//    }
+    //    /**
+    //     * Costruisce (se esiste) la data (anno) di morte <br>
+    //     *
+    //     * @param bio completa
+    //     *
+    //     * @return data di morte
+    //     */
+    //    @Deprecated
+    //    public String getAnnoMorto(final Bio bio) {
+    //        String morte = wikiUtility.linkAnnoMorto(bio, true);
+    //
+    //        if (textService.isValid(morte)) {
+    //            morte = textService.setTonde(morte);
+    //        }
+    //
+    //        return morte;
+    //    }
 
 
     public String getWikiTitle(final Bio bio) {
@@ -556,10 +557,19 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapGiornoNato(final Bio bio) {
         String paragrafo = wikiUtility.fixSecoloNato(bio);
-        String riga = wikiUtility.linkAnnoNatoTesta(bio);
+        String titoloParagrafoLink;
+        if (textService.isValid(paragrafo)) {
+            titoloParagrafoLink = textService.setDoppieQuadre(paragrafo);
+        }
+        else {
+            paragrafo = TAG_LISTA_NO_ANNO;
+            titoloParagrafoLink = paragrafo;
+        }
+
+        String sottoParagrafo = wikiUtility.linkAnnoNatoTesta(bio);
         String didascalia = this.getDidascaliaGiornoNato(bio);
 
-        return new WrapLista(paragrafo, riga, didascalia);
+        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
 
 
@@ -575,10 +585,19 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapGiornoMorto(final Bio bio) {
         String paragrafo = wikiUtility.fixSecoloMorto(bio);
-        String riga = wikiUtility.linkAnnoMortoTesta(bio);
+        String titoloParagrafoLink;
+        if (textService.isValid(paragrafo)) {
+            titoloParagrafoLink = textService.setDoppieQuadre(paragrafo);
+        }
+        else {
+            paragrafo = TAG_LISTA_NO_ANNO;
+            titoloParagrafoLink = paragrafo;
+        }
+
+        String sottoParagrafo = wikiUtility.linkAnnoMortoTesta(bio);
         String didascalia = this.getDidascaliaGiornoMorto(bio);
 
-        return new WrapLista(paragrafo, riga, didascalia);
+        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
 
     /**
@@ -593,11 +612,21 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapAnnoNato(final Bio bio) {
         String paragrafo = wikiUtility.fixMeseNato(bio);
-        String riga = wikiUtility.linkGiornoNatoTesta(bio);
+        String titoloParagrafoLink;
+        if (textService.isValid(paragrafo)) {
+            titoloParagrafoLink = textService.setDoppieQuadre(paragrafo);
+        }
+        else {
+            paragrafo = TAG_LISTA_NO_GIORNO;
+            titoloParagrafoLink = paragrafo;
+        }
+
+        String sottoParagrafo = wikiUtility.linkGiornoNatoTesta(bio);
         String didascalia = this.getDidascaliaAnnoNato(bio);
 
-        return new WrapLista(paragrafo, riga, didascalia);
+        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
+
     /**
      * Costruisce una wrapLista specializzata per le righe delle pagine 'Morti nell'anno' <br>
      * Contiene il paragrafo 'mese'
@@ -610,10 +639,19 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapAnnoMorto(final Bio bio) {
         String paragrafo = wikiUtility.fixMeseMorto(bio);
-        String riga = wikiUtility.linkGiornoMortoTesta(bio);
+        String titoloParagrafoLink;
+        if (textService.isValid(paragrafo)) {
+            titoloParagrafoLink = textService.setDoppieQuadre(paragrafo);
+        }
+        else {
+            paragrafo = TAG_LISTA_NO_GIORNO;
+            titoloParagrafoLink = paragrafo;
+        }
+
+        String sottoParagrafo = wikiUtility.linkGiornoMortoTesta(bio);
         String didascalia = this.getDidascaliaAnnoMorto(bio);
 
-        return new WrapLista(paragrafo, riga, didascalia);
+        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
 
 
@@ -628,11 +666,46 @@ public class DidascaliaService extends WAbstractService {
      * @return wrapLista
      */
     public WrapLista getWrapNazionalita(final Bio bio) {
-        String paragrafo = wikiUtility.fixParagrafoAttivita(bio);
+        Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
+        String paragrafo = attivita != null ? textService.primaMaiuscola(attivita.paragrafo) : TAG_LISTA_ALTRE;
+
+        String titoloParagrafoLink;
+        if (textService.isEmpty(paragrafo)) {
+            paragrafo = TAG_LISTA_ALTRE;
+        }
+
+        if (!paragrafo.equals(TAG_LISTA_ALTRE)) {
+            titoloParagrafoLink = PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivita.categoria);
+            titoloParagrafoLink = titoloParagrafoLink + PIPE + paragrafo;
+            titoloParagrafoLink = textService.setDoppieQuadre(titoloParagrafoLink);
+        }
+        else {
+            titoloParagrafoLink = paragrafo;
+        }
+
         String sottoParagrafo = bio.ordinamento.substring(0, 1);
         String didascalia = this.getDidascaliaLista(bio);
 
-        return new WrapLista(paragrafo, sottoParagrafo, didascalia);
+        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
+    }
+
+
+    /**
+     * Costruisce una wrapLista specializzata per le righe delle pagine 'Attività' <br>
+     * Contiene il paragrafo 'nazionalità'
+     * Contiene il sotto-paragrafo 'primoCarattere'
+     * Contiene la didascalia con 'wikiTitle', 'attività/nazionalità', 'luogo e anno di nascita', 'luogo e anno di morte'
+     *
+     * @param bio completa
+     *
+     * @return wrapLista
+     */
+    public WrapLista getWrapAttivita(final Bio bio) {
+        String paragrafo = wikiUtility.fixParagrafoNazionalita(bio);
+        String sottoParagrafo = bio.ordinamento.substring(0, 1);
+        String didascalia = this.getDidascaliaLista(bio);
+
+        return new WrapLista(paragrafo, textService.setDoppieQuadre(paragrafo), sottoParagrafo, didascalia);
     }
 
     /**
@@ -642,13 +715,14 @@ public class DidascaliaService extends WAbstractService {
      *
      * @return wrapLista
      */
-    public WrapLista getWrap(final AETypeLista typeLista,final Bio bio ) {
+    public WrapLista getWrap(final AETypeLista typeLista, final Bio bio) {
         return switch (typeLista) {
             case giornoNascita -> this.getWrapGiornoNato(bio);
             case giornoMorte -> this.getWrapGiornoMorto(bio);
             case annoNascita -> this.getWrapAnnoNato(bio);
             case annoMorte -> this.getWrapAnnoMorto(bio);
-            case nazionalitaSingolare,nazionalitaPlurale -> this.getWrapNazionalita(bio);
+            case nazionalitaSingolare, nazionalitaPlurale -> this.getWrapNazionalita(bio);
+            case attivitaSingolare, attivitaPlurale -> this.getWrapAttivita(bio);
             case listaBreve -> null;
             case listaEstesa -> null;
             default -> null;

@@ -502,20 +502,18 @@ public class BioService extends WAbstractService {
         }
 
         for (String nomeAttivitaSingola : listaNomiSingoli) {
-            lista1 = repository.findAllByAttivitaOrderByCognome(nomeAttivitaSingola);
+            lista1 = repository.findAllByAttivitaOrderByOrdinamento(nomeAttivitaSingola);
             listaNonOrdinata.addAll(lista1);
             if (WPref.usaTreAttivita.is()) {
-                lista2 = repository.findAllByAttivita2OrderByCognome(nomeAttivitaSingola);
+                lista2 = repository.findAllByAttivita2OrderByOrdinamento(nomeAttivitaSingola);
                 listaNonOrdinata.addAll(lista2);
-                lista3 = repository.findAllByAttivita3OrderByCognome(nomeAttivitaSingola);
+                lista3 = repository.findAllByAttivita3OrderByOrdinamento(nomeAttivitaSingola);
                 listaNonOrdinata.addAll(lista3);
             }
         }
 
         return sortByForzaOrdinamento(listaNonOrdinata);
     }
-
-
 
 
     public List<Bio> sortByNazionalita(List<Bio> listaNonOrdinata) {
@@ -770,7 +768,6 @@ public class BioService extends WAbstractService {
     }
 
 
-
     /**
      * Cerca tutte le entities di una collection filtrate con una serie di nazionalità. <br>
      * Selects documents in a collection or view and returns a list of the selected documents. <br>
@@ -797,6 +794,21 @@ public class BioService extends WAbstractService {
     }
 
     /**
+     * Cerca tutte le entities di una collection filtrate con una serie di attività. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     *
+     * @param attivitaPlurale per costruire la query
+     *
+     * @return lista di entityBeans ordinata per cognome
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchAttivita(String attivitaPlurale) {
+        List<String> listaNomiSingoli = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+        return fetchAttivita(listaNomiSingoli);
+    }
+
+    /**
      * Cerca tutte le entities di una collection filtrate con una serie di nazionalità. <br>
      * Selects documents in a collection or view and returns a list of the selected documents. <br>
      *
@@ -807,44 +819,44 @@ public class BioService extends WAbstractService {
      * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
      */
     public List<Bio> fetchNazionalita(String nazionalitaPlurale) {
-//        List<Bio> listaOrdinata = new ArrayList<>();
-//        List<Bio> listaOrdinataNonSuddivisa;
-//        List<Bio> listaConGiornoMorto;
-//        List<Bio> listaSenzaGiornoMorto;
+        //        List<Bio> listaOrdinata = new ArrayList<>();
+        //        List<Bio> listaOrdinataNonSuddivisa;
+        //        List<Bio> listaConGiornoMorto;
+        //        List<Bio> listaSenzaGiornoMorto;
         List<String> listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
 
         return fetchNazionalita(listaNomiSingoli);
-//        if (textService.isEmpty(nazionalitaPlurale)) {
-//            logger.info(new WrapLog().exception(new AlgosException("Manca l'indicazione dell'anno")));
-//            return null;
-//        }
-//
-//        listaOrdinataNonSuddivisa = repository.findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(annoMorto);
-//        listaSenzaGiornoMorto = listaOrdinataNonSuddivisa
-//                .stream()
-//                .filter(bio -> bio.giornoMortoOrd == 0)
-//                .sorted(Comparator.comparing(forzaOrdinamento))
-//                .collect(Collectors.toList());
-//
-//        listaConGiornoMorto = listaOrdinataNonSuddivisa
-//                .stream()
-//                .filter(bio -> bio.giornoMortoOrd > 0)
-//                .sorted(Comparator.comparing(bio -> bio.giornoMortoOrd))
-//                .collect(Collectors.toList());
-//
-//        switch ((AETypeChiaveNulla) WPref.typeChiaveNulla.getEnumCurrentObj()) {
-//            case inTesta -> {
-//                listaOrdinata.addAll(listaSenzaGiornoMorto);
-//                listaOrdinata.addAll(listaConGiornoMorto);
-//            }
-//
-//            case inCoda -> {
-//                listaOrdinata.addAll(listaConGiornoMorto);
-//                listaOrdinata.addAll(listaSenzaGiornoMorto);
-//            }
-//        }
-//
-//        return listaOrdinata;
+        //        if (textService.isEmpty(nazionalitaPlurale)) {
+        //            logger.info(new WrapLog().exception(new AlgosException("Manca l'indicazione dell'anno")));
+        //            return null;
+        //        }
+        //
+        //        listaOrdinataNonSuddivisa = repository.findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(annoMorto);
+        //        listaSenzaGiornoMorto = listaOrdinataNonSuddivisa
+        //                .stream()
+        //                .filter(bio -> bio.giornoMortoOrd == 0)
+        //                .sorted(Comparator.comparing(forzaOrdinamento))
+        //                .collect(Collectors.toList());
+        //
+        //        listaConGiornoMorto = listaOrdinataNonSuddivisa
+        //                .stream()
+        //                .filter(bio -> bio.giornoMortoOrd > 0)
+        //                .sorted(Comparator.comparing(bio -> bio.giornoMortoOrd))
+        //                .collect(Collectors.toList());
+        //
+        //        switch ((AETypeChiaveNulla) WPref.typeChiaveNulla.getEnumCurrentObj()) {
+        //            case inTesta -> {
+        //                listaOrdinata.addAll(listaSenzaGiornoMorto);
+        //                listaOrdinata.addAll(listaConGiornoMorto);
+        //            }
+        //
+        //            case inCoda -> {
+        //                listaOrdinata.addAll(listaConGiornoMorto);
+        //                listaOrdinata.addAll(listaSenzaGiornoMorto);
+        //            }
+        //        }
+        //
+        //        return listaOrdinata;
     }
 
     public List<Bio> fetchListe(AETypeLista typeLista, String nomeLista) {
@@ -856,6 +868,8 @@ public class BioService extends WAbstractService {
                 case annoMorte -> bioService.fetchAnnoMorto(nomeLista);
                 case nazionalitaSingolare -> repository.findAllByNazionalitaOrderByOrdinamento(nomeLista);
                 case nazionalitaPlurale -> bioService.fetchNazionalita(nomeLista);
+                case attivitaSingolare -> bioService.fetchAttivita(nomeLista);
+                case attivitaPlurale -> bioService.fetchAttivita(nomeLista);
                 default -> null;
             };
         } catch (Exception unErrore) {

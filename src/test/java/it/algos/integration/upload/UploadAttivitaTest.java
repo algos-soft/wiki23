@@ -30,7 +30,7 @@ import org.springframework.test.context.junit.jupiter.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
-@Tag("upload")
+//@Tag("upload")
 @DisplayName("Attività upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UploadAttivitaTest extends WikiTest {

@@ -71,22 +71,22 @@ public class UploadAnniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-//    @Test
+    @Test
     @Order(2)
-    @DisplayName("2 - Upload di un anno morti")
+    @DisplayName("2 - Upload test di un anno morti senza paragrafi")
     void uploadMortiTest() {
-        System.out.println("2 - Upload di un anno morti");
+        System.out.println("2 - Upload test di un anno nati senza paragrafi");
         sorgente = "214 a.C.";
-        appContext.getBean(UploadAnni.class).uploadTestMorte(sorgente);
+        appContext.getBean(UploadAnni.class).conParagrafi().morte().test().upload(sorgente);
     }
 
-//    @Test
+    @Test
     @Order(3)
-    @DisplayName("3 - Upload di un anno morti")
+    @DisplayName("3 - Upload di un anno nati con paragrafi")
     void uploadMortiTest2() {
-        System.out.println("3 - Upload di un anno morti");
+        System.out.println("3 - Upload di un anno nati con paragrafi");
         sorgente = "1318";
-        appContext.getBean(UploadAnni.class).uploadTestMorte(sorgente);
+        appContext.getBean(UploadAnni.class).conParagrafi().morte().test().upload(sorgente);
     }
 
 //    @Test
@@ -95,7 +95,7 @@ public class UploadAnniTest extends WikiTest {
     void uploadNatiTest() {
         System.out.println("4 - Upload di un anno nati");
         sorgente = "1785";
-        appContext.getBean(UploadAnni.class).uploadTestNascita(sorgente);
+//        appContext.getBean(UploadAnni.class).uploadTestNascita(sorgente);
     }
 
 //    @Test
@@ -104,7 +104,7 @@ public class UploadAnniTest extends WikiTest {
     void uploadMortiReale() {
         System.out.println("5 - Upload reale di un anno morto");
         sorgente = "214 a.C.";
-        appContext.getBean(UploadAnni.class).uploadMorte(sorgente);
+//        appContext.getBean(UploadAnni.class).uploadMorte(sorgente);
     }
 
 
@@ -114,7 +114,7 @@ public class UploadAnniTest extends WikiTest {
     void uploadMortiReale2() {
         System.out.println("6 - Upload reale di un anno morti");
         sorgente = "1318";
-        appContext.getBean(UploadAnni.class).uploadMorte(sorgente);
+//        appContext.getBean(UploadAnni.class).uploadMorte(sorgente);
     }
 
 //    @Test
@@ -123,10 +123,10 @@ public class UploadAnniTest extends WikiTest {
     void uploadNatiReale() {
         System.out.println("7 - Upload reale di un anno nati");
         sorgente = "1785";
-        appContext.getBean(UploadAnni.class).uploadNascita(sorgente);
+//        appContext.getBean(UploadAnni.class).uploadNascita(sorgente);
     }
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("4 - Upload all")
     void uploadAll() {

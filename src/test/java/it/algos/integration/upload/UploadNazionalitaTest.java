@@ -78,26 +78,37 @@ public class UploadNazionalitaTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
+
     @Test
     @Order(2)
-    @DisplayName("2 - Upload di una nazionalità plurale")
-    void getListaDidascalie() {
-        System.out.println("2 - Upload di una nazionalità plurale");
-        System.out.println(VUOTA);
-        sorgente = "arabi";
-        int oldValue;
-        int tempValue = 50;
-
-        System.out.println("Metto da parte il valore della preferenza");
-        oldValue = WPref.sogliaSottoPagina.getInt();
-        System.out.println("Regolo provvisoriamente il valore della preferenza");
-        WPref.sogliaSottoPagina.setValue(tempValue);
-
-        appContext.getBean(UploadNazionalita.class).uploadTest(sorgente);
-
-        System.out.println("Ripristino il valore originario della preferenza");
-        WPref.sogliaSottoPagina.setValue(oldValue);
+    @DisplayName("2 - Upload test di una nazionalità plurale")
+    void uploadMortiTest() {
+        System.out.println("2 - Upload test di una nazionalità plurale");
+        sorgente = "azeri";
+        //        appContext.getBean(UploadNazionalita.class).pagina().uploadTest();
+        ottenutoRisultato = appContext.getBean(UploadNazionalita.class).plurale().pagina().test().upload(sorgente);
     }
+
+    //    @Test
+    //    @Order(2)
+    //    @DisplayName("2 - Upload di una nazionalità plurale")
+    //    void getListaDidascalie() {
+    //        System.out.println("2 - Upload di una nazionalità plurale");
+    //        System.out.println(VUOTA);
+    //        sorgente = "azeri";
+    //        int oldValue;
+    //        int tempValue = 50;
+    //
+    //        System.out.println("Metto da parte il valore della preferenza");
+    //        oldValue = WPref.sogliaSottoPagina.getInt();
+    //        System.out.println("Regolo provvisoriamente il valore della preferenza");
+    //        WPref.sogliaSottoPagina.setValue(tempValue);
+    //
+    //        appContext.getBean(UploadNazionalita.class).uploadTest(sorgente);
+    //
+    //        System.out.println("Ripristino il valore originario della preferenza");
+    //        WPref.sogliaSottoPagina.setValue(oldValue);
+    //    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

@@ -16,7 +16,8 @@ public enum AETypeLista {
     annoMorte("morti", "anno"),
     nazionalitaSingolare("singolare", VUOTA),
     nazionalitaPlurale("plurale", VUOTA),
-    attivita(VUOTA, VUOTA),
+    attivitaSingolare("singolare", VUOTA),
+    attivitaPlurale("plurale", VUOTA),
     listaBreve(VUOTA, VUOTA),
     listaEstesa(VUOTA, VUOTA);
 

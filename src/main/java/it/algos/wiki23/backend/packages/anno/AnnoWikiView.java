@@ -180,8 +180,7 @@ public class AnnoWikiView extends WikiView {
      */
     @Override
     protected void wikiPageGiornoAnno() {
-        AnnoWiki anno = (AnnoWiki) super.wikiPage();
-        wikiApiService.openWikiPage(anno.nome);
+        wikiApiService.openWikiPage(getNomeAnno());
     }
 
     /**
@@ -210,8 +209,7 @@ public class AnnoWikiView extends WikiView {
      */
     @Override
     public void testPaginaNati() {
-        AnnoWiki anno = (AnnoWiki) super.wikiPage();
-        appContext.getBean(UploadAnni.class).uploadTestNascita(anno.nome);
+        appContext.getBean(UploadAnni.class).nascita().test().upload(getNomeAnno());
         reload();
     }
 
@@ -222,11 +220,17 @@ public class AnnoWikiView extends WikiView {
      */
     @Override
     public void testPaginaMorti() {
-        AnnoWiki anno = (AnnoWiki) super.wikiPage();
-        appContext.getBean(UploadAnni.class).uploadTestMorte(anno.nome);
+        appContext.getBean(UploadAnni.class).morte().test().upload(getNomeAnno());
         reload();
     }
 
+    /**
+     * Esegue un azione di upload, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void upload() {
+        appContext.getBean(UploadAnni.class).uploadAll();
+    }
 
     /**
      * Scrive una pagina definitiva sul server wiki <br>
@@ -234,8 +238,7 @@ public class AnnoWikiView extends WikiView {
      */
     @Override
     public void uploadPaginaNati() {
-        String nomeAnno = getNomeAnno();
-        appContext.getBean(UploadAnni.class).uploadNascita(nomeAnno);
+        appContext.getBean(UploadAnni.class).nascita().upload(getNomeAnno());
         reload();
     }
 
@@ -244,8 +247,7 @@ public class AnnoWikiView extends WikiView {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void uploadPaginaMorti() {
-        String nomeAnno = getNomeAnno();
-        appContext.getBean(UploadAnni.class).uploadMorte(nomeAnno);
+        appContext.getBean(UploadAnni.class).morte().upload(getNomeAnno());
         reload();
     }
 

@@ -51,12 +51,8 @@ public class ListaGiorniTest extends WikiTest {
                 Arguments.of(VUOTA, AETypeLista.giornoNascita),
                 Arguments.of(VUOTA, AETypeLista.giornoMorte),
                 Arguments.of("3 luglio", AETypeLista.giornoNascita),
-                Arguments.of("3 luglio", AETypeLista.giornoMorte),
-                Arguments.of("1º gennaio", AETypeLista.giornoNascita),
                 Arguments.of("1º gennaio", AETypeLista.giornoMorte),
                 Arguments.of("25 ottobre", AETypeLista.giornoNascita),
-                Arguments.of("25 ottobre", AETypeLista.giornoMorte),
-                Arguments.of("29 febbraio", AETypeLista.giornoNascita),
                 Arguments.of("29 febbraio", AETypeLista.giornoMorte)
         );
     }
@@ -190,55 +186,55 @@ public class ListaGiorniTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
-    @MethodSource(value = "GIORNI")
-    @Order(5)
-    @DisplayName("5 - Mappa didascalie di vari giorni")
-        //--nome giorno
-        //--typeLista
-    void mappaDidascalia(final String nomeGiorno, final AETypeLista type) {
-        System.out.println("5 - Mappa didascalie di vari giorni");
-        sorgente = nomeGiorno;
-        int numVoci;
+////    @ParameterizedTest
+//    @MethodSource(value = "GIORNI")
+//    @Order(5)
+//    @DisplayName("5 - Mappa didascalie di vari giorni")
+//        //--nome giorno
+//        //--typeLista
+//    void mappaDidascalia(final String nomeGiorno, final AETypeLista type) {
+//        System.out.println("5 - Mappa didascalie di vari giorni");
+//        sorgente = nomeGiorno;
+//        int numVoci;
+//
+//        mappa = switch (type) {
+//            case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(sorgente).mappaDidascalia();
+//            case giornoMorte -> appContext.getBean(ListaGiorni.class).morte(sorgente).mappaDidascalia();
+//            default -> null;
+//        };
+//
+//        if (mappa != null && mappa.size() > 0) {
+//            numVoci = wikiUtility.getSizeAll(mappa);
+//            message = String.format("Ci sono %d didascalie che implementano il giorno di %s %s", numVoci, type, sorgente);
+//            System.out.println(message);
+//            System.out.println(VUOTA);
+//            printMappa(mappa);
+//        }
+//        else {
+//            message = "La mappa è nulla";
+//            System.out.println(message);
+//        }
+//    }
 
-        mappa = switch (type) {
-            case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(sorgente).mappaDidascalia();
-            case giornoMorte -> appContext.getBean(ListaGiorni.class).morte(sorgente).mappaDidascalia();
-            default -> null;
-        };
 
-        if (mappa != null && mappa.size() > 0) {
-            numVoci = wikiUtility.getSizeAll(mappa);
-            message = String.format("Ci sono %d didascalie che implementano il giorno di %s %s", numVoci, type, sorgente);
-            System.out.println(message);
-            System.out.println(VUOTA);
-            printMappa(mappa);
-        }
-        else {
-            message = "La mappa è nulla";
-            System.out.println(message);
-        }
-    }
-
-
-    @ParameterizedTest
-    @MethodSource(value = "GIORNI")
-    @Order(6)
-    @DisplayName("6 - Testo body di vari giorni")
-        //--nome giorno
-        //--typeLista
-    void testoBody(final String nomeGiorno, final AETypeLista type) {
-        System.out.println("6 - Testo body di vari giorni");
-        System.out.println(VUOTA);
-        sorgente = nomeGiorno;
-
-        ottenutoRisultato = switch (type) {
-            case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(sorgente).testoBody();
-            case giornoMorte -> appContext.getBean(ListaGiorni.class).morte(sorgente).testoBody();
-            default -> null;
-        };
-        System.out.println(ottenutoRisultato.getContent());
-    }
+//    @ParameterizedTest
+//    @MethodSource(value = "GIORNI")
+//    @Order(6)
+//    @DisplayName("6 - Testo body di vari giorni")
+//        //--nome giorno
+//        //--typeLista
+//    void testoBody(final String nomeGiorno, final AETypeLista type) {
+//        System.out.println("6 - Testo body di vari giorni");
+//        System.out.println(VUOTA);
+//        sorgente = nomeGiorno;
+//
+//        ottenutoRisultato = switch (type) {
+//            case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(sorgente).testoBody();
+//            case giornoMorte -> appContext.getBean(ListaGiorni.class).morte(sorgente).testoBody();
+//            default -> null;
+//        };
+//        System.out.println(ottenutoRisultato.getContent());
+//    }
 
 
     protected void printBioListaGiorniNato(List<Bio> listaBio) {
