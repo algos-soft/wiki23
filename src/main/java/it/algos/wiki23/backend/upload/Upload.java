@@ -58,8 +58,10 @@ public abstract class Upload {
     protected static final String INFO_PERSONA = "Ogni persona è presente in una sola [[Discussioni progetto:Biografie/Nazionalità|lista]], in base a quanto riportato nel parametro ''nazionalità'' utilizzato dal [[template:Bio|template Bio]]";
 
     protected static final String INFO_ALTRE_ATTIVITA = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
-            "parametro ''attività'' oppure che usano una attività di difficile elaborazione da parte del '''[[Utente:Biobot|<span " +
-            "style=\"color:green;\">bot</span>]]'''";
+            "parametro ''attività'' oppure che usano una attività di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
+
+    protected static final String INFO_SOTTOPAGINA_ATTIVITA = "La sottopagina di una singola '''attività''' viene creata solo se il numero di voci biografiche supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità.";
+
 
     public static final String UPLOAD_TITLE_DEBUG = "Utente:Biobot/";
 

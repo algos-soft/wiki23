@@ -89,9 +89,9 @@ public abstract class UploadAttivitaNazionalita extends Upload {
     }
 
     /**
-     * Esegue la scrittura della pagina <br>
+     * Esegue la scrittura della sottopagina <br>
      */
-    public WResult upload(final String wikiTitle, List<WrapLista> lista) {
+    public WResult uploadSottoPagina(final String wikiTitle, String nazionalita, String attivita, List<WrapLista> lista) {
         this.typeUpload = AETypeUpload.sottoPagina;
         this.wikiTitle = wikiTitle;
 
@@ -100,7 +100,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         }
 
         if (textService.isValid(this.wikiTitle) && lista != null) {
-            this.esegueUploadSotto(this.wikiTitle, lista);
+            this.esegueUploadSotto(this.wikiTitle, nazionalita, attivita, lista);
         }
 
         return WResult.crea();
@@ -114,13 +114,13 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         buffer.append(CAPO);
         buffer.append(includeIni());
         buffer.append(fixToc());
+        buffer.append(torna(wikiTitle));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
         buffer.append(CAPO);
         buffer.append(incipit());
         buffer.append(CAPO);
         buffer.append(testoBody(mappa));
-        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
         buffer.append(note());
         buffer.append(CAPO);
         buffer.append(correlate());
@@ -147,6 +147,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         List<WrapLista> lista;
         int numVoci;
         int max = WPref.sogliaSottoPagina.getInt();
+        int maxDiv = WPref.sogliaDiv.getInt();
         boolean usaDiv;
         String titoloParagrafoLink;
         String vedi;
@@ -162,10 +163,15 @@ public abstract class UploadAttivitaNazionalita extends Upload {
                 parente = String.format("%s%s%s%s%s", titoloLinkVediAnche, SLASH, textService.primaMaiuscola(nomeLista), SLASH, keyParagrafo);
                 vedi = String.format("{{Vedi anche|%s}}", parente);
                 buffer.append(vedi + CAPO);
-                //                appContext.getBean(UploadNazionalita.class).sottoPagina().test().upload(parente, lista);
+                if (uploadTest) {
+                    appContext.getBean(UploadNazionalita.class).test().uploadSottoPagina(parente, nomeLista,keyParagrafo,lista);
+                }
+                else {
+                    appContext.getBean(UploadNazionalita.class).uploadSottoPagina(parente, nomeLista,keyParagrafo,lista);
+                }
             }
             else {
-                usaDiv = lista.size() > 3;
+                usaDiv = lista.size() > maxDiv;
                 buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
                 for (WrapLista wrap : lista) {
                     buffer.append(ASTERISCO);
@@ -217,7 +223,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
     }
 
 
-    protected WResult esegueUploadSotto(String wikiTitle, List<WrapLista> lista) {
+    protected WResult esegueUploadSotto(String wikiTitle, String nazionalita, String attivita, List<WrapLista> lista) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = lista.size();
 
@@ -225,13 +231,13 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         buffer.append(CAPO);
         buffer.append(includeIni());
         buffer.append(fixToc());
+        buffer.append(torna(wikiTitle));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
         buffer.append(CAPO);
-        buffer.append(incipit());
+        buffer.append(incipitSottoPagina(nazionalita, attivita));
         buffer.append(CAPO);
         buffer.append(testoSottoPagina(lista));
-        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
         buffer.append(note());
         buffer.append(CAPO);
         buffer.append(correlate());
@@ -240,6 +246,10 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         buffer.append(categorie());
 
         return registra(wikiTitle, buffer.toString().trim());
+    }
+
+    protected String incipitSottoPagina(String nazionalita, String attivita) {
+        return VUOTA;
     }
 
 }
