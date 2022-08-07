@@ -38,24 +38,24 @@ public abstract class ListaAttivitaNazionalita extends Lista {
     }// end of constructor
 
 
-    /**
-     * Testo del body di upload con paragrafi e righe <br>
-     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public WResult testoBody() {
-        String newText = VUOTA;
-        int numVoci = 0;
-
-        super.testoBody();
-
-        if (mappaDidascalia != null && mappaDidascalia.size() > 0) {
-            numVoci = wikiUtility.getSize(mappaDidascalia);
-            newText = testoConParagrafi();
-        }
-
-        return WResult.crea().content(newText).intValue(numVoci);
-    }
+//    /**
+//     * Testo del body di upload con paragrafi e righe <br>
+//     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+//     */
+//    @Override
+//    public WResult testoBody() {
+//        String newText = VUOTA;
+//        int numVoci = 0;
+//
+//        super.testoBody();
+//
+//        if (mappaDidascalia != null && mappaDidascalia.size() > 0) {
+//            numVoci = wikiUtility.getSize(mappaDidascalia);
+//            newText = testoConParagrafi();
+//        }
+//
+//        return WResult.crea().content(newText).intValue(numVoci);
+//    }
 
 
     public String testoConParagrafi() {

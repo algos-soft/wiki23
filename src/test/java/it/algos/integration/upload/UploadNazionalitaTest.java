@@ -85,8 +85,6 @@ public class UploadNazionalitaTest extends WikiTest {
     void uploadMortiTest() {
         System.out.println("2 - Upload test di una nazionalità plurale");
         sorgente = "afghani";
-        //        appContext.getBean(UploadNazionalita.class).pagina().uploadTest();
-//        ottenutoRisultato = appContext.getBean(UploadNazionalita.class).plurale().pagina().test().upload(sorgente);
         ottenutoRisultato = appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
     }
 

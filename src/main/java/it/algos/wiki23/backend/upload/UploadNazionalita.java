@@ -21,6 +21,10 @@ import java.util.*;
  * User: gac
  * Date: Tue, 14-Jun-2022
  * Time: 18:48
+ * Classe specializzata per caricare (upload) le liste di nazionalità sul server wiki. <br>
+ * Usata fondamentalmente da NazionalitàWikiView con appContext.getBean(UploadNazionalita.class).upload(nomeGiorno).upload(nomeNazionalitaPlurale) <br>
+ * <p>
+ * Necessita del login come bot <br>
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -119,10 +123,6 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
         return buffer.toString();
     }
 
-    protected String sottoPaginaAttNaz() {
-        return String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita));
-    }
-
     protected String correlate() {
         StringBuffer buffer = new StringBuffer();
         String cat = textService.primaMaiuscola(nomeLista);
@@ -149,41 +149,9 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
         return buffer.toString();
     }
 
-    //    /**
-    //     * Esegue la scrittura della pagina <br>
-    //     */
-    //    public void uploadTest(String nazionalitaPlurale) {
-    //        WResult result;
-    //        this.typeCrono = AETypeLista.nazionalitaPlurale;
-    //        this.nomeLista = nazionalitaPlurale;
-    //        this.uploadTest = true;
-    //        String wikiTitle = UPLOAD_TITLE_DEBUG + textService.primaMaiuscola(nazionalitaPlurale);
-    //        //        result = appContext.getBean(ListaNazionalita.class).plurale(nazionalitaPlurale).testoBody();
-    //        //        this.esegue(wikiTitle, result.getContent(), result.getIntValue());
-    //
-    //        Map<String, List<String>> mappa = appContext.getBean(ListaNazionalita.class).plurale(nazionalitaPlurale).mappaDidascalia();
-    //    }
-
-    //    /**
-    //     * Esegue la scrittura della sotto-pagina <br>
-    //     */
-    //    public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
-    //        UploadNazionalita sottoPagina = appContext.getBean(UploadNazionalita.class);
-    //        sottoPagina.esegueSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, mappaSub);
-    //    }
-    //
-    //    /**
-    //     * Esegue la scrittura della sotto-sotto-pagina <br>
-    //     */
-    //    public void uploadSottoSottoPagina(String wikiTitleParente, List<String> listaSub) {
-    //        UploadNazionalita sottoSottoPagina = appContext.getBean(UploadNazionalita.class);
-    //        sottoSottoPagina.esegueSubSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, listaSub);
-    //    }
 
     /**
-     * Esegue la scrittura di tutte le pagine <br>
-     * Tutti i giorni nati <br>
-     * Tutti i giorni morti <br>
+     * Esegue la scrittura di tutte le pagine di nazionalità <br>
      */
     public WResult uploadAll() {
         WResult result = WResult.errato();
