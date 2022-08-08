@@ -175,10 +175,11 @@ public abstract class WikiTest extends AlgosTest {
         return Stream.of(
                 Arguments.of(null, false),
                 Arguments.of(VUOTA, false),
+                Arguments.of("Meena Keshwar Kamal", true),
+                Arguments.of("Werburga", true),
                 Arguments.of("Roman Protasevič", true),
                 Arguments.of("Aldelmo di Malmesbury", true),
                 Arguments.of("Aelfric il grammatico", true),
-                Arguments.of("Werburga", true),
                 Arguments.of("Bernart Arnaut d'Armagnac", true),
                 Arguments.of("Elfleda di Whitby", true),
                 Arguments.of("Gaetano Anzalone", true),
@@ -189,7 +190,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Regno di Napoli (1806-1815)", false),
                 Arguments.of("Rossi", false),
                 Arguments.of("Bartolomeo Giuseppe Amico di Castell'Alfero", true),
-                Arguments.of("Lucio Anneo Seneca", true)
+                Arguments.of("Lucio Anneo Seneca", true),
+                Arguments.of("Ashur-uballit I", true)
         );
     }
 
@@ -251,14 +253,14 @@ public abstract class WikiTest extends AlgosTest {
     //--typeLista
     protected static Stream<Arguments> NAZIONALITA() {
         return Stream.of(
-                Arguments.of(VUOTA, AETypeLista.listaBreve),
-                Arguments.of(VUOTA, AETypeLista.nazionalitaSingolare),
-                Arguments.of("azeri", AETypeLista.nazionalitaPlurale),
-                Arguments.of("arabi", AETypeLista.nazionalitaPlurale),
-                Arguments.of("libanesi", AETypeLista.nazionalitaPlurale),
-                Arguments.of("cingalese", AETypeLista.nazionalitaSingolare),
-                Arguments.of("pakistana", AETypeLista.nazionalitaSingolare),
+//                Arguments.of(VUOTA, AETypeLista.listaBreve),
+//                Arguments.of(VUOTA, AETypeLista.nazionalitaSingolare),
+//                Arguments.of("azeri", AETypeLista.nazionalitaPlurale),
+//                Arguments.of("arabi", AETypeLista.nazionalitaPlurale),
+//                Arguments.of("libanesi", AETypeLista.nazionalitaPlurale),
+//                Arguments.of("cingalese", AETypeLista.nazionalitaSingolare),
                 Arguments.of("mongoli", AETypeLista.nazionalitaPlurale),
+                Arguments.of("assiri", AETypeLista.nazionalitaPlurale),
                 Arguments.of("persiani", AETypeLista.nazionalitaPlurale)
 
         );

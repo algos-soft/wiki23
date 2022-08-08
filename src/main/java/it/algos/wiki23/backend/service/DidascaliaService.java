@@ -52,7 +52,7 @@ public class DidascaliaService extends WAbstractService {
         if (listaBio != null) {
             listaDidascalie = new ArrayList<>();
             for (Bio bio : listaBio) {
-                didascalia = getDidascaliaLista(bio);
+                didascalia = lista(bio);
                 if (textService.isValid(didascalia)) {
                     listaDidascalie.add(didascalia);
                 }
@@ -62,20 +62,6 @@ public class DidascaliaService extends WAbstractService {
         return listaDidascalie;
     }
 
-    /**
-     * Costruisce la didascalia completa per una lista (persone di nome, persone di cognome) <br>
-     *
-     * @param bio completa
-     *
-     * @return didascalia completa
-     */
-    public String getDidascaliaLista(final Bio bio) {
-        String nomeCognome = this.getNomeCognome(bio);
-        String attivitaNazionalita = this.getAttivitaNazionalita(bio);
-        String natoMorto = this.getNatoMorto(bio);
-
-        return String.format("%s%s%s%s%s", nomeCognome, VIRGOLA_SPAZIO, attivitaNazionalita, SPAZIO, natoMorto);
-    }
 
     /**
      * Costruisce il nome e cognome (obbligatori) <br>
@@ -181,166 +167,6 @@ public class DidascaliaService extends WAbstractService {
         return attivitaNazionalita;
     }
 
-    /**
-     * Costruisce il blocco luogo-anno-nascita-morte (facoltativi) <br>
-     *
-     * @param bio completa
-     *
-     * @return luogo-anno-nascita-morte
-     */
-    public String getNatoMorto(final Bio bio) {
-        String crono = VUOTA;
-        String tagNato = WPref.simboloNato.getStr();
-        String tagMorto = WPref.simboloMorto.getStr();
-        String luogoNato = textService.isValid(bio.luogoNato) ? bio.luogoNato : VUOTA;
-        String luogoNatoLink = bio.luogoNatoLink;
-        String annoNato = linkAnnoNato(bio);
-        String luogoMorto = textService.isValid(bio.luogoMorto) ? bio.luogoMorto : VUOTA;
-        String luogoMortoLink = bio.luogoMortoLink;
-        String annoMorto = wikiUtility.linkAnnoMortoCoda(bio);
-
-        if (textService.isValid(luogoNatoLink)) {
-            luogoNato = luogoNatoLink + PIPE + luogoNato;
-        }
-        luogoNato = textService.setDoppieQuadre(luogoNato);
-        if (textService.isValid(luogoMortoLink)) {
-            luogoMorto = luogoMortoLink + PIPE + luogoMorto;
-        }
-        luogoMorto = textService.setDoppieQuadre(luogoMorto);
-
-        crono += textService.isValid(luogoNato) ? luogoNato : VUOTA;
-        crono += textService.isValid(luogoNato) && textService.isValid(annoNato) ? VIRGOLA_SPAZIO : VUOTA;
-        crono += annoNato;
-        crono += textService.isValid(crono) && (textService.isValid(luogoMorto) || textService.isValid(annoMorto)) ? SEP : VUOTA;
-        crono += textService.isValid(luogoMorto) ? luogoMorto : VUOTA;
-        crono += textService.isValid(luogoMorto) && textService.isValid(annoMorto) ? VIRGOLA_SPAZIO : VUOTA;
-        crono += annoMorto;
-
-        //        crono = text.levaCoda(crono, SEP);
-        return textService.isValid(crono) ? textService.setTonde(crono) : VUOTA;
-    }
-
-
-    public String linkGiornoNato(final Bio bio) {
-        if (bio != null && textService.isValid(bio.giornoNato)) {
-            return linkGiornoNato(bio.giornoNato);
-        }
-        else {
-            return VUOTA;
-        }
-    }
-
-    public String linkGiornoNato(String giornoNato) {
-        String giornoNatoLinkato = giornoNato;
-        String tagNato = WPref.simboloNato.getStr();
-        Object obj = WPref.linkCrono.getEnumCurrentObj();
-        if (obj instanceof AETypeLinkCrono type) {
-            switch (type) {
-                case voce -> giornoNatoLinkato = textService.setDoppieQuadre(giornoNato);
-                case lista -> {
-                    giornoNato = wikiUtility.wikiTitleNatiGiorno(giornoNato) + PIPE + giornoNato;
-                    giornoNatoLinkato = textService.setDoppieQuadre(giornoNato);
-                }
-                case nessuno -> giornoNatoLinkato = giornoNato;
-                default -> giornoNatoLinkato = giornoNato;
-            } ;
-
-        }
-
-        return tagNato + giornoNatoLinkato;
-    }
-
-
-    public String linkGiornoMorto(final Bio bio) {
-        if (bio != null && textService.isValid(bio.giornoMorto)) {
-            return linkGiornoMorto(bio.giornoMorto);
-        }
-        else {
-            return VUOTA;
-        }
-    }
-
-    public String linkGiornoMorto(String giornoMorto) {
-        String giornoMortoLinkato = giornoMorto;
-        String tagMorto = WPref.simboloMorto.getStr();
-        Object obj = WPref.linkCrono.getEnumCurrentObj();
-
-        if (obj instanceof AETypeLinkCrono type) {
-            switch (type) {
-                case voce -> giornoMortoLinkato = textService.setDoppieQuadre(giornoMorto);
-                case lista -> {
-                    giornoMorto = wikiUtility.wikiTitleNatiGiorno(giornoMorto) + PIPE + giornoMorto;
-                    giornoMortoLinkato = textService.setDoppieQuadre(giornoMorto);
-                }
-                case nessuno -> giornoMortoLinkato = giornoMorto;
-                default -> giornoMortoLinkato = giornoMorto;
-            } ;
-
-        }
-
-        return tagMorto + giornoMortoLinkato;
-    }
-
-
-    public String linkAnnoNato(final Bio bio) {
-        if (bio != null && textService.isValid(bio.annoNato)) {
-            return linkAnnoNato(bio.annoNato);
-        }
-        else {
-            return VUOTA;
-        }
-    }
-
-    public String linkAnnoNato(String annoNato) {
-        String annoNatoLinkato = annoNato;
-        String tagNato = WPref.simboloNato.getStr();
-        Object obj = WPref.linkCrono.getEnumCurrentObj();
-
-        if (obj instanceof AETypeLinkCrono type) {
-            switch (type) {
-                case voce -> annoNatoLinkato = textService.setDoppieQuadre(annoNato);
-                case lista -> {
-                    annoNato = wikiUtility.wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
-                    annoNatoLinkato = textService.setDoppieQuadre(annoNato);
-                }
-                case nessuno -> annoNatoLinkato = annoNato;
-                default -> annoNatoLinkato = annoNato;
-            } ;
-
-        }
-
-        return tagNato + annoNatoLinkato;
-    }
-
-    //    public String linkAnnoMorto(final Bio bio) {
-    //        if (bio != null && textService.isValid(bio.annoMorto)) {
-    //            return linkAnnoMorto(bio.annoMorto);
-    //        }
-    //        else {
-    //            return VUOTA;
-    //        }
-    //    }
-
-    //    public String linkAnnoMorto(String annoMorto) {
-    //        String annoMortoLinkato = annoMorto;
-    //        String tagMorto = WPref.simboloMorto.getStr();
-    //        Object obj = WPref.linkCrono.getEnumCurrentObj();
-    //        if (obj instanceof AETypeLinkCrono type) {
-    //            switch (type) {
-    //                case voce -> annoMortoLinkato = textService.setDoppieQuadre(annoMorto);
-    //                case lista -> {
-    //                    annoMorto = wikiUtility.morti(annoMorto) + PIPE + annoMorto;
-    //                    annoMortoLinkato = textService.setDoppieQuadre(annoMorto);
-    //                }
-    //                case nessuno -> annoMortoLinkato = annoMorto;
-    //                default -> annoMortoLinkato = annoMorto;
-    //            } ;
-    //
-    //        }
-    //
-    //        return tagMorto + annoMortoLinkato;
-    //    }
-
 
     /**
      * Costruisce la didascalia completa per una lista di nati nel giorno <br>
@@ -352,7 +178,7 @@ public class DidascaliaService extends WAbstractService {
      *
      * @return didascalia completa
      */
-    public String getDidascaliaGiornoNato(final Bio bio) {
+    public String didascaliaGiornoNato(final Bio bio) {
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(textService.setDoppieQuadre(bio.wikiTitle));
@@ -361,9 +187,9 @@ public class DidascaliaService extends WAbstractService {
             buffer.append(getAttivitaNazionalita(bio));
         }
         buffer.append(SPAZIO);
-        buffer.append(wikiUtility.linkAnnoMortoCoda(bio));
+        buffer.append(annoMortoSimboloParentesi(bio));
 
-        return buffer.toString();
+        return buffer.toString().trim();
     }
 
     /**
@@ -376,7 +202,7 @@ public class DidascaliaService extends WAbstractService {
      *
      * @return didascalia completa
      */
-    public String getDidascaliaGiornoMorto(final Bio bio) {
+    public String didascaliaGiornoMorto(final Bio bio) {
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(textService.setDoppieQuadre(bio.wikiTitle));
@@ -385,44 +211,11 @@ public class DidascaliaService extends WAbstractService {
             buffer.append(getAttivitaNazionalita(bio));
         }
         buffer.append(SPAZIO);
-        buffer.append(wikiUtility.linkAnnoNatoCoda(bio));
+        buffer.append(annoNatoSimboloParentesi(bio));
 
         return buffer.toString();
     }
 
-    /**
-     * Costruisce (se esiste) la data (giorno) di nascita <br>
-     *
-     * @param bio completa
-     *
-     * @return data di nascita
-     */
-    public String getGiornoNato(final Bio bio) {
-        String nascita = linkGiornoNato(bio);
-
-        if (textService.isValid(nascita)) {
-            nascita = textService.setTonde(nascita);
-        }
-
-        return nascita;
-    }
-
-    /**
-     * Costruisce (se esiste) la data (giorno) di morte <br>
-     *
-     * @param bio completa
-     *
-     * @return data di nascita
-     */
-    public String getGiornoMorto(final Bio bio) {
-        String nascita = linkGiornoMorto(bio);
-
-        if (textService.isValid(nascita)) {
-            nascita = textService.setTonde(nascita);
-        }
-
-        return nascita;
-    }
 
     /**
      * Costruisce la didascalia completa per una lista di nati nell'anno <br>
@@ -434,7 +227,7 @@ public class DidascaliaService extends WAbstractService {
      *
      * @return didascalia completa
      */
-    public String getDidascaliaAnnoNato(final Bio bio) {
+    public String didascaliaAnnoNato(final Bio bio) {
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(textService.setDoppieQuadre(bio.wikiTitle));
@@ -443,7 +236,7 @@ public class DidascaliaService extends WAbstractService {
             buffer.append(getAttivitaNazionalita(bio));
         }
         buffer.append(SPAZIO);
-        buffer.append(wikiUtility.linkAnnoMortoCoda(bio));
+        buffer.append(annoMortoSimboloParentesi(bio));
 
         return buffer.toString();
     }
@@ -455,7 +248,7 @@ public class DidascaliaService extends WAbstractService {
      *
      * @return didascalia completa
      */
-    public String getDidascaliaAnnoMorto(final Bio bio) {
+    public String didascaliaAnnoMorto(final Bio bio) {
         StringBuffer buffer = new StringBuffer();
         boolean nonBreaking = Pref.usaNonBreaking.is();
 
@@ -465,46 +258,10 @@ public class DidascaliaService extends WAbstractService {
             buffer.append(getAttivitaNazionalita(bio));
         }
         buffer.append(nonBreaking ? Pref.nonBreaking.getStr() : SPAZIO);
-        buffer.append(wikiUtility.linkAnnoNatoCoda(bio));
+        buffer.append(annoNatoSimboloParentesi(bio));
 
         return buffer.toString();
     }
-
-    //    /**
-    //     * Costruisce (se esiste) la data (anno) di nascita <br>
-    //     *
-    //     * @param bio completa
-    //     *
-    //     * @return data di nascita
-    //     */
-    //    @Deprecated
-    //    public String getAnnoNato(final Bio bio) {
-    //        String nascita = linkAnnoNato(bio);
-    //
-    //        if (textService.isValid(nascita)) {
-    //            nascita = textService.setTonde(nascita);
-    //        }
-    //
-    //        return nascita;
-    //    }
-
-    //    /**
-    //     * Costruisce (se esiste) la data (anno) di morte <br>
-    //     *
-    //     * @param bio completa
-    //     *
-    //     * @return data di morte
-    //     */
-    //    @Deprecated
-    //    public String getAnnoMorto(final Bio bio) {
-    //        String morte = wikiUtility.linkAnnoMorto(bio, true);
-    //
-    //        if (textService.isValid(morte)) {
-    //            morte = textService.setTonde(morte);
-    //        }
-    //
-    //        return morte;
-    //    }
 
 
     public String getWikiTitle(final Bio bio) {
@@ -523,27 +280,6 @@ public class DidascaliaService extends WAbstractService {
         return wikiTitle;
     }
 
-    //    /**
-    //     * Costruisce il blocco luogo-anno-nascita-morte (facoltativi) <br>
-    //     *
-    //     * @param wikiTitle      della pagina sul server wiki
-    //     * @param luogoNato      facoltativo
-    //     * @param luogoNatoLink  facoltativo
-    //     * @param annoNato       facoltativo
-    //     * @param luogoMorto     facoltativo
-    //     * @param luogoMortoLink facoltativo
-    //     * @param annoMorto      facoltativo
-    //     *
-    //     * @return luogo-anno-nascita-morte
-    //     */
-    //    public String getNatoMorto(final String wikiTitle, final String luogoNato, final String luogoNatoLink, final String annoNato, final String luogoMorto, final String luogoMortoLink, final String annoMorto) {
-    //        String natoMorto = VUOTA;
-    //
-    //        natoMorto+=luogoNato;
-    //        natoMorto+=luogoMorto;
-    //
-    //        return text.setTonde(natoMorto);
-    //    }
 
     /**
      * Costruisce una wrapLista specializzata per le righe delle pagine 'Nati nel giorno' <br>
@@ -567,7 +303,7 @@ public class DidascaliaService extends WAbstractService {
         }
 
         String sottoParagrafo = wikiUtility.linkAnnoNatoTesta(bio);
-        String didascalia = this.getDidascaliaGiornoNato(bio);
+        String didascalia = this.didascaliaGiornoNato(bio);
 
         return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
@@ -595,7 +331,7 @@ public class DidascaliaService extends WAbstractService {
         }
 
         String sottoParagrafo = wikiUtility.linkAnnoMortoTesta(bio);
-        String didascalia = this.getDidascaliaGiornoMorto(bio);
+        String didascalia = this.didascaliaGiornoMorto(bio);
 
         return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
@@ -622,7 +358,7 @@ public class DidascaliaService extends WAbstractService {
         }
 
         String sottoParagrafo = wikiUtility.linkGiornoNatoTesta(bio);
-        String didascalia = this.getDidascaliaAnnoNato(bio);
+        String didascalia = this.didascaliaAnnoNato(bio);
 
         return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
@@ -649,7 +385,7 @@ public class DidascaliaService extends WAbstractService {
         }
 
         String sottoParagrafo = wikiUtility.linkGiornoMortoTesta(bio);
-        String didascalia = this.getDidascaliaAnnoMorto(bio);
+        String didascalia = this.didascaliaAnnoMorto(bio);
 
         return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
@@ -684,7 +420,7 @@ public class DidascaliaService extends WAbstractService {
         }
 
         String sottoParagrafo = bio.ordinamento.substring(0, 1);
-        String didascalia = this.getDidascaliaLista(bio);
+        String didascalia = this.lista(bio);
 
         return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
     }
@@ -703,7 +439,7 @@ public class DidascaliaService extends WAbstractService {
     public WrapLista getWrapAttivita(final Bio bio) {
         String paragrafo = wikiUtility.fixParagrafoNazionalita(bio);
         String sottoParagrafo = bio.ordinamento.substring(0, 1);
-        String didascalia = this.getDidascaliaLista(bio);
+        String didascalia = this.lista(bio);
 
         return new WrapLista(paragrafo, textService.setDoppieQuadre(paragrafo), sottoParagrafo, didascalia);
     }
@@ -727,6 +463,147 @@ public class DidascaliaService extends WAbstractService {
             case listaEstesa -> null;
             default -> null;
         };
+    }
+
+    public String giornoNato(final Bio bio) {
+        return wikiUtility.linkGiornoNatoTesta(bio);
+    }
+
+    public String giornoNatoSimbolo(final Bio bio) {
+        return wikiUtility.linkGiornoNatoCoda(bio, false);
+    }
+
+    public String giornoNatoSimboloParentesi(final Bio bio) {
+        return wikiUtility.linkGiornoNatoCoda(bio, true);
+    }
+
+
+    public String giornoMorto(final Bio bio) {
+        return wikiUtility.linkGiornoMortoTesta(bio);
+    }
+
+    public String giornoMortoSimbolo(final Bio bio) {
+        return wikiUtility.linkGiornoMortoCoda(bio, false);
+    }
+
+    public String giornoMortoSimboloParentesi(final Bio bio) {
+        return wikiUtility.linkGiornoMortoCoda(bio, true);
+    }
+
+
+    public String annoNato(final Bio bio) {
+        return wikiUtility.linkAnnoNatoTesta(bio);
+    }
+
+    public String annoNatoSimbolo(final Bio bio) {
+        return wikiUtility.linkAnnoNatoCoda(bio, false);
+    }
+
+    public String annoNatoSimboloParentesi(final Bio bio) {
+        return wikiUtility.linkAnnoNatoCoda(bio, true);
+    }
+
+
+    public String annoMorto(final Bio bio) {
+        return wikiUtility.linkAnnoMortoTesta(bio);
+    }
+
+    public String annoMortoSimbolo(final Bio bio) {
+        return wikiUtility.linkAnnoMortoCoda(bio, false);
+    }
+
+    public String annoMortoSimboloParentesi(final Bio bio) {
+        return wikiUtility.linkAnnoMortoCoda(bio, true);
+    }
+
+    public String luogoNato(final Bio bio) {
+        String luogoNato = textService.isValid(bio.luogoNato) ? bio.luogoNato : VUOTA;
+        String luogoNatoLink = textService.isValid(bio.luogoNatoLink) ? bio.luogoNatoLink : VUOTA;
+        if (textService.isValid(luogoNato) && textService.isValid(luogoNatoLink)) {
+            luogoNato = luogoNatoLink + PIPE + luogoNato;
+        }
+
+        return textService.isValid(luogoNato) ? textService.setDoppieQuadre(luogoNato) : VUOTA;
+    }
+
+    public String luogoNatoAnno(final Bio bio) {
+        String luogoNato = luogoNato(bio);
+        String annoNato = annoNatoSimbolo(bio);
+
+        if (textService.isValid(luogoNato) && textService.isValid(annoNato)) {
+            return luogoNato + VIRGOLA_SPAZIO + annoNato;
+        }
+        else {
+            if (textService.isValid(luogoNato)) {
+                return luogoNato;
+            }
+            if (textService.isValid(annoNato)) {
+                return annoNato;
+            }
+        }
+
+        return VUOTA;
+    }
+
+
+    public String luogoMorto(final Bio bio) {
+        String luogoMorto = textService.isValid(bio.luogoMorto) ? bio.luogoMorto : VUOTA;
+        String luogoMortoLink = textService.isValid(bio.luogoMortoLink) ? bio.luogoMortoLink : VUOTA;
+        if (textService.isValid(luogoMorto) && textService.isValid(luogoMortoLink)) {
+            luogoMorto = luogoMortoLink + PIPE + luogoMorto;
+        }
+
+        return textService.isValid(luogoMorto) ? textService.setDoppieQuadre(luogoMorto) : VUOTA;
+    }
+
+    public String luogoMortoAnno(final Bio bio) {
+        String luogoMorto = luogoMorto(bio);
+        String annoMorto = annoMortoSimbolo(bio);
+
+        if (textService.isValid(luogoMorto) && textService.isValid(annoMorto)) {
+            return luogoMorto + VIRGOLA_SPAZIO + annoMorto;
+        }
+        else {
+            if (textService.isValid(luogoMorto)) {
+                return luogoMorto;
+            }
+            if (textService.isValid(annoMorto)) {
+                return annoMorto;
+            }
+        }
+
+        return VUOTA;
+    }
+
+    public String luogoNatoMorto(final Bio bio) {
+        String luogoNatoAnno = luogoNatoAnno(bio);
+        String luogoMortoAnno = luogoMortoAnno(bio);
+
+        if (textService.isValid(luogoNatoAnno) && textService.isValid(luogoMortoAnno)) {
+            return textService.setTonde(luogoNatoAnno + SEP + luogoMortoAnno);
+        }
+        else {
+            if (textService.isValid(luogoNatoAnno)) {
+                return textService.setTonde(luogoNatoAnno);
+            }
+            if (textService.isValid(luogoMortoAnno)) {
+                return textService.setTonde(luogoMortoAnno);
+            }
+        }
+
+        return VUOTA;
+    }
+
+    /**
+     * Costruisce la didascalia completa per una lista: <br>
+     * attività, nazionalità, persone di nome, persone di cognome <br>
+     *
+     * @param bio completa
+     *
+     * @return didascalia completa
+     */
+    public String lista(final Bio bio) {
+        return getNomeCognome(bio) + VIRGOLA_SPAZIO + getAttivitaNazionalita(bio) + SPAZIO + luogoNatoMorto(bio);
     }
 
 }

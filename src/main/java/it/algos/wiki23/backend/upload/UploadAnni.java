@@ -16,6 +16,10 @@ import java.util.*;
  * User: gac
  * Date: Fri, 22-Jul-2022
  * Time: 10:20
+ * Classe specializzata per caricare (upload) le liste di anni (nati/morti) sul server wiki. <br>
+ * Usata fondamentalmente da GiornoWikiView con appContext.getBean(UploadAnni.class).nascita/morte().upload(nomeAnno) <br>
+ * <p>
+ * Necessita del login come bot <br>
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -25,7 +29,7 @@ public class UploadAnni extends UploadGiorniAnni {
     /**
      * Costruttore base con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(UploadAttivita.class, attivita) <br>
+     * Uso: appContext.getBean(UploadAnni.class).nascita/morte().upload(nomeAnno) <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      */
     public UploadAnni() {
@@ -47,11 +51,15 @@ public class UploadAnni extends UploadGiorniAnni {
         return this;
     }
 
+    public UploadAnni test() {
+        this.uploadTest = true;
+        return this;
+    }
 
     /**
      * Esegue la scrittura di tutte le pagine <br>
-     * Tutti i giorni nati <br>
-     * Tutti i giorni morti <br>
+     * Tutti gli anni nati <br>
+     * Tutti gli anni morti <br>
      */
     public WResult uploadAll() {
         WResult result = WResult.errato();

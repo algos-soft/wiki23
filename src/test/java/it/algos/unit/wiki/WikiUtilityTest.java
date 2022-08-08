@@ -206,7 +206,7 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println(String.format("%s (nato il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
 
         previsto = "(n.&nbsp;[[Nati il 20 ottobre|20 ottobre]])";
-        ottenuto = service.linkGiornoNatoCoda(bio);
+        ottenuto = service.linkGiornoNatoCoda(bio,true);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (nato il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
@@ -231,7 +231,7 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println(String.format("%s (morto il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
 
         previsto = "(†&nbsp;[[Morti l'8 novembre|8 novembre]])";
-        ottenuto = service.linkGiornoMortoCoda(bio);
+        ottenuto = service.linkGiornoMortoCoda(bio,true);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (morto il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
@@ -255,7 +255,7 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println(String.format("%s (nato nel %s)%s%s", bio.getWikiTitle(), bio.annoNato, FORWARD, ottenuto));
 
         previsto = "(n.&nbsp;[[Nati nel 1792|1792]])";
-        ottenuto = service.linkAnnoNatoCoda(bio);
+        ottenuto = service.linkAnnoNatoCoda(bio,true);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (nato nel %s)%s%s", bio.getWikiTitle(), bio.annoNato, FORWARD, ottenuto));
@@ -281,7 +281,7 @@ public class WikiUtilityTest extends WikiTest {
 
 
         previsto = "(†&nbsp;[[Morti nell'835|835]])";
-        ottenuto = service.linkAnnoMortoCoda(bio);
+        ottenuto = service.linkAnnoMortoCoda(bio,true);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));

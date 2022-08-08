@@ -22,7 +22,7 @@ import java.util.*;
  * Date: Tue, 14-Jun-2022
  * Time: 18:48
  * Classe specializzata per caricare (upload) le liste di nazionalità sul server wiki. <br>
- * Usata fondamentalmente da NazionalitàWikiView con appContext.getBean(UploadNazionalita.class).upload(nomeGiorno).upload(nomeNazionalitaPlurale) <br>
+ * Usata fondamentalmente da NazionalitàWikiView con appContext.getBean(UploadNazionalita.class).upload(nomeNazionalitaPlurale) <br>
  * <p>
  * Necessita del login come bot <br>
  */
@@ -45,18 +45,18 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
     /**
      * Costruttore base con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(UploadAttivita.class, attivita) <br>
+     * Uso: appContext.getBean(UploadNazionalita.class).upload(nomeNazionalitaPlurale) <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
     public UploadNazionalita() {
+        super.summary = "[[Utente:Biobot/nazionalitàBio|nazionalitàBio]]";
         super.titoloLinkParagrafo = TITOLO_LINK_PARAGRAFO_ATTIVITA;
         super.titoloLinkVediAnche = TITOLO_LINK_PARAGRAFO_NAZIONALITA;
         super.typeCrono = AETypeLista.nazionalitaPlurale;
         super.lastUpload = WPref.uploadNazionalita;
         super.durataUpload = WPref.uploadNazionalitaTime;
         super.nextUpload = WPref.uploadNazionalitaPrevisto;
-        super.usaParagrafi = WPref.usaParagrafiGiorni.is();
     }// end of constructor
 
 
@@ -139,7 +139,7 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
         StringBuffer buffer = new StringBuffer();
         String cat = textService.primaMaiuscola(nomeLista);
 
-        if (typeUpload == AETypeUpload.sottoPagina) {
+        if (textService.isValid(nomeAttivitaSottoPagina)) {
             cat += SLASH + nomeAttivitaSottoPagina;
         }
 

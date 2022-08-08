@@ -27,26 +27,26 @@ public abstract class UploadAttivitaNazionalita extends Upload {
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      */
     public UploadAttivitaNazionalita() {
-        this.typeUpload = AETypeUpload.pagina;
-        this.usaParagrafi = true;
+        super.usaParagrafi = WPref.usaParagrafiAttNaz.is();
+        super.typeToc = (AETypeToc) WPref.typeTocAttNaz.getEnumCurrentObj();
     }// end of constructor
 
-    protected String fixToc() {
-        return AETypeToc.noToc.get();
-    }
 
-    public UploadAttivitaNazionalita pagina() {
-        this.typeUpload = AETypeUpload.pagina;
+    public UploadAttivitaNazionalita singolare() {
         return this;
     }
 
-    public UploadAttivitaNazionalita sottoPagina() {
-        this.typeUpload = AETypeUpload.sottoPagina;
+    public UploadAttivitaNazionalita plurale() {
         return this;
     }
 
-    public UploadAttivitaNazionalita sottoSottoPagina() {
-        this.typeUpload = AETypeUpload.sottoSottoPagina;
+    public UploadAttivitaNazionalita noToc() {
+        this.typeToc = AETypeToc.noToc;
+        return this;
+    }
+
+    public UploadAttivitaNazionalita forceToc() {
+        this.typeToc = AETypeToc.forceToc;
         return this;
     }
 
@@ -92,7 +92,6 @@ public abstract class UploadAttivitaNazionalita extends Upload {
      * Esegue la scrittura della sottopagina <br>
      */
     public WResult uploadSottoPagina(final String wikiTitle, String nazionalita, String attivita, List<WrapLista> lista) {
-        this.typeUpload = AETypeUpload.sottoPagina;
         this.wikiTitle = wikiTitle;
 
         if (uploadTest) {
@@ -120,7 +119,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         buffer.append(CAPO);
         buffer.append(incipit());
         buffer.append(CAPO);
-        buffer.append(testoBody(mappa));
+        buffer.append(testoPagina(mappa));
         buffer.append(note());
         buffer.append(CAPO);
         buffer.append(correlate());
@@ -131,14 +130,29 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         return registra(wikiTitle, buffer.toString().trim());
     }
 
+    protected WResult esegueUploadSotto(String wikiTitle, String nazionalita, String attivita, List<WrapLista> lista) {
+        StringBuffer buffer = new StringBuffer();
+        int numVoci = lista.size();
 
-    public String testoBody(Map<String, List<WrapLista>> mappa) {
+        buffer.append(avviso());
+        buffer.append(CAPO);
+        buffer.append(includeIni());
+        buffer.append(AETypeToc.noToc.get());
+        buffer.append(torna(wikiTitle));
+        buffer.append(tmpListaBio(numVoci));
+        buffer.append(includeEnd());
+        buffer.append(CAPO);
+        buffer.append(incipitSottoPagina(nazionalita, attivita));
+        buffer.append(CAPO);
+        buffer.append(testoSottoPagina(lista));
+        buffer.append(note());
+        buffer.append(CAPO);
+        buffer.append(correlate());
+        buffer.append(CAPO);
+        buffer.append(portale());
+        buffer.append(categorie());
 
-        return switch (typeUpload) {
-            case pagina -> testoPagina(mappa);
-            case sottoPagina -> VUOTA;
-            case sottoSottoPagina -> testoSottoSottoPagina(mappa);
-        };
+        return registra(wikiTitle, buffer.toString().trim());
     }
 
 
@@ -164,10 +178,10 @@ public abstract class UploadAttivitaNazionalita extends Upload {
                 vedi = String.format("{{Vedi anche|%s}}", parente);
                 buffer.append(vedi + CAPO);
                 if (uploadTest) {
-                    appContext.getBean(UploadNazionalita.class).test().uploadSottoPagina(parente, nomeLista,keyParagrafo,lista);
+                    appContext.getBean(UploadNazionalita.class).test().uploadSottoPagina(parente, nomeLista, keyParagrafo, lista);
                 }
                 else {
-                    appContext.getBean(UploadNazionalita.class).uploadSottoPagina(parente, nomeLista,keyParagrafo,lista);
+                    appContext.getBean(UploadNazionalita.class).uploadSottoPagina(parente, nomeLista, keyParagrafo, lista);
                 }
             }
             else {
@@ -218,35 +232,6 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         return buffer.toString().trim();
     }
 
-    public String testoSottoSottoPagina(Map<String, List<WrapLista>> mappa) {
-        return VUOTA;
-    }
-
-
-    protected WResult esegueUploadSotto(String wikiTitle, String nazionalita, String attivita, List<WrapLista> lista) {
-        StringBuffer buffer = new StringBuffer();
-        int numVoci = lista.size();
-
-        buffer.append(avviso());
-        buffer.append(CAPO);
-        buffer.append(includeIni());
-        buffer.append(fixToc());
-        buffer.append(torna(wikiTitle));
-        buffer.append(tmpListaBio(numVoci));
-        buffer.append(includeEnd());
-        buffer.append(CAPO);
-        buffer.append(incipitSottoPagina(nazionalita, attivita));
-        buffer.append(CAPO);
-        buffer.append(testoSottoPagina(lista));
-        buffer.append(note());
-        buffer.append(CAPO);
-        buffer.append(correlate());
-        buffer.append(CAPO);
-        buffer.append(portale());
-        buffer.append(categorie());
-
-        return registra(wikiTitle, buffer.toString().trim());
-    }
 
     protected String incipitSottoPagina(String nazionalita, String attivita) {
         return VUOTA;

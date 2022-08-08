@@ -79,47 +79,40 @@ public class UploadGiorniTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - Upload test di un giorno nati senza paragrafi")
-    void uploadTestNatiCon() {
-        System.out.println("2 - Upload test di un giorno nati senza paragrafi");
+    @DisplayName("2 - Upload test di un giorno morto con e senza paragrafi")
+    void uploadTestNato() {
+        System.out.println("2 - Upload test di un giorno morto senza paragrafi");
         sorgente = "25 settembre";
-        appContext.getBean(UploadGiorni.class).senzaParagrafi().nascita().test().upload(sorgente);
+        appContext.getBean(UploadGiorni.class).senzaParagrafi().morte().test().upload(sorgente);
+        appContext.getBean(UploadGiorni.class).conParagrafi().morte().test().upload(sorgente);
     }
 
     @Test
     @Order(3)
-    @DisplayName("3 - Upload test di un giorno nati con paragrafi")
-    void uploadTestMortiSenza() {
-        System.out.println("3 - Upload test di un giorno nati con paragrafi");
+    @DisplayName("3 - Upload test di un giorno morto con paragrafi")
+    void uploadTestMorto() {
+        System.out.println("3 - Upload test di un giorno morto con paragrafi");
         sorgente = "25 settembre";
-        appContext.getBean(UploadGiorni.class).conParagrafi().nascita().test().upload(sorgente);
+        appContext.getBean(UploadGiorni.class).conParagrafi().morte().test().upload(sorgente);
     }
 
     //            @Test
     @Order(4)
-    @DisplayName("4 - Upload reale di un giorno nati senza paragrafi")
-    void uploadNatiCon() {
-        System.out.println("4 - Upload reale di un giorno nati senza paragrafi");
-        sorgente = "24 maggio";
-//        appContext.getBean(UploadGiorni.class).senzaParagrafi().nascita(sorgente).upload();
+    @DisplayName("4 - Upload reale di un giorno nato con paragrafi")
+    void uploadReale() {
+        System.out.println("4 - Upload reale di un giorno nato con paragrafi");
+        sorgente = "25 settembre";
+        appContext.getBean(UploadGiorni.class).nascita().upload(sorgente);
     }
 
-    //        @Test
+
+//    @Test
     @Order(5)
-    @DisplayName("5 - Upload reale di un giorno morti con paragrafi")
-    void uploadMortiSenza() {
-        System.out.println("5 - Upload reale di un giorno morti con paragrafi");
-        sorgente = "24 maggio";
-//        appContext.getBean(UploadGiorni.class).senzaParagrafi().morte(sorgente).upload();
+    @DisplayName("5 - Upload all")
+    void uploadAll() {
+        System.out.println("5 - Upload all");
+        appContext.getBean(UploadGiorni.class).uploadAll();
     }
-
-    //    @Test
-    //    @Order(4)
-    //    @DisplayName("4 - Upload all")
-    //    void uploadAll() {
-    //        System.out.println("4 - Upload all");
-    //        appContext.getBean(UploadGiorni.class).uploadAll();
-    //    }
 
 
     /**

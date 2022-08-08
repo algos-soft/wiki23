@@ -17,7 +17,7 @@ import java.util.*;
  * Date: Tue, 26-Jul-2022
  * Time: 08:47
  * Classe specializzata per caricare (upload) le liste di giorni (nati/morti) sul server wiki. <br>
- * Usata fondamentalmente da GiornoWikiView con appContext.getBean(UploadGiorni.class).nascita/morte(nomeGiorno).upload() <br>
+ * Usata fondamentalmente da GiornoWikiView con appContext.getBean(UploadGiorni.class).nascita/morte().upload(nomeGiorno) <br>
  * <p>
  * Necessita del login come bot <br>
  */
@@ -29,7 +29,7 @@ public class UploadGiorni extends UploadGiorniAnni {
     /**
      * Costruttore base con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * Uso: appContext.getBean(UploadGiorni.class).nascita/morte(nomeGiorno).upload() <br>
+     * Uso: appContext.getBean(UploadGiorni.class).nascita/morte().upload(nomeGiorno) <br>
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      */
     public UploadGiorni() {
@@ -50,6 +50,7 @@ public class UploadGiorni extends UploadGiorniAnni {
         this.typeCrono = AETypeLista.giornoMorte;
         return this;
     }
+
 
     /**
      * Esegue la scrittura di tutte le pagine <br>

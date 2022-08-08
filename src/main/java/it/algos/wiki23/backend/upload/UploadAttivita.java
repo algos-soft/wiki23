@@ -131,20 +131,20 @@ public class UploadAttivita extends Upload {
 //        mappaDidascalie = appContext.getBean(ListaAttivita.class).plurale(nomeAttivitaNazionalitaPlurale).mappaDidascalie();
     }
 
-    /**
-     * Esegue la scrittura della sotto-pagina <br>
-     */
-    public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
-        UploadAttivita sottoPagina = appContext.getBean(UploadAttivita.class);
-        sottoPagina.esegueSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, mappaSub);
-    }
-
-    /**
-     * Esegue la scrittura della sotto-sotto-pagina <br>
-     */
-    public void uploadSottoSottoPagina(String wikiTitleParente, List<String> listaSub) {
-        UploadAttivita sottoSottoPagina = appContext.getBean(UploadAttivita.class);
-        sottoSottoPagina.esegueSubSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, listaSub);
-    }
+//    /**
+//     * Esegue la scrittura della sotto-pagina <br>
+//     */
+//    public void uploadSottoPagina(String wikiTitleParente, int numVoci, LinkedHashMap<String, List<String>> mappaSub) {
+//        UploadAttivita sottoPagina = appContext.getBean(UploadAttivita.class);
+//        sottoPagina.esegueSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, mappaSub);
+//    }
+//
+//    /**
+//     * Esegue la scrittura della sotto-sotto-pagina <br>
+//     */
+//    public void uploadSottoSottoPagina(String wikiTitleParente, List<String> listaSub) {
+//        UploadAttivita sottoSottoPagina = appContext.getBean(UploadAttivita.class);
+//        sottoSottoPagina.esegueSubSub(wikiTitleParente, nomeAttivitaNazionalitaPlurale, listaSub);
+//    }
 
 }

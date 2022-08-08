@@ -81,33 +81,40 @@ public class UploadNazionalitaTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - Upload test di una nazionalità plurale")
-    void uploadMortiTest() {
-        System.out.println("2 - Upload test di una nazionalità plurale");
+    @DisplayName("2 - Upload test di una nazionalità con e senza TOC")
+    void uploadToc() {
+        System.out.println("2 - Upload test di una nazionalità con e senza TOC");
         sorgente = "afghani";
-        ottenutoRisultato = appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
+        appContext.getBean(UploadNazionalita.class).forceToc().test().upload(sorgente);
+        appContext.getBean(UploadNazionalita.class).noToc().test().upload(sorgente);
     }
 
-    //    @Test
-    //    @Order(2)
-    //    @DisplayName("2 - Upload di una nazionalità plurale")
-    //    void getListaDidascalie() {
-    //        System.out.println("2 - Upload di una nazionalità plurale");
-    //        System.out.println(VUOTA);
-    //        sorgente = "azeri";
-    //        int oldValue;
-    //        int tempValue = 50;
-    //
-    //        System.out.println("Metto da parte il valore della preferenza");
-    //        oldValue = WPref.sogliaSottoPagina.getInt();
-    //        System.out.println("Regolo provvisoriamente il valore della preferenza");
-    //        WPref.sogliaSottoPagina.setValue(tempValue);
-    //
-    //        appContext.getBean(UploadNazionalita.class).uploadTest(sorgente);
-    //
-    //        System.out.println("Ripristino il valore originario della preferenza");
-    //        WPref.sogliaSottoPagina.setValue(oldValue);
-    //    }
+    @Test
+    @Order(3)
+    @DisplayName("3 - Upload test di una nazionalità plurale con TOC e sottopagine")
+    void upload() {
+        System.out.println("3 - Upload test di una nazionalità plurale con TOC e sottopagine");
+        sorgente = "azeri";
+        appContext.getBean(UploadNazionalita.class).forceToc().test().upload(sorgente);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - Upload test di una nazionalità plurale")
+    void upload2() {
+        System.out.println("4 - Upload test di una nazionalità plurale");
+        sorgente = "assiri";
+        appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - Upload test di una nazionalità plurale")
+    void upload3() {
+        System.out.println("5 - Upload test di una nazionalità plurale");
+        sorgente = "austro-ungarici";
+        appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

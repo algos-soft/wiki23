@@ -203,12 +203,12 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(5)
     @DisplayName("5 - Didascalie varie con simboli specifici nato e morto")
-        //--titolo
-        //--pagina valida
+    //--titolo
+    //--pagina valida
     void didascalia(final String wikiTitle, final boolean paginaValida) {
         System.out.println(VUOTA);
         String nomeCognome;
@@ -232,8 +232,8 @@ public class DidascaliaServiceTest extends WikiTest {
 
             nomeCognome = service.getNomeCognome(bio);
             attivitaNazionalita = service.getAttivitaNazionalita(bio);
-            lista = service.getDidascaliaLista(bio);
-            natoMorto = service.getNatoMorto(bio);
+            lista = service.lista(bio);
+            natoMorto = service.luogoNatoMorto(bio);
 
             System.out.println(VUOTA);
             System.out.println(String.format("PageId: %s", pageId));
@@ -269,8 +269,6 @@ public class DidascaliaServiceTest extends WikiTest {
     @Test
     @Order(6)
     @DisplayName("6 - Didascalie lista con varianti di linkCrono")
-        //--titolo
-        //--pagina valida
     void linkCrono() {
         String wikiBioTmpl;
         String lista;
@@ -289,19 +287,19 @@ public class DidascaliaServiceTest extends WikiTest {
         System.out.println("Lista (NomeCognome + AttivitaNazionalita + NatoMorto)");
 
         WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.nessuno);
-        lista = service.getDidascaliaLista(bio);
+        lista = service.lista(bio);
         System.out.println(VUOTA);
         System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.nessuno);
         System.out.println(lista);
 
         WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.voce);
-        lista = service.getDidascaliaLista(bio);
+        lista = service.lista(bio);
         System.out.println(VUOTA);
         System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.voce);
         System.out.println(lista);
 
         WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.lista);
-        lista = service.getDidascaliaLista(bio);
+        lista = service.lista(bio);
         System.out.println(VUOTA);
         System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.lista);
         System.out.println(lista);
@@ -310,14 +308,14 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(7)
-    @DisplayName("7 - Didascalie pagine 'Nati nel xxx(anno)")
-        //--titolo
-        //--pagina valida
+    @DisplayName("7 - Didascalie pagine 'Nati nel xxx(anno)'")
+    //--titolo
+    //--pagina valida
     void didascaliaAnnoNato(final String wikiTitle, final boolean paginaValida) {
-        System.out.println("7 - Didascalie pagine 'Nati nel xxx(anno)");
+        System.out.println("7 - Didascalie pagine 'Nati nel xxx(anno)'");
         System.out.println(VUOTA);
 
         if (!paginaValida) {
@@ -327,20 +325,20 @@ public class DidascaliaServiceTest extends WikiTest {
         bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
         assertNotNull(bio);
 
-        ottenuto = service.getDidascaliaAnnoNato(bio);
+        ottenuto = service.didascaliaAnnoNato(bio);
         System.out.println(String.format("Biografia: %s", wikiTitle));
         System.out.println(String.format("Didascalia anno nato: %s", ottenuto));
     }
 
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(8)
-    @DisplayName("8 - Didascalie pagine 'Morti nel xxx(anno)")
-        //--titolo
-        //--pagina valida
+    @DisplayName("8 - Didascalie pagine 'Morti nel xxx(anno)'")
+    //--titolo
+    //--pagina valida
     void didascaliaAnnoMorto(final String wikiTitle, final boolean paginaValida) {
-        System.out.println("8 - Didascalie pagine 'Morti nel xxx(anno)");
+        System.out.println("8 - Didascalie pagine 'Morti nel xxx(anno)'");
         System.out.println(VUOTA);
 
         if (!paginaValida) {
@@ -350,9 +348,179 @@ public class DidascaliaServiceTest extends WikiTest {
         bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
         assertNotNull(bio);
 
-        ottenuto = service.getDidascaliaAnnoMorto(bio);
+        ottenuto = service.didascaliaAnnoMorto(bio);
         System.out.println(String.format("Biografia: %s", wikiTitle));
         System.out.println(String.format("Didascalia anno morto: %s", ottenuto));
+    }
+
+
+    //    @ParameterizedTest
+    @MethodSource(value = "PAGINE_BIO")
+    @Order(9)
+    @DisplayName("9 - Didascalie pagine 'Nazionalità'")
+    //--titolo
+    //--pagina valida
+    void didascaliaNazionalita(final String wikiTitle, final boolean paginaValida) {
+        System.out.println("9 - Didascalie pagine 'Nazionalità'");
+        System.out.println(VUOTA);
+        if (!paginaValida) {
+            return;
+        }
+        sorgente = wikiTitle;
+        bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
+        assertNotNull(bio);
+
+        ottenuto = service.didascaliaGiornoNato(bio);
+        System.out.println(String.format("Biografia: %s", wikiTitle));
+        System.out.println(String.format("Didascalia lista: %s", ottenuto));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "PAGINE_BIO")
+    @Order(10)
+    @DisplayName("10 - Didascalie varie senza assertEquals")
+        //--titolo
+        //--pagina valida
+    void didascalieVarie(final String wikiTitle, final boolean paginaValida) {
+        System.out.println("10 - Didascalie varie senza assertEquals");
+        String tmpl;
+        if (!paginaValida) {
+            return;
+        }
+
+        sorgente = wikiTitle;
+        bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
+        assertNotNull(bio);
+        tmpl = bio.getTmplBio();
+        tmpl = tmpl.replaceAll(CAPO, SPAZIO);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Biografia: %s", sorgente));
+        System.out.println(String.format("TmplBio: %s", tmpl.substring(0, 140)));
+        System.out.println(String.format("%s", tmpl.substring(140, 280)));
+        System.out.println(String.format("%s", tmpl.substring(280, Math.min(420, tmpl.length()))));
+
+        System.out.println(VUOTA);
+        ottenuto = service.giornoNato(bio);
+        System.out.println(String.format("giornoNato: %s", ottenuto));
+        ottenuto = service.giornoNatoSimbolo(bio);
+        System.out.println(String.format("giornoNatoSimbolo: %s", ottenuto));
+        ottenuto = service.giornoNatoSimboloParentesi(bio);
+        System.out.println(String.format("giornoNatoSimboloParentesi: %s", ottenuto));
+
+        System.out.println(VUOTA);
+        ottenuto = service.giornoMorto(bio);
+        System.out.println(String.format("giornoMorto: %s", ottenuto));
+        ottenuto = service.giornoMortoSimbolo(bio);
+        System.out.println(String.format("giornoMortoSimbolo: %s", ottenuto));
+        ottenuto = service.giornoMortoSimboloParentesi(bio);
+        System.out.println(String.format("giornoMortoSimboloParentesi: %s", ottenuto));
+
+        System.out.println(VUOTA);
+        ottenuto = service.annoNato(bio);
+        System.out.println(String.format("annoNato: %s", ottenuto));
+        ottenuto = service.annoNatoSimbolo(bio);
+        System.out.println(String.format("annoNatoSimbolo: %s", ottenuto));
+        ottenuto = service.annoNatoSimboloParentesi(bio);
+        System.out.println(String.format("annoNatoSimboloParentesi: %s", ottenuto));
+
+        System.out.println(VUOTA);
+        ottenuto = service.annoMorto(bio);
+        System.out.println(String.format("annoMorto: %s", ottenuto));
+        ottenuto = service.annoMortoSimbolo(bio);
+        System.out.println(String.format("annoMortoSimbolo: %s", ottenuto));
+        ottenuto = service.annoMortoSimboloParentesi(bio);
+        System.out.println(String.format("annoMortoSimboloParentesi: %s", ottenuto));
+
+        System.out.println(VUOTA);
+        ottenuto = service.luogoNato(bio);
+        System.out.println(String.format("luogoNato: %s", ottenuto));
+        ottenuto = service.luogoNatoAnno(bio);
+        System.out.println(String.format("luogoNatoAnno: %s", ottenuto));
+
+        System.out.println(VUOTA);
+        ottenuto = service.luogoMorto(bio);
+        System.out.println(String.format("luogoMorto: %s", ottenuto));
+        ottenuto = service.luogoMortoAnno(bio);
+        System.out.println(String.format("luogoMortoAnno: %s", ottenuto));
+
+        System.out.println(VUOTA);
+        ottenuto = service.luogoNatoMorto(bio);
+        System.out.println(String.format("crono: %s", ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.lista(bio);
+        System.out.println(String.format("lista: %s", ottenuto));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "PAGINE_BIO")
+    @Order(11)
+    @DisplayName("11 - Didascalie varie senza assertEquals")
+        //--titolo
+        //--pagina valida
+    void didascalieVarie2(final String wikiTitle, final boolean paginaValida) {
+        System.out.println("11 - Didascalie varie senza assertEquals");
+        String tmpl;
+        if (!paginaValida) {
+            return;
+        }
+
+        sorgente = wikiTitle;
+        bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
+        assertNotNull(bio);
+        tmpl = bio.getTmplBio();
+        tmpl = tmpl.replaceAll(CAPO, SPAZIO);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Biografia: %s", sorgente));
+        System.out.println(String.format("TmplBio: %s", tmpl.substring(0, 140)));
+        System.out.println(String.format("%s", tmpl.substring(140, 280)));
+        System.out.println(String.format("%s", tmpl.substring(280, Math.min(420, tmpl.length()))));
+
+        System.out.println(VUOTA);
+        ottenuto = service.didascaliaGiornoNato(bio);
+        System.out.println(String.format("giornoNato (%s): %s", bio.giornoNato, ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.didascaliaGiornoMorto(bio);
+        System.out.println(String.format("giornoMorto (%s): %s", bio.giornoMorto, ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.didascaliaAnnoNato(bio);
+        System.out.println(String.format("annoNato (%s): %s", bio.annoNato, ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.didascaliaAnnoMorto(bio);
+        System.out.println(String.format("annoMorto (%s): %s", bio.annoMorto, ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.lista(bio);
+        System.out.println(String.format("lista: %s", ottenuto));
+
+        //        ottenuto = service.getDidascaliaGiornoNato(bio);
+        //        ottenuto2 = service.getWrapGiornoNato(bio).didascaliaBreve;
+        //        System.out.println(VUOTA);
+        //        System.out.println(String.format("Giorno nato: %s", ottenuto));
+        //
+        //        ottenuto = service.getDidascaliaGiornoMorto(bio);
+        //        ottenuto2 = service.getWrapGiornoMorto(bio).didascaliaBreve;
+        //        System.out.println(VUOTA);
+        //        System.out.println(String.format("Giorno morto: %s", ottenuto));
+        //
+        //        ottenuto = service.getDidascaliaAnnoNato(bio);
+        //        System.out.println(VUOTA);
+        //        System.out.println(String.format("Anno nato: %s", ottenuto));
+        //
+        //        ottenuto = service.getDidascaliaAnnoMorto(bio);
+        //        System.out.println(VUOTA);
+        //        System.out.println(String.format("Anno morto: %s", ottenuto));
+        //
+        //        ottenuto = service.getDidascaliaLista(bio);
+        //        System.out.println(VUOTA);
+        //        System.out.println(String.format("Lista: %s", ottenuto));
+    }
+
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - Didascalie varie con assertEquals")
+    void didascalieVarie2() {
+        previsto = "[[Roman Protasevič]], attivista e giornalista bielorusso";
     }
 
     //    @Test

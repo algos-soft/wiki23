@@ -93,6 +93,7 @@ public enum WPref implements AIGenPref {
     ),
     usaParagrafiGiorni("usaParagrafiGiorni", AETypePref.bool, true, "Usa i paragrafi (secoli) nelle pagine dei giorni"),
     usaParagrafiAnni("usaParagrafiAnni", AETypePref.bool, true, "Usa i paragrafi (mesi) nelle pagine degli anni"),
+    usaParagrafiAttNaz("usaParagrafiAttNaz", AETypePref.bool, false, "Usa i paragrafi (nazionalità/attività) nelle pagine attività/nazionalità"),
 
     simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),
     simboloMorto("simboloMorto", AETypePref.string, "†", "Simbolo della morte nelle didascalie"),

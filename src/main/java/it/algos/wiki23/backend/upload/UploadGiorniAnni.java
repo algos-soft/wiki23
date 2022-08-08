@@ -25,6 +25,8 @@ import java.util.*;
 public abstract class UploadGiorniAnni extends Upload {
 
 
+    protected static final int MAX_NUM_VOCI = 200;
+
     protected int ordineGiornoAnno;
 
     private GiornoWiki giorno;
@@ -38,7 +40,7 @@ public abstract class UploadGiorniAnni extends Upload {
      * Non rimanda al costruttore della superclasse. Regola qui solo alcune property. <br>
      */
     public UploadGiorniAnni() {
-        super.typeUpload = AETypeUpload.pagina;
+        super.typeToc = AETypeToc.noToc;
         this.uploadTest = false;
         super.usaParagrafi = true;
     }// end of constructor
@@ -115,12 +117,6 @@ public abstract class UploadGiorniAnni extends Upload {
     }
 
 
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public void upload() {
-    }
-
     protected WResult esegueUpload(String wikiTitle, LinkedHashMap<String, List<WrapLista>> mappa) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = wikiUtility.getSizeAllWrap(mappa);
@@ -142,10 +138,6 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(includeEnd());
 
         return registra(wikiTitle, buffer.toString().trim());
-    }
-
-    protected String fixToc() {
-        return AETypeToc.noToc.get();
     }
 
     protected String torna() {
@@ -173,8 +165,9 @@ public abstract class UploadGiorniAnni extends Upload {
 
     public String testoBody(Map<String, List<WrapLista>> mappa) {
         String testo;
+        int numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
 
-        if (usaParagrafi) {
+        if (usaParagrafi && numVoci > MAX_NUM_VOCI) {
             testo = conParagrafi(mappa);
         }
         else {
