@@ -126,3 +126,8 @@ emailStatus.getStyle().set("color", "Red");
     @Annotation public protected private static final transient volatile
     @Annotation public protected private abstract static final synchronized native strictfp
 
+https://www.baeldung.com/mongodb-return-specific-fields
+https://mkyong.com/mongodb/spring-data-mongodb-select-fields-to-return/
+
+mvn clean package -Pproduction
+java -jar -Dserver.port=8090 wiki23.jar
