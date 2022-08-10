@@ -1,6 +1,7 @@
 package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.upload.*;
 import it.sauronsoftware.cron4j.*;
@@ -25,12 +26,14 @@ public class TaskNazionalita extends AlgosTask {
 //     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
 //     */
 //    @Autowired
-//    private UploadNazionalita uploadNazionalita;
+//    private UploadNazionalita upload;
 
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        appContext.getBean(UploadNazionalita.class).uploadAll();
+            if (WPref.usaTaskNazionalita.is()) {
+                appContext.getBean(UploadNazionalita.class).uploadAll();
+            }
     }
 
 

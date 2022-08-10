@@ -182,7 +182,7 @@ public class QueryWrapBioTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(7)
     @DisplayName("7 - Categoria media bio")
     void urlRequestListaCatBio() {

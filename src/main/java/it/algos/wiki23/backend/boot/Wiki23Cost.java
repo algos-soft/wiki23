@@ -153,6 +153,8 @@ public class Wiki23Cost {
 
     public static final String TAG_DOPPIO_NOME = "doppionome";
 
+    public static final String TAG_COGNOME = "cognome";
+
     public static final String TAG_BIO = "bio";
 
     public static final String TAG_ALTRE = "...";

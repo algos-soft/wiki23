@@ -109,7 +109,7 @@ public class StatisticheAttivitaTest extends WikiTest {
         WPref.usaTreAttivita.setValue(oldValue);
     }
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("4 - Upload col valore 'usaLinkStatistiche=true'")
     void upload4() {

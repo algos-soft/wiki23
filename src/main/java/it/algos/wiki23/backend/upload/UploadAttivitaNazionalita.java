@@ -20,6 +20,9 @@ import java.util.*;
  */
 public abstract class UploadAttivitaNazionalita extends Upload {
 
+    protected String nomeAttivitaSottoPagina;
+
+    protected String nomeNazionalitaSottoPagina;
 
     /**
      * Costruttore base con parametri <br>
@@ -59,20 +62,20 @@ public abstract class UploadAttivitaNazionalita extends Upload {
      * Esegue la scrittura della pagina <br>
      */
     public WResult upload(final String nomeAttivitaNazionalita) {
-        this.nomeLista = nomeAttivitaNazionalita;
+        this.nomeLista = textService.primaMinuscola(nomeAttivitaNazionalita);
 
-        if (textService.isValid(nomeAttivitaNazionalita)) {
+        if (textService.isValid(nomeLista)) {
             wikiTitle = switch (typeCrono) {
-                case attivitaSingolare, attivitaPlurale -> wikiUtility.wikiTitleAttivita(nomeAttivitaNazionalita);
-                case nazionalitaSingolare, nazionalitaPlurale -> wikiUtility.wikiTitleNazionalita(nomeAttivitaNazionalita);
+                case attivitaSingolare, attivitaPlurale -> wikiUtility.wikiTitleAttivita(nomeLista);
+                case nazionalitaSingolare, nazionalitaPlurale -> wikiUtility.wikiTitleNazionalita(nomeLista);
                 default -> VUOTA;
             };
 
             mappaWrap = switch (typeCrono) {
-                //                case attivitaSingolare -> appContext.getBean(ListaAttivita.class).nascita(nomeLista).mappaWrap();
-                //                case attivitaPlurale -> appContext.getBean(ListaAttivita.class).morte(nomeLista).mappaWrap();
-                case nazionalitaSingolare -> appContext.getBean(ListaNazionalita.class).singolare(nomeAttivitaNazionalita).mappaWrap();
-                case nazionalitaPlurale -> appContext.getBean(ListaNazionalita.class).plurale(nomeAttivitaNazionalita).mappaWrap();
+                case attivitaSingolare -> appContext.getBean(ListaAttivita.class).singolare(nomeLista).mappaWrap();
+                case attivitaPlurale -> appContext.getBean(ListaAttivita.class).plurale(nomeLista).mappaWrap();
+                case nazionalitaSingolare -> appContext.getBean(ListaNazionalita.class).singolare(nomeLista).mappaWrap();
+                case nazionalitaPlurale -> appContext.getBean(ListaNazionalita.class).plurale(nomeLista).mappaWrap();
                 default -> null;
             };
 

@@ -87,7 +87,7 @@ public class UploadAnniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    @Test
+//    @Test
     @Order(2)
     @DisplayName("2 - Upload test di un anno morto senza indicare con/senza paragrafi ma li mette di default")
     void uploadMortiTest() {
@@ -96,7 +96,7 @@ public class UploadAnniTest extends WikiTest {
         appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
     }
 
-    @Test
+//    @Test
     @Order(3)
     @DisplayName("3 - Upload test di un anno morto con paragrafi ma non li mette perché troppe poche voci")
     void uploadMortiTest2() {
@@ -113,7 +113,7 @@ public class UploadAnniTest extends WikiTest {
         System.out.println("4 - Upload test di un anno nato senza paragrafi");
         sorgente = "1785";
         appContext.getBean(UploadAnni.class).senzaParagrafi().nascita().test().upload(sorgente);
-        appContext.getBean(UploadAnni.class).conParagrafi().nascita().test().upload(sorgente);
+//        appContext.getBean(UploadAnni.class).conParagrafi().nascita().test().upload(sorgente);
     }
 
     //    @Test

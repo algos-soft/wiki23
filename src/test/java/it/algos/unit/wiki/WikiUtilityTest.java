@@ -190,7 +190,7 @@ public class WikiUtilityTest extends WikiTest {
         }
     }
 
-    @Test
+//    @Test
     @Order(5)
     @DisplayName("5 - Link giorno nato")
     void linkGiornoNato() {
@@ -239,7 +239,7 @@ public class WikiUtilityTest extends WikiTest {
 
     }
 
-    @Test
+//    @Test
     @Order(7)
     @DisplayName("7 - Link anno nato")
     void linkAnnoNato() {

@@ -560,7 +560,7 @@ public class TextServiceTest extends AlgosTest {
         System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
     }
 
-    @Test
+//    @Test
     @Order(15)
     @DisplayName("15 - Elimina il testo dopo tagInterrompi")
     public void levaCodaDa() {
@@ -757,7 +757,7 @@ public class TextServiceTest extends AlgosTest {
         assertEquals(previsto, ottenuto);
     }
 
-    @Test
+//    @Test
     @Order(21)
     @DisplayName("21 - levaTestoPrimaDi")
     public void levaTestoPrimaDi() {

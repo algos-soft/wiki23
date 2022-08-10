@@ -30,7 +30,7 @@ import org.springframework.test.context.junit.jupiter.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
-//@Tag("upload")
+@Tag("upload")
 @DisplayName("Attività upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UploadAttivitaTest extends WikiTest {
@@ -80,11 +80,22 @@ public class UploadAttivitaTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - Upload di una attività plurale")
+    @DisplayName("2 - Upload test di una attività con e senza TOC")
+    void uploadToc() {
+        System.out.println("2 - Upload test di una attività con e senza TOC");
+        sorgente = "agronomi";
+        appContext.getBean(UploadAttivita.class).forceToc().test().upload(sorgente);
+        appContext.getBean(UploadAttivita.class).noToc().test().upload(sorgente);
+    }
+
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - Upload di una attività plurale")
     void getListaDidascalie() {
-        System.out.println("2 - Upload di una attività plurale");
-        sorgente = "allenatori di calcio";
-        appContext.getBean(UploadAttivita.class).uploadTest(sorgente);
+        System.out.println("3 - Upload di una attività plurale");
+        sorgente = "Allenatori di hockey su ghiaccio";
+        appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
     /**

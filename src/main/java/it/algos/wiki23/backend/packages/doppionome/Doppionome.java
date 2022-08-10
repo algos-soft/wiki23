@@ -4,6 +4,7 @@ import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.index.*;
 
 import javax.validation.constraints.*;
 
@@ -27,6 +28,7 @@ public class Doppionome extends AEntity {
     private static final transient int WIDTHEM = 20;
 
     @NotBlank()
+    @Indexed(unique = true, direction = IndexDirection.ASCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM, search = true)
     public String nome;
 

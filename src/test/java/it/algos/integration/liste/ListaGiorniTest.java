@@ -50,7 +50,7 @@ public class ListaGiorniTest extends WikiTest {
         return Stream.of(
                 Arguments.of(VUOTA, AETypeLista.giornoNascita),
                 Arguments.of(VUOTA, AETypeLista.giornoMorte),
-                Arguments.of("3 luglio", AETypeLista.giornoNascita),
+                Arguments.of("4 gennaio", AETypeLista.giornoNascita),
                 Arguments.of("1º gennaio", AETypeLista.giornoMorte),
                 Arguments.of("25 ottobre", AETypeLista.giornoNascita),
                 Arguments.of("29 febbraio", AETypeLista.giornoMorte)

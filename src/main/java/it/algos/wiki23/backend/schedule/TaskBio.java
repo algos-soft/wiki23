@@ -34,7 +34,9 @@ public class TaskBio extends AlgosTask {
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         fixNext();
-        service.ciclo();
+        if (WPref.usaTaskBio.is()) {
+            service.ciclo();
+        }
     }
 
     /**

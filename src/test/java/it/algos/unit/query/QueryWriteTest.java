@@ -74,7 +74,7 @@ public class QueryWriteTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    @Test
+//    @Test
     @Order(2)
     @DisplayName("2 - Request errata. Manca il wikiTitle")
     void errata2() {
@@ -87,7 +87,7 @@ public class QueryWriteTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(3)
     @DisplayName("3 - Request errata. Manca il newText")
     void errata3() {
@@ -101,7 +101,7 @@ public class QueryWriteTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("4 - Request valida")
     void corretta() {
@@ -116,7 +116,7 @@ public class QueryWriteTest extends WikiTest {
         printWrapBio(ottenutoRisultato.getWrap());
     }
 
-    @Test
+//    @Test
     @Order(5)
     @DisplayName("5 - Request valida con summary")
     void summary() {
@@ -132,7 +132,7 @@ public class QueryWriteTest extends WikiTest {
         printWrapBio(ottenutoRisultato.getWrap());
     }
 
-    @Test
+//    @Test
     @Order(6)
     @DisplayName("6 - Request con controllo dati/tmpl iniziale")
     void limitata() {

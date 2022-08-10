@@ -166,12 +166,24 @@ public abstract class UploadGiorniAnni extends Upload {
     public String testoBody(Map<String, List<WrapLista>> mappa) {
         String testo;
         int numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
+        boolean righeRaggruppate;
 
         if (usaParagrafi && numVoci > MAX_NUM_VOCI) {
             testo = conParagrafi(mappa);
         }
         else {
-            testo = senzaParagrafi(mappa);
+            righeRaggruppate = switch (typeCrono) {
+                case giornoNascita, giornoMorte -> WPref.usaRigheGiorni.is();
+                case annoNascita, annoMorte -> WPref.usaRigheAnni.is();
+                default -> false;
+            };
+
+            if (righeRaggruppate) {
+                testo = senzaParagrafiMaRaggruppate(mappa);
+            }
+            else {
+                testo = senzaParagrafi(mappa);
+            }
         }
 
         return testo;
@@ -228,6 +240,78 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append("{{Div col end}}" + CAPO);
 
         return buffer.toString().trim();
+    }
+
+    public String senzaParagrafiMaRaggruppate(Map<String, List<WrapLista>> mappa) {
+        StringBuffer buffer = new StringBuffer();
+        List<WrapLista> lista;
+        List<WrapLista> listaSub;
+        LinkedHashMap<String, List<WrapLista>> mappaWrapSub;
+        int numRighe;
+
+        buffer.append("{{Div col}}" + CAPO);
+        for (String keyParagrafo : mappa.keySet()) {
+            lista = mappa.get(keyParagrafo);
+            mappaWrapSub = creaSubMappa(lista);
+
+            for (String inizioRiga : mappaWrapSub.keySet()) {
+                listaSub = mappaWrapSub.get(inizioRiga);
+
+                if (listaSub.size() == 1) {
+                    buffer.append(ASTERISCO);
+                    buffer.append(listaSub.get(0).didascaliaLunga);
+                    buffer.append(CAPO);
+                }
+                else {
+                    if (textService.isValid(inizioRiga)) {
+                        buffer.append(ASTERISCO);
+                        buffer.append(inizioRiga);
+                        buffer.append(CAPO);
+                        for (WrapLista wrapSub : listaSub) {
+                            buffer.append(ASTERISCO);
+                            buffer.append(ASTERISCO);
+                            buffer.append(wrapSub.didascaliaBreve);
+                            buffer.append(CAPO);
+                        }
+                    }
+                    else {
+                        for (WrapLista wrapSub : listaSub) {
+                            buffer.append(ASTERISCO);
+                            buffer.append(wrapSub.didascaliaBreve);
+                            buffer.append(CAPO);
+                        }
+                    }
+                }
+                buffer.append(CAPO);
+            }
+        }
+        buffer.append("{{Div col end}}" + CAPO);
+
+        return buffer.toString().trim();
+    }
+
+
+    protected LinkedHashMap<String, List<WrapLista>> creaSubMappa(List<WrapLista> listaWrapSub) {
+        LinkedHashMap<String, List<WrapLista>> mappaWrapSub = new LinkedHashMap<>();
+        String inizioRiga;
+        List<WrapLista> listaSub;
+
+        if (listaWrapSub != null && listaWrapSub.size() > 0) {
+            for (WrapLista wrap : listaWrapSub) {
+                inizioRiga = wrap.titoloSottoParagrafo;
+
+                if (mappaWrapSub.containsKey(inizioRiga)) {
+                    listaSub = mappaWrapSub.get(inizioRiga);
+                }
+                else {
+                    listaSub = new ArrayList();
+                }
+                listaSub.add(wrap);
+                mappaWrapSub.put(inizioRiga, listaSub);
+            }
+        }
+
+        return mappaWrapSub;
     }
 
     protected String categorie() {

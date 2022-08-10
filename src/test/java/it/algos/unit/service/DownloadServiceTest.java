@@ -100,7 +100,7 @@ public class DownloadServiceTest extends WikiTest {
         service.checkBot();
     }
 
-    @Test
+//    @Test
     @Order(3)
     @DisplayName("3 - Ciclo cat+pageIds")
     void ciclo3() {
@@ -127,7 +127,7 @@ public class DownloadServiceTest extends WikiTest {
         printLong(listaPageIds,10);
     }
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("4 - Ciclo cat+pageIds+listMiniWrap")
     void ciclo4() {
@@ -148,7 +148,7 @@ public class DownloadServiceTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(5)
     @DisplayName("5 - Ciclo cat+pageIds+listMiniWrap+listaPageIdsDaLeggere")
     void ciclo5() {
@@ -172,7 +172,7 @@ public class DownloadServiceTest extends WikiTest {
         printLong(listaPageIds,10);
     }
 
-    @Test
+//    @Test
     @Order(6)
     @DisplayName("6 - Ciclo cat+pageIds+listMiniWrap+listaPageIdsDaLeggere+listaWrapBio")
     void ciclo6() {
@@ -201,7 +201,7 @@ public class DownloadServiceTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(7)
     @DisplayName("7 - Ciclo cat+pageIds+listMiniWrap+listaPageIdsDaLeggere+listaWrapBio+creaElaboraBio")
     void ciclo7() {
@@ -233,7 +233,7 @@ public class DownloadServiceTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(1)
     @DisplayName("8 - Ciclo completo")
     void ciclo8() {

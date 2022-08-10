@@ -162,6 +162,7 @@ public class DidascaliaServiceTest extends WikiTest {
         sorgente2 = "Bernart";
         sorgente3 = "d'Armagnac";
         previsto = "[[Bernart Arnaut d'Armagnac]]";
+
         ottenuto = service.getNomeCognome(sorgente, sorgente2, sorgente3);
         assertTrue(textService.isValid(ottenuto));
         assertEquals(previsto, ottenuto);
@@ -203,7 +204,7 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-    //    @ParameterizedTest
+//        @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(5)
     @DisplayName("5 - Didascalie varie con simboli specifici nato e morto")
@@ -308,7 +309,7 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-    //    @ParameterizedTest
+        @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(7)
     @DisplayName("7 - Didascalie pagine 'Nati nel xxx(anno)'")

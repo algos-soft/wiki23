@@ -22,7 +22,7 @@ import java.util.*;
  * Date: Tue, 14-Jun-2022
  * Time: 18:48
  * Classe specializzata per caricare (upload) le liste di nazionalità sul server wiki. <br>
- * Usata fondamentalmente da NazionalitàWikiView con appContext.getBean(UploadNazionalita.class).upload(nomeNazionalitaPlurale) <br>
+ * Usata fondamentalmente da NazionalitaWikiView con appContext.getBean(UploadNazionalita.class).upload(nomeNazionalitaPlurale) <br>
  * <p>
  * Necessita del login come bot <br>
  */
@@ -32,7 +32,6 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
 
     public static final String UPLOAD_TITLE_PROJECT_NAZIONALITA = UPLOAD_TITLE_PROJECT + "Nazionalità/";
 
-    private String nomeAttivitaSottoPagina;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -79,7 +78,7 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
         buffer.append(textService.setRef(INFO_DIDASCALIE));
         buffer.append(textService.setRef(INFO_ORDINE));
         buffer.append(" di persone");
-        buffer.append(textService.setRef(INFO_PERSONA));
+        buffer.append(textService.setRef(INFO_PERSONA_NAZIONALITA));
         buffer.append(" presenti");
         buffer.append(textService.setRef(INFO_LISTA));
         buffer.append(" nell'enciclopedia che hanno come nazionalità");
@@ -106,7 +105,7 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
         buffer.append(textService.setRef(INFO_DIDASCALIE));
         buffer.append(textService.setRef(INFO_ORDINE));
         buffer.append(" di persone");
-        buffer.append(textService.setRef(INFO_PERSONA));
+        buffer.append(textService.setRef(INFO_PERSONA_NAZIONALITA));
         buffer.append(" presenti");
         buffer.append(textService.setRef(INFO_LISTA));
         buffer.append(" nell'enciclopedia che hanno come nazionalità");

@@ -181,7 +181,7 @@ public class DidascaliaService extends WAbstractService {
     public String didascaliaGiornoNato(final Bio bio) {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(textService.setDoppieQuadre(bio.wikiTitle));
+        buffer.append(getWikiTitle(bio));
         if (textService.isValid(getAttivitaNazionalita(bio))) {
             buffer.append(VIRGOLA_SPAZIO);
             buffer.append(getAttivitaNazionalita(bio));
@@ -205,7 +205,7 @@ public class DidascaliaService extends WAbstractService {
     public String didascaliaGiornoMorto(final Bio bio) {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(textService.setDoppieQuadre(bio.wikiTitle));
+        buffer.append(getWikiTitle(bio));
         if (textService.isValid(getAttivitaNazionalita(bio))) {
             buffer.append(VIRGOLA_SPAZIO);
             buffer.append(getAttivitaNazionalita(bio));
@@ -230,7 +230,7 @@ public class DidascaliaService extends WAbstractService {
     public String didascaliaAnnoNato(final Bio bio) {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(textService.setDoppieQuadre(bio.wikiTitle));
+        buffer.append(getWikiTitle(bio));
         if (textService.isValid(getAttivitaNazionalita(bio))) {
             buffer.append(VIRGOLA_SPAZIO);
             buffer.append(getAttivitaNazionalita(bio));

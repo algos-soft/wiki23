@@ -140,7 +140,7 @@ public class AttivitaBackendTest extends WikiTest {
         printSingolari(listaBeans);
     }
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "SORT")
     @Order(3)
     @DisplayName("3 - findAll sort")

@@ -175,6 +175,7 @@ public abstract class WikiTest extends AlgosTest {
         return Stream.of(
                 Arguments.of(null, false),
                 Arguments.of(VUOTA, false),
+                Arguments.of("John Murphy (politico statunitense)", true),
                 Arguments.of("Meena Keshwar Kamal", true),
                 Arguments.of("Werburga", true),
                 Arguments.of("Roman Protasevič", true),

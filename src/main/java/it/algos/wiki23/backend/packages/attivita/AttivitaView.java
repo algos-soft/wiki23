@@ -437,7 +437,7 @@ public class AttivitaView extends WikiView {
         if (entityBean.isPresent()) {
             attivita = (Attivita) entityBean.get();
             if (attivita.numBio > WPref.sogliaAttNazWiki.getInt()) {
-                appContext.getBean(UploadAttivita.class).uploadTest(attivita.paragrafo);
+                appContext.getBean(UploadAttivita.class).test().upload(attivita.paragrafo);
             }
             else {
                 message = String.format("L'attività %s non raggiunge il necessario numero di voci biografiche", attivita.singolare);

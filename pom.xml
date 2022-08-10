@@ -7,7 +7,7 @@
     <groupId>it.algos</groupId>
     <artifactId>wiki23</artifactId>
     <name>wiki23</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <properties>

@@ -78,7 +78,7 @@ public class StatisticheAnniTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(2)
     @DisplayName("2 - Upload")
     void upload2() {
