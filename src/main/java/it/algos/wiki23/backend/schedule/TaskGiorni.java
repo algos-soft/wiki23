@@ -19,14 +19,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TaskGiorni extends AlgosTask {
 
-//    /**
-//     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-//     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-//     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-//     */
-//    @Autowired
-//    private UploadGiorni upload;
-
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
@@ -37,10 +29,9 @@ public class TaskGiorni extends AlgosTask {
 
 
     /**
-     * Descrizione: ogni settimana il pomeriggio del martedì
-     * * 0 14 * * Tue
+     * Descrizione: ogni giorno della settimana, alle 2 di notte
      */
-    private static final String PATTERN = "0 14 * * Sun";
+    private static final String PATTERN = "0 2 * * *";
 
 
     @Override
