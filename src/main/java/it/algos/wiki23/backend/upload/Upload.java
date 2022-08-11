@@ -274,7 +274,7 @@ public abstract class Upload {
     protected WResult registra(String wikiTitle, String newText) {
         String newTextSignificativo = newText.substring(newText.indexOf("</noinclude>"));
         return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
-        //        return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
+//                return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
     }
 
 

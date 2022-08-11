@@ -246,6 +246,14 @@
             <artifactId>cron4j</artifactId>
             <version>2.2.5</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.vaadin.artur/a-vaadin-helper -->
+        <dependency>
+            <groupId>org.vaadin.artur</groupId>
+            <artifactId>a-vaadin-helper</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.packages.nazionalita;
 import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
@@ -10,6 +11,7 @@ import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.ui.dialog.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -280,6 +282,27 @@ public class NazionalitaView extends WikiView {
         appContext.getBean(StatisticheNazionalita.class).upload();
         super.fixStatisticheMinuti(inizio);
         super.uploadStatistiche();
+    }
+
+    /**
+     * Scrive una voce di prova su Utente:Biobot/test <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void testPagina() {
+        Nazionalita nazionalita;
+        String message;
+
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            nazionalita = (Nazionalita) entityBean.get();
+            if (nazionalita.numBio > WPref.sogliaAttNazWiki.getInt()) {
+                appContext.getBean(UploadNazionalita.class).test().upload(nazionalita.plurale);
+            }
+            else {
+                message = String.format("La nazionalita %s non raggiunge il necessario numero di voci biografiche", nazionalita.singolare);
+                Avviso.show3000(message).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            }
+        }
     }
 
     /**

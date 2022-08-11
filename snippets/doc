@@ -21,10 +21,12 @@
     /**
      * Constructor @Autowired. <br>
      * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
-     * L' @Autowired (esplicito o implicito) funziona SOLO per UN costruttore <br>
+     * L' @Autowired implicito funziona SOLO per UN costruttore <br>
+     * L' @Autowired esplicito è necessario per le classi di test <br>
      * Se ci sono DUE o più costruttori, va in errore <br>
      * Se ci sono DUE costruttori, di cui uno senza parametri, inietta quello senza parametri <br>
      */
+    @Autowired
     public UtenteService() {
     }// end of constructor with @Autowired
 
@@ -78,7 +80,6 @@
     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-    * Deve essere sovrascritto, SENZA invocare il metodo della superclasse <br>
     * Non può essere sovrascritto <br>
 
     public static final String XXX = "";

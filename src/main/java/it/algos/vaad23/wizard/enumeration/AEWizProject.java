@@ -23,7 +23,7 @@ public enum AEWizProject {
 
     links("Directory LINKS a siti web utili (vaadin23)", true, true, "links", AECopy.dirFilesAddOnly),
 
-    snippets("Directory SNIPPETS di codice suggerito (vaadin23)", true, true, "snippets", AECopy.dirFilesAddOnly),
+    snippets("Directory SNIPPETS di codice suggerito (vaadin23)", true, true, "snippets", AECopy.dirFilesModifica),
 
     flow("Directory BASE Vaad23 (Wizard compreso)", true, true, "src/main/java/it/algos/vaad23", AECopy.dirDelete),
 

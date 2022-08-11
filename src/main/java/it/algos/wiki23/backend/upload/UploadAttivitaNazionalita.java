@@ -165,6 +165,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         int numVoci;
         int max = WPref.sogliaSottoPagina.getInt();
         int maxDiv = WPref.sogliaDiv.getInt();
+        boolean usaDivBase = WPref.usaDivAttNaz.is();
         boolean usaDiv;
         String titoloParagrafoLink;
         String vedi;
@@ -188,7 +189,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
                 }
             }
             else {
-                usaDiv = lista.size() > maxDiv;
+                usaDiv = usaDivBase ? lista.size() > maxDiv : false;
                 buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
                 for (WrapLista wrap : lista) {
                     buffer.append(ASTERISCO);
