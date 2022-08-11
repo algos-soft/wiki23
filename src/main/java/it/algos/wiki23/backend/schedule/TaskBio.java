@@ -51,9 +51,9 @@ public class TaskBio extends AlgosTask {
     }
 
     /**
-     * Descrizione: ogni giorno della settimana, 1 minuto dopo mezzanotte
+     * Descrizione: ogni giorno della settimana, alle 2 di notte (UTC+2 (ora legale)) -> 0 (ora italiana)
      */
-    private static final String PATTERN = "1 0 * * *";
+    private static final String PATTERN = "1 2 * * *";
 
 
     @Override
