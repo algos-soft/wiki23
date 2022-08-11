@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -112,6 +113,11 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         StringBuffer buffer = new StringBuffer();
         int numVoci = wikiUtility.getSizeAllWrap(mappa);
 
+        if (numVoci < WPref.sogliaAttNazWiki.getInt()) {
+            logger.info(new WrapLog().message(String.format("Non creata la pagina %s perché ha solo %d voci", wikiTitle, numVoci)));
+            return WResult.crea();
+        }
+
         buffer.append(avviso());
         buffer.append(CAPO);
         buffer.append(includeIni());
@@ -208,6 +214,9 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         String paragrafo;
         List<WrapLista> lista;
         mappaWrap = new LinkedHashMap<>();
+        int maxDiv = WPref.sogliaDiv.getInt();
+        boolean usaDivBase = WPref.usaDivAttNaz.is();
+        boolean usaDiv;
 
         for (WrapLista wrap : listaWrap) {
             paragrafo = wrap.titoloSottoParagrafo;
@@ -224,7 +233,8 @@ public abstract class UploadAttivitaNazionalita extends Upload {
 
         for (String key : mappaWrap.keySet()) {
             buffer.append(wikiUtility.fixTitolo(key, mappaWrap.get(key).size()));
-            buffer.append("{{Div col}}" + CAPO);
+            usaDiv = usaDivBase;
+            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
             for (WrapLista wrap : mappaWrap.get(key)) {
                 buffer.append(ASTERISCO);
                 buffer.append(wrap.didascaliaBreve);
