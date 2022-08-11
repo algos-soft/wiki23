@@ -362,9 +362,9 @@ public class AttivitaBackend extends WikiBackend {
         String message;
         int size = 0;
         String singolare;
-        String categoria;
+        String categoria = VUOTA;
         String paragrafo;
-        AETypeGenere typeGenere;
+        AETypeGenere type = null;
 
         if (listaEx == null || listaEx.size() == 0) {
             message = "Il modulo genere deve essere scaricato PRIMA di quello di attività";
@@ -374,7 +374,6 @@ public class AttivitaBackend extends WikiBackend {
 
         if (listaEx != null) {
             for (Genere genere : listaEx) {
-                entity = null;
                 attivitaSingolare = VUOTA;
                 genereSingolare = genere.singolare;
 
@@ -385,24 +384,48 @@ public class AttivitaBackend extends WikiBackend {
                     attivitaSingolare = genereSingolare.substring(TAG_EX2.length());
                 }
 
-                if (textService.isValid(attivitaSingolare)) {
-                    entity = findFirstBySingolare(attivitaSingolare);
+                if (textService.isEmpty(attivitaSingolare)) {
+                    continue;
                 }
 
-                if (entity != null) {
-                    singolare = entity.singolare;
-                    categoria = entity.categoria;
+                entity = findFirstBySingolare(attivitaSingolare);
+
+                if (entity == null) {
+                    Object genere2 = genere;
+                    singolare = genere.singolare;
+                    switch (genere.getType()) {
+                        case maschile -> {
+                            type = AETypeGenere.maschile;
+                            categoria = genere.pluraleMaschile;
+                        }
+                        case femminile -> {
+                            type = AETypeGenere.femminile;
+                            categoria = genere.pluraleFemminile;
+                        }
+                        case entrambi -> {
+                            type = AETypeGenere.maschile;
+                            categoria = genere.pluraleMaschile;
+                        }
+                        //                        case nessuno -> {}
+                    } ;
                     paragrafo = categoria;
-                    typeGenere = AETypeGenere.maschile;
-                    if (creaIfNotExist(singolare, categoria, paragrafo, typeGenere, true) != null) {
+                    if (creaIfNotExist(singolare, categoria, paragrafo, type, true) != null) {
                         size++;
                     }
-                    else {
-                        logger.info(new WrapLog().message(genereSingolare));
+                    logger.info(new WrapLog().message(genereSingolare));
+                }
+                else {
+                    singolare = genere.singolare;
+                    categoria = entity.categoria;
+                    paragrafo = entity.paragrafo;
+                    type = entity.type;
+                    if (creaIfNotExist(singolare, categoria, paragrafo, type, true) != null) {
+                        size++;
                     }
                 }
             }
         }
+
         message = String.format("Aggiunte %s ex-attività dalla collection genere", textService.format(size));
         logger.info(new WrapLog().message(message));
     }

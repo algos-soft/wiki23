@@ -131,4 +131,5 @@ https://www.baeldung.com/mongodb-return-specific-fields
 https://mkyong.com/mongodb/spring-data-mongodb-select-fields-to-return/
 
 mvn clean package -Pproduction
+mvn clean package -Pproduction -Dmaven.test.skip=true
 java -jar -Dserver.port=8090 wiki23.jar
