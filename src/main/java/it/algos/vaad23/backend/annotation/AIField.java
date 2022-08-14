@@ -399,4 +399,12 @@ public @interface AIField {
      */
     String sortProperty() default VUOTA;
 
+    /**
+     * (Required) The type of the field.
+     * Defaults to the AETypeBoolCol.checkIcon.
+     *
+     * @return the field type
+     */
+    AETypeBoolCol typeBool() default AETypeBoolCol.checkIcon;
+
 }

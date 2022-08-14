@@ -40,7 +40,7 @@ public class Nota extends AEntity {
     @AIField(type = AETypeField.text, flexGrow = true, focus = true, search = true)
     public String descrizione;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.CHECK)
+    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.thumb, headerIcon = VaadinIcon.CHECK)
     public boolean fatto;
 
     @AIField(type = AETypeField.localDate)

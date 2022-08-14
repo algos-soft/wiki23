@@ -2,11 +2,8 @@ package it.algos.wiki23.backend.enumeration;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.packages.utility.preferenza.*;
 import it.algos.vaad23.backend.service.*;
-import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
@@ -99,9 +96,10 @@ public enum WPref implements AIGenPref {
     simboloMorto("simboloMorto", AETypePref.string, "†", "Simbolo della morte nelle didascalie"),
     usaSimboliCrono("usaSimboliCrono", AETypePref.bool, true, "Uso dei simboli crono per nati e morti"),
 
-    linkCrono("linkCrono", AETypePref.enumerationType, AETypeLinkCrono.voce, "Type di link a giorni/anni nelle didascalie",
-            AETypeLinkCrono.nessuno
-    ),
+    linkCrono("linkCrono", AETypePref.enumerationType, AETypeLink.voce, "Type di link a giorni/anni nelle didascalie",
+            AETypeLink.nessuno),
+    linkAttNaz("linkAttNaz", AETypePref.enumerationType, AETypeLink.voce, "Type di link ai titoli dei paragrafi in attività/nazionalità",
+            AETypeLink.nessuno),
 
     usaTaskBio("usaTaskBio", AETypePref.bool, false, "Download calendarizzato di tutte le biografie"),
     usaTaskAttivita("usaTaskAttivita", AETypePref.bool, false, "Upload calendarizzato di tutte le attività"),
@@ -110,8 +108,10 @@ public enum WPref implements AIGenPref {
     usaTaskAnni("usaTaskAnni", AETypePref.bool, false, "Upload calendarizzato di tutte le pagine degli anni nato/morto"),
     usaRigheGiorni("usaRigheGiorni", AETypePref.bool, true, "Usa righe raggruppate per anno nelle liste dei giorni"),
     usaRigheAnni("usaRigheAnni", AETypePref.bool, true, "Usa righe raggruppate per giorno nelle liste degli anni"),
+    sogliaCognomiMongo("sogliaCognomiMongo", AETypePref.integer, 30, "Soglia minima per creare una entity nella collezione Cognomi sul mongoDB"),
+    sogliaCognomiWiki("sogliaCognomiWiki", AETypePref.integer, 50, "Soglia minima per creare una pagina Cognomi sul server wiki")
+;
 
-    ;
 
     //--codice di riferimento.
     private String keyCode;
@@ -300,4 +300,4 @@ public enum WPref implements AIGenPref {
         }
 
     }
-}
+    }

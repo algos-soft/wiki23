@@ -1,8 +1,11 @@
 package it.algos.vaad23.backend.service;
 
+import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.data.renderer.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -76,7 +79,9 @@ public class ColumnService extends AbstractService {
         colonna = switch (type) {
             case text, enumeration, link, localDateTime, localDate, localTime -> grid.addColumn(propertyName).setSortable(true);
             case integer, lungo -> grid.addColumn(propertyName).setSortable(true);
-            case booleano -> grid.addColumn(propertyName).setSortable(true);
+            //            case booleano -> grid.addColumn(propertyName).setSortable(true);
+            case booleano -> addBoolean(grid, entityClazz, propertyName);
+
             //            case booleano -> {
             //                yield grid.addColumn(new ComponentRenderer<>(entity -> {
             //                    Field field = null;
@@ -183,7 +188,133 @@ public class ColumnService extends AbstractService {
             label.add(textService.primaMaiuscola(header));
             colonna.setHeader(label);
         }
+    }
 
+
+    public Grid.Column<AEntity> addBoolean(final Grid grid, Class<? extends AEntity> entityClazz, final String propertyName) {
+        Grid.Column<AEntity> colonna = null;
+
+        colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
+            final AETypeBoolCol typeBool = annotationService.getTypeBoolCol(entityClazz, propertyName);
+            //            final List<String> valori = annotation.getBoolEnumCol(field);
+            Object value;
+            boolean status = false;
+            Icon icon;
+            String testo = VUOTA;
+            Label label = new Label();
+
+            try {
+                value = reflectionService.getPropertyValue((AEntity) entity, propertyName);
+                if (value instanceof Boolean booleano) {
+                    status = booleano;
+                }
+            } catch (Exception unErrore) {
+                //                logger.error(unErrore.toString());
+            }
+
+            switch (typeBool) {
+                case boolGrezzo:
+                    testo = status ? "vero" : "falso";
+                    label.setText(testo);
+                    if (status) {
+                        label.getStyle().set("color", "green");
+                    }
+                    else {
+                        label.getStyle().set("color", "red");
+                    }
+                    return label;
+                case checkBox:
+                    return new Checkbox(status);
+                case checkIcon:
+                    if (status) {
+                        icon = new Icon(VaadinIcon.CHECK);
+                        icon.setColor("green");
+                    }
+                    else {
+                        icon = new Icon(VaadinIcon.CLOSE);
+                        icon.setColor("red");
+                    }
+                    icon.setSize("1em");
+                    return icon;
+                case checkIconReverse:
+                    if (status) {
+                        icon = new Icon(VaadinIcon.CLOSE);
+                        icon.setColor("red");
+                    }
+                    else {
+                        icon = new Icon(VaadinIcon.CHECK);
+                        icon.setColor("green");
+                    }
+                    icon.setSize("1em");
+                    return icon;
+                case customLabel:
+                    //                    try {
+                    //                        testo = status ? valori.get(0) : valori.get(1);
+                    //                    } catch (Exception unErrore) {
+                    //                        logger.error(unErrore.toString());
+                    //                    }
+                    //
+                    //                    if (textService.isValid(testo)) {
+                    //                        label.setText(testo);
+                    //                        if (status) {
+                    //                            label.getStyle().set("color", "green");
+                    //                        }
+                    //                        else {
+                    //                            label.getStyle().set("color", "red");
+                    //                        }
+                    //                    }
+                    return label;
+                case yesNo:
+                    testo = status ? "si" : "no";
+                    label.setText(testo);
+                    if (status) {
+                        label.getStyle().set("color", "green");
+                    }
+                    else {
+                        label.getStyle().set("color", "red");
+                    }
+                    return label;
+                case yesNoReverse:
+                    testo = status ? "no" : "si";
+                    label.setText(testo);
+                    if (status) {
+                        label.getStyle().set("color", "red");
+                    }
+                    else {
+                        label.getStyle().set("color", "green");
+                    }
+                    return label;
+                case yesNoBold:
+                    testo = status ? "si" : "no";
+                    label.setText(testo);
+                    label.getStyle().set("font-weight", "bold");
+                    if (status) {
+                        label.getStyle().set("color", "green");
+                    }
+                    else {
+                        label.getStyle().set("color", "red");
+                    }
+                    return label;
+                case thumb:
+                    if (status) {
+                        icon = new Icon(VaadinIcon.THUMBS_UP);
+                        icon.setColor("green");
+                    }
+                    else {
+                        icon = new Icon(VaadinIcon.THUMBS_DOWN);
+                        icon.setColor("red");
+                    }
+                    icon.setSize("1em");
+                    return icon;
+                default:
+                    logger.error(new WrapLog().exception(new AlgosException("Switch - caso non definito")).usaDb());
+                    break;
+            }
+
+            return new Label("g");
+        }));//end of lambda expressions and anonymous inner class
+
+        return colonna;
     }
 
 }

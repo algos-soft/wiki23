@@ -287,22 +287,22 @@ public class DidascaliaServiceTest extends WikiTest {
         bio = elaboraService.esegue(bio);
         System.out.println("Lista (NomeCognome + AttivitaNazionalita + NatoMorto)");
 
-        WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.nessuno);
+        WPref.linkCrono.setEnumCurrentObj(AETypeLink.nessuno);
         lista = service.lista(bio);
         System.out.println(VUOTA);
-        System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.nessuno);
+        System.out.println("AETypeLinkCrono: " + AETypeLink.nessuno);
         System.out.println(lista);
 
-        WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.voce);
+        WPref.linkCrono.setEnumCurrentObj(AETypeLink.voce);
         lista = service.lista(bio);
         System.out.println(VUOTA);
-        System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.voce);
+        System.out.println("AETypeLinkCrono: " + AETypeLink.voce);
         System.out.println(lista);
 
-        WPref.linkCrono.setEnumCurrentObj(AETypeLinkCrono.lista);
+        WPref.linkCrono.setEnumCurrentObj(AETypeLink.lista);
         lista = service.lista(bio);
         System.out.println(VUOTA);
-        System.out.println("AETypeLinkCrono: " + AETypeLinkCrono.lista);
+        System.out.println("AETypeLinkCrono: " + AETypeLink.lista);
         System.out.println(lista);
 
         WPref.linkCrono.setEnumCurrentObj(oldValue);

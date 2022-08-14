@@ -2,16 +2,17 @@ package it.algos.wiki23.backend.packages.cognome;
 
 import com.mongodb.client.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.logic.*;
+import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.wiki.*;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
-
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.data.mongodb.core.query.*;
 
 import java.util.*;
 
@@ -30,9 +31,17 @@ import java.util.*;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, esiste già @Service) <br>
  */
 @Service
-public class CognomeBackend extends CrudBackend {
+public class CognomeBackend extends WikiBackend {
 
     public CognomeRepository repository;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MongoService mongoService;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -50,8 +59,8 @@ public class CognomeBackend extends CrudBackend {
         this.repository = (CognomeRepository) crudRepository;
     }
 
-    public Cognome creaIfNotExist(final String nome) {
-        return checkAndSave(newEntity(nome));
+    public Cognome creaIfNotExist(final String cognomeTxt, int numBio) {
+        return checkAndSave(newEntity(cognomeTxt, numBio));
     }
 
     public Cognome checkAndSave(final Cognome cognome) {
@@ -70,7 +79,7 @@ public class CognomeBackend extends CrudBackend {
      * @return la nuova entity appena creata (non salvata)
      */
     public Cognome newEntity() {
-        return newEntity(VUOTA);
+        return newEntity(VUOTA,0);
     }
 
     /**
@@ -79,13 +88,15 @@ public class CognomeBackend extends CrudBackend {
      * Eventuali regolazioni iniziali delle property <br>
      * All properties <br>
      *
-     * @param cognome (obbligatorio, unico)
+     * @param cognomeTxt (obbligatorio, unico)
+     * @param numBio     (obbligatorio, unico)
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public Cognome newEntity(final String cognome) {
+    public Cognome newEntity(final String cognomeTxt, int numBio) {
         return Cognome.builder()
-                .cognome(textService.isValid(cognome) ? cognome : null)
+                .cognome(textService.isValid(cognomeTxt) ? cognomeTxt : null)
+                .numBio(numBio)
                 .build();
     }
 
@@ -106,8 +117,6 @@ public class CognomeBackend extends CrudBackend {
     }
 
 
-
-
     /**
      * Cancella i cognomi esistenti <br>
      * Crea tutti i cognomi <br>
@@ -119,23 +128,44 @@ public class CognomeBackend extends CrudBackend {
         long inizio = System.currentTimeMillis();
         int tot = 0;
         int cont = 0;
-//        logger.info("Creazione completa cognomi delle biografie. Circa 4 minuti.");
 
         //--Cancella tutte le entities della collezione
         deleteAll();
 
-        //@Field("cogn")
-//        DistinctIterable<String> listaCognomiDistinti = mongo.mongoOp.getCollection("bio").distinct("cogn", String.class);
-//        for (String cognomeTxt : listaCognomiDistinti) {
-//            tot++;
-//
-//            if (saveCognome(cognomeTxt) != null) {
-//                cont++;
-//            }// end of if cycle
-//        }// end of for cycle
-//
-//        super.setLastElabora(EATempo.minuti, inizio);
-//        logger.info("Creazione di " + text.format(cont) + " cognomi su un totale di " + text.format(tot) + " cognomi distinti. Tempo impiegato: " + date.deltaText(inizio));
-    }// end of method
+        DistinctIterable<String> listaCognomiDistinti = mongoService.mongoOp.getCollection("bio").distinct("cognome", String.class);
+        for (String cognomeTxt : listaCognomiDistinti) {
+            tot++;
+
+            if (saveCognome(cognomeTxt)) {
+                cont++;
+            }
+        }
+        logger.info(new WrapLog().message(String.format("Ci sono %d cognomi distinti", tot)));
+        //        super.setLastElabora(EATempo.minuti, inizio);
+        //        logger.info("Creazione di " + text.format(cont) + " cognomi su un totale di " + text.format(tot) + " cognomi distinti. Tempo impiegato: " + date.deltaText(inizio));
+    }
+
+
+    /**
+     * Registra il numero di voci biografiche che hanno il cognome indicato <br>
+     */
+    public boolean saveCognome(String cognomeTxt) {
+        Cognome cognome = null;
+        //--Soglia minima per creare una entity nella collezione Cognomi sul mongoDB
+        int sogliaMongo = WPref.sogliaCognomiMongo.getInt();
+        //--Soglia minima per creare una pagina sul server wiki
+        int sogliaWiki = WPref.sogliaCognomiWiki.getInt();
+        long numBio = 0;
+        Query query = new Query();
+
+        query.addCriteria(Criteria.where("cognome").is(cognomeTxt));
+        numBio = mongoService.mongoOp.count(query, Bio.class);
+
+        if (numBio >= sogliaMongo) {
+            cognome = creaIfNotExist(cognomeTxt, (int) numBio);
+        }
+
+        return cognome != null;
+    }
 
 }// end of crud backend class

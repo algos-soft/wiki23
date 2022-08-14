@@ -237,6 +237,11 @@ public class AnnotationService extends AbstractService {
             return null;
         }
 
+        // Controlla che il parametro in ingresso non sia stato creato 'al volo'
+        if (fieldName.equals(FIELD_KEY_ORDER)) {
+            return null;
+        }
+
         try {
             reflectionJavaField = entityClazz.getField(fieldName);
             annotation = getAIField(reflectionJavaField);
@@ -695,5 +700,22 @@ public class AnnotationService extends AbstractService {
 
         return isSearch;
     }
+
+    /**
+     * Get the specific annotation of the field. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre la Annotation
+     */
+    public AETypeBoolCol getTypeBoolCol(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        AETypeBoolCol type = AETypeBoolCol.boolGrezzo;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            type = annotation.typeBool();
+        }
+
+        return type;
+    }
+
 
 }

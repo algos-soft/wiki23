@@ -108,70 +108,69 @@ public class WikiApiService extends WAbstractService {
 
     //--L'API di 'parse' è leggermente più veloce e comunque il codice JSON è più semplice da interpretare
 
-//    /**
-//     * Converte il valore stringa nel tipo previsto dal parametro PagePar
-//     *
-//     * @param key     del parametro PagePar in ingresso
-//     * @param valueIn in ingresso
-//     *
-//     * @return valore della classe corretta
-//     */
-//    private Object fixValueMap(String key, Object valueIn) {
-//        return fixValueMap(PagePar.getPar(key), valueIn);
-//    }
+    //    /**
+    //     * Converte il valore stringa nel tipo previsto dal parametro PagePar
+    //     *
+    //     * @param key     del parametro PagePar in ingresso
+    //     * @param valueIn in ingresso
+    //     *
+    //     * @return valore della classe corretta
+    //     */
+    //    private Object fixValueMap(String key, Object valueIn) {
+    //        return fixValueMap(PagePar.getPar(key), valueIn);
+    //    }
 
-
-//    /**
-//     * Restituisce una colonna estratta da una wiki table <br>
-//     *
-//     * @param wikiTitle    della pagina wiki
-//     * @param posTabella   della wikitable nella pagina se ce ne sono più di una
-//     * @param rigaIniziale da cui estrarre le righe, scartando la testa della table
-//     * @param numColonna   da cui estrarre la cella
-//     *
-//     * @return lista di coppia di valori: sigla e nome
-//     */
-//    public List<String> getColonna(String wikiTitle, int posTabella, int rigaIniziale, int numColonna) {
-//        List<String> colonna = null;
-//        List<List<String>> lista = null;
-//        String cella = VUOTA;
-//        String[] parti = null;
-//
-//        if (textService.isEmpty(wikiTitle)) {
-//            return null;
-//        }
-//
-//        try {
-//            lista = getTable(wikiTitle, posTabella);
-//        } catch (Exception unErrore) {
-//        }
-//
-//        if (arrayService.isAllValid(lista)) {
-//            lista = lista.subList(rigaIniziale - 1, lista.size());
-//            colonna = new ArrayList<>();
-//            for (List<String> riga : lista) {
-//                if (riga.size() == 1 || (riga.size() == 2 && !riga.get(0).startsWith(GRAFFA_END))) {
-//                    parti = riga.get(0).split(DOPPIO_PIPE_REGEX);
-//                    if (parti != null && parti.length >= numColonna) {
-//                        cella = parti[numColonna - 1];
-//                    }
-//                }
-//                else {
-//                    if (!riga.get(0).startsWith(ESCLAMATIVO)) {
-//                        cella = riga.get(numColonna - 1);
-//                    }
-//                }
-//                if (textService.isValid(cella)) {
-//                    cella = cella.trim();
-//                    cella = textService.setNoDoppieGraffe(cella);
-//                    cella = fixCode(cella);
-//                    colonna.add(cella);
-//                }
-//            }
-//        }
-//
-//        return colonna;
-//    }
+    //    /**
+    //     * Restituisce una colonna estratta da una wiki table <br>
+    //     *
+    //     * @param wikiTitle    della pagina wiki
+    //     * @param posTabella   della wikitable nella pagina se ce ne sono più di una
+    //     * @param rigaIniziale da cui estrarre le righe, scartando la testa della table
+    //     * @param numColonna   da cui estrarre la cella
+    //     *
+    //     * @return lista di coppia di valori: sigla e nome
+    //     */
+    //    public List<String> getColonna(String wikiTitle, int posTabella, int rigaIniziale, int numColonna) {
+    //        List<String> colonna = null;
+    //        List<List<String>> lista = null;
+    //        String cella = VUOTA;
+    //        String[] parti = null;
+    //
+    //        if (textService.isEmpty(wikiTitle)) {
+    //            return null;
+    //        }
+    //
+    //        try {
+    //            lista = getTable(wikiTitle, posTabella);
+    //        } catch (Exception unErrore) {
+    //        }
+    //
+    //        if (arrayService.isAllValid(lista)) {
+    //            lista = lista.subList(rigaIniziale - 1, lista.size());
+    //            colonna = new ArrayList<>();
+    //            for (List<String> riga : lista) {
+    //                if (riga.size() == 1 || (riga.size() == 2 && !riga.get(0).startsWith(GRAFFA_END))) {
+    //                    parti = riga.get(0).split(DOPPIO_PIPE_REGEX);
+    //                    if (parti != null && parti.length >= numColonna) {
+    //                        cella = parti[numColonna - 1];
+    //                    }
+    //                }
+    //                else {
+    //                    if (!riga.get(0).startsWith(ESCLAMATIVO)) {
+    //                        cella = riga.get(numColonna - 1);
+    //                    }
+    //                }
+    //                if (textService.isValid(cella)) {
+    //                    cella = cella.trim();
+    //                    cella = textService.setNoDoppieGraffe(cella);
+    //                    cella = fixCode(cella);
+    //                    colonna.add(cella);
+    //                }
+    //            }
+    //        }
+    //
+    //        return colonna;
+    //    }
 
 
     /**
@@ -381,7 +380,7 @@ public class WikiApiService extends WAbstractService {
      */
     public Map<String, String> leggeMappaModulo(final String wikiTitle) {
         Map<String, String> mappa = null;
-        String tagRighe = VIRGOLA_CAPO;
+        String tagRighe = CAPO;
         String tagSezioni = UGUALE_SEMPLICE;
         String[] righe = null;
         String[] sezioni = null;
@@ -390,7 +389,9 @@ public class WikiApiService extends WAbstractService {
         String testoModulo = this.leggeModulo(wikiTitle);
 
         if (textService.isValid(testoModulo)) {
-            testoModulo = textService.setNoGraffe(testoModulo);
+            testoModulo = textService.levaTesta(testoModulo, "return");
+            testoModulo = textService.levaTesta(testoModulo, "{");
+            testoModulo = textService.levaTesta(testoModulo, "}");
             righe = testoModulo.split(tagRighe);
         }
 
@@ -405,6 +406,7 @@ public class WikiApiService extends WAbstractService {
                     key = textService.setNoQuadre(key);
                     key = textService.setNoDoppiApici(key);
                     value = sezioni[1];
+                    value = textService.levaCoda(value, VIRGOLA);
                     value = textService.setNoDoppiApici(value);
                     value = textService.setNoGraffe(value);
                     mappa.put(key, value);
@@ -641,99 +643,99 @@ public class WikiApiService extends WAbstractService {
         return templateOut;
     }
 
-//    /**
-//     * Converte i tipi di una mappa secondo i parametri PagePar
-//     *
-//     * @param mappaIn standard (valori String) in ingresso
-//     *
-//     * @return mappa tipizzata secondo PagePar
-//     */
-//    public HashMap<String, Object> converteMappa(HashMap mappaIn) {
-//        HashMap<String, Object> mappaOut = new HashMap<String, Object>();
-//        String key = "";
-//        String valueTxt;
-//        Object valueObj = null;
-//
-//        if (mappaIn != null) {
-//            for (Object obj : mappaIn.keySet()) {
-//                if (obj instanceof String) {
-//                    key = (String) obj;
-//                    valueObj = mappaIn.get(key);
-//                    valueObj = fixValueMap(key, valueObj);
-//                    mappaOut.put(key, valueObj);
-//                }
-//            }
-//        }
-//
-//        return mappaOut;
-//    }
+    //    /**
+    //     * Converte i tipi di una mappa secondo i parametri PagePar
+    //     *
+    //     * @param mappaIn standard (valori String) in ingresso
+    //     *
+    //     * @return mappa tipizzata secondo PagePar
+    //     */
+    //    public HashMap<String, Object> converteMappa(HashMap mappaIn) {
+    //        HashMap<String, Object> mappaOut = new HashMap<String, Object>();
+    //        String key = "";
+    //        String valueTxt;
+    //        Object valueObj = null;
+    //
+    //        if (mappaIn != null) {
+    //            for (Object obj : mappaIn.keySet()) {
+    //                if (obj instanceof String) {
+    //                    key = (String) obj;
+    //                    valueObj = mappaIn.get(key);
+    //                    valueObj = fixValueMap(key, valueObj);
+    //                    mappaOut.put(key, valueObj);
+    //                }
+    //            }
+    //        }
+    //
+    //        return mappaOut;
+    //    }
 
-//    /**
-//     * Converte il valore stringa nel tipo previsto dal parametro PagePar
-//     *
-//     * @param par     parametro PagePar in ingresso
-//     * @param valueIn in ingresso
-//     *
-//     * @return valore della classe corretta
-//     */
-//    private Object fixValueMap(PagePar par, Object valueIn) {
-//        Object valueOut = null;
-//        PagePar.TypeField typo = par.getType();
-//
-//        if (typo == PagePar.TypeField.string) {
-//            valueOut = valueIn;
-//        }
-//
-//        if (typo == PagePar.TypeField.booleano) {
-//            valueOut = valueIn;
-//        }
-//
-//        if (typo == PagePar.TypeField.longzero || typo == PagePar.TypeField.longnotzero) {
-//            if (valueIn instanceof String) {
-//                try {
-//                    valueOut = Long.decode((String) valueIn);
-//                } catch (Exception unErrore) { // intercetta l'errore
-//                }
-//            }
-//            if (valueIn instanceof Integer) {
-//                try {
-//                    valueOut = new Long(valueIn.toString());
-//                } catch (Exception unErrore) { // intercetta l'errore
-//                }
-//            }
-//            if (valueIn instanceof Long) {
-//                valueOut = valueIn;
-//            }
-//        }
-//
-//        if (typo == PagePar.TypeField.date) {
-//            if (valueIn instanceof String) {
-//                try {
-//                    valueOut = date.convertTxtData((String) valueIn);
-//                } catch (Exception unErrore) { // intercetta l'errore
-//                    valueOut = DATA_NULLA; //@todo mettere LocalDate
-//                }
-//            }
-//            if (valueIn instanceof Date) {
-//                valueOut = valueIn;
-//            }
-//        }
-//
-//        if (typo == PagePar.TypeField.timestamp) {
-//            if (valueIn instanceof String) {
-//                try {
-//                    valueOut = date.convertTxtTime((String) valueIn);
-//                } catch (Exception unErrore) { // intercetta l'errore
-//                    valueOut = DATA_NULLA;
-//                }
-//            }
-//            if (valueIn instanceof Timestamp) {
-//                valueOut = valueIn;
-//            }
-//        }
-//
-//        return valueOut;
-//    }
+    //    /**
+    //     * Converte il valore stringa nel tipo previsto dal parametro PagePar
+    //     *
+    //     * @param par     parametro PagePar in ingresso
+    //     * @param valueIn in ingresso
+    //     *
+    //     * @return valore della classe corretta
+    //     */
+    //    private Object fixValueMap(PagePar par, Object valueIn) {
+    //        Object valueOut = null;
+    //        PagePar.TypeField typo = par.getType();
+    //
+    //        if (typo == PagePar.TypeField.string) {
+    //            valueOut = valueIn;
+    //        }
+    //
+    //        if (typo == PagePar.TypeField.booleano) {
+    //            valueOut = valueIn;
+    //        }
+    //
+    //        if (typo == PagePar.TypeField.longzero || typo == PagePar.TypeField.longnotzero) {
+    //            if (valueIn instanceof String) {
+    //                try {
+    //                    valueOut = Long.decode((String) valueIn);
+    //                } catch (Exception unErrore) { // intercetta l'errore
+    //                }
+    //            }
+    //            if (valueIn instanceof Integer) {
+    //                try {
+    //                    valueOut = new Long(valueIn.toString());
+    //                } catch (Exception unErrore) { // intercetta l'errore
+    //                }
+    //            }
+    //            if (valueIn instanceof Long) {
+    //                valueOut = valueIn;
+    //            }
+    //        }
+    //
+    //        if (typo == PagePar.TypeField.date) {
+    //            if (valueIn instanceof String) {
+    //                try {
+    //                    valueOut = date.convertTxtData((String) valueIn);
+    //                } catch (Exception unErrore) { // intercetta l'errore
+    //                    valueOut = DATA_NULLA; //@todo mettere LocalDate
+    //                }
+    //            }
+    //            if (valueIn instanceof Date) {
+    //                valueOut = valueIn;
+    //            }
+    //        }
+    //
+    //        if (typo == PagePar.TypeField.timestamp) {
+    //            if (valueIn instanceof String) {
+    //                try {
+    //                    valueOut = date.convertTxtTime((String) valueIn);
+    //                } catch (Exception unErrore) { // intercetta l'errore
+    //                    valueOut = DATA_NULLA;
+    //                }
+    //            }
+    //            if (valueIn instanceof Timestamp) {
+    //                valueOut = valueIn;
+    //            }
+    //        }
+    //
+    //        return valueOut;
+    //    }
 
     /**
      * Sorgente completo di una pagina wiki <br>
@@ -776,58 +778,56 @@ public class WikiApiService extends WAbstractService {
         return testoIncolonnato;
     }
 
+    //    /**
+    //     * Import da una pagina di wikipedia <br>
+    //     *
+    //     * @return lista di wrapper con due stringhe ognuno
+    //     */
+    //    @Deprecated
+    //    public List<WrapDueStringhe> estraeListaDue(String pagina, String titoli, int posUno, int posDue) {
+    //        List<WrapDueStringhe> listaWrap = null;
+    //        List<List<String>> matriceTable = null;
+    //        String[] titoliTable = text.getMatrice(titoli);
+    //        WrapDueStringhe wrapGrezzo;
+    //
+    //        matriceTable = web.getMatriceTableWiki(pagina, titoliTable);
+    //        if (matriceTable != null && matriceTable.size() > 0) {
+    //            listaWrap = new ArrayList<>();
+    //            for (List<String> riga : matriceTable) {
+    //                wrapGrezzo = new WrapDueStringhe(riga.get(posUno - 1), posDue > 0 ? riga.get(posDue - 1) : VUOTA);
+    //                listaWrap.add(wrapGrezzo);
+    //            }
+    //        }
+    //        return listaWrap;
+    //    }
 
-//    /**
-//     * Import da una pagina di wikipedia <br>
-//     *
-//     * @return lista di wrapper con due stringhe ognuno
-//     */
-//    @Deprecated
-//    public List<WrapDueStringhe> estraeListaDue(String pagina, String titoli, int posUno, int posDue) {
-//        List<WrapDueStringhe> listaWrap = null;
-//        List<List<String>> matriceTable = null;
-//        String[] titoliTable = text.getMatrice(titoli);
-//        WrapDueStringhe wrapGrezzo;
-//
-//        matriceTable = web.getMatriceTableWiki(pagina, titoliTable);
-//        if (matriceTable != null && matriceTable.size() > 0) {
-//            listaWrap = new ArrayList<>();
-//            for (List<String> riga : matriceTable) {
-//                wrapGrezzo = new WrapDueStringhe(riga.get(posUno - 1), posDue > 0 ? riga.get(posDue - 1) : VUOTA);
-//                listaWrap.add(wrapGrezzo);
-//            }
-//        }
-//        return listaWrap;
-//    }
-
-
-//    /**
-//     * Import da una pagina di wikipedia <br>
-//     *
-//     * @return lista di wrapper con tre stringhe ognuno
-//     */
-//    @Deprecated
-//    public List<WrapTreStringhe> estraeListaTre(String pagina, String titoli) {
-//        List<WrapTreStringhe> listaWrap = null;
-//        LinkedHashMap<String, LinkedHashMap<String, String>> mappaGenerale = null;
-//        LinkedHashMap<String, String> mappa;
-//        String[] titoliTable = text.getMatrice(titoli);
-//        String tagUno = titoliTable[0];
-//        String tagDue = titoliTable[1];
-//        String tagTre = titoliTable[2];
-//        WrapTreStringhe wrapGrezzo;
-//
-//        mappaGenerale = web.getMappaTableWiki(pagina, titoliTable);
-//        if (mappaGenerale != null && mappaGenerale.size() > 0) {
-//            listaWrap = new ArrayList<>();
-//            for (String elemento : mappaGenerale.keySet()) {
-//                mappa = mappaGenerale.get(elemento);
-//                wrapGrezzo = new WrapTreStringhe(mappa.get(tagUno), mappa.get(tagDue), mappa.get(tagTre));
-//                listaWrap.add(wrapGrezzo);
-//            }
-//        }
-//        return listaWrap;
-//    }
+    //    /**
+    //     * Import da una pagina di wikipedia <br>
+    //     *
+    //     * @return lista di wrapper con tre stringhe ognuno
+    //     */
+    //    @Deprecated
+    //    public List<WrapTreStringhe> estraeListaTre(String pagina, String titoli) {
+    //        List<WrapTreStringhe> listaWrap = null;
+    //        LinkedHashMap<String, LinkedHashMap<String, String>> mappaGenerale = null;
+    //        LinkedHashMap<String, String> mappa;
+    //        String[] titoliTable = text.getMatrice(titoli);
+    //        String tagUno = titoliTable[0];
+    //        String tagDue = titoliTable[1];
+    //        String tagTre = titoliTable[2];
+    //        WrapTreStringhe wrapGrezzo;
+    //
+    //        mappaGenerale = web.getMappaTableWiki(pagina, titoliTable);
+    //        if (mappaGenerale != null && mappaGenerale.size() > 0) {
+    //            listaWrap = new ArrayList<>();
+    //            for (String elemento : mappaGenerale.keySet()) {
+    //                mappa = mappaGenerale.get(elemento);
+    //                wrapGrezzo = new WrapTreStringhe(mappa.get(tagUno), mappa.get(tagDue), mappa.get(tagTre));
+    //                listaWrap.add(wrapGrezzo);
+    //            }
+    //        }
+    //        return listaWrap;
+    //    }
 
 
     public String fixCode(String testoGrezzo) {

@@ -175,7 +175,7 @@ public class AttivitaBackendTest extends WikiTest {
     @DisplayName("5 - findAttivitaDistinctByPlurali (Attivita attività)")
     void allDistinct() {
         System.out.println("5 - findAttivitaDistinctByPlurali (Attivita attività)");
-        listaBeans = backend.findAttivitaDistinctByPlurali();
+        listaBeans = backend.findAttivitaDistinctByPluraliOld();
         assertNotNull(listaBeans);
         printPlurali(listaBeans);
     }
@@ -232,7 +232,7 @@ public class AttivitaBackendTest extends WikiTest {
         else {
             System.out.println(String.format("L'attività '%s' non esiste", plurale));
         }
-        listaBeans = backend.findAllByPlurale(plurale);
+        listaBeans = backend.findAllByPagina(plurale);
         assertNotNull(listaBeans);
         assertEquals(listaBeans.size() > 0, esiste);
         printSingolariAttivita(plurale, listaBeans);
@@ -307,7 +307,7 @@ public class AttivitaBackendTest extends WikiTest {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(attivita.categoria);
+            System.out.println(attivita.pagina);
         }
     }
 

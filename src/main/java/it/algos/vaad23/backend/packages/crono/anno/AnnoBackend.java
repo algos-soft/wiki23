@@ -97,6 +97,7 @@ public class AnnoBackend extends CrudBackend {
     public Anno findByNome(final String nome) {
         return repository.findFirstByNome(nome);
     }
+
     @Override
     public List<Anno> findAll() {
         return super.findAll();

@@ -378,6 +378,8 @@ public class VaadCost {
 
     public static final String FIELD_NAME_COMPANY = "company";
 
+    public static final String FIELD_KEY_ORDER = "#";
+
     public static final String TRATTINO = "-";
 
     public static final String COLOR_VERO = "#9FE2BF";

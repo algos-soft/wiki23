@@ -7,7 +7,6 @@ import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -271,10 +270,22 @@ public class WikiUtility extends WAbstractService {
     }
 
 
-    public String fixParagrafoNazionalita(final Bio bio) {
-        Nazionalita nazionalita = nazionalitaBackend.findFirstBySingolare(bio.nazionalita);
-        return nazionalita != null ? textService.primaMaiuscola(nazionalita.plurale) : TAG_LISTA_ALTRE;
-    }
+//    public String fixParagrafoNazionalita(final Bio bio) {
+//        String paragrafo;
+//        Nazionalita nazionalita = nazionalitaBackend.findFirstBySingolare(bio.nazionalita);
+//        paragrafo= nazionalita != null ? textService.primaMaiuscola(nazionalita.plurale) : TAG_LISTA_ALTRE;
+//
+//        return switch ((AETypeLink) WPref.linkAttNaz.getEnumCurrentObj()) {
+//            case voce -> textService.setDoppieQuadre(paragrafo);
+//            case lista -> {
+//                annoMorto = this.wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
+//                yield textService.setDoppieQuadre(annoMorto);
+//            }
+//            case nessuno -> paragrafo;
+//        };
+//
+//        return nazionalita != null ? textService.primaMaiuscola(nazionalita.plurale) : TAG_LISTA_ALTRE;
+//    }
 
     /**
      * I numeri che iniziano (parlato) con vocale richiedono l'apostrofo  <br>
@@ -346,7 +357,7 @@ public class WikiUtility extends WAbstractService {
             return VUOTA;
         }
 
-        return switch ((AETypeLinkCrono) WPref.linkCrono.getEnumCurrentObj()) {
+        return switch ((AETypeLink) WPref.linkCrono.getEnumCurrentObj()) {
             case voce -> textService.setDoppieQuadre(giornoNato);
             case lista -> {
                 giornoNato = this.wikiTitleNatiGiorno(giornoNato) + PIPE + giornoNato;
@@ -376,7 +387,7 @@ public class WikiUtility extends WAbstractService {
             return VUOTA;
         }
 
-        return switch ((AETypeLinkCrono) WPref.linkCrono.getEnumCurrentObj()) {
+        return switch ((AETypeLink) WPref.linkCrono.getEnumCurrentObj()) {
             case voce -> textService.setDoppieQuadre(giornoMorto);
             case lista -> {
                 giornoMorto = this.wikiTitleMortiGiorno(giornoMorto) + PIPE + giornoMorto;
@@ -410,7 +421,7 @@ public class WikiUtility extends WAbstractService {
             return annoNato;
         }
 
-        return switch ((AETypeLinkCrono) WPref.linkCrono.getEnumCurrentObj()) {
+        return switch ((AETypeLink) WPref.linkCrono.getEnumCurrentObj()) {
             case voce -> textService.setDoppieQuadre(annoNato);
             case lista -> {
                 annoNato = this.wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
@@ -444,7 +455,7 @@ public class WikiUtility extends WAbstractService {
             return annoMorto;
         }
 
-        return switch ((AETypeLinkCrono) WPref.linkCrono.getEnumCurrentObj()) {
+        return switch ((AETypeLink) WPref.linkCrono.getEnumCurrentObj()) {
             case voce -> textService.setDoppieQuadre(annoMorto);
             case lista -> {
                 annoMorto = this.wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;

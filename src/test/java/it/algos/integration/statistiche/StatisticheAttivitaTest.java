@@ -73,7 +73,7 @@ public class StatisticheAttivitaTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-//    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - Upload col valore 'usaTreAttivita=false'")
     void upload2() {
@@ -91,7 +91,7 @@ public class StatisticheAttivitaTest extends WikiTest {
         WPref.usaTreAttivita.setValue(oldValue);
     }
 
-//    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - Upload col valore 'usaTreAttivita=true'")
     void upload3() {
@@ -109,7 +109,7 @@ public class StatisticheAttivitaTest extends WikiTest {
         WPref.usaTreAttivita.setValue(oldValue);
     }
 
-//    @Test
+    //    @Test
     @Order(4)
     @DisplayName("4 - Upload col valore 'usaLinkStatistiche=true'")
     void upload4() {
@@ -128,6 +128,20 @@ public class StatisticheAttivitaTest extends WikiTest {
         System.out.println(("Ripristino il precedente valore della preferenza 'usaLinkStatistiche'"));
         WPref.usaLinkStatistiche.setValue(oldValue);
         WPref.usaTreAttivita.setValue(oldValue2);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - Upload base'")
+    void upload5() {
+        System.out.println(("5 - Upload base"));
+
+        System.out.println(VUOTA);
+        ottenutoRisultato = appContext.getBean(StatisticheAttivita.class).test().upload();
+        assertTrue(ottenutoRisultato.isValido());
+
+        printTime();
+//        printRisultato(ottenutoRisultato);
     }
 
     /**

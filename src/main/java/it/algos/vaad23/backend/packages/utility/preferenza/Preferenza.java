@@ -24,7 +24,7 @@ public class Preferenza extends AEntity {
     @NotEmpty()
     //    @Size(min = 3)
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.text, search = true, widthEM = 14)
+    @AIField(type = AETypeField.text, search = true, widthEM = 16)
     public String code;
 
 

@@ -6,6 +6,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -411,7 +412,7 @@ public class DidascaliaService extends WAbstractService {
         }
 
         if (!paragrafo.equals(TAG_LISTA_ALTRE)) {
-            titoloParagrafoLink = PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivita.categoria);
+            titoloParagrafoLink = PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivita.pagina);
             titoloParagrafoLink = titoloParagrafoLink + PIPE + paragrafo;
             titoloParagrafoLink = textService.setDoppieQuadre(titoloParagrafoLink);
         }
@@ -437,11 +438,32 @@ public class DidascaliaService extends WAbstractService {
      * @return wrapLista
      */
     public WrapLista getWrapAttivita(final Bio bio) {
-        String paragrafo = wikiUtility.fixParagrafoNazionalita(bio);
+        Nazionalita nazionalita = nazionalitaBackend.findFirstBySingolare(bio.nazionalita);
+        String paragrafo;
+        String paragrafoLink;
+
+        if (nazionalita != null) {
+            paragrafo = textService.primaMaiuscola(nazionalita.plurale);
+            if (nazionalita.esistePagina) {
+                paragrafoLink = switch ((AETypeLink) WPref.linkAttNaz.getEnumCurrentObj()) {
+                    case voce -> textService.setDoppieQuadre(paragrafo);
+                    case lista -> textService.setDoppieQuadre(PATH_NAZIONALITA + SLASH + paragrafo + PIPE + paragrafo);
+                    case nessuno -> paragrafo;
+                };
+            }
+            else {
+                paragrafoLink = paragrafo;
+            }
+        }
+        else {
+            paragrafo = TAG_LISTA_ALTRE;
+            paragrafoLink = TAG_LISTA_ALTRE;
+        }
+
         String sottoParagrafo = bio.ordinamento.substring(0, 1);
         String didascalia = this.lista(bio);
 
-        return new WrapLista(paragrafo, textService.setDoppieQuadre(paragrafo), sottoParagrafo, didascalia);
+        return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
     }
 
     /**

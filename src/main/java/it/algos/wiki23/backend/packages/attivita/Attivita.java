@@ -35,11 +35,11 @@ public class Attivita extends AEntity {
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM)
-    public String categoria;
+    public String paragrafo;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM)
-    public String paragrafo;
+    public String pagina;
 
     @AIField(type = AETypeField.enumeration, enumClazz = AETypeGenere.class)
     public AETypeGenere type;
@@ -48,17 +48,17 @@ public class Attivita extends AEntity {
     public boolean aggiunta;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste attività singolari", widthEM = 6)
+    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano la stessa attività plurale", widthEM = 6)
     public int numBio;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.integer, header = "sin")
     public int numSingolari;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.PENCIL)
+    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.thumb, headerIcon = VaadinIcon.LINES)
     public boolean superaSoglia;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.SEARCH)
+    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.yesNoReverse, headerIcon = VaadinIcon.HAMMER)
     public boolean esistePagina;
 
     /**

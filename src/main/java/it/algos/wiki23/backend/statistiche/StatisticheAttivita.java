@@ -42,6 +42,11 @@ public class StatisticheAttivita extends Statistiche {
     public StatisticheAttivita() {
     }// end of constructor
 
+    public StatisticheAttivita test() {
+        this.uploadTest = true;
+        return this;
+    }
+
     /**
      * Preferenze usate da questa 'view' <br>
      * Primo metodo chiamato dopo init() (implicito del costruttore) e postConstruct() (facoltativo) <br>
@@ -51,6 +56,89 @@ public class StatisticheAttivita extends Statistiche {
     protected void fixPreferenze() {
         super.fixPreferenze();
         super.typeToc = AETypeToc.forceToc;
+    }
+
+
+    /**
+     * Recupera la lista
+     */
+    @Override
+    protected void creaLista() {
+        lista = attivitaBackend.findAttivitaDistinctByPluraliOld();
+    }
+
+    /**
+     * Costruisce la mappa <br>
+     * Aggiorna la entity di Attivita <br>
+     */
+    @Override
+    protected void creaMappa() {
+        super.creaMappa();
+        MappaStatistiche mappaSingola;
+        List<String> singolari;
+        int numAttivitaUno;
+        int numAttivitaDue;
+        int numAttivitaTre;
+        int numAttivitaTotali;
+        boolean superaSoglia;
+        boolean esistePagina;
+        int soglia = WPref.sogliaAttNazWiki.getInt();
+        int numVoci;
+        int cancellande = 0;
+
+        for (Attivita attivita : (List<Attivita>) lista) {
+            singolari = attivitaBackend.findSingolariByPlurale(attivita.pagina);
+            esistePagina = attivita.esistePagina;
+            numAttivitaUno = 0;
+            numAttivitaDue = 0;
+            numAttivitaTre = 0;
+
+            for (String singolare : singolari) {
+                numAttivitaUno += bioBackend.countAttivita(singolare);
+                numAttivitaDue += bioBackend.countAttivitaDue(singolare);
+                numAttivitaTre += bioBackend.countAttivitaTre(singolare);
+            }
+
+            numAttivitaTotali = numAttivitaUno + numAttivitaDue + numAttivitaTre;
+            numVoci = WPref.usaTreAttivita.is() ? numAttivitaTotali : numAttivitaUno;
+            superaSoglia = numVoci >= soglia;
+            if (superaSoglia != attivita.superaSoglia) {
+                attivita.superaSoglia = superaSoglia;
+                attivitaBackend.save(attivita);
+                logger.info(new WrapLog().message(String.format("Aggiornato il flag '%s' di %s. Adesso è %s", "superaSoglia", attivita.pagina, superaSoglia)));
+            }
+
+            if (numVoci < 50 && attivita.esistePagina) {
+                esistePagina = attivitaBackend.esistePagina(attivita.pagina);
+                cancellande++;
+                logger.info(new WrapLog().message(String.format("Check del flag %s (che è true) anche se l'attività %s ha solo %d voci", "esistePagina", attivita.pagina, numVoci)));
+            }
+            if (numVoci >= 50 && !attivita.esistePagina) {
+                esistePagina = attivitaBackend.esistePagina(attivita.pagina);
+                logger.info(new WrapLog().message(String.format("Check del flag %s (che è false) anche se l'attività %s ha addirittura %d voci", "esistePagina", attivita.pagina, numVoci)));
+            }
+            if (esistePagina != attivita.esistePagina) {
+                attivita.esistePagina = esistePagina;
+                attivitaBackend.save(attivita);
+                logger.info(new WrapLog().message(String.format("Aggiornato il flag '%s' di %s. Adesso è %s", "esistePagina", attivita.pagina, esistePagina)));
+            }
+
+            mappaSingola = new MappaStatistiche(attivita.pagina, numAttivitaUno, numAttivitaDue, numAttivitaTre, superaSoglia, esistePagina);
+            mappa.put(attivita.pagina, mappaSingola);
+        }
+        logger.info(new WrapLog().message(String.format("Ci sono %d pagine di Attività che andrebbero cancellate", cancellande)).usaDb());
+    }
+
+    @Override
+    protected String incipit() {
+        StringBuffer buffer = new StringBuffer();
+        String message;
+
+        message = "Le attività sono quelle [[Discussioni progetto:Biografie/Attività|'''convenzionalmente''' previste]] " +
+                "dalla comunità ed [[Modulo:Bio/Plurale attività|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
+        buffer.append(message);
+
+        return buffer.toString();
     }
 
 
@@ -114,8 +202,12 @@ public class StatisticheAttivita extends Statistiche {
         String message;
         int vociBio = bioBackend.count();
         buffer.append(String.format("'''%s''' attività", textService.format(attivitaUsate)));
-        message = "Le attività sono quelle [[Discussioni progetto:Biografie/Attività|'''convenzionalmente''' previste]] " +
-                "dalla comunità ed [[Modulo:Bio/Plurale attività|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
+        if (WPref.usaTreAttivita.is()) {
+            message = LISTA_ATTIVITA_TRE;
+        }
+        else {
+            message = LISTA_ATTIVITA_UNICA;
+        }
         buffer.append(textService.setRef(message));
         buffer.append(" '''effettivamente utilizzate''' nelle");
         buffer.append(String.format(" '''%s'''", textService.format(vociBio)));
@@ -124,16 +216,13 @@ public class StatisticheAttivita extends Statistiche {
         buffer.append(" voci biografiche che usano il [[template:Bio|template Bio]] e");
         if (WPref.usaTreAttivita.is()) {
             buffer.append(" i parametri '''''attività, attività2, attività3'''''.");
-//            message = "Ogni persona è presente in '''diverse liste''', in base a quanto riportato in uno dei '''3''' parametri '''''attività, attività2 e attività3''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona";
-            message = LISTA_ATTIVITA_TRE;
+            //            message = "Ogni persona è presente in '''diverse liste''', in base a quanto riportato in uno dei '''3''' parametri '''''attività, attività2 e attività3''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona";
         }
         else {
             buffer.append(" il '''primo''' parametro '''''attività'''''.");
-//            message = String.format("Ogni persona è presente in '''una sola lista''', in base a quanto riportato nel" +
-//                    " '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
-            message = LISTA_ATTIVITA_UNICA;
+            //            message = String.format("Ogni persona è presente in '''una sola lista''', in base a quanto riportato nel" +
+            //                    " '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
         }
-        buffer.append(textService.setRef(message));
         buffer.append(CAPO);
 
         return buffer.toString();
@@ -206,7 +295,7 @@ public class StatisticheAttivita extends Statistiche {
         for (String key : mappa.keySet()) {
             mappaSingola = mappa.get(key);
             if (mappaSingola.isUsata(treAttivita)) {
-                riga = rigaUsate(key, mappaSingola, treAttivita, cont, soglia, linkLista);
+                riga = rigaUsate(mappaSingola, treAttivita, cont, soglia, linkLista);
                 if (textService.isValid(riga)) {
                     buffer.append(riga);
                     k = k + 1;
@@ -225,18 +314,17 @@ public class StatisticheAttivita extends Statistiche {
     }
 
 
-    protected String rigaUsate(String plurale, MappaStatistiche mappaSingola, boolean treAttivita, int cont, int soglia, boolean linkLista) {
+    protected String rigaUsate(MappaStatistiche mappaSingola, boolean treAttivita, int cont, int soglia, boolean linkLista) {
         StringBuffer buffer = new StringBuffer();
         String tagSin = "style=\"text-align: left;\" |";
-        String nome = plurale.toLowerCase();
+        String nome = textService.primaMinuscola(mappaSingola.getChiave());
         String categoriaTag = "[[:Categoria:";
         String iniTag = "|-";
         String doppioTag = " || ";
         String pipe = "|";
         String endTag = "]]";
-        String categoria;
+        String categoria = categoriaTag + nome + pipe + nome + endTag;
 
-        categoria = categoriaTag + nome + pipe + nome + endTag;
         buffer.append(iniTag);
         buffer.append(CAPO);
         buffer.append(pipe);
@@ -245,7 +333,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNomeUsate(plurale, soglia, linkLista));
+        buffer.append(fixNomeUsate(mappaSingola, soglia, linkLista));
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
@@ -268,36 +356,28 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
-    protected String fixNomeUsate(String nomeAttivitaPlurale, int soglia, boolean linkLista) {
-        String nomeVisibile = nomeAttivitaPlurale;
+    protected String fixNomeUsate(MappaStatistiche mappa, int soglia, boolean linkLista) {
+        String plurale = mappa.getChiave();
+        String nomeVisibile = plurale;
         boolean superaSoglia;
         int numVociBio;
+        int previste = WPref.usaTreAttivita.is() ? mappa.getNumAttivitaTotali() : mappa.getNumAttivitaUno();
         String listaTag = "Progetto:Biografie/Attività/";
 
-        numVociBio = bioBackend.countAttivitaPlurale(nomeAttivitaPlurale);
-        superaSoglia = numVociBio >= soglia;
-        if (superaSoglia || linkLista) {
-            nomeVisibile = listaTag + textService.primaMaiuscola(nomeAttivitaPlurale) + PIPE + nomeAttivitaPlurale;
-            nomeVisibile = textService.setDoppieQuadre(nomeVisibile);
+        numVociBio = bioBackend.countAttivitaPlurale(plurale);
+        if (numVociBio != previste) {
+            logger.info(new WrapLog().message(String.format("L'attività %s ha attualmente %d voci invece delle %d previste", plurale, numVociBio, previste)));
         }
 
-        return nomeVisibile;
-    }
-    protected String fixNomeParzialmenteUsate(String nomeAttivitaPlurale, int soglia, boolean linkLista) {
-        String nomeVisibile = nomeAttivitaPlurale;
-        boolean superaSoglia;
-        int numVociBio;
-        String listaTag = "Progetto:Biografie/Attività/";
-
-        numVociBio = bioBackend.countAttivitaPlurale(nomeAttivitaPlurale);
         superaSoglia = numVociBio >= soglia;
         if (superaSoglia && linkLista) {
-            nomeVisibile = listaTag + textService.primaMaiuscola(nomeAttivitaPlurale) + PIPE + nomeAttivitaPlurale;
+            nomeVisibile = listaTag + textService.primaMaiuscola(plurale) + PIPE + plurale;
             nomeVisibile = textService.setDoppieQuadre(nomeVisibile);
         }
 
         return nomeVisibile;
     }
+
 
 
     /**
@@ -384,6 +464,7 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
+
     protected String rigaParzialmenteUsate(String plurale, MappaStatistiche mappaSingola, boolean treAttivita, int cont, int soglia, boolean linkLista) {
         StringBuffer buffer = new StringBuffer();
         String tagSin = "style=\"text-align: left;\" |";
@@ -404,7 +485,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNomeParzialmenteUsate(plurale, soglia, linkLista));
+        buffer.append(plurale);
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
@@ -422,6 +503,21 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
+    protected String fixNomeParzialmenteUsate(String nomeAttivitaPlurale, int soglia, boolean linkLista) {
+        String nomeVisibile = nomeAttivitaPlurale;
+        boolean superaSoglia;
+        int numVociBio;
+        String listaTag = "Progetto:Biografie/Attività/";
+
+        numVociBio = bioBackend.countAttivitaPlurale(nomeAttivitaPlurale);
+        superaSoglia = numVociBio >= soglia;
+        if (superaSoglia && linkLista) {
+            nomeVisibile = listaTag + textService.primaMaiuscola(nomeAttivitaPlurale) + PIPE + nomeAttivitaPlurale;
+            nomeVisibile = textService.setDoppieQuadre(nomeVisibile);
+        }
+
+        return nomeVisibile;
+    }
 
     /**
      * Terza tabella <br>
@@ -529,7 +625,7 @@ public class StatisticheAttivita extends Statistiche {
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
-        buffer.append(fixNomeParzialmenteUsate(plurale, 0,false));
+        buffer.append(fixNomeParzialmenteUsate(plurale, 0, false));
 
         buffer.append(doppioTag);
         buffer.append(tagSin);
@@ -547,58 +643,13 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
-    /**
-     * Recupera la lista
-     */
-    @Override
-    protected void creaLista() {
-        lista = attivitaBackend.findAttivitaDistinctByPlurali();
-    }
-
-    /**
-     * Costruisce la mappa <br>
-     */
-    @Override
-    protected void creaMappa() {
-        super.creaMappa();
-        MappaStatistiche mappaSingola;
-        List<String> singolari = null;
-        int numAttivitaUno;
-        int numAttivitaDue;
-        int numAttivitaTre;
-
-        for (Attivita attivita : (List<Attivita>) lista) {
-            singolari = attivitaBackend.findSingolariByPlurale(attivita.paragrafo);
-            numAttivitaUno = 0;
-            numAttivitaDue = 0;
-            numAttivitaTre = 0;
-
-            for (String singolare : singolari) {
-                numAttivitaUno += bioBackend.countAttivita(singolare);
-                numAttivitaDue += bioBackend.countAttivitaDue(singolare);
-                numAttivitaTre += bioBackend.countAttivitaTre(singolare);
-            }
-
-            mappaSingola = new MappaStatistiche(attivita.paragrafo, numAttivitaUno, numAttivitaDue, numAttivitaTre);
-            mappa.put(attivita.paragrafo, mappaSingola);
-        }
-    }
-
 
     /**
      * Esegue la scrittura della pagina <br>
      */
     public WResult upload() {
         super.esegue();
-        return super.upload(PATH_ATTIVITA);
-    }
-
-    /**
-     * Esegue la scrittura della pagina <br>
-     */
-    public WResult uploadTest() {
-        super.esegue();
-        return super.upload(UPLOAD_TITLE_DEBUG + ATT);
+        return super.upload(uploadTest ? UPLOAD_TITLE_DEBUG + PATH_ATTIVITA : PATH_ATTIVITA);
     }
 
 }

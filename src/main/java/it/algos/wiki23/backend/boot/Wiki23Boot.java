@@ -11,6 +11,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.cognome.*;
 import it.algos.wiki23.backend.packages.doppionome.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.giorno.*;
@@ -161,6 +162,7 @@ public class Wiki23Boot extends VaadBoot {
         VaadVar.menuRouteList.add(BioView.class);
         VaadVar.menuRouteList.add(AnnoWikiView.class);
         VaadVar.menuRouteList.add(GiornoWikiView.class);
+        VaadVar.menuRouteList.add(CognomeView.class);
     }
 
     @Override

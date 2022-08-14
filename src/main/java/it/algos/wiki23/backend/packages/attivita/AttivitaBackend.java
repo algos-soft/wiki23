@@ -55,8 +55,8 @@ public class AttivitaBackend extends WikiBackend {
         this.repository = (AttivitaRepository) crudRepository;
     }
 
-    public Attivita creaIfNotExist(final String singolare, final String categoria, final String paragrafo, final AETypeGenere typeGenere, final boolean aggiunta) {
-        return checkAndSave(newEntity(singolare, categoria, paragrafo, typeGenere, aggiunta));
+    public Attivita creaIfNotExist(final String singolare, final String paragrafo, final String pagina, final AETypeGenere typeGenere, final boolean aggiunta) {
+        return checkAndSave(newEntity(singolare, paragrafo, pagina, typeGenere, aggiunta));
     }
 
     public Attivita checkAndSave(final Attivita attivita) {
@@ -82,18 +82,18 @@ public class AttivitaBackend extends WikiBackend {
      * Eventuali regolazioni iniziali delle property <br>
      *
      * @param singolare  di riferimento (obbligatorio, unico)
-     * @param categoria  di riferimento (obbligatorio, non unico)
      * @param paragrafo  di riferimento (obbligatorio, non unico)
+     * @param pagina     di riferimento (obbligatorio, non unico)
      * @param typeGenere (obbligatorio, non unico)
      * @param aggiunta   flag (facoltativo, di default false)
      *
      * @return la nuova entityBean appena creata (non salvata)
      */
-    public Attivita newEntity(final String singolare, final String categoria, final String paragrafo, final AETypeGenere typeGenere, final boolean aggiunta) {
+    public Attivita newEntity(final String singolare, final String paragrafo, final String pagina, final AETypeGenere typeGenere, final boolean aggiunta) {
         return Attivita.builder()
                 .singolare(textService.isValid(singolare) ? singolare : null)
-                .categoria(textService.isValid(categoria) ? categoria : null)
                 .paragrafo(textService.isValid(paragrafo) ? paragrafo : null)
+                .pagina(textService.isValid(pagina) ? pagina : null)
                 .type(typeGenere != null ? typeGenere : AETypeGenere.maschile)
                 .aggiunta(aggiunta)
                 .numBio(0)
@@ -107,15 +107,29 @@ public class AttivitaBackend extends WikiBackend {
         return repository.findAll();
     }
 
-
-    public List<Attivita> findAttivitaDistinctByPlurali() {
+    public List<Attivita> findAttivitaAllSenzaEx() {
         List<Attivita> lista = new ArrayList<>();
-        Set<String> set = new HashSet();
-        Sort sortOrder = Sort.by(Sort.Direction.DESC, "plurale");
+        Sort sortOrder = Sort.by(Sort.Direction.ASC, "pagina");
         List<Attivita> listaAll = repository.findAll(sortOrder);
 
         for (Attivita attivita : listaAll) {
-            if (set.add(attivita.paragrafo)) {
+            if (!attivita.aggiunta) {
+                lista.add(attivita);
+            }
+        }
+
+        return lista;
+    }
+
+
+    public List<Attivita> findAttivitaDistinctByPluraliOld() {
+        List<Attivita> lista = new ArrayList<>();
+        Set<String> set = new HashSet();
+        Sort sortOrder = Sort.by(Sort.Direction.ASC, "pagina");
+        List<Attivita> listaAll = repository.findAll(sortOrder);
+
+        for (Attivita attivita : listaAll) {
+            if (set.add(attivita.pagina)) {
                 lista.add(attivita);
             }
         }
@@ -132,7 +146,7 @@ public class AttivitaBackend extends WikiBackend {
      */
     public List<Attivita> findPagineDaCancellare() {
         List<Attivita> listaDaCancellare = new ArrayList<>();
-        List<Attivita> listaPlurali = findAttivitaDistinctByPlurali();
+        List<Attivita> listaPlurali = findAttivitaDistinctByPluraliOld();
 
         for (Attivita attivita : listaPlurali) {
             if (attivita.esistePagina && !attivita.superaSoglia) {
@@ -146,10 +160,10 @@ public class AttivitaBackend extends WikiBackend {
 
     public List<String> findAllPlurali() {
         List<String> lista = new ArrayList<>();
-        List<Attivita> listaAll = findAttivitaDistinctByPlurali();
+        List<Attivita> listaAll = findAttivitaDistinctByPluraliOld();
 
         for (Attivita attivita : listaAll) {
-            lista.add(attivita.paragrafo);
+            lista.add(attivita.pagina);
         }
 
         return lista;
@@ -186,8 +200,8 @@ public class AttivitaBackend extends WikiBackend {
     }
 
 
-    public List<Attivita> findAllByPlurale(final String plurale) {
-        return repository.findAllByCategoriaOrderBySingolareAsc(plurale);
+    public List<Attivita> findAllByPagina(final String pagina) {
+        return repository.findAllByPaginaOrderBySingolareAsc(pagina);
     }
 
     public List<Attivita> findAllByParagrafo(final String paragrafo) {
@@ -204,7 +218,7 @@ public class AttivitaBackend extends WikiBackend {
      */
     public List<String> findSingolariByPlurale(final String attivitaPlurale) {
         List<String> listaNomi = new ArrayList<>();
-        List<Attivita> listaAttivita = findAllByPlurale(attivitaPlurale);
+        List<Attivita> listaAttivita = findAllByPagina(attivitaPlurale);
         Attivita attivitaSingola;
 
         if (listaAttivita.size() == 0) {
@@ -258,7 +272,7 @@ public class AttivitaBackend extends WikiBackend {
      */
     public int contBio(final Attivita attivitaSingolare) {
         int numBio = 0;
-        List<Attivita> lista = this.findAllByPlurale(attivitaSingolare.paragrafo);
+        List<Attivita> lista = this.findAllByPagina(attivitaSingolare.paragrafo);
 
         for (Attivita attivita : lista) {
             numBio += attivita.numBio;
@@ -291,22 +305,12 @@ public class AttivitaBackend extends WikiBackend {
             deleteAll();
             for (Map.Entry<String, String> entry : mappa.entrySet()) {
                 singolare = entry.getKey();
-                if (singolare.equals("medico")) {
-                    int a = 87;
-                }
-
                 categoria = entry.getValue();
                 genere = genereBackend.findFirstBySingolare(singolare);
                 typeGenere = genere != null ? genere.getType() : AETypeGenere.nessuno;
                 paragrafo = getParagrafo(genere, categoria);
 
-                //                if (genere != null) {
-                //                    paragrafo = getParagrafo(genere,categoria);
-                //                }
-                //                else {
-                //                    paragrafo = categoria;
-                //                }
-                if (creaIfNotExist(singolare, categoria, paragrafo, typeGenere, false) != null) {
+                if (creaIfNotExist(singolare, paragrafo, categoria, typeGenere, false) != null) {
                     size++;
                 }
             }
@@ -362,7 +366,7 @@ public class AttivitaBackend extends WikiBackend {
         String message;
         int size = 0;
         String singolare;
-        String categoria = VUOTA;
+        String pagina = VUOTA;
         String paragrafo;
         AETypeGenere type = null;
 
@@ -396,30 +400,30 @@ public class AttivitaBackend extends WikiBackend {
                     switch (genere.getType()) {
                         case maschile -> {
                             type = AETypeGenere.maschile;
-                            categoria = genere.pluraleMaschile;
+                            pagina = genere.pluraleMaschile;
                         }
                         case femminile -> {
                             type = AETypeGenere.femminile;
-                            categoria = genere.pluraleFemminile;
+                            pagina = genere.pluraleFemminile;
                         }
                         case entrambi -> {
                             type = AETypeGenere.maschile;
-                            categoria = genere.pluraleMaschile;
+                            pagina = genere.pluraleMaschile;
                         }
                         //                        case nessuno -> {}
                     } ;
-                    paragrafo = categoria;
-                    if (creaIfNotExist(singolare, categoria, paragrafo, type, true) != null) {
+                    paragrafo = pagina;
+                    if (creaIfNotExist(singolare, paragrafo, pagina, type, true) != null) {
                         size++;
                     }
                     logger.info(new WrapLog().message(genereSingolare));
                 }
                 else {
                     singolare = genere.singolare;
-                    categoria = entity.categoria;
                     paragrafo = entity.paragrafo;
+                    pagina = entity.pagina;
                     type = entity.type;
-                    if (creaIfNotExist(singolare, categoria, paragrafo, type, true) != null) {
+                    if (creaIfNotExist(singolare, pagina, paragrafo, type, true) != null) {
                         size++;
                     }
                 }
@@ -436,6 +440,8 @@ public class AttivitaBackend extends WikiBackend {
      */
     public void elabora() {
         long inizio = System.currentTimeMillis();
+        List<String> listaPlurali;
+        List<String> listaSingolari;
         int numBio;
         int numSingolari;
         int soglia = WPref.sogliaAttNazWiki.getInt();
@@ -446,26 +452,31 @@ public class AttivitaBackend extends WikiBackend {
 
         for (Attivita attivita : findAll()) {
             attivita.numBio = 0;
+            attivita.numSingolari = 0;
+            attivita.superaSoglia = false;
+            attivita.esistePagina = false;
             update(attivita);
         }
 
-        //--Spazzola tutte le attività distinte plurali (circa 657)
+        //--Spazzola tutte le attività distinte plurali (circa 662)
         //--Per ognuna recupera le attività singolari
         //--Per ognuna attività singolare calcola quante biografie la usano (in 1 o 3 parametri)
         //--Memorizza e registra il dato nella entityBean
-        for (Attivita attivita : findAttivitaDistinctByPlurali()) {
+        listaPlurali = findAllPlurali();
+        for (String plurale : listaPlurali) {
             numBio = 0;
             numSingolari = 0;
 
-            for (String singolare : findSingolariByPlurale(attivita.paragrafo)) {
+            listaSingolari = findSingolariByPlurale(plurale);
+            for (String singolare : listaSingolari) {
                 numBio += bioBackend.countAttivitaAll(singolare);
                 numSingolari++;
             }
 
-            for (Attivita attivitaOK : findAllByPlurale(attivita.paragrafo)) {
+            for (Attivita attivitaOK : findAllByPagina(plurale)) {
                 attivitaOK.numBio = numBio;
                 attivitaOK.superaSoglia = numBio >= soglia ? true : false;
-                attivitaOK.esistePagina = esistePagina(attivitaOK.paragrafo);
+                attivitaOK.esistePagina = esistePagina(attivitaOK.pagina);
                 attivitaOK.numSingolari = numSingolari;
                 update(attivitaOK);
 

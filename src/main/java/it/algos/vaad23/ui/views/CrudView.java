@@ -505,7 +505,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected void fixAutoNumbering() {
         if (usaRowIndex) {
-            grid.addColumn(LitRenderer.of("${index + 1}")).setHeader("#").setWidth(getNumberingWidth()).setFlexGrow(0); ;
+            grid.addColumn(LitRenderer.of("${index + 1}")).setHeader(FIELD_KEY_ORDER).setKey(FIELD_KEY_ORDER).setWidth(getNumberingWidth()).setFlexGrow(0); ;
         }
     }
 

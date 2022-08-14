@@ -134,14 +134,27 @@ public class NazionalitaView extends WikiView {
         addSpanRossoBold(message);
     }
 
-    protected void fixBottoniTopSpecifici() {
-        super.fixBottoniTopSpecifici();
+    @Override
+    protected void fixTopLayout() {
+        super.fixTopLayout();
+        fixBottoniTopSpecificiNazionalita();
+    }
+
+    protected void fixBottoniTopSpecificiNazionalita() {
+        String widthEM = "18ex";
+        String tag = TAG_ALTRE + " by ";
+
+        topPlaceHolder2.setClassName("buttons");
+        topPlaceHolder2.setPadding(false);
+        topPlaceHolder2.setSpacing(true);
+        topPlaceHolder2.setMargin(false);
+        topPlaceHolder2.setClassName("confirm-dialog-buttons");
 
         searchFieldPlurale = new TextField();
         searchFieldPlurale.setPlaceholder("Filter by plurale");
         searchFieldPlurale.setClearButtonVisible(true);
         searchFieldPlurale.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(searchFieldPlurale);
+        topPlaceHolder2.add(searchFieldPlurale);
 
         boxSuperaSoglia = new IndeterminateCheckbox();
         boxSuperaSoglia.setLabel("Supera soglia");
@@ -149,7 +162,7 @@ public class NazionalitaView extends WikiView {
         boxSuperaSoglia.addValueChangeListener(event -> sincroFiltri());
         HorizontalLayout layout = new HorizontalLayout(boxSuperaSoglia);
         layout.setAlignItems(Alignment.CENTER);
-        topPlaceHolder.add(layout);
+        topPlaceHolder2.add(layout);
 
         boxEsistePagina = new IndeterminateCheckbox();
         boxEsistePagina.setLabel("Esiste pagina");
@@ -157,21 +170,23 @@ public class NazionalitaView extends WikiView {
         boxEsistePagina.addValueChangeListener(event -> sincroFiltri());
         HorizontalLayout layout2 = new HorizontalLayout(boxEsistePagina);
         layout2.setAlignItems(Alignment.CENTER);
-        topPlaceHolder.add(layout2);
+        topPlaceHolder2.add(layout2);
 
         boxDistinctPlurali = new Checkbox();
         boxDistinctPlurali.setLabel("Distinct plurali");
         boxDistinctPlurali.addValueChangeListener(event -> sincroPlurali());
         HorizontalLayout layout3 = new HorizontalLayout(boxDistinctPlurali);
         layout3.setAlignItems(Alignment.CENTER);
-        topPlaceHolder.add(layout3);
+        topPlaceHolder2.add(layout3);
 
         boxPagineDaCancellare = new Checkbox();
         boxPagineDaCancellare.setLabel("Da cancellare");
         boxPagineDaCancellare.addValueChangeListener(event -> sincroCancellare());
         HorizontalLayout layout5 = new HorizontalLayout(boxPagineDaCancellare);
         layout5.setAlignItems(Alignment.CENTER);
-        topPlaceHolder.add(layout5);
+        topPlaceHolder2.add(layout5);
+
+        this.add(topPlaceHolder2);
     }
 
     /**

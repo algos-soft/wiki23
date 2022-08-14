@@ -86,12 +86,12 @@ public class AttivitaDialog extends CrudDialog {
     protected void fixBinder() {
         super.fixBinder();
 
-        List<Attivita> lista = backend.findAllByPlurale(entityBean.paragrafo);
+        List<Attivita> lista = backend.findAllByPagina(entityBean.pagina);
         VerticalLayout layout = new VerticalLayout();
         layout.setPadding(false);
         layout.setSpacing(true);
         layout.setMargin(false);
-        layout.add(htmlService.getSpan(new WrapSpan("Attività singolari associate").color(AETypeColor.blu).lineHeight(AELineHeight.em3)));
+        layout.add(htmlService.getSpan(new WrapSpan("Attività singolari associate al plurale di questa attività e che confluiscono nella medesima pagina").color(AETypeColor.blu).lineHeight(AELineHeight.em3)));
         for (Attivita attivita : lista) {
             layout.add(htmlService.getSpan(new WrapSpan(attivita.singolare).color(AETypeColor.verde).lineHeight(AELineHeight.em3)));
         }

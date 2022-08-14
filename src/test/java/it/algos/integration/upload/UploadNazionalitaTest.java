@@ -89,30 +89,39 @@ public class UploadNazionalitaTest extends WikiTest {
         appContext.getBean(UploadNazionalita.class).noToc().test().upload(sorgente);
     }
 
-    @Test
+//    @Test
     @Order(3)
     @DisplayName("3 - Upload test di una nazionalità plurale con TOC e sottopagine")
-    void upload() {
+    void upload3() {
         System.out.println("3 - Upload test di una nazionalità plurale con TOC e sottopagine");
         sorgente = "azeri";
         appContext.getBean(UploadNazionalita.class).forceToc().test().upload(sorgente);
     }
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("4 - Upload test di una nazionalità plurale")
-    void upload2() {
+    void upload4() {
         System.out.println("4 - Upload test di una nazionalità plurale");
         sorgente = "assiri";
         appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
     }
 
-    @Test
+//    @Test
     @Order(5)
     @DisplayName("5 - Upload test di una nazionalità plurale")
-    void upload3() {
+    void upload5() {
         System.out.println("5 - Upload test di una nazionalità plurale");
         sorgente = "austro-ungarici";
+        appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Upload test di una nazionalità plurale")
+    void upload6() {
+        System.out.println("6 - Upload test di una nazionalità plurale");
+        sorgente = "capoverdiani";
         appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
     }
 

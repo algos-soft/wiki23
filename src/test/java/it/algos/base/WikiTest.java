@@ -262,7 +262,7 @@ public abstract class WikiTest extends AlgosTest {
 //                Arguments.of("cingalese", AETypeLista.nazionalitaSingolare),
                 Arguments.of("mongoli", AETypeLista.nazionalitaPlurale),
                 Arguments.of("assiri", AETypeLista.nazionalitaPlurale),
-                Arguments.of("persiani", AETypeLista.nazionalitaPlurale)
+                Arguments.of("capoverdiani", AETypeLista.nazionalitaPlurale)
 
         );
     }

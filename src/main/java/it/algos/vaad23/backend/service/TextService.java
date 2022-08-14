@@ -1253,7 +1253,7 @@ public class TextService extends AbstractService {
         String message;
 
         if (allEnumSelection.contains(PUNTO_VIRGOLA)) {
-            value = allEnumSelection.substring(allEnumSelection.indexOf(PUNTO_VIRGOLA)+PUNTO_VIRGOLA.length());
+            value = allEnumSelection.substring(allEnumSelection.indexOf(PUNTO_VIRGOLA) + PUNTO_VIRGOLA.length());
         }
         else {
             message = String.format("La stringa in ingresso non contiene il punto-virgola");

@@ -35,6 +35,7 @@ public class MappaStatistiche {
     private int numAnnoMorto = 0;
 
     private int ordine;
+
     private int pos;
 
     private String nome;
@@ -43,10 +44,13 @@ public class MappaStatistiche {
 
     private int morti = 0;
 
-    private String percNati ;
+    private String percNati;
 
-    private String percMorti ;
+    private String percMorti;
 
+    private boolean superaSoglia;
+
+    private boolean esistePagina;
 
     public MappaStatistiche(String chiave) {
         this.chiave = chiave;
@@ -59,12 +63,13 @@ public class MappaStatistiche {
     }
 
 
-    public MappaStatistiche(String chiave, int numAttivitaUno, int numAttivitaDue, int numAttivitaTre) {
+    public MappaStatistiche(String chiave, int numAttivitaUno, int numAttivitaDue, int numAttivitaTre, boolean superaSoglia, boolean esistePagina) {
         this.chiave = chiave;
         this.numAttivitaUno = numAttivitaUno;
         this.numAttivitaDue = numAttivitaDue;
         this.numAttivitaTre = numAttivitaTre;
         this.numAttivitaTotali = numAttivitaUno + numAttivitaDue + numAttivitaTre;
+        this.superaSoglia = esistePagina;
     }
 
 
@@ -156,6 +161,7 @@ public class MappaStatistiche {
             return isUsataUnaAttivita();
         }
     }
+
     public boolean isUsataTreAttivita() {
         return numAttivitaTotali > 0;
     }
@@ -202,6 +208,14 @@ public class MappaStatistiche {
 
     public void setPercMorti(String percMorti) {
         this.percMorti = percMorti;
+    }
+
+    public boolean isSuperaSoglia() {
+        return superaSoglia;
+    }
+
+    public boolean isEsistePagina() {
+        return esistePagina;
     }
 
 }// end of class

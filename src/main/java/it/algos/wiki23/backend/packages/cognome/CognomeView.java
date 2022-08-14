@@ -1,7 +1,13 @@
 package it.algos.wiki23.backend.packages.cognome;
 
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.boot.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.views.*;
+import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
@@ -10,6 +16,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.data.domain.*;
 
 /**
  * Project wiki23
@@ -26,14 +33,11 @@ import com.vaadin.flow.component.textfield.TextField;
  */
 @PageTitle("Cognomi")
 @Route(value = "cognome", layout = MainLayout.class)
-public class CognomeView extends CrudView {
+public class CognomeView extends WikiView {
 
 
     //--per eventuali metodi specifici
     private CognomeBackend backend;
-
-    //--per eventuali metodi specifici
-    private CognomeDialog dialog;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -57,16 +61,18 @@ public class CognomeView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("ordine", "code", "descrizione"); // controllare la congruità con la Entity
-        super.formPropertyNamesList = Arrays.asList("code", "descrizione"); // controllare la congruità con la Entity
-        super.riordinaColonne = true; //se rimane true, uguale al default, si può cancellare
-        super.usaBottoneRefresh = false; //se rimane false, uguale al default, si può cancellare
-        super.usaBottoneDeleteReset = false; //se rimane false, uguale al default, si può cancellare
-        super.usaBottoneNew = true; //se rimane true, uguale al default, si può cancellare
-        super.usaBottoneEdit = true; //se rimane true, uguale al default, si può cancellare
-        super.usaBottoneDelete = true; //se rimane true, uguale al default, si può cancellare
+        super.gridPropertyNamesList = Arrays.asList("cognome", "numBio");
+        super.formPropertyNamesList = Arrays.asList("cognome", "numBio");
+        super.sortOrder = Sort.by(Sort.Direction.DESC, "numBio");
 
-        super.dialogClazz = CognomeDialog.class;
+        super.usaBottoneUploadAll = false;
+        super.usaBottoneDownload = false;
+        super.usaBottoneUploadStatistiche = false;
+        super.usaBottonePaginaWiki = false;
+        super.usaBottoneTest = false;
+        super.usaSelectionGrid = false;
+
+        super.usaBottoneElabora = true;
     }
 
     /**
@@ -76,7 +82,25 @@ public class CognomeView extends CrudView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        addSpanVerde("Prova di colori");
+        int numMongo = WPref.sogliaCognomiMongo.getInt();
+        int numMWiki = WPref.sogliaCognomiWiki.getInt();
+
+        message = "Sono elencati i cognomi.";
+        message += " BioBot crea una lista di biografati una volta superate le 50 biografie che usano quel cognome.";
+        addSpanVerde(message);
+
+        message = "Vedi anche la ";
+        Span span = getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold));
+        Anchor anchor = new Anchor(VaadCost.PATH_WIKI + "Categoria:Liste di persone per cognome", "[[categoria:Liste di persone per cognome]]");
+        anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+        anchor.getElement().getStyle().set(AEFontHeight.HTML, AEFontHeight.em9.getTag());
+        anchor.getElement().getStyle().set(AETypeColor.HTML, AETypeColor.verde.getTag());
+        alertPlaceHolder.add(new Span(span, anchor));
+
+        message = String.format("Elabora crea sul database locale mongo tutti i cognomi usati da almeno %d voci.", numMongo);
+        addSpanRosso(message);
+        message = String.format("Upload crea sul server wiki le pagine per tutti i cognomi usati da almeno %d voci.", numMWiki);
+        addSpanRosso(message);
     }
 
 }// end of crud @Route view class

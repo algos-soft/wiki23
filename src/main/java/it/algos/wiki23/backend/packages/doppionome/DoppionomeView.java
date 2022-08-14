@@ -60,11 +60,9 @@ public class DoppionomeView extends WikiView {
 
         super.gridPropertyNamesList = Arrays.asList("nome");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "nome");
-//        super.lastDownload = WPref.downloadNomi;
         super.wikiModuloTitle = PATH_TABELLA_NOMI_DOPPI;
 
         super.usaBottoneUploadAll = false;
-//        super.usaBottoneStatistiche = false;
         super.usaBottoneUploadStatistiche = false;
         super.usaBottonePaginaWiki = false;
         super.usaBottoneTest = false;
@@ -91,7 +89,7 @@ public class DoppionomeView extends WikiView {
         anchor.getElement().getStyle().set(AETypeColor.HTML, AETypeColor.verde.getTag());
         alertPlaceHolder.add(new Span(span, anchor));
 
-        message = "La lista nomi prevede solo nomi singoli a cui vengono aggiunti questi nomi doppi accettabili";
+        message = "La lista nomi prevede solo nomi singoli a cui vengono aggiunti questi nomi doppi accettabili.";
         message += " Quando si crea la lista nomi, i nomi doppi vengono scaricati e aggiunti alla lista stessa.";
         addSpanRosso(message);
     }

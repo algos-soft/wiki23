@@ -20,13 +20,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TaskNazionalita extends AlgosTask {
 
-//    /**
-//     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-//     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-//     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-//     */
-//    @Autowired
-//    private UploadNazionalita upload;
 
 
     @Override
