@@ -438,7 +438,7 @@ public class AttivitaView extends WikiView {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void upload() {
-        backend.uploadAll();
+        appContext.getBean(UploadAttivita.class).uploadAll();
     }
 
     /**

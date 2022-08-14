@@ -498,6 +498,7 @@ public class AttivitaBackend extends WikiBackend {
     /**
      * Esegue un azione di upload, specifica del programma/package in corso <br>
      */
+    @Deprecated
     public void uploadAll() {
         WResult result;
         long inizio = System.currentTimeMillis();
