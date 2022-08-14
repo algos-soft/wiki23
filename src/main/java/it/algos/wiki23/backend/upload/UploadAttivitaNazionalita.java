@@ -188,10 +188,10 @@ public abstract class UploadAttivitaNazionalita extends Upload {
                 vedi = String.format("{{Vedi anche|%s}}", parente);
                 buffer.append(vedi + CAPO);
                 if (uploadTest) {
-                    appContext.getBean(UploadNazionalita.class).test().uploadSottoPagina(parente, nomeLista, keyParagrafo, lista);
+                    appContext.getBean(UploadAttivita.class).test().uploadSottoPagina(parente, nomeLista, keyParagrafo, lista);
                 }
                 else {
-                    appContext.getBean(UploadNazionalita.class).uploadSottoPagina(parente, nomeLista, keyParagrafo, lista);
+                    appContext.getBean(UploadAttivita.class).uploadSottoPagina(parente, nomeLista, keyParagrafo, lista);
                 }
             }
             else {
@@ -240,7 +240,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
                 buffer.append(wrap.didascaliaBreve);
                 buffer.append(CAPO);
             }
-            buffer.append("{{Div col end}}" + CAPO);
+            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
         }
 
         return buffer.toString().trim();
@@ -249,6 +249,13 @@ public abstract class UploadAttivitaNazionalita extends Upload {
 
     protected String incipitSottoPagina(String nazionalita, String attivita) {
         return VUOTA;
+    }
+
+    /**
+     * Esegue la scrittura di tutte le pagine di nazionalità <br>
+     */
+    public WResult uploadAll() {
+        return null;
     }
 
 }

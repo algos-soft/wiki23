@@ -132,7 +132,7 @@ public class StatisticheAttivitaTest extends WikiTest {
 
     @Test
     @Order(5)
-    @DisplayName("5 - Upload base'")
+    @DisplayName("5 - Upload base")
     void upload5() {
         System.out.println(("5 - Upload base"));
 
