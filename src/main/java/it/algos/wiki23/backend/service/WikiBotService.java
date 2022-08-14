@@ -856,7 +856,7 @@ public class WikiBotService extends WAbstractService {
         valoreGrezzo = textService.levaCoda(valoreGrezzo, CIRCA);
         valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
         valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
-        if (valoreGrezzo.endsWith("ca.")||valoreGrezzo.endsWith("ca")) {
+        if (valoreGrezzo.endsWith("ca.")) {
             valoreGrezzo = textService.levaCodaDa(valoreGrezzo,"ca");
         }
         valoreGrezzo = textService.setNoQuadre(valoreGrezzo);

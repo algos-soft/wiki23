@@ -111,11 +111,15 @@ public class BioDialog extends CrudDialog {
         WrapBio wrap = appContext.getBean(QueryBio.class).getWrap(currentItem.pageId);
         currentItem = backend.fixWrap(currentItem.id, wrap);
         elaboraService.esegue(currentItem);
-        backend.update(currentItem);
-        if (downloadHandler != null) {
-            downloadHandler.accept(currentItem);
-        }
-        close();
+        binder.readBean(currentItem);
+
+//        backend.update(currentItem);
+
+
+        //        if (downloadHandler != null) {
+//            downloadHandler.accept(currentItem);
+//        }
+//        close();
     }
 
     protected void elaboraHandler() {
