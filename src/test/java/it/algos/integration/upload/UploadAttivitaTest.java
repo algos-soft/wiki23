@@ -89,7 +89,7 @@ public class UploadAttivitaTest extends WikiTest {
     }
 
 
-//    @Test
+    @Test
     @Order(3)
     @DisplayName("3 - Upload di una attività plurale")
     void upload3() {
@@ -98,7 +98,7 @@ public class UploadAttivitaTest extends WikiTest {
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("254- Upload test di una attività")
     void upload4() {
