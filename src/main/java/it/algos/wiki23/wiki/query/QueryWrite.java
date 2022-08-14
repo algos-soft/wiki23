@@ -531,8 +531,10 @@ public class QueryWrite extends AQuery {
             objectEdit = (JSONObject) objectAll.get(EDIT);
         }
 
-        if (objectEdit != null && objectEdit.get(NEW_TIME_STAMP) != null && objectEdit.get(NEW_TIME_STAMP) instanceof String) {
+        try {
             newtimestamp = (String) objectEdit.get(NEW_TIME_STAMP);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
         }
 
         return newtimestamp;
@@ -549,11 +551,15 @@ public class QueryWrite extends AQuery {
         JSONObject objectAll = (JSONObject) JSONValue.parse(contenutoCompletoPaginaWebInFormatoJSON);
         JSONObject objectEdit = null;
 
-        if (objectAll != null && objectAll.get(EDIT) != null && objectAll.get(EDIT) instanceof JSONObject) {
-            objectEdit = (JSONObject) objectAll.get(EDIT);
+        try {
+            if (objectAll != null && objectAll.get(EDIT) != null && objectAll.get(EDIT) instanceof JSONObject) {
+                objectEdit = (JSONObject) objectAll.get(EDIT);
+            }
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
         }
 
-        return objectEdit.get(NO_CHANGE) == null;
+        return objectEdit != null ? objectEdit.get(NO_CHANGE) == null:false;
     }
 
 }
