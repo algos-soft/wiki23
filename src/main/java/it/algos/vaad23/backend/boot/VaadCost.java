@@ -161,6 +161,10 @@ public class VaadCost {
     public static final String KEY_NULL = "null";
 
     public static final String NULL = "(null)";
+    public static final String TAG_ALTRE = "...";
+
+    public static final String TAG_ALTRE_BY = TAG_ALTRE + SPAZIO + "by" + SPAZIO;
+    public static final String WIDTH_EM = "18ex";
 
     public static final String KEY_ROUTE_TYPE = "type";
 

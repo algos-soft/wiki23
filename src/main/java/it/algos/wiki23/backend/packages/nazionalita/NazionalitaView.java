@@ -83,7 +83,6 @@ public class NazionalitaView extends WikiView {
 
         super.usaBottoneElabora = true;
         super.lastDownload = WPref.downloadNazionalita;
-        super.durataDownload = WPref.downloadNazionalitaTime;
         super.lastElaborazione = WPref.elaboraNazionalita;
         super.durataElaborazione = WPref.elaboraNazionalitaTime;
         super.lastUpload = WPref.uploadNazionalita;

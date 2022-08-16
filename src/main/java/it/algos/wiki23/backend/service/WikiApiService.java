@@ -391,7 +391,7 @@ public class WikiApiService extends WAbstractService {
         if (textService.isValid(testoModulo)) {
             testoModulo = textService.levaTesta(testoModulo, "return");
             testoModulo = textService.levaTesta(testoModulo, "{");
-            testoModulo = textService.levaTesta(testoModulo, "}");
+            testoModulo = textService.levaCoda(testoModulo, "}");
             righe = testoModulo.split(tagRighe);
         }
 
@@ -400,6 +400,14 @@ public class WikiApiService extends WAbstractService {
             for (String riga : righe) {
 
                 sezioni = riga.split(tagSezioni);
+                if (sezioni != null && sezioni.length == 1) {
+                    key = sezioni[0];
+                    key = textService.levaCoda(key, VIRGOLA);
+
+                    key = textService.setNoQuadre(key);
+                    key = textService.setNoDoppiApici(key);
+                    mappa.put(key, key);
+                }
                 if (sezioni != null && sezioni.length == 2) {
                     key = sezioni[0];
 

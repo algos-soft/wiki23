@@ -202,6 +202,8 @@ public class ElaboraServiceTest extends WikiTest {
 
     protected static final String NAZ_10 = "italiana";
 
+    protected static final String NAZ_11 = "ceca";
+
     protected Giorno previstoGiorno;
 
     protected Giorno ottenutoGiorno;
@@ -403,18 +405,17 @@ public class ElaboraServiceTest extends WikiTest {
         printAnno(sorgente, ottenutoAnno);
     }
 
-
-//    @ParameterizedTest
-//    @MethodSource(value = "ANNI")
-//    @Order(9)
-//    @DisplayName("9 - fixAnnoValido (come stringa)")
-//    void fixAnno(String anno) {
-//        System.out.println("9 - fixAnnoValido (come stringa)");
-//
-//        sorgente = anno;
-//        ottenuto = service.fixAnno(sorgente);
-//        printNome(sorgente, ottenuto);
-//    }
+    //    @ParameterizedTest
+    //    @MethodSource(value = "ANNI")
+    //    @Order(9)
+    //    @DisplayName("9 - fixAnnoValido (come stringa)")
+    //    void fixAnno(String anno) {
+    //        System.out.println("9 - fixAnnoValido (come stringa)");
+    //
+    //        sorgente = anno;
+    //        ottenuto = service.fixAnno(sorgente);
+    //        printNome(sorgente, ottenuto);
+    //    }
 
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA_ELABORA")
@@ -428,22 +429,21 @@ public class ElaboraServiceTest extends WikiTest {
         printNome(sorgente, ottenuto);
     }
 
-
-//    @ParameterizedTest
-//    @MethodSource(value = "ATTIVITA_ELABORA")
-//    @Order(11)
-//    @DisplayName("11 - fixAttivitaLink (come Attivita esistente)")
-//    void testWithStringParameterAttivitaLink(String attivita) {
-//        System.out.println("11 - fixAttivitaLink (come Attivita esistente)");
-//
-//        sorgente = attivita;
-//        ottenutoAttivita = null;
-//        try {
-//            ottenutoAttivita = service.fixAttivitaLink(sorgente);
-//        } catch (Exception unErrore) {
-//        }
-//        printAttivita(sorgente, ottenutoAttivita);
-//    }
+    //    @ParameterizedTest
+    //    @MethodSource(value = "ATTIVITA_ELABORA")
+    //    @Order(11)
+    //    @DisplayName("11 - fixAttivitaLink (come Attivita esistente)")
+    //    void testWithStringParameterAttivitaLink(String attivita) {
+    //        System.out.println("11 - fixAttivitaLink (come Attivita esistente)");
+    //
+    //        sorgente = attivita;
+    //        ottenutoAttivita = null;
+    //        try {
+    //            ottenutoAttivita = service.fixAttivitaLink(sorgente);
+    //        } catch (Exception unErrore) {
+    //        }
+    //        printAttivita(sorgente, ottenutoAttivita);
+    //    }
 
 
     @ParameterizedTest
@@ -503,14 +503,24 @@ public class ElaboraServiceTest extends WikiTest {
 
     @Test
     @Order(16)
-    @DisplayName("16 - elabora una categoria di voci")
+    @DisplayName("16 - nazionalità maschile e femminile")
     void ciclo() {
-//        sorgente = "Nati nel 1782";
-//        listaPageIds = queryService.getListaPageIds(sorgente);
-//        listBio = appContext.getBean(QueryWrapBio.class).getBio(listaPageIds);
-//        assertNotNull(listBio);
-//        assertTrue(listBio.size() > 0);
-//        elaboraService.esegue()
+        System.out.println("16 - nazionalità maschile e femminile");
+        System.out.println(VUOTA);
+
+        //        sorgente = "Karel Škorpil";
+        //        bio= queryService.getBio(sorgente);
+
+        sorgente = "F";
+        sorgente2 = "ceca";
+        ottenuto = service.nazionalitaValida(sorgente, sorgente2);
+        printNome(sorgente2, ottenuto);
+        System.out.println(VUOTA);
+
+        sorgente = "M";
+        sorgente2 = "ceca";
+        ottenuto = service.nazionalitaValida(sorgente, sorgente2);
+        printNome(sorgente2, ottenuto);
     }
 
 

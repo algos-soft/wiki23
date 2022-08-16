@@ -124,7 +124,7 @@ public class ProfessioneBackend extends WikiBackend {
             message = String.format("Non sono riuscito a leggere da wiki il modulo %s", wikiTitle);
             logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
         }
-        super.fixDownload(inizio, wikiTitle, mappa.size(), size);
+        super.fixDownloadSecondi(inizio, wikiTitle, mappa.size(), size);
     }
 
 }// end of crud backend class

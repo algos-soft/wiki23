@@ -1,20 +1,14 @@
 package it.algos.wiki23.backend.liste;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
-import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
 
 /**
  * Project wiki23
@@ -47,8 +41,8 @@ public class ListaAttivita extends Lista {
 
 
     public ListaAttivita attivita(final Attivita attivita) {
-        this.nomeLista = attivita.paragrafo;
-        listaNomiSingoli = attivitaBackend.findSingolariByPlurale(attivita.paragrafo);
+        this.nomeLista = attivita.pluraleParagrafo;
+        listaNomiSingoli = attivitaBackend.findSingolariByPlurale(attivita.pluraleParagrafo);
         return this;
     }
 

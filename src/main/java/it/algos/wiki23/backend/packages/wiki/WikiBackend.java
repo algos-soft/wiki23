@@ -1,5 +1,6 @@
 package it.algos.wiki23.backend.packages.wiki;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -123,7 +124,16 @@ public abstract class WikiBackend extends CrudBackend {
     public void elabora() {
     }
 
-    public void fixDownload(final long inizio, final String wikiTitle, final int sizeServerWiki, final int sizeMongoDB) {
+
+    public void fixDownloadSecondi(final long inizio, final String wikiTitle, final int sizeServerWiki, final int sizeMongoDB) {
+        fixDownload(inizio, wikiTitle, sizeServerWiki, sizeMongoDB, false);
+    }
+
+    public void fixDownloadMinuti(final long inizio, final String wikiTitle, final int sizeServerWiki, final int sizeMongoDB) {
+        fixDownload(inizio, wikiTitle, sizeServerWiki, sizeMongoDB, true);
+    }
+
+    public void fixDownload(final long inizio, final String wikiTitle, final int sizeServerWiki, final int sizeMongoDB, boolean usaMinuti) {
         long fine = System.currentTimeMillis();
         Long delta = fine - inizio;
         String wikiTxt = textService.format(sizeServerWiki);
@@ -138,22 +148,28 @@ public abstract class WikiBackend extends CrudBackend {
         }
 
         if (durataDownload != null) {
-            delta = delta / 1000 / 60;
-            durataDownload.setValue(LocalDateTime.now());
+            delta = delta / 1000;
+            if (usaMinuti) {
+                delta = delta / 60;
+            }
+
+            durataDownload.setValue(delta.intValue());
         }
         else {
             logger.warn(new WrapLog().exception(new AlgosException("durataDownload è nullo")));
             return;
         }
 
-        if (sizeServerWiki == sizeMongoDB) {
-            message = String.format("Download di %s righe da [%s] in %d millisecondi", wikiTxt, wikiTitle, delta);
-        }
-        else {
-            message = String.format("Download di %s righe da [%s] convertite in %s elementi su mongoDB", wikiTxt, wikiTitle, mongoTxt);
-        }
+        if (textService.isValid(wikiTitle) && sizeServerWiki > 0 && sizeMongoDB > 0) {
+            if (sizeServerWiki == sizeMongoDB) {
+                message = String.format("Download di %s righe da [%s] in %d millisecondi", wikiTxt, wikiTitle, delta);
+            }
+            else {
+                message = String.format("Download di %s righe da [%s] convertite in %s elementi su mongoDB", wikiTxt, wikiTitle, mongoTxt);
+            }
 
-        logger.info(new WrapLog().message(message));
+            logger.info(new WrapLog().message(message));
+        }
     }
 
 

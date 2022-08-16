@@ -110,7 +110,7 @@ public class GenereBackend extends WikiBackend {
         return newEntityBean;
     }
 
-    protected Predicate<Genere> startEx = genere -> genere.singolare.startsWith(TAG_EX) || genere.singolare.startsWith(TAG_EX2);
+    protected Predicate<Genere> startEx = genere -> genere.singolare.startsWith(TAG_EX_SPAZIO) || genere.singolare.startsWith(TAG_EX2);
 
 
     public List<Genere> findStartingEx() {
@@ -249,7 +249,7 @@ public class GenereBackend extends WikiBackend {
             message = String.format("Non sono riuscito a leggere da wiki il modulo %s", wikiTitle);
             logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
         }
-        super.fixDownload(inizio, wikiTitle, mappa.size(), size);
+        super.fixDownloadSecondi(inizio, wikiTitle, mappa.size(), size);
     }
 
 

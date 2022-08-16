@@ -1,5 +1,6 @@
 package it.algos.wiki23.backend.packages.attivita;
 
+import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -55,8 +56,8 @@ public class AttivitaBackend extends WikiBackend {
         this.repository = (AttivitaRepository) crudRepository;
     }
 
-    public Attivita creaIfNotExist(final String singolare, final String paragrafo, final String pagina, final AETypeGenere typeGenere, final boolean aggiunta) {
-        return checkAndSave(newEntity(singolare, paragrafo, pagina, typeGenere, aggiunta));
+    public Attivita creaIfNotExist(String singolare, String pluraleParagrafo, String pluraleLista, String linkPagina, AETypeGenere typeGenere, boolean aggiunta) {
+        return checkAndSave(newEntity(singolare, pluraleParagrafo, pluraleLista, linkPagina, typeGenere, aggiunta));
     }
 
     public Attivita checkAndSave(final Attivita attivita) {
@@ -72,7 +73,7 @@ public class AttivitaBackend extends WikiBackend {
      * @return la nuova entity appena creata (non salvata)
      */
     public Attivita newEntity() {
-        return newEntity(VUOTA, VUOTA, VUOTA, null, true);
+        return newEntity(VUOTA, VUOTA, VUOTA, VUOTA, null, false);
     }
 
 
@@ -81,19 +82,27 @@ public class AttivitaBackend extends WikiBackend {
      * Usa il @Builder di Lombok <br>
      * Eventuali regolazioni iniziali delle property <br>
      *
-     * @param singolare  di riferimento (obbligatorio, unico)
-     * @param paragrafo  di riferimento (obbligatorio, non unico)
-     * @param pagina     di riferimento (obbligatorio, non unico)
-     * @param typeGenere (obbligatorio, non unico)
-     * @param aggiunta   flag (facoltativo, di default false)
+     * @param singolare        di riferimento (obbligatorio, unico)
+     * @param pluraleParagrafo di riferimento (obbligatorio, non unico)
+     * @param pluraleLista     di riferimento (obbligatorio, non unico)
+     * @param linkPagina       di riferimento (obbligatorio, non unico)
+     * @param typeGenere       (obbligatorio, non unico)
+     * @param aggiunta         flag (facoltativo, di default false)
      *
      * @return la nuova entityBean appena creata (non salvata)
      */
-    public Attivita newEntity(final String singolare, final String paragrafo, final String pagina, final AETypeGenere typeGenere, final boolean aggiunta) {
+    public Attivita newEntity(
+            final String singolare,
+            final String pluraleParagrafo,
+            final String pluraleLista,
+            final String linkPagina,
+            final AETypeGenere typeGenere,
+            final boolean aggiunta) {
         return Attivita.builder()
                 .singolare(textService.isValid(singolare) ? singolare : null)
-                .paragrafo(textService.isValid(paragrafo) ? paragrafo : null)
-                .pagina(textService.isValid(pagina) ? pagina : null)
+                .pluraleParagrafo(textService.isValid(pluraleParagrafo) ? pluraleParagrafo : null)
+                .pluraleLista(textService.isValid(pluraleLista) ? pluraleLista : null)
+                .linkPagina(textService.isValid(linkPagina) ? linkPagina : null)
                 .type(typeGenere != null ? typeGenere : AETypeGenere.maschile)
                 .aggiunta(aggiunta)
                 .numBio(0)
@@ -129,7 +138,7 @@ public class AttivitaBackend extends WikiBackend {
         List<Attivita> listaAll = repository.findAll(sortOrder);
 
         for (Attivita attivita : listaAll) {
-            if (set.add(attivita.pagina)) {
+            if (set.add(attivita.pluraleLista)) {
                 lista.add(attivita);
             }
         }
@@ -163,7 +172,7 @@ public class AttivitaBackend extends WikiBackend {
         List<Attivita> listaAll = findAttivitaDistinctByPluraliOld();
 
         for (Attivita attivita : listaAll) {
-            lista.add(attivita.pagina);
+            lista.add(attivita.pluraleLista);
         }
 
         return lista;
@@ -196,16 +205,16 @@ public class AttivitaBackend extends WikiBackend {
      * @return the FIRST founded entity
      */
     public Attivita findFirstByPlurale(final String attivitaPlurale) {
-        return repository.findFirstByParagrafo(attivitaPlurale);
+        return repository.findFirstByPluraleParagrafo(attivitaPlurale);
     }
 
 
     public List<Attivita> findAllByPagina(final String pagina) {
-        return repository.findAllByPaginaOrderBySingolareAsc(pagina);
+        return repository.findAllByPluraleListaOrderBySingolareAsc(pagina);
     }
 
     public List<Attivita> findAllByParagrafo(final String paragrafo) {
-        return repository.findAllByParagrafoOrderBySingolareAsc(paragrafo);
+        return repository.findAllByPluraleParagrafoOrderBySingolareAsc(paragrafo);
     }
 
 
@@ -244,7 +253,7 @@ public class AttivitaBackend extends WikiBackend {
         String singolare;
 
         for (Attivita attivita : listaAll) {
-            plurale = attivita.paragrafo;
+            plurale = attivita.pluraleParagrafo;
             singolare = attivita.singolare;
 
             if (mappa.get(plurale) == null) {
@@ -262,67 +271,179 @@ public class AttivitaBackend extends WikiBackend {
         return mappa;
     }
 
+    //    /**
+    //     * Conta il totale delle voci bio per tutte le attività associate a quella indicata. <br>
+    //     * Recupera l'attività plurale e quindi tutte le attività singole associate <br>
+    //     *
+    //     * @param attivitaSingolare selezionata
+    //     *
+    //     * @return totale di voci biografiche interessate
+    //     */
+    //    public int contBio(final Attivita attivitaSingolare) {
+    //        int numBio = 0;
+    //        List<Attivita> lista = this.findAllByPagina(attivitaSingolare.pluraleParagrafo);
+    //
+    //        for (Attivita attivita : lista) {
+    //            numBio += attivita.numBio;
+    //        }
+    //
+    //        return numBio;
+    //    }
+
     /**
-     * Conta il totale delle voci bio per tutte le attività associate a quella indicata. <br>
-     * Recupera l'attività plurale e quindi tutte le attività singole associate <br>
-     *
-     * @param attivitaSingolare selezionata
-     *
-     * @return totale di voci biografiche interessate
+     * Legge le mappa di valori dai moduli di wiki: <br>
+     * Modulo:Bio/Plurale attività
+     * Modulo:Bio/Ex attività
+     * Modulo:Bio/Link attività
+     * <p>
+     * Cancella la (eventuale) precedente lista di attività <br>
+     * Elabora la mappa 'Plurale attività' per creare le singole attività <br>
+     * //     * Integra le attività con quelle di genere <br>
      */
-    public int contBio(final Attivita attivitaSingolare) {
-        int numBio = 0;
-        List<Attivita> lista = this.findAllByPagina(attivitaSingolare.paragrafo);
+    public void download() {
+        long inizio = System.currentTimeMillis();
+        String moduloPlurale = PATH_MODULO + PATH_PLURALE + ATT_LOWER;
+        String moduloEx = PATH_MODULO + PATH_EX + ATT_LOWER;
+        String moduloLink = PATH_MODULO + PATH_LINK + ATT_LOWER;
+        int sizeBase = 0;
+        int sizeExtra = 0;
 
-        for (Attivita attivita : lista) {
-            numBio += attivita.numBio;
-        }
+        sizeBase = downloadAttivitaPlurali(moduloPlurale);
+        sizeExtra = downloadAttivitaExtra(moduloEx);
+        downloadAttivitaLink(moduloLink);
 
-        return numBio;
+        super.fixDownloadSecondi(inizio, VUOTA, 0, 0);
     }
 
+
     /**
-     * Legge la mappa di valori dal modulo di wiki <br>
-     * Cancella la (eventuale) precedente lista di attività <br>
-     * Elabora la mappa per creare le singole attività <br>
-     * Integra le attività con quelle di genere <br>
+     * Legge le mappa dal Modulo:Bio/Plurale attività <br>
+     * Crea le attività <br>
      *
-     * @param wikiTitle della pagina su wikipedia
+     * @param moduloPlurale della pagina su wikipedia
      *
-     * @return true se l'azione è stata eseguita
+     * @return entities create
      */
-    public void download(final String wikiTitle) {
-        long inizio = System.currentTimeMillis();
+    public int downloadAttivitaPlurali(String moduloPlurale) {
         int size = 0;
         String singolare;
-        String categoria;
-        String paragrafo;
+        String pluraleParagrafo;
+        String pluraleLista = VUOTA;
         AETypeGenere typeGenere = null;
         Genere genere;
-        Map<String, String> mappa = wikiApiService.leggeMappaModulo(wikiTitle);
+        Map<String, String> mappaPlurale = wikiApiService.leggeMappaModulo(moduloPlurale);
 
-        if (mappa != null && mappa.size() > 0) {
+        if (mappaPlurale != null && mappaPlurale.size() > 0) {
             deleteAll();
-            for (Map.Entry<String, String> entry : mappa.entrySet()) {
+            for (Map.Entry<String, String> entry : mappaPlurale.entrySet()) {
                 singolare = entry.getKey();
-                categoria = entry.getValue();
+                pluraleLista = entry.getValue();
                 genere = genereBackend.findFirstBySingolare(singolare);
                 typeGenere = genere != null ? genere.getType() : AETypeGenere.nessuno;
-                paragrafo = getParagrafo(genere, categoria);
+                pluraleParagrafo = getParagrafo(genere, pluraleLista);
 
-                if (creaIfNotExist(singolare, paragrafo, categoria, typeGenere, false) != null) {
+                if (creaIfNotExist(singolare, pluraleParagrafo, pluraleLista, VUOTA, typeGenere, false) != null) {
                     size++;
                 }
             }
         }
         else {
-            message = String.format("Non sono riuscito a leggere da wiki il modulo %s", wikiTitle);
+            message = String.format("Non sono riuscito a leggere da wiki il %s", moduloPlurale);
             logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return;
+            return 0;
         }
 
-        super.fixDownload(inizio, wikiTitle, mappa.size(), size);
-        aggiunge();
+        return size;
+    }
+
+    /**
+     * Legge le mappa dal Modulo:Bio/Ex attività <br>
+     * Crea le attività aggiuntive <br>
+     *
+     * @param moduloEx della pagina su wikipedia
+     *
+     * @return entities create
+     */
+    public int downloadAttivitaExtra(String moduloEx) {
+        int size = 0;
+        String singolareEx;
+        String singolareNew;
+        Map<String, String> mappaEx = wikiApiService.leggeMappaModulo(moduloEx);
+        Attivita attivita;
+
+        if (mappaEx != null && mappaEx.size() > 0) {
+            for (Map.Entry<String, String> entry : mappaEx.entrySet()) {
+                singolareEx = entry.getKey();
+                singolareNew = TAG_EX_SPAZIO + singolareEx;
+
+                attivita = findFirstBySingolare(singolareEx);
+                if (attivita != null) {
+                    if (creaIfNotExist(singolareNew, attivita.pluraleParagrafo, attivita.pluraleLista, VUOTA, attivita.type, true) != null) {
+                        size++;
+                    }
+                }
+                else {
+                    logger.info(new WrapLog().message(String.format("Manca negli extra %s", singolareEx)));
+                }
+            }
+        }
+        else {
+            message = String.format("Non sono riuscito a leggere da wiki il %s", mappaEx);
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return 0;
+        }
+
+        return size;
+    }
+
+
+    /**
+     * Legge le mappa dal Modulo:Bio/Ex attività <br>
+     * Crea le attività aggiuntive <br>
+     *
+     * @param moduloLink della pagina su wikipedia
+     *
+     * @return entities create
+     */
+    public int downloadAttivitaLink(String moduloLink) {
+        int cont = 0;
+        String singolareConOSenzaEx;
+        String singolareSenzaEx;
+        String singolareLink;
+        String linkPagina;
+        Map<String, String> mappaLink = wikiApiService.leggeMappaModulo(moduloLink);
+        List<Attivita> listaAllAttivita = findAll();
+
+        if (mappaLink != null && mappaLink.size() > 0) {
+            for (Attivita attivita : listaAllAttivita) {
+                singolareConOSenzaEx = attivita.singolare;
+                singolareSenzaEx = attivita.aggiunta ? textService.levaTesta(singolareConOSenzaEx, TAG_EX_SPAZIO) : singolareConOSenzaEx;
+
+                if (mappaLink.containsKey(singolareSenzaEx)) {
+                    linkPagina = mappaLink.get(singolareSenzaEx);
+                    attivita.linkPagina = linkPagina;
+                    save(attivita);
+                }
+                else {
+                    if (queryService.isEsiste(singolareSenzaEx)) {
+                        attivita.linkPagina = singolareSenzaEx;
+                        save(attivita);
+                    }
+                    else {
+                        cont++;
+                        logger.info(new WrapLog().message(String.format("Manca %s", singolareConOSenzaEx)));
+                    }
+                }
+            }
+        }
+        else {
+            message = String.format("Non sono riuscito a leggere da wiki il %s", mappaLink);
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return 0;
+        }
+
+        logger.info(new WrapLog().message(String.format("Mancano %d linkAttivita", cont)));
+        return cont;
     }
 
 
@@ -352,87 +473,86 @@ public class AttivitaBackend extends WikiBackend {
         return paragrafo;
     }
 
-
-    /**
-     * Aggiunge le ex-attività NON presenti nel modulo 'Modulo:Bio/Plurale attività' <br>
-     * Le recupera dal modulo 'Modulo:Bio/Plurale attività genere' <br>
-     * Le aggiunge se trova la corrispondenza tra il nome con e senza EX <br>
-     */
-    private void aggiunge() {
-        List<Genere> listaEx = genereBackend.findStartingEx();
-        String attivitaSingolare;
-        String genereSingolare;
-        Attivita entity;
-        String message;
-        int size = 0;
-        String singolare;
-        String pagina = VUOTA;
-        String paragrafo;
-        AETypeGenere type = null;
-
-        if (listaEx == null || listaEx.size() == 0) {
-            message = "Il modulo genere deve essere scaricato PRIMA di quello di attività";
-            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-            return;
-        }
-
-        if (listaEx != null) {
-            for (Genere genere : listaEx) {
-                attivitaSingolare = VUOTA;
-                genereSingolare = genere.singolare;
-
-                if (genereSingolare.startsWith(TAG_EX)) {
-                    attivitaSingolare = genereSingolare.substring(TAG_EX.length());
-                }
-                if (genereSingolare.startsWith(TAG_EX2)) {
-                    attivitaSingolare = genereSingolare.substring(TAG_EX2.length());
-                }
-
-                if (textService.isEmpty(attivitaSingolare)) {
-                    continue;
-                }
-
-                entity = findFirstBySingolare(attivitaSingolare);
-
-                if (entity == null) {
-                    Object genere2 = genere;
-                    singolare = genere.singolare;
-                    switch (genere.getType()) {
-                        case maschile -> {
-                            type = AETypeGenere.maschile;
-                            pagina = genere.pluraleMaschile;
-                        }
-                        case femminile -> {
-                            type = AETypeGenere.femminile;
-                            pagina = genere.pluraleFemminile;
-                        }
-                        case entrambi -> {
-                            type = AETypeGenere.maschile;
-                            pagina = genere.pluraleMaschile;
-                        }
-                        //                        case nessuno -> {}
-                    } ;
-                    paragrafo = pagina;
-                    if (creaIfNotExist(singolare, paragrafo, pagina, type, true) != null) {
-                        size++;
-                    }
-                    logger.info(new WrapLog().message(genereSingolare));
-                }
-                else {
-                    singolare = genere.singolare;
-                    paragrafo = entity.paragrafo;
-                    pagina = entity.pagina;
-                    type = entity.type;
-                    if (creaIfNotExist(singolare, pagina, paragrafo, type, true) != null) {
-                        size++;
-                    }
-                }
-            }
-        }
-
-        message = String.format("Aggiunte %s ex-attività dalla collection genere", textService.format(size));
-        logger.info(new WrapLog().message(message));
-    }
+    //    /**
+    //     * Aggiunge le ex-attività NON presenti nel modulo 'Modulo:Bio/Plurale attività' <br>
+    //     * Le recupera dal modulo 'Modulo:Bio/Plurale attività genere' <br>
+    //     * Le aggiunge se trova la corrispondenza tra il nome con e senza EX <br>
+    //     */
+    //    private void aggiunge() {
+    //        List<Genere> listaEx = genereBackend.findStartingEx();
+    //        String attivitaSingolare;
+    //        String genereSingolare;
+    //        Attivita entity;
+    //        String message;
+    //        int size = 0;
+    //        String singolare;
+    //        String pagina = VUOTA;
+    //        String paragrafo;
+    //        AETypeGenere type = null;
+    //
+    //        if (listaEx == null || listaEx.size() == 0) {
+    //            message = "Il modulo genere deve essere scaricato PRIMA di quello di attività";
+    //            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+    //            return;
+    //        }
+    //
+    //        if (listaEx != null) {
+    //            for (Genere genere : listaEx) {
+    //                attivitaSingolare = VUOTA;
+    //                genereSingolare = genere.singolare;
+    //
+    //                if (genereSingolare.startsWith(TAG_EX_SPAZIO)) {
+    //                    attivitaSingolare = genereSingolare.substring(TAG_EX_SPAZIO.length());
+    //                }
+    //                if (genereSingolare.startsWith(TAG_EX2)) {
+    //                    attivitaSingolare = genereSingolare.substring(TAG_EX2.length());
+    //                }
+    //
+    //                if (textService.isEmpty(attivitaSingolare)) {
+    //                    continue;
+    //                }
+    //
+    //                entity = findFirstBySingolare(attivitaSingolare);
+    //
+    //                if (entity == null) {
+    //                    Object genere2 = genere;
+    //                    singolare = genere.singolare;
+    //                    switch (genere.getType()) {
+    //                        case maschile -> {
+    //                            type = AETypeGenere.maschile;
+    //                            pagina = genere.pluraleMaschile;
+    //                        }
+    //                        case femminile -> {
+    //                            type = AETypeGenere.femminile;
+    //                            pagina = genere.pluraleFemminile;
+    //                        }
+    //                        case entrambi -> {
+    //                            type = AETypeGenere.maschile;
+    //                            pagina = genere.pluraleMaschile;
+    //                        }
+    //                        //                        case nessuno -> {}
+    //                    } ;
+    //                    paragrafo = pagina;
+    //                    //                    if (creaIfNotExist(singolare, paragrafo, pagina, type, true) != null) {
+    //                    //                        size++;
+    //                    //                    }
+    //                    logger.info(new WrapLog().message(genereSingolare));
+    //                }
+    //                else {
+    //                    singolare = genere.singolare;
+    //                    paragrafo = entity.pluraleParagrafo;
+    //                    pagina = entity.pluraleLista;
+    //                    type = entity.type;
+    //                    //                    if (creaIfNotExist(singolare, pagina, paragrafo, type, true) != null) {
+    //                    //                        size++;
+    //                    //                    }
+    //                }
+    //            }
+    //        }
+    //
+    //        message = String.format("Aggiunte %s ex-attività dalla collection genere", textService.format(size));
+    //        logger.info(new WrapLog().message(message));
+    //    }
 
     /**
      * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
@@ -476,7 +596,7 @@ public class AttivitaBackend extends WikiBackend {
             for (Attivita attivitaOK : findAllByPagina(plurale)) {
                 attivitaOK.numBio = numBio;
                 attivitaOK.superaSoglia = numBio >= soglia ? true : false;
-                attivitaOK.esistePagina = esistePagina(attivitaOK.pagina);
+                attivitaOK.esistePagina = esistePagina(attivitaOK.pluraleLista);
                 attivitaOK.numSingolari = numSingolari;
                 update(attivitaOK);
 

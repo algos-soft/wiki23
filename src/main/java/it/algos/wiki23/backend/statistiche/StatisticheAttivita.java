@@ -87,7 +87,7 @@ public class StatisticheAttivita extends Statistiche {
         int cancellande = 0;
 
         for (Attivita attivita : (List<Attivita>) lista) {
-            singolari = attivitaBackend.findSingolariByPlurale(attivita.pagina);
+            singolari = attivitaBackend.findSingolariByPlurale(attivita.pluraleLista);
             esistePagina = attivita.esistePagina;
             numAttivitaUno = 0;
             numAttivitaDue = 0;
@@ -105,26 +105,26 @@ public class StatisticheAttivita extends Statistiche {
             if (superaSoglia != attivita.superaSoglia) {
                 attivita.superaSoglia = superaSoglia;
                 attivitaBackend.save(attivita);
-                logger.info(new WrapLog().message(String.format("Aggiornato il flag '%s' di %s. Adesso è %s", "superaSoglia", attivita.pagina, superaSoglia)));
+                logger.info(new WrapLog().message(String.format("Aggiornato il flag '%s' di %s. Adesso è %s", "superaSoglia", attivita.pluraleLista, superaSoglia)));
             }
 
             if (numVoci < 50 && attivita.esistePagina) {
-                esistePagina = attivitaBackend.esistePagina(attivita.pagina);
+                esistePagina = attivitaBackend.esistePagina(attivita.pluraleLista);
                 cancellande++;
-                logger.info(new WrapLog().message(String.format("Check del flag %s (che è true) anche se l'attività %s ha solo %d voci", "esistePagina", attivita.pagina, numVoci)));
+                logger.info(new WrapLog().message(String.format("Check del flag %s (che è true) anche se l'attività %s ha solo %d voci", "esistePagina", attivita.pluraleLista, numVoci)));
             }
             if (numVoci >= 50 && !attivita.esistePagina) {
-                esistePagina = attivitaBackend.esistePagina(attivita.pagina);
-                logger.info(new WrapLog().message(String.format("Check del flag %s (che è false) anche se l'attività %s ha addirittura %d voci", "esistePagina", attivita.pagina, numVoci)));
+                esistePagina = attivitaBackend.esistePagina(attivita.pluraleLista);
+                logger.info(new WrapLog().message(String.format("Check del flag %s (che è false) anche se l'attività %s ha addirittura %d voci", "esistePagina", attivita.pluraleLista, numVoci)));
             }
             if (esistePagina != attivita.esistePagina) {
                 attivita.esistePagina = esistePagina;
                 attivitaBackend.save(attivita);
-                logger.info(new WrapLog().message(String.format("Aggiornato il flag '%s' di %s. Adesso è %s", "esistePagina", attivita.pagina, esistePagina)));
+                logger.info(new WrapLog().message(String.format("Aggiornato il flag '%s' di %s. Adesso è %s", "esistePagina", attivita.pluraleLista, esistePagina)));
             }
 
-            mappaSingola = new MappaStatistiche(attivita.pagina, numAttivitaUno, numAttivitaDue, numAttivitaTre, superaSoglia, esistePagina);
-            mappa.put(attivita.pagina, mappaSingola);
+            mappaSingola = new MappaStatistiche(attivita.pluraleLista, numAttivitaUno, numAttivitaDue, numAttivitaTre, superaSoglia, esistePagina);
+            mappa.put(attivita.pluraleLista, mappaSingola);
         }
         logger.info(new WrapLog().message(String.format("Ci sono %d pagine di Attività che andrebbero cancellate", cancellande)).usaDb());
     }

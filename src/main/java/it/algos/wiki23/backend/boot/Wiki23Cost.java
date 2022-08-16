@@ -21,6 +21,12 @@ public class Wiki23Cost {
 
     public static final String TAG_ITALIC = "''";
 
+    public static final String PATH_LINK = "Link ";
+
+    public static final String PATH_PLURALE = "Plurale ";
+
+    public static final String PATH_EX = "Ex ";
+
     public static final String TAG_WIKI23_VERSION = "wikiversion";
 
     public static final String TAG_WIKI23_PREFERENCES = "wikipreferences";
@@ -29,9 +35,9 @@ public class Wiki23Cost {
 
     public static final String PATH_PROGETTO = "Progetto:Biografie/";
 
-    public static final String PATH_MODULO_PLURALE = PATH_MODULO + "Plurale ";
+    public static final String PATH_MODULO_LINK = PATH_MODULO + PATH_LINK;
 
-    public static final String PATH_MODULO_LINK = PATH_MODULO + "Link ";
+    public static final String PATH_MODULO_PLURALE = PATH_MODULO + PATH_PLURALE;
 
     public static final String GENERE = "genere";
 
@@ -139,7 +145,7 @@ public class Wiki23Cost {
 
     public static final String PATH_CATEGORIA = PATH_WIKI + "Categoria:";
 
-    public static final String TAG_EX = "ex ";
+    public static final String TAG_EX_SPAZIO = "ex" + SPAZIO;
 
     public static final String TAG_EX2 = "ex-";
 
@@ -156,8 +162,6 @@ public class Wiki23Cost {
     public static final String TAG_COGNOME = "cognome";
 
     public static final String TAG_BIO = "bio";
-
-    public static final String TAG_ALTRE = "...";
 
 
     public static final String KEY_JSON_QUERY = "query";

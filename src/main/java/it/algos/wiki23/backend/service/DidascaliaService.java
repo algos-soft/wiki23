@@ -404,7 +404,7 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapNazionalita(final Bio bio) {
         Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
-        String paragrafo = attivita != null ? textService.primaMaiuscola(attivita.paragrafo) : TAG_LISTA_ALTRE;
+        String paragrafo = attivita != null ? textService.primaMaiuscola(attivita.pluraleParagrafo) : TAG_LISTA_ALTRE;
 
         String titoloParagrafoLink;
         if (textService.isEmpty(paragrafo)) {
@@ -412,7 +412,7 @@ public class DidascaliaService extends WAbstractService {
         }
 
         if (!paragrafo.equals(TAG_LISTA_ALTRE)) {
-            titoloParagrafoLink = PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivita.pagina);
+            titoloParagrafoLink = PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivita.pluraleLista);
             titoloParagrafoLink = titoloParagrafoLink + PIPE + paragrafo;
             titoloParagrafoLink = textService.setDoppieQuadre(titoloParagrafoLink);
         }

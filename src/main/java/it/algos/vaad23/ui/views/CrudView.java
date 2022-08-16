@@ -431,7 +431,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
         if (usaBottoneSearch) {
             searchField = new TextField();
-            searchField.setPlaceholder("Filter by ...");
+            searchField.setPlaceholder(TAG_ALTRE_BY);
+            searchField.setWidth(WIDTH_EM);
             searchField.setClearButtonVisible(true);
             searchField.addValueChangeListener(event -> sincroFiltri());
             topPlaceHolder.add(searchField);
@@ -556,7 +557,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
                 if (annotationService.isSearch(entityClazz, column.getKey())) {
                     searchFieldName = column.getKey();
                     if (searchField != null) {
-                        searchField.setPlaceholder(String.format("Filter by %s", searchFieldName));
+                        searchField.setPlaceholder(String.format("%s%s", TAG_ALTRE_BY, searchFieldName));
                     }
                     break;
                 }

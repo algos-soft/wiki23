@@ -267,7 +267,7 @@ public enum ParBio {
     nazionalita("Nazionalità", "nazionalita", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-            bio.nazionalita = value.equals(VUOTA) ? null : elaboraService.fixNazionalitaValida(value);
+            bio.nazionalita = value.equals(VUOTA) ? null : elaboraService.nazionalitaValida(bio.sesso, value);
         }
 
         @Override

@@ -241,7 +241,7 @@ public class NazionalitaBackend extends WikiBackend {
             logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
         }
 
-        super.fixDownload(inizio, wikiTitle, mappa.size(), size);
+        super.fixDownloadMinuti(inizio, wikiTitle, mappa.size(), size);
     }
 
 

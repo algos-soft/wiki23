@@ -533,6 +533,7 @@ public class ElaboraService extends WAbstractService {
      *
      * @return testo/parametro regolato in uscita
      */
+    @Deprecated
     public String fixNazionalitaValida(String testoGrezzo) {
         String testoValido = fixNazionalita(testoGrezzo);
         Nazionalita nazionalita = null;
@@ -546,6 +547,63 @@ public class ElaboraService extends WAbstractService {
         return nazionalita != null ? nazionalita.getSingolare() : VUOTA;
     }
 
+    /**
+     * Regola questa property <br>
+     * <p>
+     * Regola il testo con le regolazioni di base (fixValoreGrezzo) <br>
+     *
+     * @param genere      maschile/femminile nella forma M/F
+     * @param testoGrezzo in entrata da elaborare
+     *
+     * @return testo/parametro regolato in uscita
+     */
+    public String nazionalitaValida(String genere, String testoGrezzo) {
+        String nazionalitaTxt = VUOTA;
+        String testoValido = fixNazionalita(testoGrezzo);
+        Nazionalita nazionalita = null;
+        Nazionalita nazionalita2 = null;
+        String tagFinale = VUOTA;
+        String tagMaschile = "o";
+        String tagFemminile = "a";
+        boolean maschile = genere.equals("M");
+        int numSingolari;
+        boolean doppioGenere = false;
+
+        if (textService.isEmpty(genere)) {
+            logger.info(new WrapLog().message(String.format("Manca genere di %s", testoGrezzo)));
+            return VUOTA;
+        }
+
+        try {
+            nazionalita = nazionalitaBackend.findFirstBySingolare(testoValido);
+        } catch (Exception unErrore) {
+            logger.info(new WrapLog().exception(unErrore));
+        }
+        if (nazionalita != null) {
+            nazionalitaTxt = nazionalita.getSingolare();
+            tagFinale = nazionalitaTxt.substring(nazionalitaTxt.length() - 1);
+            numSingolari = nazionalita.numSingolari;
+            doppioGenere = numSingolari > 1;
+        }
+
+        if (nazionalita != null && tagFinale.equals(tagFemminile) && maschile && doppioGenere) {
+            nazionalitaTxt = nazionalitaTxt.substring(0, nazionalitaTxt.length() - 1);
+            nazionalitaTxt += tagMaschile;
+
+            nazionalita2 = nazionalitaBackend.findFirstBySingolare(nazionalitaTxt);
+            if (nazionalita2 != null) {
+                logger.info(new WrapLog().message(String.format("Modificato il genere di %s in %s (che esiste)", testoGrezzo, nazionalitaTxt)));
+            }
+            else {
+                logger.info(new WrapLog().message(String.format("NON modificato il genere di %s (non esiste %s)", testoGrezzo, nazionalitaTxt)));
+                nazionalitaTxt = nazionalita.getSingolare();
+            }
+
+
+        }
+
+        return nazionalitaTxt;
+    }
 
     /**
      * Regola questa property <br>

@@ -42,6 +42,7 @@ public class GenereView extends WikiView {
     private TextField searchFieldPluraleMaschile;
 
     private TextField searchFieldPluraleFemminile;
+
     private ComboBox comboType;
 
     /**
@@ -110,24 +111,29 @@ public class GenereView extends WikiView {
         message = "Indipendentemente da come sono scritte nel modulo, tutte le attività singolari e plurali sono convertite in minuscolo.";
         message += " Le voci delle ex-attività vengono aggiunte al package attività";
         addSpanRosso(message);
+
+        message = "Il package 'genere' deve essere aggiornato prima di regolare 'attività'.";
+        addSpanRossoBold(message);
     }
 
 
     protected void fixBottoniTopSpecifici() {
         searchFieldPluraleMaschile = new TextField();
-        searchFieldPluraleMaschile.setPlaceholder("Filter by maschile");
+        searchFieldPluraleMaschile.setPlaceholder(TAG_ALTRE_BY + "maschile");
+        searchFieldPluraleMaschile.setWidth(WIDTH_EM);
         searchFieldPluraleMaschile.setClearButtonVisible(true);
         searchFieldPluraleMaschile.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(searchFieldPluraleMaschile);
 
         searchFieldPluraleFemminile = new TextField();
-        searchFieldPluraleFemminile.setPlaceholder("Filter by femminile");
+        searchFieldPluraleFemminile.setPlaceholder(TAG_ALTRE_BY + "femminile");
+        searchFieldPluraleFemminile.setWidth(WIDTH_EM);
         searchFieldPluraleFemminile.setClearButtonVisible(true);
         searchFieldPluraleFemminile.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(searchFieldPluraleFemminile);
 
         comboType = new ComboBox<>();
-        comboType.setPlaceholder("Filter by genere");
+        comboType.setPlaceholder(TAG_ALTRE_BY + "genere");
         comboType.getElement().setProperty("title", "Filtro di selezione");
         comboType.setClearButtonVisible(true);
         comboType.setItems(AETypeGenere.values());

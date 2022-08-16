@@ -13,7 +13,6 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 import org.vaadin.crudui.crud.*;
 
 import java.util.*;
@@ -86,7 +85,7 @@ public class AttivitaDialog extends CrudDialog {
     protected void fixBinder() {
         super.fixBinder();
 
-        List<Attivita> lista = backend.findAllByPagina(entityBean.pagina);
+        List<Attivita> lista = backend.findAllByPagina(entityBean.pluraleLista);
         VerticalLayout layout = new VerticalLayout();
         layout.setPadding(false);
         layout.setSpacing(true);

@@ -1,7 +1,6 @@
 package it.algos.wiki23.backend.packages.attivita;
 
 import ch.carnet.kasparscherrer.*;
-import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
@@ -14,16 +13,13 @@ import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.liste.*;
-import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.statistiche.*;
 import it.algos.wiki23.backend.upload.*;
@@ -31,7 +27,6 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
-import javax.management.*;
 import java.util.*;
 
 /**
@@ -57,9 +52,12 @@ public class AttivitaView extends WikiView {
 
     protected TextField searchFieldSingolare;
 
+    protected TextField searchFieldParagrafo;
+
+    protected TextField searchFieldLista;
+
     protected TextField searchFieldPagina;
 
-    protected TextField searchFieldParagrafo;
 
     private ComboBox comboType;
 
@@ -96,9 +94,9 @@ public class AttivitaView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("singolare", "paragrafo", "type", "aggiunta", "numBio", "numSingolari", "superaSoglia");
-        super.formPropertyNamesList = Arrays.asList("singolare", "paragrafo", "pagina", "numBio", "superaSoglia", "esistePagina");
-        super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
+        super.gridPropertyNamesList = Arrays.asList("singolare", "pluraleParagrafo", "type", "aggiunta", "numBio", "numSingolari", "superaSoglia");
+        super.formPropertyNamesList = Arrays.asList("singolare", "pluraleParagrafo", "pluraleLista", "linkPagina", "numBio", "superaSoglia", "esistePagina");
+        super.sortOrder = Sort.by(Sort.Direction.ASC, "pluraleLista");
 
         super.usaBottoneElabora = true;
         super.lastDownload = WPref.downloadAttivita;
@@ -133,22 +131,32 @@ public class AttivitaView extends WikiView {
     public void fixAlert() {
         super.fixAlert();
 
-        Anchor anchor = new Anchor(VaadCost.PATH_WIKI + PATH_MODULO_ATTIVITA, PATH_MODULO_ATTIVITA);
-        anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-        Anchor anchor2 = new Anchor(VaadCost.PATH_WIKI + PATH_STATISTICHE_ATTIVITA, PATH_STATISTICHE_ATTIVITA);
-        anchor2.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-        alertPlaceHolder.add(new Span(anchor, new Label(SEP), anchor2));
+        String modulo = PATH_WIKI + PATH_MODULO;
 
-        message = "Contiene la tabella di conversione delle attività passate via parametri 'Attività/Attività2/Attività3',";
-        message += " da singolare maschile e femminile (usati nell'incipit) al plurale maschile per categorizzare la pagina.";
+        Anchor anchor1 = new Anchor(modulo + PATH_PLURALE + ATT_LOWER, PATH_PLURALE + ATT_LOWER);
+        anchor1.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+
+        Anchor anchor2 = new Anchor(modulo + PATH_EX + ATT_LOWER, PATH_EX + ATT_LOWER);
+        anchor2.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+
+        Anchor anchor3 = new Anchor(modulo + PATH_LINK + ATT_LOWER, PATH_LINK + ATT_LOWER);
+        anchor3.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+
+        Anchor anchor4 = new Anchor(PATH_WIKI + PATH_STATISTICHE_ATTIVITA, PATH_STATISTICHE_ATTIVITA);
+        anchor4.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+        alertPlaceHolder.add(new Span(anchor1, new Label(SEP), anchor2, new Label(SEP), anchor3, new Label(SEP), anchor4));
+
+        message = "1) Tabella attività dei parametri 'Attività/Attività2/Attività3',";
+        message += " da singolare maschile e femminile al plurale maschile per la pagina della lista.";
         addSpanVerde(message);
 
-        message = "Le attività sono elencate all'interno del modulo con la seguente sintassi:";
-        message += " [\"attivitaforma1\"]=\"attività al plurale\"; [\"attivitaforma2\"]=\"attività al plurale\".";
+        message = "2) Tabella attività che sono ammesse nei parametri Attività/Attività2/Attività3 anche col prefisso \"ex\"";
+        addSpanVerde(message);
+
+        message = "3) Tabella di conversione dal nome dell'attività a quello della voce corrispondente, per creare dei piped wikilink";
         addSpanVerde(message);
 
         message = "Indipendentemente da come sono scritte nel modulo, tutte le attività singolari e plurali sono convertite in minuscolo.";
-        message += " Le voci delle ex-attività (non presenti nel modulo) vengono aggiunte prendendole dal package 'genere'";
         addSpanRosso(message);
 
         message = String.format("Le singole pagine di attività vengono create su wiki quando superano le %s biografie.", WPref.sogliaAttNazWiki.get());
@@ -170,39 +178,38 @@ public class AttivitaView extends WikiView {
 
 
     protected void fixBottoniTopSpecificiAttivita() {
-        String widthEM = "18ex";
-        String tag = TAG_ALTRE + " by ";
-
-        topPlaceHolder2.setClassName("buttons");
-        topPlaceHolder2.setPadding(false);
-        topPlaceHolder2.setSpacing(true);
-        topPlaceHolder2.setMargin(false);
-        topPlaceHolder2.setClassName("confirm-dialog-buttons");
 
         searchFieldSingolare = new TextField();
-        searchFieldSingolare.setPlaceholder(tag + "singolare");
-        searchFieldSingolare.setWidth(widthEM);
+        searchFieldSingolare.setPlaceholder(TAG_ALTRE_BY + "singolare");
+        searchFieldSingolare.setWidth(WIDTH_EM);
         searchFieldSingolare.setClearButtonVisible(true);
         searchFieldSingolare.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder2.add(searchFieldSingolare);
 
         searchFieldParagrafo = new TextField();
-        searchFieldParagrafo.setPlaceholder(tag + "paragrafo");
-        searchFieldParagrafo.setWidth(widthEM);
+        searchFieldParagrafo.setPlaceholder(TAG_ALTRE_BY + "paragrafo");
+        searchFieldParagrafo.setWidth(WIDTH_EM);
         searchFieldParagrafo.setClearButtonVisible(true);
         searchFieldParagrafo.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder2.add(searchFieldParagrafo);
 
+        searchFieldLista = new TextField();
+        searchFieldLista.setPlaceholder(TAG_ALTRE_BY + "lista");
+        searchFieldLista.setWidth(WIDTH_EM);
+        searchFieldLista.setClearButtonVisible(true);
+        searchFieldLista.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldLista);
+
         searchFieldPagina = new TextField();
-        searchFieldPagina.setPlaceholder(tag + "pagina");
-        searchFieldPagina.setWidth(widthEM);
+        searchFieldPagina.setPlaceholder(TAG_ALTRE_BY + "pagina");
+        searchFieldPagina.setWidth(WIDTH_EM);
         searchFieldPagina.setClearButtonVisible(true);
         searchFieldPagina.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder2.add(searchFieldPagina);
 
         comboType = new ComboBox<>();
-        comboType.setPlaceholder(tag + "genere");
-        comboType.setWidth(widthEM);
+        comboType.setPlaceholder(TAG_ALTRE_BY + "genere");
+        comboType.setWidth(WIDTH_EM);
         comboType.getElement().setProperty("title", "Filtro di selezione");
         comboType.setClearButtonVisible(true);
         comboType.setItems(AETypeGenere.values());
@@ -210,7 +217,7 @@ public class AttivitaView extends WikiView {
         topPlaceHolder2.add(comboType);
 
         boxBox = new IndeterminateCheckbox();
-        boxBox.setLabel("Aggiunti da Genere");
+        boxBox.setLabel("Ex");
         boxBox.setIndeterminate(true);
         boxBox.addValueChangeListener(event -> sincroFiltri());
         HorizontalLayout layout = new HorizontalLayout(boxBox);
@@ -218,7 +225,7 @@ public class AttivitaView extends WikiView {
         topPlaceHolder2.add(layout);
 
         boxSuperaSoglia = new IndeterminateCheckbox();
-        boxSuperaSoglia.setLabel("Supera soglia");
+        boxSuperaSoglia.setLabel("Soglia");
         boxSuperaSoglia.setIndeterminate(true);
         boxSuperaSoglia.addValueChangeListener(event -> sincroFiltri());
         HorizontalLayout layout2 = new HorizontalLayout(boxSuperaSoglia);
@@ -226,7 +233,7 @@ public class AttivitaView extends WikiView {
         topPlaceHolder2.add(layout2);
 
         boxEsistePagina = new IndeterminateCheckbox();
-        boxEsistePagina.setLabel("Esiste pagina");
+        boxEsistePagina.setLabel("Lista");
         boxEsistePagina.setIndeterminate(true);
         boxEsistePagina.addValueChangeListener(event -> sincroFiltri());
         HorizontalLayout layout3 = new HorizontalLayout(boxEsistePagina);
@@ -260,11 +267,11 @@ public class AttivitaView extends WikiView {
     protected void addColumnsOneByOne() {
         super.addColumnsOneByOne();
 
-        Grid.Column pagina = grid.addColumn(new ComponentRenderer<>(entity -> {
-            String wikiTitle = textService.primaMaiuscola(((Attivita) entity).pagina);
+        Grid.Column pluraleLista = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String wikiTitle = textService.primaMaiuscola(((Attivita) entity).pluraleLista);
             Label label = new Label(wikiTitle);
             label.getElement().getStyle().set("color", "red");
-            Anchor anchor = new Anchor(VaadCost.PATH_WIKI + PATH_ATTIVITA + SLASH + wikiTitle, wikiTitle);
+            Anchor anchor = new Anchor(PATH_WIKI + PATH_ATTIVITA + SLASH + wikiTitle, wikiTitle);
             anchor.getElement().getStyle().set("color", "green");
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
             Span span = new Span(anchor);
@@ -275,11 +282,20 @@ public class AttivitaView extends WikiView {
             else {
                 return label;
             }
-        })).setHeader("Pagina").setKey("pagina").setFlexGrow(0).setWidth("18em");
+        })).setHeader("pluraleLista").setKey("pluraleLista").setFlexGrow(0).setWidth("18em");
+
+        Grid.Column linkPagina = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String wikiTitle = textService.primaMaiuscola(((Attivita) entity).linkPagina);
+            Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+            anchor.getElement().getStyle().set("color", "green");
+            Span span = new Span(anchor);
+
+            return new Span(anchor);
+        })).setHeader("linkPagina").setKey("linkPagina").setFlexGrow(0).setWidth("18em");
 
         Grid.Column daCancellare = grid.addColumn(new ComponentRenderer<>(entity -> {
             String link = "https://it.wikipedia.org/w/index.php?title=Progetto:Biografie/Attivit%C3%A0/";
-            link += textService.primaMaiuscola(((Attivita) entity).pagina);
+            link += textService.primaMaiuscola(((Attivita) entity).pluraleLista);
             link += "&action=delete";
             Label label = new Label("no");
             label.getElement().getStyle().set("color", "green");
@@ -298,14 +314,14 @@ public class AttivitaView extends WikiView {
 
         Grid.Column ordine = grid.getColumnByKey(FIELD_KEY_ORDER);
         Grid.Column singolare = grid.getColumnByKey("singolare");
-        Grid.Column paragrafo = grid.getColumnByKey("paragrafo");
+        Grid.Column pluraleParagrafo = grid.getColumnByKey("pluraleParagrafo");
         Grid.Column type = grid.getColumnByKey("type");
         Grid.Column aggiunta = grid.getColumnByKey("aggiunta");
         Grid.Column numBio = grid.getColumnByKey("numBio");
         Grid.Column numSingolari = grid.getColumnByKey("numSingolari");
         Grid.Column superaSoglia = grid.getColumnByKey("superaSoglia");
 
-        grid.setColumnOrder(ordine, singolare, paragrafo, pagina, type, aggiunta, numBio, numSingolari, superaSoglia, daCancellare);
+        grid.setColumnOrder(ordine, singolare, pluraleParagrafo, pluraleLista, linkPagina, type, aggiunta, numBio, numSingolari, superaSoglia, daCancellare);
 
     }
 
@@ -320,20 +336,19 @@ public class AttivitaView extends WikiView {
             items = items.stream().filter(att -> att.singolare.matches("^(?i)" + textSearchSingolare + ".*$")).toList();
         }
 
-        final String textSearchPagina = searchFieldPagina != null ? searchFieldPagina.getValue() : VUOTA;
-        if (textService.isValid(textSearchPagina)) {
-            //            if (boxDistinctPlurali != null && boxDistinctPlurali.getValue()) {
-            //                items = backend.findAttivitaDistinctByPluraliOld();
-            //            }
-            items = items.stream().filter(att -> att.pagina.matches("^(?i)" + textSearchPagina + ".*$")).toList();
-        }
-
         final String textSearchParagrafo = searchFieldParagrafo != null ? searchFieldParagrafo.getValue() : VUOTA;
         if (textService.isValid(textSearchParagrafo)) {
-            //            if (boxDistinctPlurali != null && boxDistinctPlurali.getValue()) {
-            //                items = backend.findAttivitaDistinctByPluraliOld();
-            //            }
-            items = items.stream().filter(att -> att.paragrafo.matches("^(?i)" + textSearchParagrafo + ".*$")).toList();
+            items = items.stream().filter(att -> att.pluraleParagrafo.matches("^(?i)" + textSearchParagrafo + ".*$")).toList();
+        }
+
+        final String textSearchLista = searchFieldLista != null ? searchFieldLista.getValue() : VUOTA;
+        if (textService.isValid(textSearchLista)) {
+            items = items.stream().filter(att -> att.pluraleLista.matches("^(?i)" + textSearchLista + ".*$")).toList();
+        }
+
+        final String textSearchPagina = searchFieldPagina != null ? searchFieldPagina.getValue() : VUOTA;
+        if (textService.isValid(textSearchPagina)) {
+            items = items.stream().filter(att -> att.linkPagina.matches("^(?i)" + textSearchPagina + ".*$")).toList();
         }
 
         if (comboType != null && comboType.getValue() != null) {
@@ -351,7 +366,7 @@ public class AttivitaView extends WikiView {
         if (boxSuperaSoglia != null && !boxSuperaSoglia.isIndeterminate()) {
             items = items.stream().filter(att -> att.superaSoglia == boxSuperaSoglia.getValue()).toList();
             if (boxSuperaSoglia.getValue()) {
-                sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+                sortOrder = Sort.by(Sort.Direction.ASC, "pluraleLista");
             }
             else {
                 sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
@@ -361,7 +376,7 @@ public class AttivitaView extends WikiView {
         if (boxEsistePagina != null && !boxEsistePagina.isIndeterminate()) {
             items = items.stream().filter(att -> att.esistePagina == boxEsistePagina.getValue()).toList();
             if (boxEsistePagina.getValue()) {
-                sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+                sortOrder = Sort.by(Sort.Direction.ASC, "linkPagina");
             }
             else {
                 sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
@@ -434,6 +449,15 @@ public class AttivitaView extends WikiView {
     }
 
     /**
+     * Esegue un azione di download, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void download() {
+        backend.download();
+        reload();
+    }
+
+    /**
      * Esegue un azione di upload, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
@@ -468,7 +492,7 @@ public class AttivitaView extends WikiView {
         Attivita attivita = (Attivita) super.wikiCategoria();
 
         String path = "Categoria:";
-        wikiApiService.openWikiPage(path + attivita.paragrafo);
+        wikiApiService.openWikiPage(path + attivita.pluraleParagrafo);
 
         return null;
     }
@@ -482,7 +506,7 @@ public class AttivitaView extends WikiView {
         Attivita attivita = (Attivita) super.wikiPage();
 
         String path = PATH_ATTIVITA + SLASH;
-        String attivitaText = textService.primaMaiuscola(attivita.paragrafo);
+        String attivitaText = textService.primaMaiuscola(attivita.pluraleParagrafo);
         wikiApiService.openWikiPage(path + attivitaText);
 
         return null;
@@ -501,7 +525,7 @@ public class AttivitaView extends WikiView {
         if (entityBean.isPresent()) {
             attivita = (Attivita) entityBean.get();
             if (attivita.numBio > WPref.sogliaAttNazWiki.getInt()) {
-                appContext.getBean(UploadAttivita.class).test().upload(attivita.paragrafo);
+                appContext.getBean(UploadAttivita.class).test().upload(attivita.pluraleParagrafo);
             }
             else {
                 message = String.format("L'attività %s non raggiunge il necessario numero di voci biografiche", attivita.singolare);
@@ -518,7 +542,7 @@ public class AttivitaView extends WikiView {
         Attivita attivita = getAttivitaCorrente();
 
         if (attivita != null) {
-            backend.uploadPagina(attivita.pagina);
+            backend.uploadPagina(attivita.pluraleLista);
             reload();
         }
     }

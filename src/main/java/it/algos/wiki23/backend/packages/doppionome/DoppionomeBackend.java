@@ -129,7 +129,7 @@ public class DoppionomeBackend extends WikiBackend {
             }
         }
 
-        super.fixDownload(inizio, wikiTitle, righe.length, size);
+        super.fixDownloadSecondi(inizio, wikiTitle, righe.length, size);
     }
 
 }// end of crud backend class

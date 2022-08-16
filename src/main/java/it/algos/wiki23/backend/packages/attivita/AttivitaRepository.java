@@ -38,10 +38,10 @@ public interface AttivitaRepository extends MongoRepository<Attivita, String> {
 
     Attivita findFirstBySingolare(String singolare);
 
-    Attivita findFirstByParagrafo(String plurale);
+    Attivita findFirstByPluraleParagrafo(String plurale);
 
-    List<Attivita> findAllByParagrafoOrderBySingolareAsc(String paragrafo);
-    List<Attivita> findAllByPaginaOrderBySingolareAsc(String pagina);
+    List<Attivita> findAllByPluraleParagrafoOrderBySingolareAsc(String paragrafo);
+    List<Attivita> findAllByPluraleListaOrderBySingolareAsc(String pagina);
 
     List<Attivita> findBySuperaSogliaFalseAndEsistePaginaTrue();
 

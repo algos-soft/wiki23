@@ -35,11 +35,15 @@ public class Attivita extends AEntity {
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM)
-    public String paragrafo;
+    public String pluraleParagrafo;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM)
-    public String pagina;
+    public String pluraleLista;
+
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.text, widthEM = WIDTHEM)
+    public String linkPagina;
 
     @AIField(type = AETypeField.enumeration, enumClazz = AETypeGenere.class)
     public AETypeGenere type;

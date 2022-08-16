@@ -92,17 +92,21 @@ public class ProfessioneView extends WikiView {
         message += " Le voci maschili che corrispondono alla pagina (non presenti nel modulo) vengono aggiunte.";
         message += " Le voci delle ex-attività (non presenti nel modulo) vengono aggiunte prendendole dal package 'attivita'";
         addSpanRosso(message);
+
+        message = "Il package 'attività' deve essere aggiornato prima di regolare 'professione'.";
+        addSpanRossoBold(message);
     }
 
     protected void fixBottoniTopSpecifici() {
         searchFieldPagina = new TextField();
-        searchFieldPagina.setPlaceholder("Filter by pagina");
+        searchFieldPagina.setPlaceholder(TAG_ALTRE_BY + "pagina");
+        searchFieldPagina.setWidth(WIDTH_EM);
         searchFieldPagina.setClearButtonVisible(true);
         searchFieldPagina.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(searchFieldPagina);
 
         boxBox = new IndeterminateCheckbox();
-        boxBox.setLabel("Aggiunta");
+        boxBox.setLabel("Aggiunti da Attività");
         boxBox.setIndeterminate(true);
         boxBox.addValueChangeListener(event -> sincroFiltri());
         HorizontalLayout layout = new HorizontalLayout(boxBox);

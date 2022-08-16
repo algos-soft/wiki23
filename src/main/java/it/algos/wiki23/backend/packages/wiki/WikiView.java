@@ -305,6 +305,17 @@ public abstract class WikiView extends CrudView {
 
                 addSpanVerdeSmall(message);
             }
+
+            if (lastStatistica != null && lastStatistica.get() instanceof LocalDateTime statistica) {
+                if (statistica.equals(ROOT_DATA_TIME)) {
+                    message = "Statistiche non ancora registrate sul server";
+                }
+                else {
+                    message = String.format("Ultime statistiche registrate il %s", dateService.get(statistica));
+                }
+                addSpanVerdeSmall(message);
+            }
+
             if (lastUpload != null && lastUpload.get() instanceof LocalDateTime upload) {
                 if (upload.equals(ROOT_DATA_TIME)) {
                     message = "Upload non ancora effettuato";
@@ -317,15 +328,6 @@ public abstract class WikiView extends CrudView {
                     if (nextUpload != null && nextUpload.get() instanceof LocalDateTime next) {
                         message += String.format(" Prossimo upload previsto %s.", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next));
                     }
-                }
-                addSpanVerdeSmall(message);
-            }
-            if (lastStatistica != null && lastStatistica.get() instanceof LocalDateTime statistica) {
-                if (statistica.equals(ROOT_DATA_TIME)) {
-                    message = "Statistiche non ancora registrate sul server";
-                }
-                else {
-                    message = String.format("Ultime statistiche registrate il %s", dateService.get(statistica));
                 }
                 addSpanVerdeSmall(message);
             }
