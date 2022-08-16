@@ -32,21 +32,30 @@ public class Nazionalita extends AEntity {
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.text, widthEM = WIDTHEM)
-    public String plurale;
+    public String pluraleParagrafo;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano queste nazionalità singolari", widthEM = 6)
+    @AIField(type = AETypeField.text, widthEM = WIDTHEM)
+    public String pluraleLista;
+
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.text, widthEM = WIDTHEM)
+    public String linkPaginaNazione;
+
+    @Indexed(unique = false, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano la stessa nazionalità plurale", widthEM = 6)
     public int numBio;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.integer, header = "sin")
     public int numSingolari;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.PENCIL)
+    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.thumb, headerIcon = VaadinIcon.LINES)
     public boolean superaSoglia;
 
-    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.SEARCH)
-    public boolean esistePagina;
+    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.yesNoReverse, headerIcon = VaadinIcon.HAMMER)
+    public boolean esistePaginaLista;
+
 
     /**
      * @return a string representation of the object.

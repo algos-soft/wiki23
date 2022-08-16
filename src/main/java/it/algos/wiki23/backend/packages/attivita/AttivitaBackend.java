@@ -1,6 +1,5 @@
 package it.algos.wiki23.backend.packages.attivita;
 
-import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -56,8 +55,8 @@ public class AttivitaBackend extends WikiBackend {
         this.repository = (AttivitaRepository) crudRepository;
     }
 
-    public Attivita creaIfNotExist(String singolare, String pluraleParagrafo, String pluraleLista, String linkPagina, AETypeGenere typeGenere, boolean aggiunta) {
-        return checkAndSave(newEntity(singolare, pluraleParagrafo, pluraleLista, linkPagina, typeGenere, aggiunta));
+    public Attivita creaIfNotExist(String singolare, String pluraleParagrafo, String pluraleLista, String linkPaginaAttivita, AETypeGenere typeGenere, boolean aggiunta) {
+        return checkAndSave(newEntity(singolare, pluraleParagrafo, pluraleLista, linkPaginaAttivita, typeGenere, aggiunta));
     }
 
     public Attivita checkAndSave(final Attivita attivita) {
@@ -85,7 +84,7 @@ public class AttivitaBackend extends WikiBackend {
      * @param singolare        di riferimento (obbligatorio, unico)
      * @param pluraleParagrafo di riferimento (obbligatorio, non unico)
      * @param pluraleLista     di riferimento (obbligatorio, non unico)
-     * @param linkPagina       di riferimento (obbligatorio, non unico)
+     * @param linkPaginaAttivita       di riferimento (obbligatorio, non unico)
      * @param typeGenere       (obbligatorio, non unico)
      * @param aggiunta         flag (facoltativo, di default false)
      *
@@ -95,19 +94,19 @@ public class AttivitaBackend extends WikiBackend {
             final String singolare,
             final String pluraleParagrafo,
             final String pluraleLista,
-            final String linkPagina,
+            final String linkPaginaAttivita,
             final AETypeGenere typeGenere,
             final boolean aggiunta) {
         return Attivita.builder()
                 .singolare(textService.isValid(singolare) ? singolare : null)
                 .pluraleParagrafo(textService.isValid(pluraleParagrafo) ? pluraleParagrafo : null)
                 .pluraleLista(textService.isValid(pluraleLista) ? pluraleLista : null)
-                .linkPagina(textService.isValid(linkPagina) ? linkPagina : null)
+                .linkPaginaAttivita(textService.isValid(linkPaginaAttivita) ? linkPaginaAttivita : null)
                 .type(typeGenere != null ? typeGenere : AETypeGenere.maschile)
                 .aggiunta(aggiunta)
                 .numBio(0)
                 .superaSoglia(false)
-                .esistePagina(false)
+                .esistePaginaLista(false)
                 .build();
     }
 
@@ -158,7 +157,7 @@ public class AttivitaBackend extends WikiBackend {
         List<Attivita> listaPlurali = findAttivitaDistinctByPluraliOld();
 
         for (Attivita attivita : listaPlurali) {
-            if (attivita.esistePagina && !attivita.superaSoglia) {
+            if (attivita.esistePaginaLista && !attivita.superaSoglia) {
                 listaDaCancellare.add(attivita);
             }
         }
@@ -297,8 +296,6 @@ public class AttivitaBackend extends WikiBackend {
      * Modulo:Bio/Link attività
      * <p>
      * Cancella la (eventuale) precedente lista di attività <br>
-     * Elabora la mappa 'Plurale attività' per creare le singole attività <br>
-     * //     * Integra le attività con quelle di genere <br>
      */
     public void download() {
         long inizio = System.currentTimeMillis();
@@ -398,8 +395,8 @@ public class AttivitaBackend extends WikiBackend {
 
 
     /**
-     * Legge le mappa dal Modulo:Bio/Ex attività <br>
-     * Crea le attività aggiuntive <br>
+     * Legge le mappa dal Modulo:Bio/Link attività <br>
+     * Aggiunge il link alla pagina wiki dell'attività <br>
      *
      * @param moduloLink della pagina su wikipedia
      *
@@ -409,7 +406,6 @@ public class AttivitaBackend extends WikiBackend {
         int cont = 0;
         String singolareConOSenzaEx;
         String singolareSenzaEx;
-        String singolareLink;
         String linkPagina;
         Map<String, String> mappaLink = wikiApiService.leggeMappaModulo(moduloLink);
         List<Attivita> listaAllAttivita = findAll();
@@ -421,12 +417,12 @@ public class AttivitaBackend extends WikiBackend {
 
                 if (mappaLink.containsKey(singolareSenzaEx)) {
                     linkPagina = mappaLink.get(singolareSenzaEx);
-                    attivita.linkPagina = linkPagina;
+                    attivita.linkPaginaAttivita = linkPagina;
                     save(attivita);
                 }
                 else {
                     if (queryService.isEsiste(singolareSenzaEx)) {
-                        attivita.linkPagina = singolareSenzaEx;
+                        attivita.linkPaginaAttivita = singolareSenzaEx;
                         save(attivita);
                     }
                     else {
@@ -574,7 +570,7 @@ public class AttivitaBackend extends WikiBackend {
             attivita.numBio = 0;
             attivita.numSingolari = 0;
             attivita.superaSoglia = false;
-            attivita.esistePagina = false;
+            attivita.esistePaginaLista = false;
             update(attivita);
         }
 
@@ -596,7 +592,7 @@ public class AttivitaBackend extends WikiBackend {
             for (Attivita attivitaOK : findAllByPagina(plurale)) {
                 attivitaOK.numBio = numBio;
                 attivitaOK.superaSoglia = numBio >= soglia ? true : false;
-                attivitaOK.esistePagina = esistePagina(attivitaOK.pluraleLista);
+                attivitaOK.esistePaginaLista = esistePagina(attivitaOK.pluraleLista);
                 attivitaOK.numSingolari = numSingolari;
                 update(attivitaOK);
 

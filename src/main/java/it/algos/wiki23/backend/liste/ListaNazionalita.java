@@ -47,7 +47,7 @@ public class ListaNazionalita extends Lista {
 
 
     public ListaNazionalita nazionalita(final Nazionalita nazionalita) {
-        this.nomeLista = nazionalita.plurale;
+        this.nomeLista = nazionalita.pluraleLista;
         super.typeLista = AETypeLista.nazionalitaPlurale;
         return this;
     }

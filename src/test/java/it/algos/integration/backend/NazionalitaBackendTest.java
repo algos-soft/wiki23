@@ -308,7 +308,7 @@ public class NazionalitaBackendTest extends WikiTest {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(nazionalita.plurale);
+            System.out.println(nazionalita.pluraleLista);
         }
     }
 

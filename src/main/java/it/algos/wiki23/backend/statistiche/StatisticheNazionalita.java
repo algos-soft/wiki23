@@ -224,7 +224,7 @@ public class StatisticheNazionalita extends Statistiche {
 
         numVociBio = bioBackend.countNazionalitaPlurale(nomeNazionalitaPlurale);
         superaSoglia = numVociBio >= soglia;
-        if (superaSoglia || linkLista) {
+        if (superaSoglia && linkLista) {
             nomeVisibile = listaTag + textService.primaMaiuscola(nomeNazionalitaPlurale) + PIPE + nomeNazionalitaPlurale;
             nomeVisibile = textService.setDoppieQuadre(nomeVisibile);
         }
@@ -361,15 +361,15 @@ public class StatisticheNazionalita extends Statistiche {
         int numNazionalita;
 
         for (Nazionalita nazionalita : (List<Nazionalita>) lista) {
-            singolari = nazionalitaBackend.findSingolariByPlurale(nazionalita.plurale);
+            singolari = nazionalitaBackend.findSingolariByPlurale(nazionalita.pluraleLista);
             numNazionalita = 0;
 
             for (String singolare : singolari) {
                 numNazionalita += bioBackend.countNazionalita(singolare);
             }
 
-            mappaSingola = new MappaStatistiche(nazionalita.plurale, numNazionalita);
-            mappa.put(nazionalita.plurale, mappaSingola);
+            mappaSingola = new MappaStatistiche(nazionalita.pluraleLista, numNazionalita);
+            mappa.put(nazionalita.pluraleLista, mappaSingola);
         }
     }
 

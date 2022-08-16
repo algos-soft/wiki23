@@ -443,8 +443,8 @@ public class DidascaliaService extends WAbstractService {
         String paragrafoLink;
 
         if (nazionalita != null) {
-            paragrafo = textService.primaMaiuscola(nazionalita.plurale);
-            if (nazionalita.esistePagina) {
+            paragrafo = textService.primaMaiuscola(nazionalita.pluraleLista);
+            if (nazionalita.esistePaginaLista) {
                 paragrafoLink = switch ((AETypeLink) WPref.linkAttNaz.getEnumCurrentObj()) {
                     case voce -> textService.setDoppieQuadre(paragrafo);
                     case lista -> textService.setDoppieQuadre(PATH_NAZIONALITA + SLASH + paragrafo + PIPE + paragrafo);

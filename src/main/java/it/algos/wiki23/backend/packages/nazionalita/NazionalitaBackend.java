@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.upload.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -50,11 +51,11 @@ public class NazionalitaBackend extends WikiBackend {
     public NazionalitaBackend(@Autowired @Qualifier(TAG_NAZIONALITA) final MongoRepository crudRepository) {
         super(crudRepository, Nazionalita.class);
         this.repository = (NazionalitaRepository) crudRepository;
-//        super.lastDownload = WPref.downloadNazionalita;
+        //        super.lastDownload = WPref.downloadNazionalita;
     }
 
-    public Nazionalita creaIfNotExist(final String singolare, final String plurale) {
-        return checkAndSave(newEntity(singolare, plurale));
+    public Nazionalita creaIfNotExist(final String singolare, String pluraleParagrafo, String pluraleLista, String linkPaginaNazione) {
+        return checkAndSave(newEntity(singolare, pluraleParagrafo, pluraleLista, linkPaginaNazione));
     }
 
     public Nazionalita checkAndSave(final Nazionalita nazionalita) {
@@ -73,7 +74,7 @@ public class NazionalitaBackend extends WikiBackend {
      * @return la nuova entity appena creata (non salvata)
      */
     public Nazionalita newEntity() {
-        return newEntity(VUOTA, VUOTA);
+        return newEntity(VUOTA, VUOTA, VUOTA, VUOTA);
     }
 
     /**
@@ -82,15 +83,26 @@ public class NazionalitaBackend extends WikiBackend {
      * Eventuali regolazioni iniziali delle property <br>
      * All properties <br>
      *
-     * @param singolare di riferimento (obbligatorio, unico)
-     * @param plurale   (facoltativo, non unico)
+     * @param singolare         di riferimento (obbligatorio, unico)
+     * @param pluraleParagrafo  di riferimento (obbligatorio, non unico)
+     * @param pluraleLista      di riferimento (obbligatorio, non unico)
+     * @param linkPaginaNazione di riferimento (obbligatorio, non unico)
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public Nazionalita newEntity(final String singolare, final String plurale) {
+    public Nazionalita newEntity(
+            final String singolare,
+            final String pluraleParagrafo,
+            final String pluraleLista,
+            final String linkPaginaNazione) {
         return Nazionalita.builder()
                 .singolare(textService.isValid(singolare) ? singolare : null)
-                .plurale(textService.isValid(plurale) ? plurale : null)
+                .pluraleParagrafo(textService.isValid(pluraleParagrafo) ? pluraleParagrafo : null)
+                .pluraleLista(textService.isValid(pluraleLista) ? pluraleLista : null)
+                .linkPaginaNazione(textService.isValid(linkPaginaNazione) ? linkPaginaNazione : null)
+                .numBio(0)
+                .superaSoglia(false)
+                .esistePaginaLista(false)
                 .build();
     }
 
@@ -103,7 +115,7 @@ public class NazionalitaBackend extends WikiBackend {
         List<Nazionalita> listaAll = findNazionalitaDistinctByPlurali();
 
         for (Nazionalita nazionalita : listaAll) {
-            lista.add(nazionalita.plurale);
+            lista.add(nazionalita.pluraleLista);
         }
 
         return lista;
@@ -132,7 +144,7 @@ public class NazionalitaBackend extends WikiBackend {
      * @return the FIRST founded entity
      */
     public Nazionalita findFirstByPlurale(final String nazionalitaPlurale) {
-        return repository.findFirstByPlurale(nazionalitaPlurale);
+        return repository.findFirstByPluraleLista(nazionalitaPlurale);
     }
 
     public List<Nazionalita> findNazionalitaDistinctByPlurali() {
@@ -141,7 +153,7 @@ public class NazionalitaBackend extends WikiBackend {
         List<Nazionalita> listaAll = repository.findAll();
 
         for (Nazionalita nazionalita : listaAll) {
-            if (set.add(nazionalita.plurale)) {
+            if (set.add(nazionalita.pluraleLista)) {
                 lista.add(nazionalita);
             }
         }
@@ -161,7 +173,7 @@ public class NazionalitaBackend extends WikiBackend {
         List<Nazionalita> listaPlurali = findNazionalitaDistinctByPlurali();
 
         for (Nazionalita nazionalita : listaPlurali) {
-            if (nazionalita.esistePagina && !nazionalita.superaSoglia) {
+            if (nazionalita.esistePaginaLista && !nazionalita.superaSoglia) {
                 listaDaCancellare.add(nazionalita);
             }
         }
@@ -170,7 +182,7 @@ public class NazionalitaBackend extends WikiBackend {
     }
 
     public List<Nazionalita> findAllByPlurale(final String plurale) {
-        return repository.findAllByPluraleOrderBySingolareAsc(plurale);
+        return repository.findAllByPluraleListaOrderBySingolareAsc(plurale);
     }
 
     public List<String> findSingolariByPlurale(final String plurale) {
@@ -193,7 +205,7 @@ public class NazionalitaBackend extends WikiBackend {
         String singolare;
 
         for (Nazionalita nazionalita : listaAll) {
-            plurale = nazionalita.plurale;
+            plurale = nazionalita.pluraleLista;
             singolare = nazionalita.singolare;
 
             if (mappa.get(plurale) == null) {
@@ -212,37 +224,134 @@ public class NazionalitaBackend extends WikiBackend {
     }
 
     /**
-     * Legge la mappa di valori dal modulo di wiki <br>
+     * Legge le mappa di valori dai moduli di wiki: <br>
+     * Modulo:Bio/Plurale nazionalità
+     * Modulo:Bio/Link nazionalità
+     * <p>
      * Cancella la (eventuale) precedente lista di attività <br>
-     * Elabora la mappa per creare le singole attività <br>
-     * Integra le attività con quelle di genere <br>
-     *
-     * @param wikiTitle della pagina su wikipedia
-     *
-     * @return true se l'azione è stata eseguita
      */
     public void download(String wikiTitle) {
-        String message;
-        int size = 0;
         long inizio = System.currentTimeMillis();
+        String moduloPlurale = PATH_MODULO + PATH_PLURALE + NAZ_LOWER;
+        String moduloLink = PATH_MODULO + PATH_LINK + NAZ_LOWER;
+        int sizeBase = 0;
+        int sizeExtra = 0;
 
-        Map<String, String> mappa = wikiApiService.leggeMappaModulo(wikiTitle);
+        sizeBase = downloadNazionalitaPlurali(moduloPlurale);
+                downloadNazionalitaLink(moduloLink);
+
+        super.fixDownloadSecondi(inizio, VUOTA, 0, 0);
+
+        //        String message;
+        //        int size = 0;
+        //        long inizio = System.currentTimeMillis();
+        //
+        //        Map<String, String> mappa = wikiApiService.leggeMappaModulo(wikiTitle);
+        //
+        //        if (mappa != null && mappa.size() > 0) {
+        //            deleteAll();
+        //            for (Map.Entry<String, String> entry : mappa.entrySet()) {
+        ////                if (creaIfNotExist(entry.getKey(), entry.getValue()) != null) {
+        ////                    size++;
+        ////                }
+        //            }
+        //        }
+        //        else {
+        //            message = String.format("Non sono riuscito a leggere da wiki il modulo %s", wikiTitle);
+        //            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+        //        }
+        //
+        //        super.fixDownloadMinuti(inizio, wikiTitle, mappa.size(), size);
+    }
+
+    /**
+     * Legge le mappa dal Modulo:Bio/Plurale nazionalità <br>
+     * Crea le nazionalità <br>
+     *
+     * @param moduloPlurale della pagina su wikipedia
+     *
+     * @return entities create
+     */
+    public int downloadNazionalitaPlurali(String moduloPlurale) {
+        int size = 0;
+        String singolare;
+        String pluraleParagrafo;
+        String pluraleLista = VUOTA;
+        AETypeGenere typeGenere = null;
+        Genere genere;
+
+        Map<String, String> mappa = wikiApiService.leggeMappaModulo(moduloPlurale);
 
         if (mappa != null && mappa.size() > 0) {
             deleteAll();
             for (Map.Entry<String, String> entry : mappa.entrySet()) {
-                if (creaIfNotExist(entry.getKey(), entry.getValue()) != null) {
+                singolare = entry.getKey();
+                pluraleLista = entry.getValue();
+//                genere = genereBackend.findFirstBySingolare(singolare);
+//                typeGenere = genere != null ? genere.getType() : AETypeGenere.nessuno;
+//                pluraleParagrafo = getParagrafo(genere, pluraleLista);
+                pluraleParagrafo=pluraleLista;
+                if (creaIfNotExist(singolare, pluraleParagrafo, pluraleLista, VUOTA) != null) {
                     size++;
                 }
             }
         }
         else {
-            message = String.format("Non sono riuscito a leggere da wiki il modulo %s", wikiTitle);
+            message = String.format("Non sono riuscito a leggere da wiki il modulo %s", moduloPlurale);
             logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
         }
 
-        super.fixDownloadMinuti(inizio, wikiTitle, mappa.size(), size);
+        return size;
     }
+
+
+
+    /**
+     * Legge le mappa dal Modulo:Bio/Link nazionalità <br>
+     * Aggiunge il link alla pagina wiki della nazionalità <br>
+     *
+     * @param moduloLink della pagina su wikipedia
+     *
+     * @return entities create
+     */
+    public int downloadNazionalitaLink(String moduloLink) {
+        int cont = 0;
+        String singolare;
+        String linkPagina;
+        Map<String, String> mappaLink = wikiApiService.leggeMappaModulo(moduloLink);
+        List<Nazionalita> listaAllAttivita = findAll();
+
+        if (mappaLink != null && mappaLink.size() > 0) {
+            for (Nazionalita attivita : listaAllAttivita) {
+                singolare = attivita.singolare;
+
+                if (mappaLink.containsKey(singolare)) {
+                    linkPagina = mappaLink.get(singolare);
+                    attivita.linkPaginaNazione = linkPagina;
+                    save(attivita);
+                }
+                else {
+                    if (queryService.isEsiste(singolare)) {
+                        attivita.linkPaginaNazione = singolare;
+                        save(attivita);
+                    }
+                    else {
+                        cont++;
+                        logger.info(new WrapLog().message(String.format("Manca %s", singolare)));
+                    }
+                }
+            }
+        }
+        else {
+            message = String.format("Non sono riuscito a leggere da wiki il %s", mappaLink);
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return 0;
+        }
+
+        logger.info(new WrapLog().message(String.format("Mancano %d linkAttivita", cont)));
+        return cont;
+    }
+
 
 
     /**
@@ -251,6 +360,8 @@ public class NazionalitaBackend extends WikiBackend {
      */
     public void elabora() {
         long inizio = System.currentTimeMillis();
+        List<String> listaPlurali;
+        List<String> listaSingolari;
         int numBio;
         int numSingolari;
         int soglia = WPref.sogliaAttNazWiki.getInt();
@@ -261,6 +372,10 @@ public class NazionalitaBackend extends WikiBackend {
 
         for (Nazionalita nazionalita : findAll()) {
             nazionalita.numBio = 0;
+            nazionalita.numSingolari = 0;
+            nazionalita.numBio = 0;
+            nazionalita.superaSoglia = false;
+            nazionalita.esistePaginaLista = false;
             update(nazionalita);
         }
 
@@ -268,19 +383,21 @@ public class NazionalitaBackend extends WikiBackend {
         //--Per ognuna recupera le nazionalità singolari
         //--Per ognuna nazionalità singolare calcola quante biografie la usano
         //--Memorizza e registra il dato nella entityBean
-        for (Nazionalita nazionalita : findNazionalitaDistinctByPlurali()) {
+        listaPlurali = findAllPlurali();
+        for (String plurale : listaPlurali) {
             numBio = 0;
             numSingolari = 0;
 
-            for (String singolare : findSingolariByPlurale(nazionalita.plurale)) {
+            listaSingolari = findSingolariByPlurale(plurale);
+            for (String singolare : listaSingolari) {
                 numBio += bioBackend.countNazionalita(singolare);
                 numSingolari++;
             }
 
-            for (Nazionalita nazionalitaOK : findAllByPlurale(nazionalita.plurale)) {
+            for (Nazionalita nazionalitaOK : findAllByPlurale(plurale)) {
                 nazionalitaOK.numBio = numBio;
                 nazionalitaOK.superaSoglia = numBio >= soglia ? true : false;
-                nazionalitaOK.esistePagina = esistePagina(nazionalitaOK.plurale);
+                nazionalitaOK.esistePaginaLista = esistePagina(nazionalitaOK.pluraleLista);
                 nazionalitaOK.numSingolari = numSingolari;
                 update(nazionalitaOK);
 
@@ -299,40 +416,39 @@ public class NazionalitaBackend extends WikiBackend {
         super.fixElaboraMinuti(inizio, "nazionalità");
     }
 
-
-//    /**
-//     * Esegue un azione di upload, specifica del programma/package in corso <br>
-//     */
-//    public void uploadAll() {
-//        appContext.getBean(UploadNazionalita.class).test().uploadA();
-//        WResult result;
-//        long inizio = System.currentTimeMillis();
-//        int sottoSoglia = 0;
-//        int daCancellare = 0;
-//        int modificate = 0;
-//        int nonModificate = 0;
-//        List<String> listaPluraliUnici = findAllPlurali();
-//        this.fixNext();
-//
-//        for (String pluraleNazionalita : listaPluraliUnici) {
-//            result = uploadPagina(pluraleNazionalita);
-//            if (result.isValido()) {
-//                if (result.isModificata()) {
-//                    modificate++;
-//                }
-//                else {
-//                    nonModificate++;
-//                }
-//            }
-//            else {
-//                sottoSoglia++;
-//                if (result.getErrorCode().equals(KEY_ERROR_CANCELLANDA)) {
-//                    daCancellare++;
-//                }
-//            }
-//        }
-//        super.fixUploadMinuti(inizio, sottoSoglia, daCancellare, nonModificate, modificate, "nazionalità");
-//    }
+    //    /**
+    //     * Esegue un azione di upload, specifica del programma/package in corso <br>
+    //     */
+    //    public void uploadAll() {
+    //        appContext.getBean(UploadNazionalita.class).test().uploadA();
+    //        WResult result;
+    //        long inizio = System.currentTimeMillis();
+    //        int sottoSoglia = 0;
+    //        int daCancellare = 0;
+    //        int modificate = 0;
+    //        int nonModificate = 0;
+    //        List<String> listaPluraliUnici = findAllPlurali();
+    //        this.fixNext();
+    //
+    //        for (String pluraleNazionalita : listaPluraliUnici) {
+    //            result = uploadPagina(pluraleNazionalita);
+    //            if (result.isValido()) {
+    //                if (result.isModificata()) {
+    //                    modificate++;
+    //                }
+    //                else {
+    //                    nonModificate++;
+    //                }
+    //            }
+    //            else {
+    //                sottoSoglia++;
+    //                if (result.getErrorCode().equals(KEY_ERROR_CANCELLANDA)) {
+    //                    daCancellare++;
+    //                }
+    //            }
+    //        }
+    //        super.fixUploadMinuti(inizio, sottoSoglia, daCancellare, nonModificate, modificate, "nazionalità");
+    //    }
 
     /**
      * Controlla l'esistenza della pagina wiki relativa a questa nazionalità (lista) <br>
@@ -349,43 +465,42 @@ public class NazionalitaBackend extends WikiBackend {
         WResult result = WResult.errato();
         appContext.getBean(UploadNazionalita.class).upload(pluraleNazionalitaMinuscolo);
 
-
         //        String message;
-//        int numVoci = bioBackend.countNazionalitaPlurale(pluraleNazionalitaMinuscola);
-//        String voci = textService.format(numVoci);
-//        String pluraleNazionalitaMaiuscola = textService.primaMaiuscola(pluraleNazionalitaMinuscola);
-//        int soglia = WPref.sogliaAttNazWiki.getInt();
-//        String wikiTitle = "Progetto:Biografie/Nazionalità/" + pluraleNazionalitaMaiuscola;
-//
-//        if (numVoci > soglia) {
-//            appContext.getBean(UploadNazionalita.class).pagina().upload(pluraleNazionalitaMinuscola);
-//            if (result.isValido()) {
-//                if (result.isModificata()) {
-//                    message = String.format("Lista %s utilizzati in %s voci biografiche", pluraleNazionalitaMinuscola, voci);
-//                }
-//                else {
-//                    message = String.format("Nazionalità %s utilizzata in %s voci biografiche. %s", pluraleNazionalitaMinuscola, voci, result.getValidMessage());
-//                }
-//                if (Pref.debug.is()) {
-//                    logger.info(new WrapLog().message(message).type(AETypeLog.upload));
-//                }
-//            }
-//            else {
-//                logger.warn(new WrapLog().message(result.getErrorMessage()).type(AETypeLog.upload));
-//            }
-//        }
-//        else {
-//            message = String.format("La nazionalità %s ha solo %s voci biografiche e non raggiunge il numero necessario per avere una pagina dedicata", pluraleNazionalitaMinuscola, voci);
-//            if (Pref.debug.is()) {
-//                result.setErrorMessage(message).setValido(false);
-//                logger.info(new WrapLog().message(message).type(AETypeLog.upload));
-//            }
-//            if (esistePagina(pluraleNazionalitaMinuscola)) {
-//                result.setErrorCode(KEY_ERROR_CANCELLANDA);
-//                message = String.format("Esiste la pagina %s che andrebbe cancellata", wikiTitle);
-//                logger.warn(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
-//            }
-//        }
+        //        int numVoci = bioBackend.countNazionalitaPlurale(pluraleNazionalitaMinuscola);
+        //        String voci = textService.format(numVoci);
+        //        String pluraleNazionalitaMaiuscola = textService.primaMaiuscola(pluraleNazionalitaMinuscola);
+        //        int soglia = WPref.sogliaAttNazWiki.getInt();
+        //        String wikiTitle = "Progetto:Biografie/Nazionalità/" + pluraleNazionalitaMaiuscola;
+        //
+        //        if (numVoci > soglia) {
+        //            appContext.getBean(UploadNazionalita.class).pagina().upload(pluraleNazionalitaMinuscola);
+        //            if (result.isValido()) {
+        //                if (result.isModificata()) {
+        //                    message = String.format("Lista %s utilizzati in %s voci biografiche", pluraleNazionalitaMinuscola, voci);
+        //                }
+        //                else {
+        //                    message = String.format("Nazionalità %s utilizzata in %s voci biografiche. %s", pluraleNazionalitaMinuscola, voci, result.getValidMessage());
+        //                }
+        //                if (Pref.debug.is()) {
+        //                    logger.info(new WrapLog().message(message).type(AETypeLog.upload));
+        //                }
+        //            }
+        //            else {
+        //                logger.warn(new WrapLog().message(result.getErrorMessage()).type(AETypeLog.upload));
+        //            }
+        //        }
+        //        else {
+        //            message = String.format("La nazionalità %s ha solo %s voci biografiche e non raggiunge il numero necessario per avere una pagina dedicata", pluraleNazionalitaMinuscola, voci);
+        //            if (Pref.debug.is()) {
+        //                result.setErrorMessage(message).setValido(false);
+        //                logger.info(new WrapLog().message(message).type(AETypeLog.upload));
+        //            }
+        //            if (esistePagina(pluraleNazionalitaMinuscola)) {
+        //                result.setErrorCode(KEY_ERROR_CANCELLANDA);
+        //                message = String.format("Esiste la pagina %s che andrebbe cancellata", wikiTitle);
+        //                logger.warn(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
+        //            }
+        //        }
 
         return result;
     }

@@ -11,7 +11,6 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
-import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
 import it.algos.vaad23.backend.entity.*;
@@ -50,24 +49,9 @@ public class AttivitaView extends WikiView {
     //--per eventuali metodi specifici
     private AttivitaBackend backend;
 
-    protected TextField searchFieldSingolare;
-
-    protected TextField searchFieldParagrafo;
-
-    protected TextField searchFieldLista;
-
-    protected TextField searchFieldPagina;
-
 
     private ComboBox comboType;
 
-    protected IndeterminateCheckbox boxSuperaSoglia;
-
-    protected IndeterminateCheckbox boxEsistePagina;
-
-    protected Checkbox boxDistinctPlurali;
-
-    protected Checkbox boxPagineDaCancellare;
 
     //--per eventuali metodi specifici
     private AttivitaDialog dialog;
@@ -95,7 +79,7 @@ public class AttivitaView extends WikiView {
         super.fixPreferenze();
 
         super.gridPropertyNamesList = Arrays.asList("singolare", "pluraleParagrafo", "type", "aggiunta", "numBio", "numSingolari", "superaSoglia");
-        super.formPropertyNamesList = Arrays.asList("singolare", "pluraleParagrafo", "pluraleLista", "linkPagina", "numBio", "superaSoglia", "esistePagina");
+        super.formPropertyNamesList = Arrays.asList("singolare", "pluraleParagrafo", "pluraleLista", "linkPaginaAttivita", "numBio", "superaSoglia", "esistePaginaLista");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "pluraleLista");
 
         super.usaBottoneElabora = true;
@@ -173,39 +157,12 @@ public class AttivitaView extends WikiView {
     @Override
     protected void fixTopLayout() {
         super.fixTopLayout();
-        fixBottoniTopSpecificiAttivita();
+        this.fixBottoniTopSpecificiAttivita();
     }
 
 
     protected void fixBottoniTopSpecificiAttivita() {
-
-        searchFieldSingolare = new TextField();
-        searchFieldSingolare.setPlaceholder(TAG_ALTRE_BY + "singolare");
-        searchFieldSingolare.setWidth(WIDTH_EM);
-        searchFieldSingolare.setClearButtonVisible(true);
-        searchFieldSingolare.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder2.add(searchFieldSingolare);
-
-        searchFieldParagrafo = new TextField();
-        searchFieldParagrafo.setPlaceholder(TAG_ALTRE_BY + "paragrafo");
-        searchFieldParagrafo.setWidth(WIDTH_EM);
-        searchFieldParagrafo.setClearButtonVisible(true);
-        searchFieldParagrafo.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder2.add(searchFieldParagrafo);
-
-        searchFieldLista = new TextField();
-        searchFieldLista.setPlaceholder(TAG_ALTRE_BY + "lista");
-        searchFieldLista.setWidth(WIDTH_EM);
-        searchFieldLista.setClearButtonVisible(true);
-        searchFieldLista.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder2.add(searchFieldLista);
-
-        searchFieldPagina = new TextField();
-        searchFieldPagina.setPlaceholder(TAG_ALTRE_BY + "pagina");
-        searchFieldPagina.setWidth(WIDTH_EM);
-        searchFieldPagina.setClearButtonVisible(true);
-        searchFieldPagina.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder2.add(searchFieldPagina);
+        super.fixBottoniTopSpecificiAttivitaNazionalita();
 
         comboType = new ComboBox<>();
         comboType.setPlaceholder(TAG_ALTRE_BY + "genere");
@@ -224,35 +181,7 @@ public class AttivitaView extends WikiView {
         layout.setAlignItems(Alignment.CENTER);
         topPlaceHolder2.add(layout);
 
-        boxSuperaSoglia = new IndeterminateCheckbox();
-        boxSuperaSoglia.setLabel("Soglia");
-        boxSuperaSoglia.setIndeterminate(true);
-        boxSuperaSoglia.addValueChangeListener(event -> sincroFiltri());
-        HorizontalLayout layout2 = new HorizontalLayout(boxSuperaSoglia);
-        layout2.setAlignItems(Alignment.CENTER);
-        topPlaceHolder2.add(layout2);
-
-        boxEsistePagina = new IndeterminateCheckbox();
-        boxEsistePagina.setLabel("Lista");
-        boxEsistePagina.setIndeterminate(true);
-        boxEsistePagina.addValueChangeListener(event -> sincroFiltri());
-        HorizontalLayout layout3 = new HorizontalLayout(boxEsistePagina);
-        layout3.setAlignItems(Alignment.CENTER);
-        topPlaceHolder2.add(layout3);
-
-        boxDistinctPlurali = new Checkbox();
-        boxDistinctPlurali.setLabel("Distinct plurali");
-        boxDistinctPlurali.addValueChangeListener(event -> sincroPlurali());
-        HorizontalLayout layout4 = new HorizontalLayout(boxDistinctPlurali);
-        layout4.setAlignItems(Alignment.CENTER);
-        topPlaceHolder2.add(layout4);
-
-        boxPagineDaCancellare = new Checkbox();
-        boxPagineDaCancellare.setLabel("Da cancellare");
-        boxPagineDaCancellare.addValueChangeListener(event -> sincroCancellare());
-        HorizontalLayout layout5 = new HorizontalLayout(boxPagineDaCancellare);
-        layout5.setAlignItems(Alignment.CENTER);
-        topPlaceHolder2.add(layout5);
+        fixCheckTopSpecificiAttivitaNazionalita();
 
         this.add(topPlaceHolder2);
     }
@@ -276,7 +205,7 @@ public class AttivitaView extends WikiView {
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
             Span span = new Span(anchor);
 
-            if (((Attivita) entity).esistePagina) {
+            if (((Attivita) entity).esistePaginaLista) {
                 return span;
             }
             else {
@@ -285,7 +214,7 @@ public class AttivitaView extends WikiView {
         })).setHeader("pluraleLista").setKey("pluraleLista").setFlexGrow(0).setWidth("18em");
 
         Grid.Column linkPagina = grid.addColumn(new ComponentRenderer<>(entity -> {
-            String wikiTitle = textService.primaMaiuscola(((Attivita) entity).linkPagina);
+            String wikiTitle = textService.primaMaiuscola(((Attivita) entity).linkPaginaAttivita);
             Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
             anchor.getElement().getStyle().set("color", "green");
             Span span = new Span(anchor);
@@ -304,7 +233,7 @@ public class AttivitaView extends WikiView {
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
             Span span = new Span(anchor);
 
-            if (((Attivita) entity).esistePagina && !((Attivita) entity).superaSoglia) {
+            if (((Attivita) entity).esistePaginaLista && !((Attivita) entity).superaSoglia) {
                 return span;
             }
             else {
@@ -322,7 +251,6 @@ public class AttivitaView extends WikiView {
         Grid.Column superaSoglia = grid.getColumnByKey("superaSoglia");
 
         grid.setColumnOrder(ordine, singolare, pluraleParagrafo, pluraleLista, linkPagina, type, aggiunta, numBio, numSingolari, superaSoglia, daCancellare);
-
     }
 
     /**
@@ -348,7 +276,7 @@ public class AttivitaView extends WikiView {
 
         final String textSearchPagina = searchFieldPagina != null ? searchFieldPagina.getValue() : VUOTA;
         if (textService.isValid(textSearchPagina)) {
-            items = items.stream().filter(att -> att.linkPagina.matches("^(?i)" + textSearchPagina + ".*$")).toList();
+            items = items.stream().filter(att -> att.linkPaginaAttivita.matches("^(?i)" + textSearchPagina + ".*$")).toList();
         }
 
         if (comboType != null && comboType.getValue() != null) {
@@ -374,7 +302,7 @@ public class AttivitaView extends WikiView {
         }
 
         if (boxEsistePagina != null && !boxEsistePagina.isIndeterminate()) {
-            items = items.stream().filter(att -> att.esistePagina == boxEsistePagina.getValue()).toList();
+            items = items.stream().filter(att -> att.esistePaginaLista == boxEsistePagina.getValue()).toList();
             if (boxEsistePagina.getValue()) {
                 sortOrder = Sort.by(Sort.Direction.ASC, "linkPagina");
             }

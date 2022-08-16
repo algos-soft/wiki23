@@ -2,13 +2,16 @@ package it.algos.wiki23.backend.packages.nazionalita;
 
 import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.checkbox.*;
+import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.dialog.*;
@@ -77,12 +80,13 @@ public class NazionalitaView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("singolare", "plurale", "numBio", "numSingolari", "superaSoglia", "esistePagina");
-        super.formPropertyNamesList = Arrays.asList("plurale", "numBio");
+        super.gridPropertyNamesList = Arrays.asList("singolare", "pluraleParagrafo", "numBio", "numSingolari", "superaSoglia");
+        super.formPropertyNamesList = Arrays.asList("pluraleParagrafo", "numBio");
         super.sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
 
         super.usaBottoneElabora = true;
         super.lastDownload = WPref.downloadNazionalita;
+        super.durataDownload = WPref.downloadNazionalitaTime;
         super.lastElaborazione = WPref.elaboraNazionalita;
         super.durataElaborazione = WPref.elaboraNazionalitaTime;
         super.lastUpload = WPref.uploadNazionalita;
@@ -96,6 +100,7 @@ public class NazionalitaView extends WikiView {
         super.usaBottoneEdit = true;
         super.usaBottoneCategoria = true;
         super.usaBottoneUploadPagina = true;
+        super.usaBottoneSearch = false;
 
         super.dialogClazz = NazionalitaDialog.class;
         super.unitaMisuraDownload = "secondi";
@@ -112,21 +117,26 @@ public class NazionalitaView extends WikiView {
     public void fixAlert() {
         super.fixAlert();
 
-        Anchor anchor = new Anchor(VaadCost.PATH_WIKI + PATH_MODULO_NAZIONALITA, PATH_MODULO_NAZIONALITA);
-        anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-        Anchor anchor2 = new Anchor(VaadCost.PATH_WIKI + PATH_STATISTICHE_NAZIONALITA, PATH_STATISTICHE_NAZIONALITA);
+        String modulo = PATH_WIKI + PATH_MODULO;
+
+        Anchor anchor1 = new Anchor(modulo + PATH_PLURALE + NAZ_LOWER, PATH_PLURALE + NAZ_LOWER);
+        anchor1.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+
+        Anchor anchor2 = new Anchor(modulo + PATH_LINK + NAZ_LOWER, PATH_LINK + NAZ_LOWER);
         anchor2.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-        alertPlaceHolder.add(new Span(anchor, new Label(SEP), anchor2));
 
-        message = "Contiene la tabella di conversione delle attività passate via parametri 'Nazionalità/Cittadinanza/NazionalitàNaturalizzato',";
-        message += " da singolare maschile e femminile (usati nell'incipit) al plurale maschile per categorizzare la pagina.";
+        Anchor anchor3 = new Anchor(PATH_WIKI + PATH_STATISTICHE_NAZIONALITA, PATH_STATISTICHE_NAZIONALITA);
+        anchor3.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+        alertPlaceHolder.add(new Span(anchor1, new Label(SEP), anchor2, new Label(SEP), anchor3));
+
+        message = "1) Tabella nazionalità del parametro 'nazionalità',";
+        message += " da singolare maschile e femminile al plurale maschile per la pagina della lista.";
         addSpanVerde(message);
 
-        message = "Le nazionalità sono elencate all'interno del modulo con la seguente sintassi:";
-        message += " [\"nazionalitaforma1\"]=\"nazionalità al plurale\"; [\"nazionalitaforma2\"]=\"nazionalità al plurale\".";
+        message = "2) Tabella di conversione dal nome della nazionalità a quello della voce corrispondente, per creare dei piped wikilink";
         addSpanVerde(message);
 
-        message = "Indipendentemente da come sono scritte nel modulo, tutte le attività singolari e plurali sono convertite in minuscolo.";
+        message = "Indipendentemente da come sono scritte nel modulo, tutte le nazionalità sono convertite in minuscolo.";
         addSpanRosso(message);
 
         message = String.format("Le singole pagine di nazionalità vengono create su wiki quando superano le %s biografie.", WPref.sogliaAttNazWiki.get());
@@ -140,53 +150,81 @@ public class NazionalitaView extends WikiView {
     }
 
     protected void fixBottoniTopSpecificiNazionalita() {
-        String widthEM = "18ex";
-        String tag = TAG_ALTRE + " by ";
-
-        topPlaceHolder2.setClassName("buttons");
-        topPlaceHolder2.setPadding(false);
-        topPlaceHolder2.setSpacing(true);
-        topPlaceHolder2.setMargin(false);
-        topPlaceHolder2.setClassName("confirm-dialog-buttons");
-
-        searchFieldPlurale = new TextField();
-        searchFieldPlurale.setPlaceholder("Filter by plurale");
-        searchFieldPlurale.setClearButtonVisible(true);
-        searchFieldPlurale.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder2.add(searchFieldPlurale);
-
-        boxSuperaSoglia = new IndeterminateCheckbox();
-        boxSuperaSoglia.setLabel("Supera soglia");
-        boxSuperaSoglia.setIndeterminate(true);
-        boxSuperaSoglia.addValueChangeListener(event -> sincroFiltri());
-        HorizontalLayout layout = new HorizontalLayout(boxSuperaSoglia);
-        layout.setAlignItems(Alignment.CENTER);
-        topPlaceHolder2.add(layout);
-
-        boxEsistePagina = new IndeterminateCheckbox();
-        boxEsistePagina.setLabel("Esiste pagina");
-        boxEsistePagina.setIndeterminate(true);
-        boxEsistePagina.addValueChangeListener(event -> sincroFiltri());
-        HorizontalLayout layout2 = new HorizontalLayout(boxEsistePagina);
-        layout2.setAlignItems(Alignment.CENTER);
-        topPlaceHolder2.add(layout2);
-
-        boxDistinctPlurali = new Checkbox();
-        boxDistinctPlurali.setLabel("Distinct plurali");
-        boxDistinctPlurali.addValueChangeListener(event -> sincroPlurali());
-        HorizontalLayout layout3 = new HorizontalLayout(boxDistinctPlurali);
-        layout3.setAlignItems(Alignment.CENTER);
-        topPlaceHolder2.add(layout3);
-
-        boxPagineDaCancellare = new Checkbox();
-        boxPagineDaCancellare.setLabel("Da cancellare");
-        boxPagineDaCancellare.addValueChangeListener(event -> sincroCancellare());
-        HorizontalLayout layout5 = new HorizontalLayout(boxPagineDaCancellare);
-        layout5.setAlignItems(Alignment.CENTER);
-        topPlaceHolder2.add(layout5);
+        super.fixBottoniTopSpecificiAttivitaNazionalita();
+        super.fixCheckTopSpecificiAttivitaNazionalita();
 
         this.add(topPlaceHolder2);
     }
+
+
+
+
+    /**
+     * autoCreateColumns=false <br>
+     * Crea le colonne normali indicate in this.colonne <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void addColumnsOneByOne() {
+        super.addColumnsOneByOne();
+
+        Grid.Column pluraleLista = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String wikiTitle = textService.primaMaiuscola(((Nazionalita) entity).pluraleLista);
+            Label label = new Label(wikiTitle);
+            label.getElement().getStyle().set("color", "red");
+            Anchor anchor = new Anchor(PATH_WIKI + PATH_NAZIONALITA + SLASH + wikiTitle, wikiTitle);
+            anchor.getElement().getStyle().set("color", "green");
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+            Span span = new Span(anchor);
+
+            if (((Nazionalita) entity).esistePaginaLista) {
+                return span;
+            }
+            else {
+                return label;
+            }
+        })).setHeader("pluraleLista").setKey("pluraleLista").setFlexGrow(0).setWidth("18em");
+
+        Grid.Column linkPagina = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String wikiTitle = textService.primaMaiuscola(((Nazionalita) entity).linkPaginaNazione);
+            Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+            anchor.getElement().getStyle().set("color", "green");
+            Span span = new Span(anchor);
+
+            return new Span(anchor);
+        })).setHeader("linkPagina").setKey("linkPagina").setFlexGrow(0).setWidth("18em");
+
+        Grid.Column daCancellare = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String link = "https://it.wikipedia.org/w/index.php?title=Progetto:Biografie/Nazionalit%C3%A0/";
+            link += textService.primaMaiuscola(((Nazionalita) entity).pluraleLista);
+            link += "&action=delete";
+            Label label = new Label("no");
+            label.getElement().getStyle().set("color", "green");
+            Anchor anchor = new Anchor(link, "del");
+            anchor.getElement().getStyle().set("color", "red");
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+            Span span = new Span(anchor);
+
+            if (((Nazionalita) entity).esistePaginaLista && !((Nazionalita) entity).superaSoglia) {
+                return span;
+            }
+            else {
+                return label;
+            }
+        })).setHeader("X").setKey("cancella").setFlexGrow(0).setWidth("8em");
+
+        Grid.Column ordine = grid.getColumnByKey(FIELD_KEY_ORDER);
+        Grid.Column singolare = grid.getColumnByKey("singolare");
+        Grid.Column pluraleParagrafo = grid.getColumnByKey("pluraleParagrafo");
+        Grid.Column numBio = grid.getColumnByKey("numBio");
+        Grid.Column numSingolari = grid.getColumnByKey("numSingolari");
+        Grid.Column superaSoglia = grid.getColumnByKey("superaSoglia");
+
+        grid.setColumnOrder(ordine, singolare, pluraleParagrafo, pluraleLista, linkPagina, numBio, numSingolari, superaSoglia, daCancellare);
+    }
+
+
+
 
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
@@ -201,13 +239,13 @@ public class NazionalitaView extends WikiView {
 
         final String textSearchPlurale = searchFieldPlurale != null ? searchFieldPlurale.getValue() : VUOTA;
         if (textService.isValid(textSearchPlurale)) {
-            items = items.stream().filter(naz -> naz.plurale.matches("^(?i)" + textSearchPlurale + ".*$")).toList();
+            items = items.stream().filter(naz -> naz.pluraleLista.matches("^(?i)" + textSearchPlurale + ".*$")).toList();
         }
 
         if (boxSuperaSoglia != null && !boxSuperaSoglia.isIndeterminate()) {
             items = items.stream().filter(naz -> naz.superaSoglia == boxSuperaSoglia.getValue()).toList();
             if (boxSuperaSoglia.getValue()) {
-                sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+                sortOrder = Sort.by(Sort.Direction.ASC, "pluraleLista");
             }
             else {
                 sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
@@ -215,9 +253,9 @@ public class NazionalitaView extends WikiView {
         }
 
         if (boxEsistePagina != null && !boxEsistePagina.isIndeterminate()) {
-            items = items.stream().filter(naz -> naz.esistePagina == boxEsistePagina.getValue()).toList();
+            items = items.stream().filter(naz -> naz.esistePaginaLista == boxEsistePagina.getValue()).toList();
             if (boxEsistePagina.getValue()) {
-                sortOrder = Sort.by(Sort.Direction.ASC, "plurale");
+                sortOrder = Sort.by(Sort.Direction.ASC, "linkPagina");
             }
             else {
                 sortOrder = Sort.by(Sort.Direction.ASC, "singolare");
@@ -310,7 +348,7 @@ public class NazionalitaView extends WikiView {
         if (entityBean.isPresent()) {
             nazionalita = (Nazionalita) entityBean.get();
             if (nazionalita.numBio > WPref.sogliaAttNazWiki.getInt()) {
-                appContext.getBean(UploadNazionalita.class).test().upload(nazionalita.plurale);
+                appContext.getBean(UploadNazionalita.class).test().upload(nazionalita.pluraleLista);
             }
             else {
                 message = String.format("La nazionalita %s non raggiunge il necessario numero di voci biografiche", nazionalita.singolare);
@@ -327,7 +365,7 @@ public class NazionalitaView extends WikiView {
         Nazionalita nazionalita = getNazionalitaCorrente();
 
         if (nazionalita != null) {
-            backend.uploadPagina(nazionalita.plurale);
+            backend.uploadPagina(nazionalita.pluraleLista);
             reload();
         }
     }
@@ -340,7 +378,7 @@ public class NazionalitaView extends WikiView {
         Nazionalita nazionalita = (Nazionalita) super.wikiCategoria();
 
         String path = "Categoria:";
-        wikiApiService.openWikiPage(path + nazionalita.plurale);
+        wikiApiService.openWikiPage(path + nazionalita.pluraleLista);
 
         return null;
     }
@@ -354,7 +392,7 @@ public class NazionalitaView extends WikiView {
         Nazionalita attivita = (Nazionalita) super.wikiPage();
 
         String path = PATH_NAZIONALITA + SLASH;
-        String attivitaText = textService.primaMaiuscola(attivita.plurale);
+        String attivitaText = textService.primaMaiuscola(attivita.pluraleLista);
         wikiApiService.openWikiPage(path + attivitaText);
 
         return null;

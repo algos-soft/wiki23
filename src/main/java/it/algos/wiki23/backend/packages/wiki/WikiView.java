@@ -1,6 +1,8 @@
 package it.algos.wiki23.backend.packages.wiki;
 
+import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
@@ -156,6 +158,7 @@ public abstract class WikiView extends CrudView {
     protected WPref durataUpload;
 
     protected WPref nextUpload;
+
     protected WPref lastStatistica;
 
     protected WikiBackend crudBackend;
@@ -174,6 +177,14 @@ public abstract class WikiView extends CrudView {
 
     protected TextField searchFieldWikiTitle;
 
+    protected TextField searchFieldSingolare;
+
+    protected TextField searchFieldParagrafo;
+
+    protected TextField searchFieldLista;
+
+    protected TextField searchFieldPagina;
+
     protected TextField searchFieldOrdinamento;
 
     protected TextField searchFieldNome;
@@ -187,6 +198,13 @@ public abstract class WikiView extends CrudView {
     protected TextField searchFieldAttivita;
 
     protected TextField searchFieldNazionalita;
+    protected IndeterminateCheckbox boxSuperaSoglia;
+
+    protected IndeterminateCheckbox boxEsistePagina;
+
+    protected Checkbox boxDistinctPlurali;
+
+    protected Checkbox boxPagineDaCancellare;
 
     protected HorizontalLayout topPlaceHolder2 = new HorizontalLayout();
 
@@ -541,6 +559,72 @@ public abstract class WikiView extends CrudView {
         super.fixBottoniTopStandard();
     }
 
+    protected void fixBottoniTopSpecificiAttivitaNazionalita() {
+        searchFieldSingolare = new TextField();
+        searchFieldSingolare.setPlaceholder(TAG_ALTRE_BY + "singolare");
+        searchFieldSingolare.setWidth(WIDTH_EM);
+        searchFieldSingolare.setClearButtonVisible(true);
+        searchFieldSingolare.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldSingolare);
+
+        searchFieldParagrafo = new TextField();
+        searchFieldParagrafo.setPlaceholder(TAG_ALTRE_BY + "paragrafo");
+        searchFieldParagrafo.setWidth(WIDTH_EM);
+        searchFieldParagrafo.setClearButtonVisible(true);
+        searchFieldParagrafo.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldParagrafo);
+
+        searchFieldLista = new TextField();
+        searchFieldLista.setPlaceholder(TAG_ALTRE_BY + "lista");
+        searchFieldLista.setWidth(WIDTH_EM);
+        searchFieldLista.setClearButtonVisible(true);
+        searchFieldLista.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldLista);
+
+        searchFieldPagina = new TextField();
+        searchFieldPagina.setPlaceholder(TAG_ALTRE_BY + "pagina");
+        searchFieldPagina.setWidth(WIDTH_EM);
+        searchFieldPagina.setClearButtonVisible(true);
+        searchFieldPagina.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(searchFieldPagina);
+
+        this.add(topPlaceHolder2);
+    }
+
+
+    protected void fixCheckTopSpecificiAttivitaNazionalita() {
+        boxSuperaSoglia = new IndeterminateCheckbox();
+        boxSuperaSoglia.setLabel("Soglia");
+        boxSuperaSoglia.setIndeterminate(true);
+        boxSuperaSoglia.addValueChangeListener(event -> sincroFiltri());
+        HorizontalLayout layout2 = new HorizontalLayout(boxSuperaSoglia);
+        layout2.setAlignItems(Alignment.CENTER);
+        topPlaceHolder2.add(layout2);
+
+        boxEsistePagina = new IndeterminateCheckbox();
+        boxEsistePagina.setLabel("Lista");
+        boxEsistePagina.setIndeterminate(true);
+        boxEsistePagina.addValueChangeListener(event -> sincroFiltri());
+        HorizontalLayout layout3 = new HorizontalLayout(boxEsistePagina);
+        layout3.setAlignItems(Alignment.CENTER);
+        topPlaceHolder2.add(layout3);
+
+        boxDistinctPlurali = new Checkbox();
+        boxDistinctPlurali.setLabel("Distinct plurali");
+        boxDistinctPlurali.addValueChangeListener(event -> sincroPlurali());
+        HorizontalLayout layout4 = new HorizontalLayout(boxDistinctPlurali);
+        layout4.setAlignItems(Alignment.CENTER);
+        topPlaceHolder2.add(layout4);
+
+        boxPagineDaCancellare = new Checkbox();
+        boxPagineDaCancellare.setLabel("Da cancellare");
+        boxPagineDaCancellare.addValueChangeListener(event -> sincroCancellare());
+        HorizontalLayout layout5 = new HorizontalLayout(boxPagineDaCancellare);
+        layout5.setAlignItems(Alignment.CENTER);
+        topPlaceHolder2.add(layout5);
+
+        this.add(topPlaceHolder2);
+    }
 
     protected boolean sincroSelection(SelectionEvent event) {
         boolean singoloSelezionato = super.sincroSelection(event);
@@ -614,6 +698,12 @@ public abstract class WikiView extends CrudView {
         }
 
         return singoloSelezionato;
+    }
+    protected void sincroPlurali() {
+    }
+
+
+    protected void sincroCancellare() {
     }
 
     protected void fixBottomLayout() {
@@ -813,4 +903,5 @@ public abstract class WikiView extends CrudView {
         message = String.format("Check");
         logger.info(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
     }
+
 }

@@ -43,6 +43,6 @@ public interface AttivitaRepository extends MongoRepository<Attivita, String> {
     List<Attivita> findAllByPluraleParagrafoOrderBySingolareAsc(String paragrafo);
     List<Attivita> findAllByPluraleListaOrderBySingolareAsc(String pagina);
 
-    List<Attivita> findBySuperaSogliaFalseAndEsistePaginaTrue();
+    List<Attivita> findBySuperaSogliaFalseAndEsistePaginaListaTrue();
 
 }// end of crud repository class

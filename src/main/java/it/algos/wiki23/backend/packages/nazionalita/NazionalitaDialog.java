@@ -86,7 +86,7 @@ public class NazionalitaDialog extends CrudDialog {
     protected void fixBinder() {
         super.fixBinder();
 
-        List<Nazionalita> lista = backend.findAllByPlurale(entityBean.plurale);
+        List<Nazionalita> lista = backend.findAllByPlurale(entityBean.pluraleLista);
         VerticalLayout layout = new VerticalLayout();
         layout.setPadding(false);
         layout.setSpacing(true);
