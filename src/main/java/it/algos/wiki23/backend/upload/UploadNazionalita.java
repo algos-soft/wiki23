@@ -94,13 +94,17 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
     }
 
 
-    protected String incipitSottoPagina(String nazionalita, String attivita) {
+    protected String incipitSottoPagina(String nazionalita, String attivita,int numVoci) {
         StringBuffer buffer = new StringBuffer();
         this.nomeLista = nazionalita;
         this.nomeAttivitaSottoPagina = attivita;
+        String naz = textService.primaMaiuscola(nazionalita);
+        String att = textService.primaMaiuscola(attivita);
+        String message;
 
         buffer.append("Questa");
-        buffer.append(textService.setRef(INFO_SOTTOPAGINA_ATTIVITA));
+        message = String.format(INFO_SOTTOPAGINA_DI_NAZIONALITA, naz, att, numVoci, att, naz);
+        buffer.append(textService.setRef(message));
         buffer.append(" è una lista");
         buffer.append(textService.setRef(INFO_DIDASCALIE));
         buffer.append(textService.setRef(INFO_ORDINE));
@@ -120,6 +124,16 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
         buffer.append(textService.setRef(INFO_ATTIVITA_PREVISTE));
 
         return buffer.toString();
+    }
+
+
+    public void uploadSottoPagine(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
+        if (uploadTest) {
+            appContext.getBean(UploadNazionalita.class).test().uploadSottoPagina(wikiTitle, nomeLista, attNazSottoPagina, lista);
+        }
+        else {
+            appContext.getBean(UploadNazionalita.class).uploadSottoPagina(wikiTitle, nomeLista, attNazSottoPagina, lista);
+        }
     }
 
     protected String correlate() {

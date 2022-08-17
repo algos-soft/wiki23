@@ -406,15 +406,24 @@ public class DidascaliaService extends WAbstractService {
         Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
         String paragrafo = attivita != null ? textService.primaMaiuscola(attivita.pluraleParagrafo) : TAG_LISTA_ALTRE;
 
+        if (bio.wikiTitle.startsWith("Abd")) {
+            int a=87;
+        }
+
         String titoloParagrafoLink;
         if (textService.isEmpty(paragrafo)) {
             paragrafo = TAG_LISTA_ALTRE;
         }
 
         if (!paragrafo.equals(TAG_LISTA_ALTRE)) {
-            titoloParagrafoLink = PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivita.pluraleLista);
-            titoloParagrafoLink = titoloParagrafoLink + PIPE + paragrafo;
-            titoloParagrafoLink = textService.setDoppieQuadre(titoloParagrafoLink);
+            if (attivita.esistePaginaLista) {
+                titoloParagrafoLink = PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivita.pluraleLista);
+                titoloParagrafoLink = titoloParagrafoLink + PIPE + paragrafo;
+                titoloParagrafoLink = textService.setDoppieQuadre(titoloParagrafoLink);
+            }
+            else {
+                titoloParagrafoLink = paragrafo;
+            }
         }
         else {
             titoloParagrafoLink = paragrafo;

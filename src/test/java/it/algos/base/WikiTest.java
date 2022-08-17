@@ -259,9 +259,9 @@ public abstract class WikiTest extends AlgosTest {
 //                Arguments.of("azeri", AETypeLista.nazionalitaPlurale),
 //                Arguments.of("arabi", AETypeLista.nazionalitaPlurale),
 //                Arguments.of("libanesi", AETypeLista.nazionalitaPlurale),
-//                Arguments.of("cingalese", AETypeLista.nazionalitaSingolare),
-                Arguments.of("mongoli", AETypeLista.nazionalitaPlurale),
-                Arguments.of("assiri", AETypeLista.nazionalitaPlurale),
+                Arguments.of("afghani", AETypeLista.nazionalitaPlurale),
+//                Arguments.of("mongoli", AETypeLista.nazionalitaPlurale),
+//                Arguments.of("assiri", AETypeLista.nazionalitaPlurale),
                 Arguments.of("capoverdiani", AETypeLista.nazionalitaPlurale)
 
         );

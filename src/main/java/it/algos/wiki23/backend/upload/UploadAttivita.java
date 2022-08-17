@@ -96,14 +96,17 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
     }
 
 
-
-    protected String incipitSottoPagina(String attivita, String nazionalita) {
+    protected String incipitSottoPagina(String attivita, String nazionalita, int numVoci) {
         StringBuffer buffer = new StringBuffer();
         this.nomeLista = attivita;
         this.nomeNazionalitaSottoPagina = nazionalita;
+        String att = textService.primaMaiuscola(attivita);
+        String naz = textService.primaMaiuscola(nazionalita);
+        String message;
 
         buffer.append("Questa");
-        buffer.append(textService.setRef(INFO_SOTTOPAGINA_NAZIONALITA));
+        message = String.format(INFO_SOTTOPAGINA_DI_ATTIVITA, att, naz, numVoci, naz, att);
+        buffer.append(textService.setRef(message));
         buffer.append(" è una lista");
         buffer.append(textService.setRef(INFO_DIDASCALIE));
         buffer.append(textService.setRef(INFO_ORDINE));
@@ -125,35 +128,44 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
         return buffer.toString();
     }
 
-//    @Deprecated
-//    protected String incipitAttNaz() {
-//        StringBuffer buffer = new StringBuffer();
-//        String message;
-//        String mod = "Bio/Plurale attività";
-//
-//        if (WPref.usaTreAttivita.is()) {
-//            buffer.append(String.format(" tra le %s", attNaz));
-//        }
-//        else {
-//            buffer.append(String.format(" come %s", attNaz));
-//        }
-//        message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
-//                "comunità ed [[Modulo:%s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]", attNaz, attNazUpper, mod);
-//        //--ref 5
-//        buffer.append(textService.setRef(message));
-//
-//        if (WPref.usaTreAttivita.is()) {
-//            message = LISTA_ATTIVITA_TRE;
-//        }
-//        else {
-//            buffer.append(" principale");
-//            message = LISTA_ATTIVITA_UNICA;
-//        }
-//        //--ref 6
-//        buffer.append(textService.setRef(message));
-//
-//        return buffer.toString();
-//    }
+    //    @Deprecated
+    //    protected String incipitAttNaz() {
+    //        StringBuffer buffer = new StringBuffer();
+    //        String message;
+    //        String mod = "Bio/Plurale attività";
+    //
+    //        if (WPref.usaTreAttivita.is()) {
+    //            buffer.append(String.format(" tra le %s", attNaz));
+    //        }
+    //        else {
+    //            buffer.append(String.format(" come %s", attNaz));
+    //        }
+    //        message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
+    //                "comunità ed [[Modulo:%s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]", attNaz, attNazUpper, mod);
+    //        //--ref 5
+    //        buffer.append(textService.setRef(message));
+    //
+    //        if (WPref.usaTreAttivita.is()) {
+    //            message = LISTA_ATTIVITA_TRE;
+    //        }
+    //        else {
+    //            buffer.append(" principale");
+    //            message = LISTA_ATTIVITA_UNICA;
+    //        }
+    //        //--ref 6
+    //        buffer.append(textService.setRef(message));
+    //
+    //        return buffer.toString();
+    //    }
+
+    public void uploadSottoPagine(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
+        if (uploadTest) {
+            appContext.getBean(UploadAttivita.class).test().uploadSottoPagina(wikiTitle, attNazPrincipale, attNazSottoPagina, lista);
+        }
+        else {
+            appContext.getBean(UploadAttivita.class).uploadSottoPagina(wikiTitle, attNazPrincipale, attNazSottoPagina, lista);
+        }
+    }
 
     @Deprecated
     protected String sottoPaginaAttNaz() {

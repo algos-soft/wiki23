@@ -151,7 +151,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
         buffer.append(CAPO);
-        buffer.append(incipitSottoPagina(nazionalita, attivita));
+        buffer.append(incipitSottoPagina(nazionalita, attivita,numVoci));
         buffer.append(CAPO);
         buffer.append(testoSottoPagina(lista));
         buffer.append(note());
@@ -187,12 +187,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
                 parente = String.format("%s%s%s%s%s", titoloLinkVediAnche, SLASH, textService.primaMaiuscola(nomeLista), SLASH, keyParagrafo);
                 vedi = String.format("{{Vedi anche|%s}}", parente);
                 buffer.append(vedi + CAPO);
-                if (uploadTest) {
-                    appContext.getBean(UploadAttivita.class).test().uploadSottoPagina(parente, nomeLista, keyParagrafo, lista);
-                }
-                else {
-                    appContext.getBean(UploadAttivita.class).uploadSottoPagina(parente, nomeLista, keyParagrafo, lista);
-                }
+                uploadSottoPagine(parente, nomeLista, keyParagrafo, lista);
             }
             else {
                 usaDiv = usaDivBase ? lista.size() > maxDiv : false;
@@ -207,6 +202,8 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         }
 
         return buffer.toString().trim();
+    }
+    public void uploadSottoPagine(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
     }
 
     public String testoSottoPagina(List<WrapLista> listaWrap) {
@@ -247,7 +244,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
     }
 
 
-    protected String incipitSottoPagina(String nazionalita, String attivita) {
+    protected String incipitSottoPagina(String nazionalita, String attivita,int numVoci) {
         return VUOTA;
     }
 

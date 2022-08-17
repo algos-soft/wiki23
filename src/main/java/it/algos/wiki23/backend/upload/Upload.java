@@ -46,11 +46,13 @@ public abstract class Upload {
 
     protected static final String INFO_LISTA = "La lista non è esaustiva e contiene '''solo''' le persone che sono citate nell'enciclopedia e per le quali è stato implementato correttamente il '''[[template:Bio|template Bio]]'''";
 
-    protected static final String INFO_PAGINA_ATTIVITA = "La pagina di una singola '''attività''' viene creata solo se le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
-    protected static final String INFO_PAGINA_NAZIONALITA = "La pagina di una singola '''nazionalità''' viene creata solo se le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
+    protected static final String INFO_PAGINA_ATTIVITA = "Questa pagina di una singola '''attività''' viene creata solo se le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
+
+    protected static final String INFO_PAGINA_NAZIONALITA = "Questa pagina di una singola '''nazionalità''' viene creata solo se le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
 
     protected static final String INFO_PARAGRAFI_ATTIVITA = "La lista è suddivisa in paragrafi per ogni '''attività''' individuata. Se il numero di voci biografiche nel" +
             " paragrafo supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità, viene creata una '''sottopagina'''.";
+
     protected static final String INFO_PARAGRAFI_NAZIONALITA = "La lista è suddivisa in paragrafi per ogni '''nazionalità''' individuata. Se il numero di voci biografiche nel" +
             " paragrafo supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità, viene creata una '''sottopagina'''.";
 
@@ -59,16 +61,19 @@ public abstract class Upload {
     protected static final String INFO_NAZIONALITA_PREVISTE = "Le '''nazionalità''' sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla comunità ed [[Modulo:Bio/Plurale nazionalità|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
 
     protected static final String INFO_PERSONA_ATTIVITA = "Ogni persona è presente in una sola [[Discussioni progetto:Biografie/Attività|lista]], in base a quanto riportato nel parametro ''attività'' utilizzato dal [[template:Bio|template Bio]]";
+
     protected static final String INFO_PERSONA_NAZIONALITA = "Ogni persona è presente in una sola [[Discussioni progetto:Biografie/Nazionalità|lista]], in base a quanto riportato nel parametro ''nazionalità'' utilizzato dal [[template:Bio|template Bio]]";
 
     protected static final String INFO_ALTRE_ATTIVITA = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
             "parametro ''attività'' oppure che usano una attività di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
+
     protected static final String INFO_ALTRE_NAZIONALITA = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
             "parametro ''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
 
-    protected static final String INFO_SOTTOPAGINA_ATTIVITA = "La sottopagina di una singola '''attività''' viene creata solo se il numero di voci biografiche supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità.";
-    protected static final String INFO_SOTTOPAGINA_NAZIONALITA = "La sottopagina di una singola '''nazionalità''' viene creata solo se il numero di voci biografiche supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità.";
+    //    protected static final String INFO_SOTTOPAGINA_DI_ATTIVITA = "La sottopagina (attività/nazionalità) viene creata solo se il numero di voci biografiche del singolo paragrafo per ''nazionalità'' supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità.";
+    protected static final String INFO_SOTTOPAGINA_DI_ATTIVITA = "Questa sottopagina ''(%s/%s)'' viene creata perché ci sono %d voci biografiche nel paragrafo ''%s'' dell'attività ''%s''";
 
+    protected static final String INFO_SOTTOPAGINA_DI_NAZIONALITA = "Questa sottopagina ''(%s/%s)'' viene creata perché ci sono %d voci biografiche nel paragrafo ''%s'' della nazionalità ''%s''";
 
     public static final String UPLOAD_TITLE_DEBUG = "Utente:Biobot/";
 
@@ -178,7 +183,7 @@ public abstract class Upload {
 
     protected String attNazRevertUpper;
 
-//    protected String nomeAttivitaNazionalitaPlurale;
+    //    protected String nomeAttivitaNazionalitaPlurale;
 
     protected String subAttivitaNazionalita;
 
@@ -274,7 +279,7 @@ public abstract class Upload {
     protected WResult registra(String wikiTitle, String newText) {
         String newTextSignificativo = newText.substring(newText.indexOf("</noinclude>"));
         return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
-//                return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
+        //                return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
     }
 
 

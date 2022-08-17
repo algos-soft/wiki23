@@ -31,7 +31,6 @@ public class TaskGiorni extends AlgosTask {
         }
     }
 
-
     /**
      * Descrizione: ogni giorno della settimana, alle 4 di notte (UTC+2 (ora legale)) -> 2 (ora italiana)
      */
