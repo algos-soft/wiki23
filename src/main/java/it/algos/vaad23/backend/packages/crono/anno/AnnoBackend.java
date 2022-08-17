@@ -105,7 +105,7 @@ public class AnnoBackend extends CrudBackend {
 
     public List<String> findAllNomi() {
         List<String> listaNomi = new ArrayList<>();
-        List<Anno> listaAnni = repository.findAll(Sort.by("ordine"));
+        List<Anno> listaAnni = repository.findAll(Sort.by(Sort.Direction.DESC,"ordine"));
 
         for (Anno anno : listaAnni) {
             listaNomi.add(anno.nome);
