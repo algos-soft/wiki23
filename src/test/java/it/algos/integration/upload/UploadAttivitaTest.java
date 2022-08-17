@@ -78,7 +78,7 @@ public class UploadAttivitaTest extends WikiTest {
     }
 
 
-//    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - Upload test di una attività con e senza TOC")
     void uploadToc() {
@@ -89,7 +89,7 @@ public class UploadAttivitaTest extends WikiTest {
     }
 
 
-//    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - Upload di una attività plurale")
     void upload3() {
@@ -98,7 +98,7 @@ public class UploadAttivitaTest extends WikiTest {
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
-    @Test
+    //    @Test
     @Order(4)
     @DisplayName("4- Upload test di una attività")
     void upload4() {
@@ -107,12 +107,22 @@ public class UploadAttivitaTest extends WikiTest {
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
-//    @Test
+    //    @Test
     @Order(5)
     @DisplayName("5- Upload all attività")
     void upload5() {
         System.out.println("5 - Upload all attività");
         appContext.getBean(UploadAttivita.class).test().uploadAll();
+    }
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6- Upload attività con poche voci")
+    void upload6() {
+        System.out.println("5 - Upload attività con poche voci");
+        sorgente = "agricoltori";
+        appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
     /**

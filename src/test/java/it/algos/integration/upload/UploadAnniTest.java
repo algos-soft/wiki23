@@ -126,7 +126,7 @@ public class UploadAnniTest extends WikiTest {
     }
 
 
-        @Test
+//        @Test
     @Order(6)
     @DisplayName("6 - Upload all")
     void uploadAll() {

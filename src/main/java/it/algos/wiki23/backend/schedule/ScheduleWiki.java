@@ -36,6 +36,8 @@ public class ScheduleWiki extends Scheduler {
         if (!isStarted()) {
             super.start();
             schedule(appContext.getBean(TaskBio.class));
+            schedule(appContext.getBean(TaskGiorni.class));
+            schedule(appContext.getBean(TaskAnni.class));
             schedule(appContext.getBean(TaskAttivita.class));
             schedule(appContext.getBean(TaskNazionalita.class));
         }

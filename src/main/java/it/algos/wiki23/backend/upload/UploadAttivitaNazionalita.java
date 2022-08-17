@@ -84,7 +84,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
                 this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiTitle;
             }
 
-            if (textService.isValid(wikiTitle) && mappaWrap != null) {
+            if (textService.isValid(wikiTitle) && mappaWrap != null && mappaWrap.size() > 0) {
                 this.esegueUpload(wikiTitle, mappaWrap);
             }
         }

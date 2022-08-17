@@ -108,7 +108,7 @@ public abstract class UploadGiorniAnni extends Upload {
                 this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiTitle;
             }
 
-            if (textService.isValid(wikiTitle) && mappaWrap != null) {
+            if (textService.isValid(wikiTitle) && mappaWrap != null && mappaWrap.size() > 0) {
                 this.esegueUpload(wikiTitle, mappaWrap);
             }
         }
@@ -120,6 +120,11 @@ public abstract class UploadGiorniAnni extends Upload {
     protected WResult esegueUpload(String wikiTitle, LinkedHashMap<String, List<WrapLista>> mappa) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = wikiUtility.getSizeAllWrap(mappa);
+
+        if (numVoci < 1) {
+            logger.info(new WrapLog().message(String.format("Non creata la pagina %s perché non ci sono voci", wikiTitle, numVoci)));
+            return WResult.crea();
+        }
 
         buffer.append(avviso());
         buffer.append(CAPO);
