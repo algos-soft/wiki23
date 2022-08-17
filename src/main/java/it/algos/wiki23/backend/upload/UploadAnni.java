@@ -66,7 +66,7 @@ public class UploadAnni extends UploadGiorniAnni {
         long inizio = System.currentTimeMillis();
 
         List<String> anni = annoWikiBackend.findAllNomi();
-        for (String nomeAnno : anni.subList(1075, 1077)) {
+        for (String nomeAnno : anni) {
             nascita().upload(nomeAnno);
             morte().upload(nomeAnno);
         }
