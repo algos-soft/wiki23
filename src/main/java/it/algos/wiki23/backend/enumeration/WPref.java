@@ -97,9 +97,11 @@ public enum WPref implements AIGenPref {
     usaSimboliCrono("usaSimboliCrono", AETypePref.bool, true, "Uso dei simboli crono per nati e morti"),
 
     linkCrono("linkCrono", AETypePref.enumerationType, AETypeLink.voce, "Type di link a giorni/anni nelle didascalie",
-            AETypeLink.nessuno),
+            AETypeLink.nessuno
+    ),
     linkAttNaz("linkAttNaz", AETypePref.enumerationType, AETypeLink.voce, "Type di link ai titoli dei paragrafi in attività/nazionalità",
-            AETypeLink.nessuno),
+            AETypeLink.nessuno
+    ),
 
     usaTaskBio("usaTaskBio", AETypePref.bool, false, "Download calendarizzato di tutte le biografie"),
     usaTaskAttivita("usaTaskAttivita", AETypePref.bool, false, "Upload calendarizzato di tutte le attività"),
@@ -109,8 +111,9 @@ public enum WPref implements AIGenPref {
     usaRigheGiorni("usaRigheGiorni", AETypePref.bool, true, "Usa righe raggruppate per anno nelle liste dei giorni"),
     usaRigheAnni("usaRigheAnni", AETypePref.bool, true, "Usa righe raggruppate per giorno nelle liste degli anni"),
     sogliaCognomiMongo("sogliaCognomiMongo", AETypePref.integer, 30, "Soglia minima per creare una entity nella collezione Cognomi sul mongoDB"),
-    sogliaCognomiWiki("sogliaCognomiWiki", AETypePref.integer, 50, "Soglia minima per creare una pagina Cognomi sul server wiki")
-;
+    sogliaCognomiWiki("sogliaCognomiWiki", AETypePref.integer, 50, "Soglia minima per creare una pagina Cognomi sul server wiki"),
+    usaLoggerTask("usaLoggerTask", AETypePref.bool, false, "Registra sul log interno l'esecuzione dell task programmate"),
+    ;
 
 
     //--codice di riferimento.
@@ -300,4 +303,4 @@ public enum WPref implements AIGenPref {
         }
 
     }
-    }
+}

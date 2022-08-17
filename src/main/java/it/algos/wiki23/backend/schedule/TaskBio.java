@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.schedule;
 import static com.fasterxml.jackson.databind.type.LogicalType.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -45,12 +46,17 @@ public class TaskBio extends AlgosTask {
     @Autowired
     private ResourceService resourceService;
 
+
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
+        long inizio = System.currentTimeMillis();
         fixNext();
+
         if (WPref.usaTaskBio.is()) {
             service.ciclo();
         }
+
+        loggerTask(inizio);
     }
 
     /**
@@ -68,6 +74,16 @@ public class TaskBio extends AlgosTask {
         LocalDateTime adesso = LocalDateTime.now();
         LocalDateTime prossimo = adesso.plusDays(1);
         WPref.downloadBioPrevisto.setValue(prossimo);
+    }
+
+    public void loggerTask(long inizio) {
+        long fine = System.currentTimeMillis();
+        String message;
+        long delta = fine - inizio;
+        delta = delta / 1000 / 60;
+
+        message = String.format("Task per il ciclo bio in %s minuti", delta);
+        logger.info(new WrapLog().type(AETypeLog.bio).message(message).usaDb());
     }
 
 }

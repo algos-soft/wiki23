@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.service.*;
 import it.sauronsoftware.cron4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
@@ -26,6 +27,14 @@ public abstract class AlgosTask extends Task {
      */
     @Autowired
     public ApplicationContext appContext;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    protected LogService logger;
 
     public String getPattern() {
         return VUOTA;
