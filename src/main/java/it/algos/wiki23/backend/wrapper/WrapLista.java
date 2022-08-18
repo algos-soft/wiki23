@@ -27,7 +27,16 @@ public class WrapLista {
     public String didascaliaLunga;
 
     public WrapLista(String titoloParagrafo, String titoloParagrafoLink, String titoloSottoParagrafo, String didascaliaBreve) {
-        this(titoloParagrafo, titoloParagrafoLink, titoloSottoParagrafo, didascaliaBreve, titoloSottoParagrafo + SEP + didascaliaBreve);
+        this.titoloParagrafo = titoloParagrafo;
+        this.titoloParagrafoLink = titoloParagrafoLink;
+        this.titoloSottoParagrafo = titoloSottoParagrafo;
+        this.didascaliaBreve = didascaliaBreve;
+        if (titoloSottoParagrafo != null && titoloSottoParagrafo.length() > 0) {
+            this.didascaliaLunga = titoloSottoParagrafo + SEP + didascaliaBreve;
+        }
+        else {
+            this.didascaliaLunga = didascaliaBreve;
+        }
     }
 
     public WrapLista(String titoloParagrafo, String titoloParagrafoLink, String titoloSottoParagrafo, String didascaliaBreve, String didascaliaLunga) {

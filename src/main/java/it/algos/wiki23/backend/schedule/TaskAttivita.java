@@ -1,6 +1,8 @@
 package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.statistiche.*;
@@ -33,24 +35,35 @@ public class TaskAttivita extends AlgosTask {
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
+        long inizio = System.currentTimeMillis();
         if (WPref.usaTaskAttivita.is()) {
             attivitaBackend.elabora();
             appContext.getBean(StatisticheAttivita.class).upload();
             appContext.getBean(UploadAttivita.class).uploadAll();
         }
+        loggerTask(inizio);
     }
 
 
     /**
-     * Descrizione: ogni settimana il pomeriggio del lunedì
-     * 0 14 * * Mon
+     * Descrizione: ogni settimana la mattina di lunedì
+     * 0 10 * * Mon
      */
-    private static final String PATTERN = "0 14 * * Mon";
+    private static final String PATTERN = "0 10 * * Mon";
 
 
     @Override
     public String getPattern() {
         return PATTERN;
+    }
+    public void loggerTask(long inizio) {
+        long fine = System.currentTimeMillis();
+        String message;
+        long delta = fine - inizio;
+        delta = delta / 1000 / 60;
+
+        message = String.format("Task per il ciclo upload attività in %s minuti", delta);
+        logger.info(new WrapLog().type(AETypeLog.upload).message(message).usaDb());
     }
 
 }

@@ -82,7 +82,7 @@ public class TaskBio extends AlgosTask {
         long delta = fine - inizio;
         delta = delta / 1000 / 60;
 
-        message = String.format("Task per il ciclo bio in %s minuti", delta);
+        message = String.format("Task per il ciclo download bio in %s minuti", delta);
         logger.info(new WrapLog().type(AETypeLog.bio).message(message).usaDb());
     }
 

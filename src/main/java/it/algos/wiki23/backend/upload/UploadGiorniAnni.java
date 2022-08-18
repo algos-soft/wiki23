@@ -109,7 +109,7 @@ public abstract class UploadGiorniAnni extends Upload {
             }
 
             if (textService.isValid(wikiTitle) && mappaWrap != null && mappaWrap.size() > 0) {
-                this.esegueUpload(wikiTitle, mappaWrap);
+               return this.esegueUpload(wikiTitle, mappaWrap);
             }
         }
 
@@ -287,7 +287,6 @@ public abstract class UploadGiorniAnni extends Upload {
                         }
                     }
                 }
-                buffer.append(CAPO);
             }
         }
         buffer.append("{{Div col end}}" + CAPO);

@@ -322,32 +322,32 @@ public class WikiBotService extends WAbstractService {
         String message;
 
         //--Vengono usati quelli che hanno un miniWrap.pageid senza corrispondente bio.pageid nel mongoDb
-//        List<WrapTime> listaMiniWrapNuovi = listaWrapTimes
-//                .stream()
-//                .filter(checkNuovi)
-//                .sorted()
-//                .collect(Collectors.toList());
-//        nuove = listaMiniWrapNuovi.size();
-//        listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
+        //        List<WrapTime> listaMiniWrapNuovi = listaWrapTimes
+        //                .stream()
+        //                .filter(checkNuovi)
+        //                .sorted()
+        //                .collect(Collectors.toList());
+        //        nuove = listaMiniWrapNuovi.size();
+        //        listaMiniWrapTotali.addAll(listaMiniWrapNuovi);
 
         //--Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica
         List<WrapTime> listaMiniWrapModificati = listaWrapTimes
                 .stream()
-//                .filter(checkEsistenti)
+                //                .filter(checkEsistenti)
                 .filter(checkModificati)
                 .sorted()
                 .collect(Collectors.toList());
         modificate = listaMiniWrapModificati.size();
         listaMiniWrapTotali.addAll(listaMiniWrapModificati);
-        totali =  modificate;
+        totali = modificate;
 
         for (WrapTime wrap : listaMiniWrapTotali) {
             listaPageIdsDaLeggere.add(wrap.getPageid());
         }
 
-//        message = String.format("Elaborata una lista di miniWrap da leggere: %s nuove e %s modificate (%s totali) in %s",
-//                textService.format(nuove), textService.format(modificate), textService.format(totali), dateService.deltaText(inizio));
-//        logger.info(new WrapLog().type(AETypeLog.bio).exception(new AlgosException(message)));
+        //        message = String.format("Elaborata una lista di miniWrap da leggere: %s nuove e %s modificate (%s totali) in %s",
+        //                textService.format(nuove), textService.format(modificate), textService.format(totali), dateService.deltaText(inizio));
+        //        logger.info(new WrapLog().type(AETypeLog.bio).exception(new AlgosException(message)));
 
         return listaPageIdsDaLeggere;
     }
@@ -838,9 +838,9 @@ public class WikiBotService extends WAbstractService {
         }
 
         //--solo date certe ed esatte
-        //        if (valoreGrezzo.contains(CIRCA)) {
-        //            return VUOTA;
-        //        }
+        if (valoreGrezzo.contains(CIRCA)) {
+            return VUOTA;
+        }
 
         if (valorePropertyTmplBioServer.equals(PUNTO_INTERROGATIVO) && puntoAmmesso) {
             return PUNTO_INTERROGATIVO;
@@ -857,7 +857,7 @@ public class WikiBotService extends WAbstractService {
         valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
         valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
         if (valoreGrezzo.endsWith("ca.")) {
-            valoreGrezzo = textService.levaCodaDa(valoreGrezzo,"ca.");
+            valoreGrezzo = textService.levaCodaDa(valoreGrezzo, "ca.");
         }
         valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
 

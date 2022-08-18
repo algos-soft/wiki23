@@ -77,7 +77,7 @@ public class UploadGiorniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    @Test
+//    @Test
     @Order(2)
     @DisplayName("2 - Upload test di un giorno morto con e senza paragrafi")
     void uploadTestNato() {
@@ -89,18 +89,18 @@ public class UploadGiorniTest extends WikiTest {
 
     @Test
     @Order(3)
-    @DisplayName("3 - Upload test di un giorno morto con paragrafi")
+    @DisplayName("3 - Upload test di un giorno morto standard")
     void uploadTestMorto() {
-        System.out.println("3 - Upload test di un giorno morto con paragrafi");
+        System.out.println("3 - Upload test di un giorno morto standard");
         sorgente = "25 settembre";
-        appContext.getBean(UploadGiorni.class).conParagrafi().morte().test().upload(sorgente);
+        appContext.getBean(UploadGiorni.class).morte().test().upload(sorgente);
     }
 
     //            @Test
     @Order(4)
-    @DisplayName("4 - Upload reale di un giorno nato con paragrafi")
+    @DisplayName("4 - Upload reale di un giorno nato standard")
     void uploadReale() {
-        System.out.println("4 - Upload reale di un giorno nato con paragrafi");
+        System.out.println("4 - Upload reale di un giorno nato standard");
         sorgente = "25 settembre";
         appContext.getBean(UploadGiorni.class).nascita().upload(sorgente);
     }

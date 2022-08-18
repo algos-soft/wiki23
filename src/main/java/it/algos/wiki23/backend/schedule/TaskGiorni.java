@@ -51,8 +51,8 @@ public class TaskGiorni extends AlgosTask {
         long delta = fine - inizio;
         delta = delta / 1000 / 60;
 
-        message = String.format("Task per il ciclo giorni in %s minuti", delta);
-        logger.info(new WrapLog().type(AETypeLog.bio).message(message).usaDb());
+        message = String.format("Task per il ciclo upload giorni in %s minuti", delta);
+        logger.info(new WrapLog().type(AETypeLog.upload).message(message).usaDb());
     }
 
 }
