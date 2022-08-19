@@ -98,8 +98,6 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
 
     protected String incipitSottoPagina(String attivita, String nazionalita, int numVoci) {
         StringBuffer buffer = new StringBuffer();
-        this.nomeLista = attivita;
-        this.nomeNazionalitaSottoPagina = nazionalita;
         String att = textService.primaMaiuscola(attivita);
         String naz = textService.primaMaiuscola(nazionalita);
         String message;
@@ -128,35 +126,37 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
         return buffer.toString();
     }
 
-    //    @Deprecated
-    //    protected String incipitAttNaz() {
-    //        StringBuffer buffer = new StringBuffer();
-    //        String message;
-    //        String mod = "Bio/Plurale attività";
-    //
-    //        if (WPref.usaTreAttivita.is()) {
-    //            buffer.append(String.format(" tra le %s", attNaz));
-    //        }
-    //        else {
-    //            buffer.append(String.format(" come %s", attNaz));
-    //        }
-    //        message = String.format("Le %s sono quelle [[Discussioni progetto:Biografie/%s|'''convenzionalmente''' previste]] dalla " +
-    //                "comunità ed [[Modulo:%s|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]", attNaz, attNazUpper, mod);
-    //        //--ref 5
-    //        buffer.append(textService.setRef(message));
-    //
-    //        if (WPref.usaTreAttivita.is()) {
-    //            message = LISTA_ATTIVITA_TRE;
-    //        }
-    //        else {
-    //            buffer.append(" principale");
-    //            message = LISTA_ATTIVITA_UNICA;
-    //        }
-    //        //--ref 6
-    //        buffer.append(textService.setRef(message));
-    //
-    //        return buffer.toString();
-    //    }
+    protected String incipitSottoSottoPagina(String attivita, String nazionalita, String keyParagrafo, int numVoci) {
+        StringBuffer buffer = new StringBuffer();
+        String att = textService.primaMaiuscola(attivita) + SLASH + textService.primaMaiuscola(nazionalita); ;
+        String naz = textService.primaMaiuscola(keyParagrafo);
+        String message;
+
+        buffer.append("Questa");
+        message = String.format(INFO_SOTTOPAGINA_DI_ATTIVITA, att, naz, numVoci, naz, att);
+        buffer.append(textService.setRef(message));
+        buffer.append(" è una lista");
+        buffer.append(textService.setRef(INFO_DIDASCALIE));
+        buffer.append(" di persone");
+        buffer.append(textService.setRef(INFO_PERSONA_ATTIVITA));
+        buffer.append(" presenti");
+        buffer.append(textService.setRef(INFO_LISTA));
+        buffer.append(" nell'enciclopedia che hanno come attività");
+        buffer.append(textService.setRef(INFO_ATTIVITA_PREVISTE));
+        buffer.append(String.format(" quella di '''%s'''", attivita.toLowerCase()));
+        if (naz.equals(TAG_LISTA_ALTRE)) {
+            buffer.append(" e non usano il parametro ''nazionalità'' oppure hanno un'nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]");
+        }
+        else {
+            buffer.append(String.format(", sono '''%s'''", nazionalita.toLowerCase()));
+        }
+        buffer.append(textService.setRef(INFO_NAZIONALITA_PREVISTE));
+        buffer.append(" ed il cognome");
+        buffer.append(textService.setRef(INFO_ORDINE));
+        buffer.append(String.format(" inizia con la lettera '''%s'''.", keyParagrafo.toUpperCase()));
+
+        return buffer.toString();
+    }
 
     public void uploadSottoPagine(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
         if (uploadTest) {
@@ -167,22 +167,13 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
         }
     }
 
-    @Deprecated
-    protected String sottoPaginaAttNaz() {
-        StringBuffer buffer = new StringBuffer();
-        String message;
-
-        if (subAttivitaNazionalita.equals(TAG_ALTRE)) {
-            subAttivitaNazionalita = "senza nazionalità";
-            buffer.append(String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita)));
-            message = "Qui vengono raggruppate quelle voci biografiche che '''non''' usano il parametro ''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
-            buffer.append(textService.setRef(message));
+    public void uploadSottoSottoPagine(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, String keyParagrafo, List<WrapLista> lista) {
+        if (uploadTest) {
+            appContext.getBean(UploadAttivita.class).test().uploadSottoSottoPagina(wikiTitle, attNazPrincipale, attNazSottoPagina, keyParagrafo, lista);
         }
         else {
-            buffer.append(String.format(" e sono '''%s'''", textService.primaMinuscola(subAttivitaNazionalita)));
+            appContext.getBean(UploadAttivita.class).uploadSottoSottoPagina(wikiTitle, attNazPrincipale, attNazSottoPagina, keyParagrafo, lista);
         }
-
-        return buffer.toString();
     }
 
 
@@ -199,11 +190,15 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
     }
 
     protected String categorie() {
+        if (uploadTest) {
+            return VUOTA;
+        }
+
         StringBuffer buffer = new StringBuffer();
         String cat = textService.primaMaiuscola(nomeLista);
 
-        if (textService.isValid(nomeNazionalitaSottoPagina)) {
-            cat += SLASH + nomeNazionalitaSottoPagina;
+        if (textService.isValid(nomeSottoPagina)) {
+            cat += SLASH + nomeSottoPagina;
         }
 
         buffer.append(CAPO);

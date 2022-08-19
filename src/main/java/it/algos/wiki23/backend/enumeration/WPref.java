@@ -84,12 +84,19 @@ public enum WPref implements AIGenPref {
     typeTocAttNaz("typeTocAttNaz", AETypePref.enumerationType, AETypeToc.noToc, "Type di TOC in attività e nazionalità",
             AETypeToc.noToc
     ),
+    typeTocGiorni("typeTocGiorni", AETypePref.enumerationType, AETypeToc.forceToc, "Type di TOC nelle liste di giorni",
+            AETypeToc.noToc
+    ),
+    typeTocAnni("typeTocAnni", AETypePref.enumerationType, AETypeToc.forceToc, "Type di TOC nelle liste di anni",
+            AETypeToc.noToc
+    ),
     typeChiaveNulla("typeChiaveNulla", AETypePref.enumerationType, AETypeChiaveNulla.inCoda, "Posizione del paragrafo 'nullo'",
             AETypeChiaveNulla.inCoda
     ),
     usaParagrafiGiorni("usaParagrafiGiorni", AETypePref.bool, true, "Usa i paragrafi (secoli) nelle pagine dei giorni"),
     usaParagrafiAnni("usaParagrafiAnni", AETypePref.bool, true, "Usa i paragrafi (mesi) nelle pagine degli anni"),
     usaParagrafiAttNaz("usaParagrafiAttNaz", AETypePref.bool, false, "Usa i paragrafi (nazionalità/attività) nelle pagine attività/nazionalità"),
+    usaSottoSottoAttNaz("usaSottoSottoAttNaz", AETypePref.bool, false, "Usa le sotto-sottopagine (nazionalità/attività) di lettere alfabetiche"),
     usaDivAttNaz("usaDivAttNaz", AETypePref.bool, true, "Usa i {{Div col}} nelle pagine attività e nazionalità"),
 
     simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),
@@ -99,7 +106,10 @@ public enum WPref implements AIGenPref {
     linkCrono("linkCrono", AETypePref.enumerationType, AETypeLink.voce, "Type di link a giorni/anni nelle didascalie",
             AETypeLink.nessuno
     ),
-    linkAttNaz("linkAttNaz", AETypePref.enumerationType, AETypeLink.voce, "Type di link ai titoli dei paragrafi in attività/nazionalità",
+    linkAttNaz("linkAttNaz", AETypePref.enumerationType, AETypeLink.voce, "Type di link nei titoli dei paragrafi in attività/nazionalità",
+            AETypeLink.nessuno
+    ),
+    linkGiorniAnni("linkGiorniAnni", AETypePref.enumerationType, AETypeLink.nessuno, "Type di link nei titoli dei paragrafi in giorni/anni",
             AETypeLink.nessuno
     ),
 

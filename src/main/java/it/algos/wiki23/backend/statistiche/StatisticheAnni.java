@@ -62,6 +62,13 @@ public class StatisticheAnni extends Statistiche {
     }
 
     /**
+     * Elabora i dati
+     */
+    protected void elabora() {
+        annoWikiBackend.elabora();
+    }
+
+    /**
      * Recupera la lista
      */
     @Override

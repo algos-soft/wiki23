@@ -60,6 +60,13 @@ public class StatisticheAttivita extends Statistiche {
 
 
     /**
+     * Elabora i dati
+     */
+    protected void elabora() {
+        attivitaBackend.elabora();
+    }
+
+    /**
      * Recupera la lista
      */
     @Override

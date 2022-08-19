@@ -35,13 +35,17 @@ public class TaskAttivita extends AlgosTask {
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        long inizio = System.currentTimeMillis();
+        long inizio;
+
         if (WPref.usaTaskAttivita.is()) {
-            attivitaBackend.elabora();
+            inizio = System.currentTimeMillis();
             appContext.getBean(StatisticheAttivita.class).upload();
+            loggerElabora(inizio);
+
+            inizio = System.currentTimeMillis();
             appContext.getBean(UploadAttivita.class).uploadAll();
+            loggerUpload(inizio);
         }
-        loggerTask(inizio);
     }
 
 
@@ -56,13 +60,25 @@ public class TaskAttivita extends AlgosTask {
     public String getPattern() {
         return PATTERN;
     }
-    public void loggerTask(long inizio) {
+
+    public void loggerElabora(long inizio) {
         long fine = System.currentTimeMillis();
         String message;
         long delta = fine - inizio;
         delta = delta / 1000 / 60;
 
-        message = String.format("Task per il ciclo upload attività in %s minuti", delta);
+        message = String.format("Task per elaborare le attività in %s minuti", delta);
+        logger.info(new WrapLog().type(AETypeLog.elabora).message(message).usaDb());
+    }
+
+
+    public void loggerUpload(long inizio) {
+        long fine = System.currentTimeMillis();
+        String message;
+        long delta = fine - inizio;
+        delta = delta / 1000 / 60;
+
+        message = String.format("Task per l'upload delle liste di attività in %s minuti", delta);
         logger.info(new WrapLog().type(AETypeLog.upload).message(message).usaDb());
     }
 

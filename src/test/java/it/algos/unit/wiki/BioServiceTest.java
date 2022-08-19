@@ -75,7 +75,7 @@ public class BioServiceTest extends WikiTest {
         printBio(listBio);
     }
 
-    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - lista attivita singole da plurale")
     void fetchAttivitaPlurale() {

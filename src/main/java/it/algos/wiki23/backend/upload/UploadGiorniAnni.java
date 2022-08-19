@@ -199,13 +199,14 @@ public abstract class UploadGiorniAnni extends Upload {
         StringBuffer buffer = new StringBuffer();
         List<WrapLista> lista;
         int numVoci;
+        int maxDiv = WPref.sogliaDiv.getInt();
         boolean usaDiv;
         String titoloParagrafoLink;
 
         for (String keyParagrafo : mappa.keySet()) {
             lista = mappa.get(keyParagrafo);
             numVoci = lista.size();
-            usaDiv = lista.size() > 3;
+            usaDiv = lista.size() > maxDiv;
             titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
             buffer.append(wikiUtility.fixTitolo(VUOTA, titoloParagrafoLink, numVoci));
             buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
@@ -320,7 +321,10 @@ public abstract class UploadGiorniAnni extends Upload {
 
     protected String categorie() {
         StringBuffer buffer = new StringBuffer();
-        String tag = typeCrono.getTagUpper();
+
+        if (uploadTest) {
+            return VUOTA;
+        }
 
         String title = switch (typeCrono) {
             case giornoNascita -> wikiUtility.wikiTitleNatiGiorno(nomeLista);

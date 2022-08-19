@@ -251,6 +251,7 @@ public abstract class Upload {
     protected String note() {
         StringBuffer buffer = new StringBuffer();
 
+        buffer.append(CAPO);
         buffer.append(wikiUtility.setParagrafo("Note"));
         buffer.append("<references/>");
 

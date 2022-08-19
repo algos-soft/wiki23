@@ -342,12 +342,18 @@ public class StatisticheNazionalita extends Statistiche {
 
 
     /**
+     * Elabora i dati
+     */
+    protected void elabora() {
+        nazionalitaBackend.elabora();
+    }
+
+    /**
      * Recupera la lista
      */
     @Override
     protected void creaLista() {
         lista = nazionalitaBackend.findNazionalitaDistinctByPlurali();
-        int a=87;
     }
 
     /**

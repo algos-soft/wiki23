@@ -38,6 +38,7 @@ public class UploadGiorni extends UploadGiorniAnni {
         super.durataUpload = WPref.uploadGiorniTime;
         super.nextUpload = WPref.uploadGiorniPrevisto;
         super.usaParagrafi = WPref.usaParagrafiGiorni.is();
+        super.typeToc = (AETypeToc) WPref.typeTocGiorni.getEnumCurrentObj();
     }// end of constructor
 
 

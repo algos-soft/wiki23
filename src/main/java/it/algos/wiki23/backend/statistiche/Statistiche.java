@@ -72,6 +72,7 @@ public abstract class Statistiche {
      */
     @Autowired
     public MathService mathService;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -114,7 +115,7 @@ public abstract class Statistiche {
 
     protected int totNati = 0;
 
-    protected  int totMorti = 0;
+    protected int totMorti = 0;
 
     protected AETypeToc typeToc;
 
@@ -124,24 +125,9 @@ public abstract class Statistiche {
 
     protected boolean uploadTest = false;
 
-//    /**
-//     * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
-//     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
-//     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
-//     * <p>
-//     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti, ma l'ordine con cui vengono chiamati (nella stessa classe) NON è garantito <br>
-//     * Se viene implementata una sottoclasse, passa di qui per ogni sottoclasse oltre che per questa istanza <br>
-//     * Se esistono delle sottoclassi, passa di qui per ognuna di esse (oltre a questa classe madre) <br>
-//     */
-//    @PostConstruct
-//    private void postConstruct() {
-//        this.fixPreferenze();
-//        this.creaLista();
-//        this.creaMappa();
-//    }
-
     protected void esegue() {
         this.fixPreferenze();
+        this.elabora();
         this.creaLista();
         this.creaMappa();
     }
@@ -153,6 +139,26 @@ public abstract class Statistiche {
      */
     protected void fixPreferenze() {
         this.typeToc = AETypeToc.forceToc;
+    }
+
+    /**
+     * Elabora i dati
+     */
+    protected void elabora() {
+    }
+
+    /**
+     * Recupera la lista
+     */
+    protected void creaLista() {
+    }
+
+
+    /**
+     * Costruisce la mappa <br>
+     */
+    protected void creaMappa() {
+        mappa = new LinkedHashMap<>();
     }
 
     protected WResult upload(String wikiTitle) {
@@ -199,12 +205,12 @@ public abstract class Statistiche {
     protected String incipit() {
         return CAPO;
     }
+
     /**
      * Prima tabella <br>
      */
     protected String body() {
         StringBuffer buffer = new StringBuffer();
-
 
         buffer.append(inizioTabella());
         buffer.append(colonne());
@@ -213,6 +219,7 @@ public abstract class Statistiche {
 
         return buffer.toString();
     }
+
     protected String colonne() {
         return VUOTA;
     }
@@ -232,6 +239,7 @@ public abstract class Statistiche {
 
         return buffer.toString();
     }
+
     protected String riga(MappaStatistiche mappa) {
         return VUOTA;
     }
@@ -286,24 +294,8 @@ public abstract class Statistiche {
         return testo;
     }
 
-    /**
-     * Recupera la lista
-     */
-    protected void creaLista() {
-    }
-
-
-    /**
-     * Costruisce la mappa <br>
-     */
-    protected void creaMappa() {
-        mappa = new LinkedHashMap<>();
-    }
 
     protected WResult registra(String wikiTitle, String newText) {
-        //        if (Pref.debug.is()) {
-        //            wikiTitle = WIKI_TITLE_DEBUG;
-        //        }
         return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText);
     }
 

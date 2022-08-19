@@ -50,19 +50,18 @@ public class TaskBio extends AlgosTask {
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         long inizio = System.currentTimeMillis();
-        fixNext();
 
         if (WPref.usaTaskBio.is()) {
+            fixNext();
             service.ciclo();
+            loggerDownload(inizio);
         }
-
-        loggerTask(inizio);
     }
 
     /**
-     * Descrizione: ogni giorno della settimana, alle 2 di notte (UTC+2 (ora legale)) -> 0 (ora italiana)
+     * Descrizione: ogni giorno della settimana, a mezzanotte
      */
-    private static final String PATTERN = "1 2 * * *";
+    private static final String PATTERN = "1 0 * * *";
 
 
     @Override
@@ -76,7 +75,7 @@ public class TaskBio extends AlgosTask {
         WPref.downloadBioPrevisto.setValue(prossimo);
     }
 
-    public void loggerTask(long inizio) {
+    public void loggerDownload(long inizio) {
         long fine = System.currentTimeMillis();
         String message;
         long delta = fine - inizio;

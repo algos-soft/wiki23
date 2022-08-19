@@ -112,7 +112,7 @@ public class UploadAnniTest extends WikiTest {
     void uploadTestNato() {
         System.out.println("4 - Upload test di un anno nato senza paragrafi");
         sorgente = "1785";
-        ottenutoRisultato = appContext.getBean(UploadAnni.class).senzaParagrafi().nascita().test().upload(sorgente);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).nascita().test().upload(sorgente);
         printRisultato(ottenutoRisultato);
         //        appContext.getBean(UploadAnni.class).conParagrafi().nascita().test().upload(sorgente);
     }

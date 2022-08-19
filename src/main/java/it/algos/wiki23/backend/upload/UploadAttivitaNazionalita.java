@@ -21,9 +21,8 @@ import java.util.*;
  */
 public abstract class UploadAttivitaNazionalita extends Upload {
 
-    protected String nomeAttivitaSottoPagina;
+    protected String nomeSottoPagina;
 
-    protected String nomeNazionalitaSottoPagina;
 
     /**
      * Costruttore base con parametri <br>
@@ -95,15 +94,37 @@ public abstract class UploadAttivitaNazionalita extends Upload {
     /**
      * Esegue la scrittura della sottopagina <br>
      */
-    public WResult uploadSottoPagina(final String wikiTitle, String nazionalita, String attivita, List<WrapLista> lista) {
+    public WResult uploadSottoPagina(final String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
         this.wikiTitle = wikiTitle;
+        this.nomeLista = attNazPrincipale;
+        this.nomeSottoPagina = attNazSottoPagina;
 
         if (uploadTest) {
             this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiTitle;
         }
 
         if (textService.isValid(this.wikiTitle) && lista != null) {
-            this.esegueUploadSotto(this.wikiTitle, nazionalita, attivita, lista);
+            this.esegueUploadSotto(this.wikiTitle, attNazPrincipale, attNazSottoPagina, lista);
+        }
+
+        return WResult.crea();
+    }
+
+
+    /**
+     * Esegue la scrittura della sottosottopagina <br>
+     */
+    public WResult uploadSottoSottoPagina(final String wikiTitle, String attNazPrincipale, String attNazSottoPagina, String keyParagrafo, List<WrapLista> lista) {
+        this.wikiTitle = wikiTitle;
+        this.nomeLista = attNazPrincipale;
+        this.nomeSottoPagina = attNazSottoPagina + SLASH + keyParagrafo;
+
+        if (uploadTest) {
+            this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiTitle;
+        }
+
+        if (textService.isValid(this.wikiTitle) && lista != null) {
+            this.esegueUploadSottoSotto(this.wikiTitle, attNazPrincipale, attNazSottoPagina, keyParagrafo, lista);
         }
 
         return WResult.crea();
@@ -139,7 +160,7 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         return registra(wikiTitle, buffer.toString().trim());
     }
 
-    protected WResult esegueUploadSotto(String wikiTitle, String nazionalita, String attivita, List<WrapLista> lista) {
+    protected WResult esegueUploadSotto(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = lista.size();
 
@@ -151,9 +172,35 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
         buffer.append(CAPO);
-        buffer.append(incipitSottoPagina(nazionalita, attivita,numVoci));
+        buffer.append(incipitSottoPagina(attNazPrincipale, attNazSottoPagina, numVoci));
         buffer.append(CAPO);
-        buffer.append(testoSottoPagina(lista));
+        buffer.append(testoSottoPagina(attNazPrincipale, attNazSottoPagina, lista));
+        buffer.append(note());
+        buffer.append(CAPO);
+        buffer.append(correlate());
+        buffer.append(CAPO);
+        buffer.append(portale());
+        buffer.append(categorie());
+
+        return registra(wikiTitle, buffer.toString().trim());
+    }
+
+
+    protected WResult esegueUploadSottoSotto(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, String keyParagrafo, List<WrapLista> lista) {
+        StringBuffer buffer = new StringBuffer();
+        int numVoci = lista.size();
+
+        buffer.append(avviso());
+        buffer.append(CAPO);
+        buffer.append(includeIni());
+        buffer.append(AETypeToc.noToc.get());
+        buffer.append(torna(wikiTitle));
+        buffer.append(tmpListaBio(numVoci));
+        buffer.append(includeEnd());
+        buffer.append(CAPO);
+        buffer.append(incipitSottoSottoPagina(attNazPrincipale, attNazSottoPagina, keyParagrafo, numVoci));
+        buffer.append(CAPO);
+        buffer.append(testoSottoSottoPagina(lista));
         buffer.append(note());
         buffer.append(CAPO);
         buffer.append(correlate());
@@ -203,14 +250,22 @@ public abstract class UploadAttivitaNazionalita extends Upload {
 
         return buffer.toString().trim();
     }
+
     public void uploadSottoPagine(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
     }
 
-    public String testoSottoPagina(List<WrapLista> listaWrap) {
+    public String testoSottoPagina(String attNazPrincipale, String attNazSottoPagina, List<WrapLista> listaWrap) {
         StringBuffer buffer = new StringBuffer();
+        attNazPrincipale = textService.primaMaiuscola(attNazPrincipale);
+        attNazSottoPagina = textService.primaMaiuscola(attNazSottoPagina);
         String paragrafo;
-        List<WrapLista> lista;
-        mappaWrap = new LinkedHashMap<>();
+        List<WrapLista> listaTmp;
+        List<WrapLista> listaSotto;
+        int numVoci;
+        String vedi;
+        String parente;
+        int max = WPref.sogliaSottoPagina.getInt();
+        LinkedHashMap<String, List<WrapLista>> mappaWrapSotto = new LinkedHashMap<>();
         int maxDiv = WPref.sogliaDiv.getInt();
         boolean usaDivBase = WPref.usaDivAttNaz.is();
         boolean usaDiv;
@@ -218,33 +273,67 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         for (WrapLista wrap : listaWrap) {
             paragrafo = wrap.titoloSottoParagrafo;
 
-            if (mappaWrap.containsKey(paragrafo)) {
-                lista = mappaWrap.get(paragrafo);
+            if (mappaWrapSotto.containsKey(paragrafo)) {
+                listaTmp = mappaWrapSotto.get(paragrafo);
             }
             else {
-                lista = new ArrayList();
+                listaTmp = new ArrayList();
             }
-            lista.add(wrap);
-            mappaWrap.put(paragrafo, lista);
+            listaTmp.add(wrap);
+            mappaWrapSotto.put(paragrafo, listaTmp);
         }
 
-        for (String key : mappaWrap.keySet()) {
-            buffer.append(wikiUtility.fixTitolo(key, mappaWrap.get(key).size()));
-            usaDiv = usaDivBase;
-            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
-            for (WrapLista wrap : mappaWrap.get(key)) {
-                buffer.append(ASTERISCO);
-                buffer.append(wrap.didascaliaBreve);
-                buffer.append(CAPO);
+        for (String keyParagrafoSotto : mappaWrapSotto.keySet()) {
+            listaSotto = mappaWrapSotto.get(keyParagrafoSotto);
+            numVoci = listaSotto.size();
+            buffer.append(wikiUtility.fixTitolo(keyParagrafoSotto, mappaWrapSotto.get(keyParagrafoSotto).size()));
+
+            if (numVoci > max && WPref.usaSottoSottoAttNaz.is()) {
+                parente = String.format("%s%s%s%s%s%s%s", titoloLinkVediAnche, SLASH, attNazPrincipale, SLASH, attNazSottoPagina, SLASH, keyParagrafoSotto);
+                vedi = String.format("{{Vedi anche|%s}}", parente);
+                buffer.append(vedi + CAPO);
+                uploadSottoSottoPagine(parente, attNazPrincipale, attNazSottoPagina, keyParagrafoSotto, listaSotto);
             }
-            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+            else {
+                usaDiv = usaDivBase;
+                buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+                for (WrapLista wrap : mappaWrapSotto.get(keyParagrafoSotto)) {
+                    buffer.append(ASTERISCO);
+                    buffer.append(wrap.didascaliaBreve);
+                    buffer.append(CAPO);
+                }
+                buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+            }
         }
 
         return buffer.toString().trim();
     }
 
+    public void uploadSottoSottoPagine(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, String keyParagrafo, List<WrapLista> lista) {
+    }
 
-    protected String incipitSottoPagina(String nazionalita, String attivita,int numVoci) {
+    public String testoSottoSottoPagina(List<WrapLista> listaWrap) {
+        StringBuffer buffer = new StringBuffer();
+        boolean usaDivBase = WPref.usaDivAttNaz.is();
+        boolean usaDiv;
+
+        usaDiv = usaDivBase;
+        buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+        for (WrapLista wrap : listaWrap) {
+            buffer.append(ASTERISCO);
+            buffer.append(wrap.didascaliaBreve);
+            buffer.append(CAPO);
+        }
+        buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+
+        return buffer.toString().trim();
+    }
+
+    protected String incipitSottoPagina(String attNazPrincipale, String attNazSottoPagina, int numVoci) {
+        return VUOTA;
+    }
+
+    protected String incipitSottoSottoPagina(String attNazPrincipale, String attNazSottoPagina, String keyParagrafo, int numVoci) {
         return VUOTA;
     }
 

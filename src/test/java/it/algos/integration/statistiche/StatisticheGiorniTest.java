@@ -77,7 +77,7 @@ public class StatisticheGiorniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-//    @Test
+    @Test
     @Order(2)
     @DisplayName("2 - Upload test")
     void uploadTest() {

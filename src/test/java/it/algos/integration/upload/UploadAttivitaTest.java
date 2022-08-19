@@ -89,7 +89,7 @@ public class UploadAttivitaTest extends WikiTest {
     }
 
 
-    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - Upload di una attività plurale")
     void upload3() {
@@ -98,7 +98,7 @@ public class UploadAttivitaTest extends WikiTest {
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
-    //        @Test
+            @Test
     @Order(4)
     @DisplayName("4- Upload test di una attività")
     void upload4() {
@@ -116,12 +116,21 @@ public class UploadAttivitaTest extends WikiTest {
     }
 
 
-    //    @Test
+//        @Test
     @Order(6)
     @DisplayName("6- Upload attività con poche voci")
     void upload6() {
         System.out.println("5 - Upload attività con poche voci");
         sorgente = "agricoltori";
+        appContext.getBean(UploadAttivita.class).test().upload(sorgente);
+    }
+
+//    @Test
+    @Order(7)
+    @DisplayName("7 - Upload di una attività plurale")
+    void upload7() {
+        System.out.println("3 - Upload di una attività plurale");
+        sorgente = "Allenatori di calcio";
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 

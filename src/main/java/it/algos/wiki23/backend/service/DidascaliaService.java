@@ -294,19 +294,23 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapGiornoNato(final Bio bio) {
         String paragrafo = wikiUtility.fixSecoloNato(bio);
-        String titoloParagrafoLink;
-        if (textService.isValid(paragrafo)) {
-            titoloParagrafoLink = textService.setDoppieQuadre(paragrafo);
-        }
-        else {
+        String paragrafoLink;
+
+        paragrafoLink = switch ((AETypeLink) WPref.linkGiorniAnni.getEnumCurrentObj()) {
+            case voce -> textService.setDoppieQuadre(paragrafo);
+            case nessuno -> paragrafo;
+            default -> paragrafo;
+        };
+
+        if (textService.isEmpty(paragrafo)) {
             paragrafo = TAG_LISTA_NO_ANNO;
-            titoloParagrafoLink = paragrafo;
+            paragrafoLink = paragrafo;
         }
 
         String sottoParagrafo = wikiUtility.linkAnnoNatoTesta(bio);
         String didascalia = this.didascaliaGiornoNato(bio);
 
-        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
+        return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
     }
 
 
@@ -322,19 +326,23 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapGiornoMorto(final Bio bio) {
         String paragrafo = wikiUtility.fixSecoloMorto(bio);
-        String titoloParagrafoLink;
-        if (textService.isValid(paragrafo)) {
-            titoloParagrafoLink = textService.setDoppieQuadre(paragrafo);
-        }
-        else {
+        String paragrafoLink;
+
+        paragrafoLink = switch ((AETypeLink) WPref.linkGiorniAnni.getEnumCurrentObj()) {
+            case voce -> textService.setDoppieQuadre(paragrafo);
+            case nessuno -> paragrafo;
+            default -> paragrafo;
+        };
+
+        if (textService.isEmpty(paragrafo)) {
             paragrafo = TAG_LISTA_NO_ANNO;
-            titoloParagrafoLink = paragrafo;
+            paragrafoLink = paragrafo;
         }
 
         String sottoParagrafo = wikiUtility.linkAnnoMortoTesta(bio);
         String didascalia = this.didascaliaGiornoMorto(bio);
 
-        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
+        return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
     }
 
     /**
@@ -349,19 +357,23 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapAnnoNato(final Bio bio) {
         String paragrafo = wikiUtility.fixMeseNato(bio);
-        String titoloParagrafoLink;
-        if (textService.isValid(paragrafo)) {
-            titoloParagrafoLink = textService.setDoppieQuadre(paragrafo);
-        }
-        else {
+        String paragrafoLink;
+
+        paragrafoLink = switch ((AETypeLink) WPref.linkGiorniAnni.getEnumCurrentObj()) {
+            case voce -> textService.setDoppieQuadre(paragrafo);
+            case nessuno -> paragrafo;
+            default -> paragrafo;
+        };
+
+        if (textService.isEmpty(paragrafo)) {
             paragrafo = TAG_LISTA_NO_GIORNO;
-            titoloParagrafoLink = paragrafo;
+            paragrafoLink = paragrafo;
         }
 
         String sottoParagrafo = wikiUtility.linkGiornoNatoTesta(bio);
         String didascalia = this.didascaliaAnnoNato(bio);
 
-        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
+        return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
     }
 
     /**
@@ -376,19 +388,23 @@ public class DidascaliaService extends WAbstractService {
      */
     public WrapLista getWrapAnnoMorto(final Bio bio) {
         String paragrafo = wikiUtility.fixMeseMorto(bio);
-        String titoloParagrafoLink;
-        if (textService.isValid(paragrafo)) {
-            titoloParagrafoLink = textService.setDoppieQuadre(paragrafo);
-        }
-        else {
+        String paragrafoLink;
+
+        paragrafoLink = switch ((AETypeLink) WPref.linkGiorniAnni.getEnumCurrentObj()) {
+            case voce -> textService.setDoppieQuadre(paragrafo);
+            case nessuno -> paragrafo;
+            default -> paragrafo;
+        };
+
+        if (textService.isEmpty(paragrafo)) {
             paragrafo = TAG_LISTA_NO_GIORNO;
-            titoloParagrafoLink = paragrafo;
+            paragrafoLink = paragrafo;
         }
 
         String sottoParagrafo = wikiUtility.linkGiornoMortoTesta(bio);
         String didascalia = this.didascaliaAnnoMorto(bio);
 
-        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
+        return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
     }
 
 
@@ -405,10 +421,6 @@ public class DidascaliaService extends WAbstractService {
     public WrapLista getWrapNazionalita(final Bio bio) {
         Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
         String paragrafo = attivita != null ? textService.primaMaiuscola(attivita.pluraleParagrafo) : TAG_LISTA_ALTRE;
-
-        if (bio.wikiTitle.startsWith("Abd")) {
-            int a=87;
-        }
 
         String titoloParagrafoLink;
         if (textService.isEmpty(paragrafo)) {
