@@ -305,9 +305,5 @@ public abstract class Upload {
             logger.warn(new WrapLog().exception(new AlgosException("durataUpload è nullo")));
             return;
         }
-
-        message = String.format("Check");
-        logger.info(new WrapLog().message(message).type(AETypeLog.upload).usaDb());
     }
-
 }

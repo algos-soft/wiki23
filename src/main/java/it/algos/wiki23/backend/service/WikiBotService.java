@@ -136,7 +136,7 @@ public class WikiBotService extends WAbstractService {
      * Vengono usati quelli che hanno miniWrap.lastModifica maggiore di bio.lastModifica <br>
      */
     protected Predicate<WrapTime> checkModificati = wrap -> {
-        LocalDateTime wrapTime = wrap.getLastModifica();
+        LocalDateTime serverTime = wrap.getLastModifica();
         long key = wrap.getPageid();
         Bio bio = null;
         try {
@@ -146,8 +146,8 @@ public class WikiBotService extends WAbstractService {
         }
         LocalDateTime mongoTime = bio != null ? bio.getLastMongo() : MONGO_TIME_ORIGIN;
 
-        boolean modificato = wrapTime.isAfter(mongoTime);
-        return wrapTime.isAfter(mongoTime);
+        boolean modificato = serverTime.isAfter(mongoTime);
+        return serverTime.isAfter(mongoTime);
     };
 
     //    /**

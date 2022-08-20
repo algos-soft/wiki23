@@ -6,6 +6,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
+import it.algos.wiki23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,9 +73,9 @@ public class DownloadServiceTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1 - ciclo download")
-    void ciclo() {
-        System.out.println("1 - ciclo download");
+    @DisplayName("1 - ciclo checkCategoria")
+    void checkCategoria() {
+        System.out.println("1 - ciclo checkCategoria");
 
         //--Controlla quante pagine ci sono nella categoria
         service.checkCategoria(CATEGORIA_UNO);
@@ -82,9 +83,9 @@ public class DownloadServiceTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - ciclo download")
-    void ciclo2() {
-        System.out.println("2 - ciclo download");
+    @DisplayName("2 - ciclo getListaPageIds")
+    void getListaPageIds() {
+        System.out.println("2 - ciclo getListaPageIds");
 
         //--Controlla quante pagine ci sono nella categoria
         service.checkCategoria(CATEGORIA_UNO);
@@ -104,10 +105,10 @@ public class DownloadServiceTest extends WikiTest {
 
     @Test
     @Order(3)
-    @DisplayName("3 - ciclo download")
-    void ciclo3() {
+    @DisplayName("3 - ciclo getListaMongoIds")
+    void getListaMongoIds() {
         List<Long> listaMongoIds;
-        System.out.println("3 - ciclo download");
+        System.out.println("3 - ciclo getListaMongoIds");
 
         //--Controlla quante pagine ci sono nella categoria
         service.checkCategoria(CATEGORIA_UNO);
@@ -117,11 +118,6 @@ public class DownloadServiceTest extends WikiTest {
 
         //--Crea la lista di tutti i (long) pageIds della category
         listaPageIds = service.getListaPageIds(CATEGORIA_UNO);
-        System.out.println(VUOTA);
-        System.out.println(String.format("Lista dei %d long della categoria", listaPageIds.size()));
-        for (long lungo : listaPageIds) {
-            System.out.println(lungo);
-        }
 
         //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
         listaMongoIds = getLista(ANNO_UNO);
@@ -135,11 +131,11 @@ public class DownloadServiceTest extends WikiTest {
 
     @Test
     @Order(4)
-    @DisplayName("4 - ciclo download")
-    void ciclo4() {
+    @DisplayName("4 - ciclo listaMongoIdsDaCancellare")
+    void listaMongoIdsDaCancellare() {
         List<Long> listaMongoIds;
         List<Long> listaMongoIdsDaCancellare;
-        System.out.println("4 - ciclo download");
+        System.out.println("4 - ciclo listaMongoIdsDaCancellare");
 
         //--Controlla quante pagine ci sono nella categoria
         service.checkCategoria(CATEGORIA_UNO);
@@ -149,19 +145,9 @@ public class DownloadServiceTest extends WikiTest {
 
         //--Crea la lista di tutti i (long) pageIds della category
         listaPageIds = service.getListaPageIds(CATEGORIA_UNO);
-        System.out.println(VUOTA);
-        System.out.println(String.format("Lista dei %d long della categoria", listaPageIds.size()));
-        for (long lungo : listaPageIds) {
-            System.out.println(lungo);
-        }
 
         //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
         listaMongoIds = getLista(ANNO_UNO);
-        System.out.println(VUOTA);
-        System.out.println(String.format("Lista dei %d long di mongo, ordinati diversamente", listaMongoIds.size()));
-        for (long lungo : listaMongoIds) {
-            System.out.println(lungo);
-        }
 
         //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
         listaMongoIdsDaCancellare = service.deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
@@ -172,6 +158,193 @@ public class DownloadServiceTest extends WikiTest {
         }
     }
 
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - ciclo listaPageIdsDaCreare")
+    void listaPageIdsDaCreare() {
+        List<Long> listaMongoIds;
+        List<Long> listaMongoIdsDaCancellare;
+        List<Long> listaPageIdsDaCreare;
+        System.out.println("5 - ciclo listaPageIdsDaCreare");
+
+        //--Controlla quante pagine ci sono nella categoria
+        service.checkCategoria(CATEGORIA_UNO);
+
+        //--Controlla il collegamento come bot
+        //--Saltato perché la categoria è piccola
+
+        //--Crea la lista di tutti i (long) pageIds della category
+        listaPageIds = service.getListaPageIds(CATEGORIA_UNO);
+
+        //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
+        listaMongoIds = getLista(ANNO_UNO);
+
+        //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
+        listaMongoIdsDaCancellare = service.deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
+
+        //--Cancella dal database (mongo) locale le entities non più presenti nella category <br>
+        //--Saltato
+
+        //--Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare
+        listaPageIdsDaCreare = service.deltaPageIds(listaPageIds, listaMongoIds, "listaPageIdsDaCreare");
+        System.out.println(VUOTA);
+        System.out.println(String.format("Lista dei %d long mancanti da creare", listaPageIdsDaCreare.size()));
+        for (long lungo : listaPageIdsDaCreare) {
+            System.out.println(lungo);
+        }
+    }
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - ciclo getListaWrapTime")
+    void getListaWrapTime() {
+        List<Long> listaMongoIds;
+        List<Long> listaMongoIdsDaCancellare;
+        List<Long> listaPageIdsDaCreare;
+        List<WrapTime> listaWrapTime;
+        System.out.println("6 - ciclo getListaWrapTime");
+
+        //--Controlla quante pagine ci sono nella categoria
+        service.checkCategoria(CATEGORIA_UNO);
+
+        //--Controlla il collegamento come bot
+        //--Saltato perché la categoria è piccola
+
+        //--Crea la lista di tutti i (long) pageIds della category
+        listaPageIds = service.getListaPageIds(CATEGORIA_UNO);
+
+        //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
+        listaMongoIds = getLista(ANNO_UNO);
+
+        //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
+        listaMongoIdsDaCancellare = service.deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
+
+        //--Cancella dal database (mongo) locale le entities non più presenti nella category <br>
+        //--Saltato
+
+        //--Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare
+        listaPageIdsDaCreare = service.deltaPageIds(listaPageIds, listaMongoIds, "listaPageIdsDaCreare");
+
+        //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
+        //--Saltato
+
+        //--Usa la lista di pageIds della categoria e recupera una lista (stessa lunghezza) di wrapTimes con l'ultima modifica sul server
+        listaWrapTime = service.getListaWrapTime(listaPageIds);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Lista dei %d wrapTimes col timestamp del server da controllare", listaWrapTime.size()));
+        for (WrapTime wrap : listaWrapTime) {
+            System.out.print(wrap.getPageid());
+            System.out.print(SEP);
+            System.out.print(wrap.getWikiTitle());
+            System.out.print(SEP);
+            System.out.println(wrap.getLastModifica());
+        }
+    }
+
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - ciclo elaboraListaWrapTime")
+    void elaboraListaWrapTime() {
+        List<Long> listaMongoIds;
+        List<Long> listaMongoIdsDaCancellare;
+        List<Long> listaPageIdsDaCreare;
+        List<WrapTime> listaWrapTime;
+        List<Long> listaPageIdsDaLeggere;
+        System.out.println("7 - ciclo elaboraListaWrapTime");
+
+        //--Controlla quante pagine ci sono nella categoria
+        service.checkCategoria(CATEGORIA_UNO);
+
+        //--Controlla il collegamento come bot
+        //--Saltato perché la categoria è piccola
+
+        //--Crea la lista di tutti i (long) pageIds della category
+        listaPageIds = service.getListaPageIds(CATEGORIA_UNO);
+
+        //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
+        listaMongoIds = getLista(ANNO_UNO);
+
+        //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
+        listaMongoIdsDaCancellare = service.deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
+
+        //--Cancella dal database (mongo) locale le entities non più presenti nella category <br>
+        //--Saltato
+
+        //--Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare
+        listaPageIdsDaCreare = service.deltaPageIds(listaPageIds, listaMongoIds, "listaPageIdsDaCreare");
+
+        //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
+        //--Saltato
+
+        //--Usa la lista di pageIds della categoria e recupera una lista (stessa lunghezza) di wrapTimes con l'ultima modifica sul server
+        listaWrapTime = service.getListaWrapTime(listaPageIds);
+
+        //--Elabora la lista di wrapTimes e costruisce una lista di pageIds da leggere
+        listaPageIdsDaLeggere = wikiBotService.elaboraWrapTime(listaWrapTime);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Lista dei %d long modificati da leggere", listaPageIdsDaLeggere.size()));
+        for (long lungo : listaPageIdsDaLeggere) {
+            System.out.println(lungo);
+        }
+    }
+
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - ciclo getListaWrapBio")
+    void getListaWrapBio() {
+        List<Long> listaMongoIds;
+        List<Long> listaMongoIdsDaCancellare;
+        List<Long> listaPageIdsDaCreare;
+        List<WrapTime> listaWrapTime;
+        List<Long> listaPageIdsDaLeggere;
+        List<WrapBio> listaWrapBio;
+        System.out.println("8 - ciclo getListaWrapBio");
+
+        //--Controlla quante pagine ci sono nella categoria
+        service.checkCategoria(CATEGORIA_UNO);
+
+        //--Controlla il collegamento come bot
+        //--Saltato perché la categoria è piccola
+
+        //--Crea la lista di tutti i (long) pageIds della category
+        listaPageIds = service.getListaPageIds(CATEGORIA_UNO);
+
+        //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
+        listaMongoIds = getLista(ANNO_UNO);
+
+        //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
+        listaMongoIdsDaCancellare = service.deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
+
+        //--Cancella dal database (mongo) locale le entities non più presenti nella category <br>
+        //--Saltato
+
+        //--Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare
+        listaPageIdsDaCreare = service.deltaPageIds(listaPageIds, listaMongoIds, "listaPageIdsDaCreare");
+
+        //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
+        //--Saltato
+
+        //--Usa la lista di pageIds della categoria e recupera una lista (stessa lunghezza) di wrapTimes con l'ultima modifica sul server
+        listaWrapTime = service.getListaWrapTime(listaPageIds);
+
+        //--Elabora la lista di wrapTimes e costruisce una lista di pageIds da leggere
+        listaPageIdsDaLeggere = wikiBotService.elaboraWrapTime(listaWrapTime);
+
+        //--Legge tutte le pagine
+        listaWrapBio = service.getListaWrapBio(listaPageIdsDaLeggere);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Lista dei %d long modificati da leggere", listaWrapBio.size()));
+        System.out.println("pageId, wikiTitle, server, mongo");
+        for (WrapBio wrapBio : listaWrapBio) {
+            System.out.print(wrapBio.getPageid());
+            System.out.print(SEP);
+            System.out.println(wrapBio.getTitle());
+        }
+    }
 
     List<Long> getLista(String anno) {
         List<Long> listaMongoIds = new ArrayList<>();

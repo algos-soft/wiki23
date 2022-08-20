@@ -84,7 +84,7 @@ public class DownloadService extends WAbstractService {
         //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
         creaNewEntities(listaPageIdsDaCreare);
 
-        //--Usa la lista di pageIds e recupera una lista (stessa lunghezza) di wrapTimes
+        //--Usa la lista di pageIds della categoria e recupera una lista (stessa lunghezza) di wrapTimes con l'ultima modifica sul server
         listaWrapTime = getListaWrapTime(listaPageIds);
 
         //--Elabora la lista di wrapTimes e costruisce una lista di pageIds da leggere
@@ -406,7 +406,7 @@ public class DownloadService extends WAbstractService {
      *
      * @param listaPageIds di tutti i (long) pageIds
      *
-     * @return lista di tutti i miniWraps
+     * @return lista di tutti i WrapTime con l'ultima modifica sul server
      */
     public List<WrapTime> getListaWrapTime(final List<Long> listaPageIds) {
         long inizio = System.currentTimeMillis();
