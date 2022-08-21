@@ -201,10 +201,8 @@ public enum ParBio {
     annoMorte("AnnoMorte", "AnnoMorto", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-            if (textService.isValid(value)) {
-                bio.annoMorto = elaboraService.fixAnno(value);
-                bio.annoMortoOrd = value.equals(VUOTA) ? 0 : elaboraService.fixAnnoOrd(value);
-            }
+            bio.annoMorto = value.equals(VUOTA) ? null : elaboraService.fixAnno(value);
+            bio.annoMortoOrd = value.equals(VUOTA) ? 0 : elaboraService.fixAnnoOrd(value);
         }
 
         @Override
