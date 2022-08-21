@@ -55,8 +55,9 @@ public class ListaAnniTest extends WikiTest {
                 Arguments.of("1318", AETypeLista.annoNascita),
                 Arguments.of("245 a.C.", AETypeLista.annoMorte),
                 Arguments.of("4 a.C.", AETypeLista.annoNascita),
-                Arguments.of("12", AETypeLista.annoMorte)
-        );
+                Arguments.of("12", AETypeLista.annoMorte),
+                Arguments.of("2022", AETypeLista.annoMorte)
+                );
     }
 
 

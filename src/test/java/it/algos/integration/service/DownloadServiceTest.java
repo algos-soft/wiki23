@@ -44,8 +44,8 @@ public class DownloadServiceTest extends WikiTest {
 
     private final static String ANNO_UNO = "1337";
 
-    private final static String CATEGORIA_UNO = "Nati nel" + SPAZIO + ANNO_UNO;
-
+//    private final static String CATEGORIA_UNO = "Nati nel" + SPAZIO + ANNO_UNO;
+    private final static String CATEGORIA_UNO="Premi Oscar nel 1981";
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>

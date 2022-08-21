@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.boot;
 
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
@@ -54,6 +55,8 @@ public class Wiki23Cost {
     public static final String TAG_LISTA_NO_GIORNO = "Senza giorno specificato";
 
     public static final String TAG_LISTA_NO_ANNO = "Senza anno specificato";
+
+    public static final String STATISTICHE = "Statistiche";
 
 
     public static final String PATH_WIKI = "https://it.wikipedia.org/wiki/";
@@ -119,6 +122,8 @@ public class Wiki23Cost {
     public static final String PATH_GIORNI = PATH_PROGETTO + GIORNI;
 
     public static final String PATH_ANNI = PATH_PROGETTO + ANNI;
+
+    public static final String PATH_STATISTICHE = PATH_PROGETTO + STATISTICHE;
 
     public static final String ATT_LOWER = ATT.toLowerCase();
 
@@ -278,5 +283,36 @@ public class Wiki23Cost {
 
     public static final String NAZIONALITA_CONVENZIONALI = String.format("Le nazionalità sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla " +
             "comunità ed [[Modulo:Bio/Plurale nazionalità|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]");
+
+
+    public static final String INFO_DIDASCALIE = "Le didascalie delle voci sono quelle previste nel [[Progetto:Biografie/Didascalie|progetto biografie]]";
+
+    public static final String INFO_ORDINE = "Le voci, all'interno di ogni paragrafo, sono in ordine alfabetico per '''forzaOrdinamento''' oppure per '''cognome''' oppure per '''titolo''' della pagina su wikipedia.";
+
+    public static final String INFO_LISTA = "La lista non è esaustiva e contiene '''solo''' le persone che sono citate nell'enciclopedia e per le quali è stato implementato correttamente il '''[[template:Bio|template Bio]]'''";
+
+
+    public static final String INFO_ATTIVITA_PREVISTE = "Le '''attività''' sono quelle [[Discussioni progetto:Biografie/Attività|'''convenzionalmente''' previste]] dalla comunità ed [[Modulo:Bio/Plurale attività|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
+
+    public static final String INFO_NAZIONALITA_PREVISTE = "Le '''nazionalità''' sono quelle [[Discussioni progetto:Biografie/Nazionalità|'''convenzionalmente''' previste]] dalla comunità ed [[Modulo:Bio/Plurale nazionalità|inserite nell' '''elenco''']] utilizzato dal [[template:Bio|template Bio]]";
+
+    public static final String INFO_PERSONA_ATTIVITA = "Ogni persona è presente in una sola [[Discussioni progetto:Biografie/Attività|lista]], in base a quanto riportato nel parametro ''attività'' utilizzato dal [[template:Bio|template Bio]]";
+
+    public static final String INFO_PERSONA_NAZIONALITA = "Ogni persona è presente in una sola [[Discussioni progetto:Biografie/Nazionalità|lista]], in base a quanto riportato nel parametro ''nazionalità'' utilizzato dal [[template:Bio|template Bio]]";
+
+    public static final String INFO_ALTRE_ATTIVITA = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
+            "parametro ''attività'' oppure che usano una attività di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
+
+    public static final String INFO_ALTRE_NAZIONALITA = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
+            "parametro ''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
+
+    //    protected static final String INFO_SOTTOPAGINA_DI_ATTIVITA = "La sottopagina (attività/nazionalità) viene creata solo se il numero di voci biografiche del singolo paragrafo per ''nazionalità'' supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità.";
+    public static final String INFO_SOTTOPAGINA_DI_ATTIVITA = "Questa sottopagina ''(%s/%s)'' viene creata perché ci sono %d voci biografiche nel paragrafo ''%s'' dell'attività ''%s''";
+
+    public static final String INFO_SOTTOPAGINA_DI_NAZIONALITA = "Questa sottopagina ''(%s/%s)'' viene creata perché ci sono %d voci biografiche nel paragrafo ''%s'' della nazionalità ''%s''";
+
+    public static final String UPLOAD_TITLE_DEBUG = "Utente:Biobot/";
+
+    public static final String UPLOAD_TITLE_PROJECT = "Progetto:Biografie/";
 
 }
