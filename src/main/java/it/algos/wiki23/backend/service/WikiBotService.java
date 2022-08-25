@@ -1,8 +1,6 @@
 package it.algos.wiki23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
@@ -857,10 +855,21 @@ public class WikiBotService extends WAbstractService {
         valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
         valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
         if (valoreGrezzo.endsWith("ca.")) {
-            valoreGrezzo = textService.levaCodaDa(valoreGrezzo, "ca.");
+            valoreGrezzo = textService.levaCodaDaUltimo(valoreGrezzo, "ca.");
         }
-        valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
 
+        //--solo date singole
+        if (valoreGrezzo.contains(SLASH)) {
+            return VUOTA;
+        }
+        if (valoreGrezzo.contains(" o ")) {
+            return VUOTA;
+        }
+        if (valoreGrezzo.contains(" oppure ")) {
+            return VUOTA;
+        }
+
+        valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
         return valoreGrezzo.trim();
     }
     //

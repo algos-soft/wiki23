@@ -138,10 +138,30 @@ public class UploadAnniTest extends WikiTest {
 
     //    @ParameterizedTest
     @MethodSource(value = "ANNI")
-    @DisplayName("6 - Upload vari")
+    @DisplayName("7 - Upload vari")
     void uploadVari(String nomeAnno, final AETypeLista type) {
         sorgente = nomeAnno;
         appContext.getBean(UploadAnni.class).morte().upload(sorgente);
+    }
+
+
+    //    @Test
+    @Order(8)
+    @DisplayName("8 - Upload test di un anno anno morto con paragrafi")
+    void uploadTestMorto() {
+        System.out.println("8 - Upload test di un anno anno morto con paragrafi");
+        sorgente = "1168";
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).conParagrafi().morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+    }
+        @Test
+    @Order(8)
+    @DisplayName("8 - Upload test di un anno anno morto con paragrafi")
+    void uploadTestMorto2() {
+        System.out.println("8 - Upload test di un anno anno morto con paragrafi");
+        sorgente = "130 a.C.";
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).conParagrafi().morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
     }
 
     /**

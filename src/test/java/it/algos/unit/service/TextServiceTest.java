@@ -571,7 +571,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare questa fine Non ";
         sorgente2 = VUOTA;
         previsto = " Levare questa fine Non ";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaUltimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -581,7 +581,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare questa fine Non ancora altro testo ";
         sorgente2 = "Non";
         previsto = " Levare questa fine";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaUltimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -591,7 +591,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare questa fine Non ancora altro testo ";
         sorgente2 = "non";
         previsto = " Levare questa fine Non ancora altro testo ";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaUltimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -601,7 +601,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare <re>questa<ref> fine Non ancora altro testo</ref>";
         sorgente2 = "<ref";
         previsto = " Levare <re>questa";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaUltimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -611,7 +611,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare questa<ref> fine Non ancora altro testo</ref>";
         sorgente2 = "<ref ";
         previsto = " Levare questa<ref> fine Non ancora altro testo</ref>";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaUltimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));

@@ -3,8 +3,6 @@ package it.algos.wiki23.backend.service;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.vaad23.backend.boot.VaadCost.NOTE;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -13,7 +11,6 @@ import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -144,7 +141,7 @@ public class ElaboraService extends WAbstractService {
             testoGrezzo = textService.levaTesta(testoGrezzo, DEFAULT_SORT);
         }
         if (testoGrezzo.endsWith(DOPPIE_GRAFFE_END)) {
-            testoGrezzo = textService.levaCodaDa(testoGrezzo, DOPPIE_GRAFFE_END);
+            testoGrezzo = textService.levaCodaDaUltimo(testoGrezzo, DOPPIE_GRAFFE_END);
         }
 
         return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
@@ -557,7 +554,7 @@ public class ElaboraService extends WAbstractService {
      *
      * @return testo/parametro regolato in uscita
      */
-    public String nazionalitaValida(String genere, String testoGrezzo) {
+    public String nazionalitaValida(Bio bio, String testoGrezzo) {
         String nazionalitaTxt = VUOTA;
         String testoValido = fixNazionalita(testoGrezzo);
         Nazionalita nazionalita = null;
@@ -565,6 +562,7 @@ public class ElaboraService extends WAbstractService {
         String tagFinale = VUOTA;
         String tagMaschile = "o";
         String tagFemminile = "a";
+        String genere = bio.sesso;
         boolean maschile = genere.equals("M");
         int numSingolari;
         boolean doppioGenere = false;
@@ -592,7 +590,7 @@ public class ElaboraService extends WAbstractService {
 
             nazionalita2 = nazionalitaBackend.findFirstBySingolare(nazionalitaTxt);
             if (nazionalita2 != null) {
-                logger.info(new WrapLog().message(String.format("Modificato il genere di %s in %s (che esiste)", testoGrezzo, nazionalitaTxt)));
+                logger.info(new WrapLog().message(String.format("Nella bio %s modificato il genere di %s in %s (che esiste)", bio.wikiTitle, testoGrezzo, nazionalitaTxt)).usaDb());
             }
             else {
                 logger.info(new WrapLog().message(String.format("NON modificato il genere di %s (non esiste %s)", testoGrezzo, nazionalitaTxt)));

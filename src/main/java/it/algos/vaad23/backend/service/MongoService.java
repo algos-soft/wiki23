@@ -275,7 +275,7 @@ public class MongoService<capture> extends AbstractService {
      * @return true if the collection exist
      */
     public boolean isExistsCollection(final Class<? extends AEntity> entityClazz) {
-        return entityClazz == null ? false : isExistsCollection(entityClazz.getSimpleName().toLowerCase());
+        return entityClazz == null ? false : isExistsCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
     }
 
 

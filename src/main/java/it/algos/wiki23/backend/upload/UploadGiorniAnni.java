@@ -174,24 +174,25 @@ public abstract class UploadGiorniAnni extends Upload {
         String testo;
         int numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
         boolean righeRaggruppate;
+        testo = conParagrafi(mappa);
 
-        if (usaParagrafi && numVoci > MAX_NUM_VOCI) {
-            testo = conParagrafi(mappa);
-        }
-        else {
-            righeRaggruppate = switch (typeCrono) {
-                case giornoNascita, giornoMorte -> WPref.usaRigheGiorni.is();
-                case annoNascita, annoMorte -> WPref.usaRigheAnni.is();
-                default -> false;
-            };
-
-            if (righeRaggruppate) {
-                testo = senzaParagrafiMaRaggruppate(mappa);
-            }
-            else {
-                testo = senzaParagrafi(mappa);
-            }
-        }
+//        if (usaParagrafi && numVoci > MAX_NUM_VOCI) {
+//            testo = conParagrafi(mappa);
+//        }
+//        else {
+//            righeRaggruppate = switch (typeCrono) {
+//                case giornoNascita, giornoMorte -> WPref.usaRigheGiorni.is();
+//                case annoNascita, annoMorte -> WPref.usaRigheAnni.is();
+//                default -> false;
+//            };
+//
+//            if (righeRaggruppate) {
+//                testo = senzaParagrafiMaRaggruppate(mappa);
+//            }
+//            else {
+//                testo = senzaParagrafi(mappa);
+//            }
+//        }
 
         return testo;
     }

@@ -15,6 +15,8 @@ import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.boot.test.context.*;
 
+import java.util.stream.*;
+
 /**
  * Project vaadwiki
  * Created by Algos
@@ -44,6 +46,16 @@ public class DidascaliaServiceTest extends WikiTest {
     @InjectMocks
     public DidascaliaService service;
 
+    //--titolo
+    protected static Stream<Arguments> PAGINE() {
+        return Stream.of(
+                Arguments.of("Jacques de Molay"),
+                Arguments.of("Roberto il Forte"),
+                Arguments.of("Agnese di Borgogna"),
+                Arguments.of("Rinaldo II di Bar")
+        );
+    }
+
     private String wikiTitleDue = "Sonia Todd";
 
 
@@ -71,59 +83,8 @@ public class DidascaliaServiceTest extends WikiTest {
         super.setUpEach();
     }
 
-    //    private Giorno creaGiorno(String giornoText) {
-    //        Giorno giorno = null;
-    //        giorno = new Giorno();
-    //        //        giorno.titolo = giornoText;
-    //        return giorno;
-    //    }// end of method
 
-    //    private Anno creaAnno(int annoInt) {
-    //        Anno anno = null;
-    //        anno = new Anno();
-    //        anno.titolo = "" + annoInt;
-    //        return anno;
-    //    }// end of method
-
-    //    private Attivita creaAttivita(String attivitaText) {
-    //        Attivita attivita = null;
-    //        attivita = new Attivita();
-    //        attivita.singolare = attivitaText;
-    //        return attivita;
-    //    }// end of method
-
-    //    private Nazionalita creaNazionalita(String nazionalitaText) {
-    //        Nazionalita nazionalita = null;
-    //        nazionalita = new Nazionalita();
-    //        nazionalita.singolare = nazionalitaText;
-    //        return nazionalita;
-    //    }// end of method
-
-
-    private Bio creaBio() {
-        Bio entity = null;
-        //        Giorno giorno = null;
-        //        Anno anno = creaAnno(1963);
-        //        Attivita attivita = creaAttivita("attrice");
-        //        Nazionalita nazionalita = creaNazionalita("australiana");
-        //
-        //        entity = new Bio();
-        //        entity.pageid = 29999;
-        //        entity.wikiTitle = wikiTitle;
-        //        entity.nome = "Sonia";
-        //        entity.cognome = "Todd";
-        //        entity.sesso = "F";
-        //        entity.luogoNato = "Adelaide";
-        //        entity.luogoNatoLink = "Adelaide (Australia)";
-        //        entity.giornoNascita = giorno;
-        //        entity.annoNascita = anno;
-        //        entity.attivita = attivita;
-        //        entity.nazionalita = nazionalita;
-
-        return entity;
-    }
-
-    @Test
+    //    @Test
     @Order(1)
     @DisplayName("1 - Nome e cognome semplice")
     void getNomeCognome() {
@@ -137,22 +98,9 @@ public class DidascaliaServiceTest extends WikiTest {
         assertTrue(textService.isValid(ottenuto));
         assertEquals(previsto, ottenuto);
         printDidascalia(sorgente, sorgente2, sorgente3, ottenuto);
-
-        //        wrap = queryBio.urlRequest(sorgente).getWrap();
-        //        assertNotNull(wrap);
-        //        assertTrue(wrap.isValido());
-        //        bio = bioService.newEntity(wrap);
-        //        bio = elaboraService.esegue(bio);
-        //        ottenuto = service.getNomeCognome(bio);
-        //        assertTrue(textService.isValid(ottenuto));
-        //        assertEquals(previsto, ottenuto);
-        //        System.out.println(VUOTA);
-        //        System.out.println(VUOTA);
-        //        System.out.println("Lo stesso passando da WrapBio e Bio");
-        //        print(bio, ottenuto);
     }
 
-    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - Nome doppio e cognome semplice")
     void getNomeCognome2() {
@@ -170,7 +118,7 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - Nome doppio e cognome semplice")
     void getNomeCognome3() {
@@ -187,7 +135,7 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-    @Test
+    //    @Test
     @Order(4)
     @DisplayName("4 - Titolo disambiguato")
     void getNomeCognome4() {
@@ -204,7 +152,7 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-//        @ParameterizedTest
+    //        @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(5)
     @DisplayName("5 - Didascalie varie con simboli specifici nato e morto")
@@ -267,7 +215,7 @@ public class DidascaliaServiceTest extends WikiTest {
         }
     }
 
-    @Test
+    //    @Test
     @Order(6)
     @DisplayName("6 - Didascalie lista con varianti di linkCrono")
     void linkCrono() {
@@ -309,7 +257,7 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-        @ParameterizedTest
+    //        @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(7)
     @DisplayName("7 - Didascalie pagine 'Nati nel xxx(anno)'")
@@ -377,18 +325,55 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "PAGINE_BIO")
     @Order(10)
     @DisplayName("10 - Didascalie varie senza assertEquals")
-        //--titolo
-        //--pagina valida
-    void didascalieVarie(final String wikiTitle, final boolean paginaValida) {
+    //--titolo
+    //--pagina valida
+    void didascalieVarie2(final String wikiTitle, final boolean paginaValida) {
         System.out.println("10 - Didascalie varie senza assertEquals");
         String tmpl;
         if (!paginaValida) {
             return;
         }
+
+        sorgente = wikiTitle;
+        bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
+        assertNotNull(bio);
+        tmpl = bio.getTmplBio();
+        tmpl = tmpl.replaceAll(CAPO, SPAZIO);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Biografia: %s", sorgente));
+        System.out.println(String.format("TmplBio: %s", tmpl.substring(0, 140)));
+        System.out.println(String.format("%s", tmpl.substring(140, 280)));
+        System.out.println(String.format("%s", tmpl.substring(280, Math.min(420, tmpl.length()))));
+
+        System.out.println(VUOTA);
+        ottenuto = service.didascaliaGiornoNato(bio);
+        System.out.println(String.format("giornoNato (%s): %s", bio.giornoNato, ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.didascaliaGiornoMorto(bio);
+        System.out.println(String.format("giornoMorto (%s): %s", bio.giornoMorto, ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.didascaliaAnnoNato(bio);
+        System.out.println(String.format("annoNato (%s): %s", bio.annoNato, ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.didascaliaAnnoMorto(bio);
+        System.out.println(String.format("annoMorto (%s): %s", bio.annoMorto, ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.lista(bio);
+        System.out.println(String.format("lista: %s", ottenuto));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "PAGINE")
+    @Order(11)
+    @DisplayName("11 - Didascalie parziali")
+        //--titolo
+    void didascalieVarie(final String wikiTitle) {
+        System.out.println("11 - Didascalie parziali");
+        String tmpl;
 
         sorgente = wikiTitle;
         bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
@@ -448,23 +433,21 @@ public class DidascaliaServiceTest extends WikiTest {
         System.out.println(VUOTA);
         ottenuto = service.luogoNatoMorto(bio);
         System.out.println(String.format("crono: %s", ottenuto));
-        System.out.println(VUOTA);
-        ottenuto = service.lista(bio);
-        System.out.println(String.format("lista: %s", ottenuto));
     }
 
+
     @ParameterizedTest
-    @MethodSource(value = "PAGINE_BIO")
-    @Order(11)
-    @DisplayName("11 - Didascalie varie senza assertEquals")
+    @MethodSource(value = "PAGINE")
+    @Order(12)
+    @DisplayName("12 - Didascalie complete")
         //--titolo
-        //--pagina valida
-    void didascalieVarie2(final String wikiTitle, final boolean paginaValida) {
-        System.out.println("11 - Didascalie varie senza assertEquals");
+    void didascalieComplete(final String wikiTitle) {
+        System.out.println("12 - Didascalie complete");
         String tmpl;
-        if (!paginaValida) {
-            return;
-        }
+        String message;
+        String nullo = "(null)";
+        String manca = "--------------------";
+        boolean esisteLista;
 
         sorgente = wikiTitle;
         bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
@@ -479,118 +462,75 @@ public class DidascaliaServiceTest extends WikiTest {
 
         System.out.println(VUOTA);
         ottenuto = service.didascaliaGiornoNato(bio);
-        System.out.println(String.format("giornoNato (%s): %s", bio.giornoNato, ottenuto));
+        message = bio.giornoNato;
+        esisteLista = textService.isValid(message);
+        message = esisteLista ? message : nullo;
+        System.out.println(String.format("didascaliaGiornoNato: %s", message));
+        if (esisteLista) {
+            System.out.println(String.format("%s", ottenuto));
+        }
+        else {
+            System.out.println(String.format("%s", manca));
+        }
+
         System.out.println(VUOTA);
         ottenuto = service.didascaliaGiornoMorto(bio);
-        System.out.println(String.format("giornoMorto (%s): %s", bio.giornoMorto, ottenuto));
+        message = bio.giornoMorto;
+        esisteLista = textService.isValid(message);
+        message = esisteLista ? message : nullo;
+        System.out.println(String.format("didascaliaGiornoMorto: %s", message));
+        if (esisteLista) {
+            System.out.println(String.format("%s", ottenuto));
+        }
+        else {
+            System.out.println(String.format("%s", manca));
+        }
+
         System.out.println(VUOTA);
         ottenuto = service.didascaliaAnnoNato(bio);
-        System.out.println(String.format("annoNato (%s): %s", bio.annoNato, ottenuto));
+        message = bio.annoNato;
+        esisteLista = textService.isValid(message);
+        message = esisteLista ? message : nullo;
+        System.out.println(String.format("didascaliaAnnoNato: %s", message));
+        if (esisteLista) {
+            System.out.println(String.format("%s", ottenuto));
+        }
+        else {
+            System.out.println(String.format("%s", manca));
+        }
+
         System.out.println(VUOTA);
         ottenuto = service.didascaliaAnnoMorto(bio);
-        System.out.println(String.format("annoMorto (%s): %s", bio.annoMorto, ottenuto));
+        message = bio.annoMorto;
+        esisteLista = textService.isValid(message);
+        message = esisteLista ? message : nullo;
+        System.out.println(String.format("didascaliaAnnoMorto: %s", message));
+        if (esisteLista) {
+            System.out.println(String.format("%s", ottenuto));
+        }
+        else {
+            System.out.println(String.format("%s", manca));
+        }
+
         System.out.println(VUOTA);
         ottenuto = service.lista(bio);
-        System.out.println(String.format("lista: %s", ottenuto));
+        System.out.println(String.format("didascalia attività: %s", bio.attivita));
+        System.out.println(String.format("%s", ottenuto));
 
-        //        ottenuto = service.getDidascaliaGiornoNato(bio);
-        //        ottenuto2 = service.getWrapGiornoNato(bio).didascaliaBreve;
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Giorno nato: %s", ottenuto));
-        //
-        //        ottenuto = service.getDidascaliaGiornoMorto(bio);
-        //        ottenuto2 = service.getWrapGiornoMorto(bio).didascaliaBreve;
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Giorno morto: %s", ottenuto));
-        //
-        //        ottenuto = service.getDidascaliaAnnoNato(bio);
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Anno nato: %s", ottenuto));
-        //
-        //        ottenuto = service.getDidascaliaAnnoMorto(bio);
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Anno morto: %s", ottenuto));
-        //
-        //        ottenuto = service.getDidascaliaLista(bio);
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Lista: %s", ottenuto));
+        System.out.println(VUOTA);
+        ottenuto = service.lista(bio);
+        System.out.println(String.format("didascalia nazionalità: %s", bio.nazionalita));
+        System.out.println(String.format("%s", ottenuto));
     }
 
 
-    @Test
+    //    @Test
     @Order(12)
     @DisplayName("12 - Didascalie varie con assertEquals")
     void didascalieVarie2() {
         previsto = "[[Roman Protasevič]], attivista e giornalista bielorusso";
     }
 
-    //    @Test
-    public void download() {
-        System.out.println("*************");
-        System.out.println("Tipi possibili di didascalie per " + "Matteo Renzi");
-        System.out.println("Senza chiave");
-        System.out.println("*************");
-        //        for (EADidascalia dida : EADidascalia.values()) {
-        //            ottenuto = didascalia.esegue(bio, dida, false);
-        //            System.out.println(dida.name() + ": " + ottenuto);
-        //        }// end of for cycle
-        System.out.println("*************");
-        System.out.println("Con chiave");
-        System.out.println("*************");
-        //        for (EADidascalia dida : EADidascalia.values()) {
-        //            //            ottenuto = didascalia.esegue(bio, dida);
-        //            System.out.println(dida.name() + ": " + ottenuto);
-        //        }// end of for cycle
-        System.out.println("*************");
-
-    }// end of single test
-
-
-    /**
-     * Test con uscita sul terminale di Idea
-     */
-    //    @Test
-    public void esegueTestDidascalie() {
-        System.out.println("");
-        System.out.println("Algos");
-        System.out.println("");
-        System.out.println("Tipi possibili di discalie");
-        System.out.println("Esempio '" + "Matteo Salvini" + "'");
-        System.out.println("");
-        Bio bio = creaBio();
-        //        for (EADidascalia type : EADidascalia.values()) {
-        //            ottenuto = didascaliaService.getBaseSenza(bio, type);
-        //            if (text.isValid(ottenuto)) {
-        //                System.out.println(type.name() + ": " + ottenuto);
-        //            }
-        //            else {
-        //                System.out.println(type.name() + ": Manca");
-        //            }// end of if/else cycle
-        //        }// end of for cycle
-        System.out.println("");
-    }// end of single test
-
-    //    /**
-    //     * Pagina completa con uscita su pagina utente
-    //     */
-    //    @Test
-    //    public void esegueTestUplod() {
-    //        didascaliaService.esegue();
-    //    }// end of single test
-
-    void elabora(String wikiTitle) {
-        //        sorgente = wikiTitle;
-        //        wrap = queryBio.urlRequest(sorgente).getWrap();
-        //        assertNotNull(wrap);
-        //        assertTrue(wrap.isValido());
-        //        bio = bioService.newEntity(wrap);
-        //        elaboraService.esegue(bio);
-        //        try {
-        //            bioService.save(bio, AEOperation.edit);
-        //        } catch (Exception unErrore) {
-        //            System.out.println("Errore");
-        //        }
-    }
 
     /**
      * Qui passa una volta sola, chiamato alla fine di tutti i tests <br>

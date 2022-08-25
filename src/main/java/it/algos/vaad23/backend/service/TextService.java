@@ -537,7 +537,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoRef(String entrata) {
-        return levaCodaDa(entrata, REF_OPEN);
+        return levaCodaDaPrimo(entrata, REF_OPEN);
     }
 
 
@@ -553,7 +553,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoNote(String entrata) {
-        return levaCodaDa(entrata, NOTE);
+        return levaCodaDaPrimo(entrata, NOTE);
     }
 
     /**
@@ -568,7 +568,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoWiki(String entrata) {
-        return levaCodaDa(entrata, NO_WIKI);
+        return levaCodaDaPrimo(entrata, NO_WIKI);
     }
 
 
@@ -584,7 +584,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoUguale(String entrata) {
-        return levaCodaDa(entrata, UGUALE_SEMPLICE);
+        return levaCodaDaPrimo(entrata, UGUALE_SEMPLICE);
     }
 
 
@@ -600,7 +600,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoEccetera(String entrata) {
-        return levaCodaDa(entrata, ECC);
+        return levaCodaDaPrimo(entrata, ECC);
     }
 
 
@@ -616,7 +616,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoGraffe(String entrata) {
-        return levaCodaDa(entrata, DOPPIE_GRAFFE_INI);
+        return levaCodaDaPrimo(entrata, DOPPIE_GRAFFE_INI);
     }
 
 
@@ -632,7 +632,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoVirgola(String entrata) {
-        return levaCodaDa(entrata, VIRGOLA);
+        return levaCodaDaPrimo(entrata, VIRGOLA);
     }
 
 
@@ -648,7 +648,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoParentesi(String entrata) {
-        return levaCodaDa(entrata, PARENTESI_TONDA_END);
+        return levaCodaDaPrimo(entrata, PARENTESI_TONDA_END);
     }
 
 
@@ -664,7 +664,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoInterrogativo(String entrata) {
-        return levaCodaDa(entrata, PUNTO_INTERROGATIVO);
+        return levaCodaDaPrimo(entrata, PUNTO_INTERROGATIVO);
     }
 
 
@@ -680,7 +680,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoCirca(String entrata) {
-        return levaCodaDa(entrata, CIRCA);
+        return levaCodaDaPrimo(entrata, CIRCA);
     }
 
     /**
@@ -695,7 +695,7 @@ public class TextService extends AbstractService {
      * @return uscita stringa ridotta
      */
     public String levaDopoTagRef(String entrata) {
-        return levaCodaDa(entrata, TAG_REF);
+        return levaCodaDaPrimo(entrata, TAG_REF);
     }
 
     /**
@@ -742,7 +742,39 @@ public class TextService extends AbstractService {
      *
      * @return test ridotto in uscita
      */
-    public String levaCodaDa(final String testoIn, final String tagInterrompi) {
+    public String levaCodaDaPrimo(final String testoIn, final String tagInterrompi) {
+        String testoOut = testoIn;
+        String tag;
+
+        if (this.isValid(testoOut) && this.isValid(tagInterrompi)) {
+            testoOut = StringUtils.stripEnd(testoIn, SPAZIO);
+            tag = tagInterrompi.trim();
+            if (testoOut.contains(tag)) {
+                testoOut = testoOut.substring(0, testoOut.indexOf(tag));
+                testoOut = StringUtils.stripEnd(testoOut, SPAZIO);
+            }
+            else {
+                testoOut = testoIn;
+            }
+        }
+
+        return testoOut;
+    }
+
+
+    /**
+     * Elimina il testo da tagInterrompi in poi <br>
+     * <p>
+     * Esegue solo se il testo è valido <br>
+     * Se tagInterrompi è vuoto o non contenuto nella stringa, restituisce il testo originale intatto <br>
+     * Elimina solo spazi vuoti finali e NON eventuali spazi vuoti iniziali <br>
+     *
+     * @param testoIn       stringa in ingresso
+     * @param tagInterrompi da dove inizia il testo da eliminare
+     *
+     * @return test ridotto in uscita
+     */
+    public String levaCodaDaUltimo(final String testoIn, final String tagInterrompi) {
         String testoOut = testoIn;
         String tag;
 
@@ -1227,7 +1259,7 @@ public class TextService extends AbstractService {
         String message;
 
         if (allEnumSelection.contains(PUNTO_VIRGOLA)) {
-            value = this.levaCodaDa(allEnumSelection, PUNTO_VIRGOLA);
+            value = this.levaCodaDaUltimo(allEnumSelection, PUNTO_VIRGOLA);
         }
         else {
             message = String.format("La stringa in ingresso non contiene il punto-virgola");

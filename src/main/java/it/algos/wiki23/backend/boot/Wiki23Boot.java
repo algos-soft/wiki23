@@ -17,6 +17,7 @@ import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.packages.professione.*;
+import it.algos.wiki23.backend.packages.statistica.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
@@ -163,6 +164,7 @@ public class Wiki23Boot extends VaadBoot {
         VaadVar.menuRouteList.add(AnnoWikiView.class);
         VaadVar.menuRouteList.add(GiornoWikiView.class);
         VaadVar.menuRouteList.add(CognomeView.class);
+        VaadVar.menuRouteList.add(StatisticaBioView.class);
     }
 
     @Override

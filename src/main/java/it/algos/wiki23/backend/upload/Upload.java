@@ -1,7 +1,6 @@
 package it.algos.wiki23.backend.upload;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -193,7 +192,7 @@ public abstract class Upload {
     }
 
     protected String torna(String wikiTitle) {
-        wikiTitle = textService.levaCodaDa(wikiTitle, SLASH);
+        wikiTitle = textService.levaCodaDaUltimo(wikiTitle, SLASH);
         return textService.isValid(wikiTitle) ? String.format("{{Torna a|%s}}", wikiTitle) : VUOTA;
     }
 

@@ -1313,7 +1313,7 @@ public class FileService extends AbstractService {
 
         if (textService.isValid(pathOut) && pathOut.endsWith(SLASH)) {
             pathOut = textService.levaCoda(pathOut, SLASH);
-            pathOut = textService.levaCodaDa(pathOut, SLASH) + SLASH;
+            pathOut = textService.levaCodaDaUltimo(pathOut, SLASH) + SLASH;
         }
 
         return pathOut.trim();

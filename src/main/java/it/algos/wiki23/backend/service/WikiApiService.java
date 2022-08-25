@@ -3,7 +3,6 @@ package it.algos.wiki23.backend.service;
 import com.vaadin.flow.component.*;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.service.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import org.json.simple.*;
 import org.springframework.beans.factory.config.*;
@@ -217,11 +216,11 @@ public class WikiApiService extends WAbstractService {
         //--elimina la coda di chiusura della table per evitare che la suddivisione in righe contenga anche la chiusura della table
         if (textService.isValid(testoTable)) {
             if (testoTable.endsWith(GRAFFA_END)) {
-                testoTable = textService.levaCodaDa(testoTable, GRAFFA_END);
+                testoTable = textService.levaCodaDaUltimo(testoTable, GRAFFA_END);
             }
             testoTable = testoTable.trim();
             if (testoTable.endsWith(PIPE)) {
-                testoTable = textService.levaCodaDa(testoTable, PIPE);
+                testoTable = textService.levaCodaDaUltimo(testoTable, PIPE);
             }
             testoTable = testoTable.trim();
         }

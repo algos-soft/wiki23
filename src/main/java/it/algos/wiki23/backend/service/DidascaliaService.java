@@ -271,7 +271,7 @@ public class DidascaliaService extends WAbstractService {
 
         if (textService.isValid(wikiTitle)) {
             if (wikiTitle.contains(PARENTESI_TONDA_END)) {
-                nomeVisibile = textService.levaCodaDa(wikiTitle, PARENTESI_TONDA_INI);
+                nomeVisibile = textService.levaCodaDaUltimo(wikiTitle, PARENTESI_TONDA_INI);
                 wikiTitle += PIPE;
                 wikiTitle += nomeVisibile;
             }
