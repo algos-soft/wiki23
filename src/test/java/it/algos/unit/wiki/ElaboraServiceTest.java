@@ -511,16 +511,16 @@ public class ElaboraServiceTest extends WikiTest {
         //        sorgente = "Karel Škorpil";
         //        bio= queryService.getBio(sorgente);
 
-        sorgente = "F";
-        sorgente2 = "ceca";
-        ottenuto = service.nazionalitaValida(sorgente, sorgente2);
-        printNome(sorgente2, ottenuto);
-        System.out.println(VUOTA);
-
-        sorgente = "M";
-        sorgente2 = "ceca";
-        ottenuto = service.nazionalitaValida(sorgente, sorgente2);
-        printNome(sorgente2, ottenuto);
+//        sorgente = "F";
+//        sorgente2 = "ceca";
+//        ottenuto = service.nazionalitaValida(sorgente, sorgente2);
+//        printNome(sorgente2, ottenuto);
+//        System.out.println(VUOTA);
+//
+//        sorgente = "M";
+//        sorgente2 = "ceca";
+//        ottenuto = service.nazionalitaValida(sorgente, sorgente2);
+//        printNome(sorgente2, ottenuto);
     }
 
 

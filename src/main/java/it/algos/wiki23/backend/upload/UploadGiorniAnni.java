@@ -27,8 +27,6 @@ import java.util.*;
 public abstract class UploadGiorniAnni extends Upload {
 
 
-    protected static final int MAX_NUM_VOCI = 200;
-
     protected int ordineGiornoAnno;
 
     private GiornoWiki giorno;
@@ -111,7 +109,7 @@ public abstract class UploadGiorniAnni extends Upload {
             }
 
             if (textService.isValid(wikiTitle) && mappaWrap != null && mappaWrap.size() > 0) {
-               return this.esegueUpload(wikiTitle, mappaWrap);
+                return this.esegueUpload(wikiTitle, mappaWrap);
             }
         }
 
@@ -170,63 +168,49 @@ public abstract class UploadGiorniAnni extends Upload {
     }
 
 
+    /**
+     * I giorni superano sempre le 200 voci (salvo il 29 febbraio) <br>
+     * Gli anni:
+     * 1) fino a 50 voci SENZA paragrafi
+     * 2) da 50 a 200 voci con paragrafi ridotti
+     * 3) sopra le 200 voci con paragrafi normali
+     */
     public String testoBody(Map<String, List<WrapLista>> mappa) {
         String testo;
         int numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
+        int sogliaIncludeAll = WPref.sogliaIncludeAll.getInt();
+        int sogliaIncludeParagrafo = WPref.sogliaIncludeParagrafo.getInt();
         boolean righeRaggruppate;
-        testo = conParagrafi(mappa);
+        //        testo = conParagrafi(mappa);
 
-//        if (usaParagrafi && numVoci > MAX_NUM_VOCI) {
-//            testo = conParagrafi(mappa);
-//        }
-//        else {
-//            righeRaggruppate = switch (typeCrono) {
-//                case giornoNascita, giornoMorte -> WPref.usaRigheGiorni.is();
-//                case annoNascita, annoMorte -> WPref.usaRigheAnni.is();
-//                default -> false;
-//            };
-//
-//            if (righeRaggruppate) {
-//                testo = senzaParagrafiMaRaggruppate(mappa);
-//            }
-//            else {
-//                testo = senzaParagrafi(mappa);
-//            }
-//        }
+        righeRaggruppate = switch (typeCrono) {
+            case giornoNascita, giornoMorte -> WPref.usaRigheGiorni.is();
+            case annoNascita, annoMorte -> WPref.usaRigheAnni.is();
+            default -> false;
+        };
+
+        //--meno di 50 (secondo il flag)
+        if (numVoci < sogliaIncludeParagrafo) {
+            if (righeRaggruppate) {
+                testo = senzaParagrafiMaRaggruppate(mappa);
+            }
+            else {
+                testo = senzaParagrafi(mappa);
+            }
+            return testo;
+        }
+
+        //--meno di 200 (secondo il flag)
+        if (numVoci < sogliaIncludeAll) {
+            testo = conParagrafi(mappa, true);
+        }
+        else {
+            testo = conParagrafi(mappa, false);
+        }
 
         return testo;
     }
 
-
-    public String conParagrafi(Map<String, List<WrapLista>> mappa) {
-        StringBuffer buffer = new StringBuffer();
-        List<WrapLista> lista;
-        int numVoci;
-        int maxDiv = WPref.sogliaDiv.getInt();
-        boolean usaDiv;
-        String titoloParagrafoLink;
-
-        for (String keyParagrafo : mappa.keySet()) {
-            lista = mappa.get(keyParagrafo);
-            numVoci = lista.size();
-            usaDiv = lista.size() > maxDiv;
-            titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
-            buffer.append(wikiUtility.fixTitolo(VUOTA, titoloParagrafoLink, numVoci));
-            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
-            for (WrapLista wrap : lista) {
-                buffer.append(ASTERISCO);
-                if (textService.isValid(wrap.titoloSottoParagrafo)) {
-                    buffer.append(wrap.titoloSottoParagrafo);
-                    buffer.append(SEP);
-                }
-                buffer.append(wrap.didascaliaBreve);
-                buffer.append(CAPO);
-            }
-            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
-        }
-
-        return buffer.toString().trim();
-    }
 
     public String senzaParagrafi(Map<String, List<WrapLista>> mappa) {
         StringBuffer buffer = new StringBuffer();
@@ -298,6 +282,50 @@ public abstract class UploadGiorniAnni extends Upload {
         return buffer.toString().trim();
     }
 
+    public String conParagrafi(Map<String, List<WrapLista>> mappa, boolean includeOnly) {
+        StringBuffer buffer = new StringBuffer();
+        List<WrapLista> lista;
+        int numVoci;
+        int maxDiv = WPref.sogliaDiv.getInt();
+        boolean usaDiv;
+        String titoloParagrafoLink;
+
+        for (String keyParagrafo : mappa.keySet()) {
+            lista = mappa.get(keyParagrafo);
+            numVoci = lista.size();
+            usaDiv = lista.size() > maxDiv;
+            titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
+            //            buffer.append(wikiUtility.fixTitolo(VUOTA, titoloParagrafoLink, numVoci));
+            buffer.append(fixTitolo(titoloParagrafoLink, numVoci, includeOnly));
+            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+            for (WrapLista wrap : lista) {
+                buffer.append(ASTERISCO);
+                if (textService.isValid(wrap.titoloSottoParagrafo)) {
+                    buffer.append(wrap.titoloSottoParagrafo);
+                    buffer.append(SEP);
+                }
+                buffer.append(wrap.didascaliaBreve);
+                buffer.append(CAPO);
+            }
+            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+        }
+
+        return buffer.toString().trim();
+    }
+
+    protected String fixTitolo(String titoloParagrafoLink, int numVoci, boolean includeOnly) {
+        String titolo = VUOTA;
+        String tag = "<includeonly>=</includeonly>";
+
+        titolo = wikiUtility.fixTitolo(VUOTA, titoloParagrafoLink, numVoci);
+
+        if (includeOnly) {
+            titolo = titolo.trim();
+            titolo = CAPO + tag + titolo + tag + CAPO;
+        }
+
+        return titolo;
+    }
 
     protected LinkedHashMap<String, List<WrapLista>> creaSubMappa(List<WrapLista> listaWrapSub) {
         LinkedHashMap<String, List<WrapLista>> mappaWrapSub = new LinkedHashMap<>();
