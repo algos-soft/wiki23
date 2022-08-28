@@ -819,44 +819,8 @@ public class BioService extends WAbstractService {
      * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
      */
     public List<Bio> fetchNazionalita(String nazionalitaPlurale) {
-        //        List<Bio> listaOrdinata = new ArrayList<>();
-        //        List<Bio> listaOrdinataNonSuddivisa;
-        //        List<Bio> listaConGiornoMorto;
-        //        List<Bio> listaSenzaGiornoMorto;
         List<String> listaNomiSingoli = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
-
         return fetchNazionalita(listaNomiSingoli);
-        //        if (textService.isEmpty(nazionalitaPlurale)) {
-        //            logger.info(new WrapLog().exception(new AlgosException("Manca l'indicazione dell'anno")));
-        //            return null;
-        //        }
-        //
-        //        listaOrdinataNonSuddivisa = repository.findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(annoMorto);
-        //        listaSenzaGiornoMorto = listaOrdinataNonSuddivisa
-        //                .stream()
-        //                .filter(bio -> bio.giornoMortoOrd == 0)
-        //                .sorted(Comparator.comparing(forzaOrdinamento))
-        //                .collect(Collectors.toList());
-        //
-        //        listaConGiornoMorto = listaOrdinataNonSuddivisa
-        //                .stream()
-        //                .filter(bio -> bio.giornoMortoOrd > 0)
-        //                .sorted(Comparator.comparing(bio -> bio.giornoMortoOrd))
-        //                .collect(Collectors.toList());
-        //
-        //        switch ((AETypeChiaveNulla) WPref.typeChiaveNulla.getEnumCurrentObj()) {
-        //            case inTesta -> {
-        //                listaOrdinata.addAll(listaSenzaGiornoMorto);
-        //                listaOrdinata.addAll(listaConGiornoMorto);
-        //            }
-        //
-        //            case inCoda -> {
-        //                listaOrdinata.addAll(listaConGiornoMorto);
-        //                listaOrdinata.addAll(listaSenzaGiornoMorto);
-        //            }
-        //        }
-        //
-        //        return listaOrdinata;
     }
 
     public List<Bio> fetchListe(AETypeLista typeLista, String nomeLista) {
@@ -876,6 +840,18 @@ public class BioService extends WAbstractService {
             logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
             return null;
         }
+    }
+
+    /**
+     * Cerca tutte le entities di una collection filtrate con un flag. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     **
+     * @return lista di entityBeans
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchErrori() {
+        return bioBackend.fetchErrori();
     }
 
 }

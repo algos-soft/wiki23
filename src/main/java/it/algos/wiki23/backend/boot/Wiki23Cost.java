@@ -61,6 +61,14 @@ public class Wiki23Cost {
 
     public static final String PATH_WIKI = "https://it.wikipedia.org/wiki/";
 
+    public static final String PATH_WIKI_EDIT = "https://it.wikipedia.org/w/index.php?title=";
+
+    public static final String TAG_EDIT = "&action=edit";
+
+    public static final String TAG_EDIT_ZERO = "&action=edit&section=0";
+
+    public static final String TAG_DELETE = "&action=delete";
+
     public static final String API_BASE = "https://it.wikipedia.org/w/api.php?&format=json&formatversion=2";
 
     public static final String ACTION_PARSE = API_BASE + "&action=parse";

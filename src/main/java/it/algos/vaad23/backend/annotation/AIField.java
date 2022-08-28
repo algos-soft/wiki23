@@ -221,14 +221,6 @@ public @interface AIField {
     boolean onlyLetter() default false;
 
 
-    /**
-     * (Optional) Status (allowed null selection in popup) of the the field.
-     * Meaning sense only for EAFieldType.combo.
-     * Defaults to false.
-     *
-     * @return the boolean
-     */
-    boolean nullSelectionAllowed() default false;
 
 
     /**
@@ -256,6 +248,16 @@ public @interface AIField {
      * @return the boolean
      */
     boolean usaComboMethod() default false;
+
+
+    /**
+     * (Optional) Status (allowed null selection in popup) of the the field.
+     * Meaning sense only for EAFieldType.combo.
+     * Defaults to false.
+     *
+     * @return the boolean
+     */
+    boolean nullSelectionAllowed() default false;
 
     /**
      * (Optional) method name for reflection

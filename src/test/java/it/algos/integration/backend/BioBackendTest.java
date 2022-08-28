@@ -159,7 +159,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(2)
     @DisplayName("2 - findAll")
     void findAll() {
@@ -176,7 +176,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(3)
     @DisplayName("3 - findAll ridotto")
     void findAllRidotto() {
@@ -192,7 +192,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(message);
     }
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("4 - find inesistente")
     void find() {
@@ -205,7 +205,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("La biografia '%s' non esiste su mongoDB", sorgente));
     }
 
-    @Test
+//    @Test
     @Order(5)
     @DisplayName("5 - find esistente")
     void find2() {
@@ -217,7 +217,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("Trovata la biografia '%s' su mongoDB", sorgente));
     }
 
-    @Test
+//    @Test
     @Order(6)
     @DisplayName("6 - controllo due biografie")
     void find3() {
@@ -238,7 +238,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(7)
     @DisplayName("7 - insert")
     void insert() {
@@ -267,7 +267,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("Adesso sono tornate %s (dopo un delete)", textService.format(backend.count())));
     }
 
-    @Test
+//    @Test
     @Order(8)
     @DisplayName("8 - save")
     void save() {
@@ -307,7 +307,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("Adesso sono tornate %s (dopo un delete)", textService.format(backend.count())));
     }
 
-    @Test
+//    @Test
     @Order(9)
     @DisplayName("9 - sort")
     void find8() {
@@ -379,7 +379,7 @@ public class BioBackendTest extends WikiTest {
         printDieci(listaBeans);
     }
 
-    @Test
+//    @Test
     @Order(10)
     @DisplayName("10 - Index")
     void find9() {
@@ -420,6 +420,17 @@ public class BioBackendTest extends WikiTest {
 
         //        listaBeans = backend.findOnlyPageId();
         int a = 87;
+    }
+
+
+    @Test
+    @Order(11)
+    @DisplayName("11 - count")
+    void countSex() {
+        System.out.println("11 - count");
+        String message;
+
+        backend.fixErroriSesso();
     }
 
     void printDieci(List<Bio> lista) {

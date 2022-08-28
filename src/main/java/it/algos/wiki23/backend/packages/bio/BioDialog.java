@@ -40,14 +40,14 @@ public class BioDialog extends CrudDialog {
     @Autowired
     public ElaboraService elaboraService;
 
-    private Bio currentItem;
+    protected Bio currentItem;
 
-    private Consumer<Bio> downloadHandler;
-    private Consumer<Bio> elaboraHandler;
+    protected Consumer<Bio> downloadHandler;
+    protected Consumer<Bio> elaboraHandler;
 
     protected Button buttonDownload;
 
-    private BioBackend backend;
+    protected BioBackend backend;
 
     /**
      * Constructor not @Autowired. <br>
@@ -94,7 +94,6 @@ public class BioDialog extends CrudDialog {
         elaboraButton.addClickListener(e -> elaboraHandler());
         elaboraButton.setIcon(new Icon(VaadinIcon.AMBULANCE));
         bottomPlaceHolder.add(elaboraButton);
-
     }
 
     public void openBio(final BiConsumer<AEntity, CrudOperation> saveHandler, final Consumer<AEntity> annullaHandler,

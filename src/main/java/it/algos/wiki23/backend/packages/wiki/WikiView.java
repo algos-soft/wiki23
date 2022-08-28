@@ -64,6 +64,10 @@ public abstract class WikiView extends CrudView {
 
     protected Button buttonElabora;
 
+    protected boolean usaBottoneErrori;
+
+    protected Button buttonErrori;
+
     protected boolean usaBottoneUploadAll;
 
     protected Button buttonUpload;
@@ -198,6 +202,7 @@ public abstract class WikiView extends CrudView {
     protected TextField searchFieldAttivita;
 
     protected TextField searchFieldNazionalita;
+
     protected IndeterminateCheckbox boxSuperaSoglia;
 
     protected IndeterminateCheckbox boxEsistePagina;
@@ -239,6 +244,7 @@ public abstract class WikiView extends CrudView {
 
         this.usaBottoneDownload = true;
         this.usaBottoneElabora = false;
+        this.usaBottoneErrori = false;
         this.usaBottoneUploadAll = true;
         this.usaBottoneUploadPagina = false;
         //        this.usaBottoneModulo = true;
@@ -408,6 +414,15 @@ public abstract class WikiView extends CrudView {
             buttonElabora.setIcon(new Icon(VaadinIcon.PUZZLE_PIECE));
             buttonElabora.addClickListener(event -> elabora());
             topPlaceHolder.add(buttonElabora);
+        }
+
+        if (usaBottoneErrori) {
+            buttonErrori = new Button();
+            buttonErrori.getElement().setAttribute("theme", "error");
+            buttonErrori.getElement().setProperty("title", "Errori: tutti gli errori");
+            buttonErrori.setIcon(new Icon(VaadinIcon.PUZZLE_PIECE));
+            buttonErrori.addClickListener(event -> errori());
+            topPlaceHolder.add(buttonErrori);
         }
 
         if (usaBottoneUploadAll) {
@@ -699,6 +714,7 @@ public abstract class WikiView extends CrudView {
 
         return singoloSelezionato;
     }
+
     protected void sincroPlurali() {
     }
 
@@ -727,6 +743,14 @@ public abstract class WikiView extends CrudView {
         crudBackend.elabora();
         refresh();
         fixInfo();
+    }
+
+
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void errori() {
     }
 
     /**

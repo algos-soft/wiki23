@@ -717,5 +717,23 @@ public class AnnotationService extends AbstractService {
         return type;
     }
 
+    /**
+     * Check if the combo is nullable <br>.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the field is searchable
+     */
+    public boolean nullSelectionAllowed(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        boolean nullSelectionAllowed = false;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            nullSelectionAllowed = annotation.nullSelectionAllowed();
+        }
+
+        return nullSelectionAllowed;
+    }
 
 }

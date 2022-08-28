@@ -269,12 +269,14 @@ public class CrudDialog extends Dialog {
         List enumObjects;
         List items;
         ComboBox combo;
+        boolean nullSelectionAllowed;
 
         try {
             for (String key : fields) {
                 type = annotationService.getFormType(currentItem.getClass(), key);
                 hasFocus = annotationService.hasFocus(currentItem.getClass(), key);
                 caption = annotationService.getCaption(currentItem.getClass(), key); ;
+                nullSelectionAllowed = annotationService.nullSelectionAllowed(currentItem.getClass(), key); ;
 
                 field = switch (type) {
                     case text -> new TextField(caption);
@@ -283,6 +285,7 @@ public class CrudDialog extends Dialog {
                     case booleano -> new Checkbox(caption);
                     case enumeration -> {
                         combo = new ComboBox(caption);
+                        combo.setClearButtonVisible(nullSelectionAllowed);
                         try {
                             enumClazz = annotationService.getEnumClazz(currentItem.getClass(), key);
                             Object[] elementi = enumClazz.getEnumConstants();
@@ -297,6 +300,8 @@ public class CrudDialog extends Dialog {
                     }
                     case link -> {
                         combo = new ComboBox(caption);
+                        combo.setClearButtonVisible(nullSelectionAllowed);
+
                         try {
                             linkClazz = annotationService.getLinkClazz(currentItem.getClass(), key);
                             Object obj = appContext.getBean(linkClazz);

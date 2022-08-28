@@ -62,5 +62,12 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
     List<Bio> findAllByGiornoNatoOrderByAnnoNatoOrdAscOrdinamentoAsc(String annoNato);
     List<Bio> findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(String annoNato);
+    List<Bio> findAllByErrato(boolean errato);
+
+
+    long countBioByErratoIsTrue();
+    long countBioBySessoIsNull();
+    long countBioBySessoEquals(String sesso);
+    List<Bio> findBySessoIsNull();
 
 }// end of crud repository class

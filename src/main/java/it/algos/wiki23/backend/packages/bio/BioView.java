@@ -84,7 +84,7 @@ public class BioView extends WikiView {
                 "annoNato", "giornoMorto", "annoMorto",
                 "giornoNatoOrd", "giornoMortoOrd", "annoNatoOrd", "annoMortoOrd",
                 "attivita", "attivita2", "attivita3",
-                "nazionalita"
+                "nazionalita", "errato", "errore"
         );
         super.sortOrder = Sort.by(Sort.Direction.DESC, "ordinamento");
 
@@ -95,14 +95,16 @@ public class BioView extends WikiView {
         super.durataElaborazione = WPref.elaboraBioTime;
 
         super.usaBottoneElabora = true;
+        super.usaBottoneErrori = true;
         super.usaBottoneDeleteAll = true;
         super.usaBottoneNew = true;
         super.usaBottoneDelete = true;
         super.usaBottoneSearch = false;
         super.usaBottonePaginaWiki = true;
-        super.dialogClazz = BioDialog.class;
         super.unitaMisuraDownload = "minuti";
         super.unitaMisuraElaborazione = "minuti";
+        super.dialogClazz = BioDialog.class;
+
         super.fixPreferenzeBackend();
     }
 
@@ -266,7 +268,6 @@ public class BioView extends WikiView {
             }
         }
 
-
         final String textSearchNome = searchFieldNome != null ? searchFieldNome.getValue() : VUOTA;
         if (textService.isValidNoSpace(textSearchNome)) {
             items = items
@@ -298,7 +299,6 @@ public class BioView extends WikiView {
                         .toList();
             }
         }
-
 
         final String textSearchNascita = searchFieldNascita != null ? searchFieldNascita.getValue() : VUOTA;
         if (textService.isValidNoSpace(textSearchNascita)) {
@@ -379,6 +379,15 @@ public class BioView extends WikiView {
      */
     public void download() {
         downloadService.ciclo();
+        refresh();
+    }
+
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void errori() {
+        backend.errori();
         refresh();
     }
 

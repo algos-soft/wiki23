@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.wiki23.backend.enumeration.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.*;
@@ -136,6 +137,14 @@ public class Bio extends AEntity {
     @AIField(type = AETypeField.text, widthEM = 12)
     public String nazionalita;
 
+    /**
+     * errore generico
+     */
+    @AIField(type = AETypeField.booleano)
+    public boolean errato;
+
+    @AIField(type = AETypeField.enumeration, enumClazz = AETypeBioError.class, nullSelectionAllowed = true, widthEM = 10)
+    public AETypeBioError errore;
 
     @Override
     public String toString() {

@@ -6,12 +6,13 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.bson.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -321,8 +322,13 @@ public class BioBackend extends WikiBackend {
     public List<Bio> findAllAll() {
         return super.findAll();
     }
+
     public List<Bio> findAll() {
         return findSenzaTmpl();
+    }
+
+    public List<Bio> fetchErrori() {
+        return repository.findAllByErrato(true);
     }
 
     /**
@@ -402,6 +408,53 @@ public class BioBackend extends WikiBackend {
             }
         }
         super.fixElaboraMinuti(inizio, "biografie");
+    }
+
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void errori() {
+        int prima=getErrori();
+        resetErrori();
+        int dopo=getErrori();
+        fixErroriSesso();
+    }
+
+    public void resetErrori() {
+        mongoService.mongoOp.updateMulti(new Query(), Update.update("errato", false), Bio.class);
+    }
+    public int getErrori() {
+        return ((Long) repository.countBioByErratoIsTrue()).intValue();
+    }
+
+    public int getSessoMancante() {
+        return ((Long) repository.countBioBySessoIsNull()).intValue();
+    }
+
+    public int getSessoInvalido() {
+        return ((Long) repository.countBioBySessoIsNull()).intValue();
+    }
+
+    public void fixErroriSesso() {
+        int totali;
+        int nulli;
+        int maschi;
+        int femmine;
+        List<Bio> lista;
+
+        totali = ((Long) repository.count()).intValue();
+        nulli = ((Long) repository.countBioBySessoIsNull()).intValue();
+        maschi = ((Long) repository.countBioBySessoEquals("M")).intValue();
+        femmine = ((Long) repository.countBioBySessoEquals("F")).intValue();
+        totali = nulli + maschi + femmine;
+
+        lista = repository.findBySessoIsNull();
+        for (Bio bio : lista) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoMancante;
+            save(bio);
+        }
     }
 
 }// end of crud backend class

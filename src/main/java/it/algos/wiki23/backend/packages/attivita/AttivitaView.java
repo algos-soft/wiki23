@@ -225,7 +225,7 @@ public class AttivitaView extends WikiView {
         Grid.Column daCancellare = grid.addColumn(new ComponentRenderer<>(entity -> {
             String link = "https://it.wikipedia.org/w/index.php?title=Progetto:Biografie/Attivit%C3%A0/";
             link += textService.primaMaiuscola(((Attivita) entity).pluraleLista);
-            link += "&action=delete";
+            link += TAG_DELETE;
             Label label = new Label("no");
             label.getElement().getStyle().set("color", "green");
             Anchor anchor = new Anchor(link, "del");
