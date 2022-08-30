@@ -209,7 +209,7 @@ public class ListaNazionalitaTest extends WikiTest {
                 System.out.println(listaNomiSingoli);
             }
             System.out.println(VUOTA);
-            printMappa(mappa);
+            printMappaList(mappa);
         }
         else {
             message = "La mappa è nulla";

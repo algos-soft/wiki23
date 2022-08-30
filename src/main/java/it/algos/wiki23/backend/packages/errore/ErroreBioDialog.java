@@ -4,11 +4,13 @@ import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
+import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.Scope;
@@ -86,7 +88,7 @@ public class ErroreBioDialog extends BioDialog {
         super.fixBottom();
 
         buttonFixSex = new Button();
-        buttonFixSex.setText("fixSesso");
+        buttonFixSex.setText("Fix sex");
         buttonFixSex.getElement().setAttribute("theme", "error");
         buttonFixSex.setIcon(new Icon(VaadinIcon.UPLOAD));
         buttonFixSex.addClickListener(event -> fixSex());
@@ -95,13 +97,24 @@ public class ErroreBioDialog extends BioDialog {
 
     protected void fixSex() {
         String newSex = currentItem.sesso;
+        try {
+            binder.writeBean(currentItem);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)));
+        }
+
+        newSex = currentItem.sesso;
         String wikiTitle = currentItem.wikiTitle;
-        //        String tag ="|Sesso = ";
-        String tagRegex = "\n*\\| *Sesso *= *\n*\\|";
+        String summary = "[[Utente:Biobot/fixPar|fixPar]]";
+        String tagRegex = "\n*\\| *Sesso *= *[MF]*\n*\\|";
         String tag = "\n|Sesso = %s\n|";
         String tagNew;
         String oldText;
         String newText;
+        WResult result = WResult.errato();
+        Bio bio;
+        String message;
+        boolean esisteParametroVuoto = false;
 
         if (textService.isEmpty(newSex)) {
             Notification.show(String.format("Manca il parametro 'sesso' nella biografia %s", currentItem.wikiTitle)).addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -117,12 +130,45 @@ public class ErroreBioDialog extends BioDialog {
 
         tagNew = String.format(tag, newSex);
         oldText = wikiApiService.legge(wikiTitle);
-        newText = regexService.replaceFirst(oldText, tagRegex, tagNew);
+        esisteParametroVuoto = regexService.isEsiste(oldText, tagRegex);
 
-        if (textService.isValid(newText)) {
-            wikiApiService.
-//            appContext.getBean()
+        if (!esisteParametroVuoto) {
+            message = String.format("La pagina %s non ha il parametro sesso", currentItem.wikiTitle);
+            Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            close();
+            return;
         }
+
+        newText = regexService.replaceFirst(oldText, tagRegex, tagNew);
+        if (textService.isValid(newText)) {
+            result = wikiApiService.scrive(wikiTitle, newText, summary);
+        }
+
+        if (result.isValido()) {
+            bio = wikiApiService.downloadAndSave(wikiTitle);
+            if (bio != null && bio.sesso != null) {
+                if (bio.sesso.equals("M") || bio.sesso.equals("F")) {
+                    bio.errato = false;
+                    backend.save(bio);
+                    message = String.format("La biografia %s ha adesso il parametro sesso = %s", currentItem.wikiTitle, bio.sesso);
+                    Notification.show(message).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                }
+                else {
+                    message = String.format("Non sono riuscito a modificare il parametro sesso della bio %s", currentItem.wikiTitle);
+                    Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
+            }
+            else {
+                message = String.format("Non sono riuscito a registrare %s sul mongoDB", currentItem.wikiTitle);
+                Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        }
+        else {
+            message = String.format("Non sono riuscito a modificare la pagina wiki %s", currentItem.wikiTitle);
+            Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+
+        close();
     }
 
 }

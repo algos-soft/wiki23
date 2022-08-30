@@ -61,7 +61,7 @@ public class BioServiceTest extends WikiTest {
         super.setUpEach();
     }
 
-    public static Function<Bio, String> cognome = bio -> bio.getCognome()!=null?bio.getCognome():VUOTA;
+    public static Function<Bio, String> cognome = bio -> bio.getCognome() != null ? bio.getCognome() : VUOTA;
 
     @Test
     @Order(1)
@@ -86,6 +86,53 @@ public class BioServiceTest extends WikiTest {
         listBio = service.fetchAttivita(listaStr);
         assertNotNull(listBio);
         printBio(listBio, sorgente + " ordinate");
+    }
+
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - estrae mappa")
+    void mappa() {
+        System.out.println("3 - estrae mappa");
+
+        sorgente = "Matteo Renzi";
+        bio = queryService.getBio(sorgente);
+        mappaOttenuta = service.estraeMappa(bio);
+        assertNotNull(mappaOttenuta);
+        printMappa(mappaOttenuta);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - estrae altra mappa")
+    void mappa4() {
+        System.out.println("4 - estrae altra mappa");
+
+        sorgente = "Hunter King";
+        bio = queryService.getBio(sorgente);
+        mappaOttenuta = service.estraeMappa(bio);
+        assertNotNull(mappaOttenuta);
+        System.out.println(VUOTA);
+        System.out.println(String.format("bio.sesso: %s",bio.sesso));
+        System.out.println(VUOTA);
+        printMappa(mappaOttenuta);
+    }
+
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - estrae altra mappa")
+    void mappa5() {
+        System.out.println("5 - estrae altra mappa");
+
+        sorgente = "Laura Mancinelli";
+        bio = queryService.getBio(sorgente);
+        mappaOttenuta = service.estraeMappa(bio);
+        assertNotNull(mappaOttenuta);
+        System.out.println(VUOTA);
+        System.out.println(String.format("bio.sesso: %s",bio.sesso));
+        System.out.println(VUOTA);
+        printMappa(mappaOttenuta);
     }
 
 

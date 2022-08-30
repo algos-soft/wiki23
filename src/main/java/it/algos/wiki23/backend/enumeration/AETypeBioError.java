@@ -12,5 +12,5 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * Time: 19:08
  */
 public enum AETypeBioError {
-    sessoMancante, sessoErrato
+    sessoMancante, sessoLungo, sessoErrato, nazionalitaGenere
 }

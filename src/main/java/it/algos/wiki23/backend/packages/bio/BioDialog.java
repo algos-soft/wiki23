@@ -14,6 +14,7 @@ import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
+import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.vaadin.crudui.crud.*;
 
@@ -29,6 +30,7 @@ import java.util.function.*;
  * <p>
  */
 @SpringComponent
+@Primary
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class BioDialog extends CrudDialog {
 
@@ -111,14 +113,6 @@ public class BioDialog extends CrudDialog {
         currentItem = backend.fixWrap(currentItem.id, wrap);
         elaboraService.esegue(currentItem);
         binder.readBean(currentItem);
-
-//        backend.update(currentItem);
-
-
-        //        if (downloadHandler != null) {
-//            downloadHandler.accept(currentItem);
-//        }
-//        close();
     }
 
     protected void elaboraHandler() {

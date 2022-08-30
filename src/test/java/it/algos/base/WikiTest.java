@@ -739,7 +739,7 @@ public abstract class WikiTest extends AlgosTest {
         }
     }
 
-    protected void printMappa(Map<String, List<String>> mappa) {
+    protected void printMappaList(Map<String, List<String>> mappa) {
         List<String> lista;
 
         if (mappa != null) {
@@ -756,6 +756,19 @@ public abstract class WikiTest extends AlgosTest {
                     System.out.println(didascalia);
                 }
                 System.out.println(VUOTA);
+            }
+        }
+    }
+
+    protected void printMappa(Map<String, String> mappa) {
+        if (mappa != null) {
+            message = String.format("Faccio vedere una mappa");
+            System.out.println(message);
+            System.out.println(VUOTA);
+            for (String key : mappa.keySet()) {
+                System.out.print(key);
+                System.out.print(FORWARD);
+                System.out.println(mappa.get(key));
             }
         }
     }

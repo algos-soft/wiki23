@@ -429,6 +429,8 @@ public class VaadCost {
 
     public static final String WIDTH_EM = "18ex";
 
+    public static final String SUMMARY = "[[Utente:Biobot|Biobot]]";
+
     public static final String KEY_MAPPA_GIORNI_NOME = "nome";
 
     public static final String KEY_MAPPA_GIORNI_TITOLO = "titolo";

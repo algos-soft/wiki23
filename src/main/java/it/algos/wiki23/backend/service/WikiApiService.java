@@ -4,6 +4,9 @@ import com.vaadin.flow.component.*;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.wrapper.*;
+import it.algos.wiki23.wiki.query.*;
 import org.json.simple.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -508,6 +511,25 @@ public class WikiApiService extends WAbstractService {
     public String legge(final String wikiTitleGrezzo) {
         Map mappa = leggeMappaParse(wikiTitleGrezzo);
         return (String) mappa.get(KEY_MAPPA_TEXT);
+    }
+
+
+    public WResult scrive(String wikiTitle, String newText) {
+        return scrive(wikiTitle, newText, SUMMARY);
+    }
+
+    public WResult scrive(String wikiTitle, String newText, String summary) {
+        return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
+    }
+
+    public Bio downloadAndSave(String wikiTitle) {
+        Bio bio = this.queryService.getBio(wikiTitle);
+
+        if (bio != null) {
+            bio = elaboraService.esegueSave(bio);
+        }
+
+        return bio;
     }
 
     /**

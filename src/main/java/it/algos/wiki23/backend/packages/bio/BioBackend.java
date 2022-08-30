@@ -159,12 +159,30 @@ public class BioBackend extends WikiBackend {
 
     @Override
     public Bio save(final Object entity) {
+        Bio bioTemp;
+
         if (entity instanceof Bio bio) {
+
+            if (textService.isEmpty(bio.id) && bio.pageId > 0) {
+                bioTemp = findByKey(bio.pageId);
+                if (bioTemp != null) {
+                    bio.id = bioTemp.id;
+                }
+            }
+
+            if (!bio.errato) {
+                bio.errore = null;
+            }
+            if (bio.errore == null) {
+                bio.errato = false;
+            }
+
             if (isExist(bio.pageId)) {
                 try {
                     repository.save(bio);
                 } catch (Exception unErrore) {
                     logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+                    return null;
                 }
             }
             else {
@@ -172,6 +190,7 @@ public class BioBackend extends WikiBackend {
                     repository.insert(bio);
                 } catch (Exception unErrore) {
                     logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+                    return null;
                 }
             }
             return bio;
@@ -415,25 +434,66 @@ public class BioBackend extends WikiBackend {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void errori() {
-        int prima=getErrori();
+        int prima = countErrori();
         resetErrori();
-        int dopo=getErrori();
+        int dopo = countErrori();
         fixErroriSesso();
     }
 
     public void resetErrori() {
         mongoService.mongoOp.updateMulti(new Query(), Update.update("errato", false), Bio.class);
     }
-    public int getErrori() {
+
+    public int countErrori() {
         return ((Long) repository.countBioByErratoIsTrue()).intValue();
     }
 
-    public int getSessoMancante() {
+    public int countSessoMancante() {
         return ((Long) repository.countBioBySessoIsNull()).intValue();
     }
 
-    public int getSessoInvalido() {
-        return ((Long) repository.countBioBySessoIsNull()).intValue();
+    public int countSessoLungo() {
+        Long lungo = null;
+        Query query = new Query();
+
+        query.addCriteria(Criteria.where("sesso").regex(".{2,}"));
+        lungo = mongoService.mongoOp.count(query, Bio.class);
+
+        return lungo != null ? lungo.intValue() : 0;
+    }
+
+    public int countSessoErrato() {
+        Long lungo = null;
+        Query query = new Query();
+
+        query.addCriteria(Criteria.where("sesso").regex("[^M^F]{1}"));
+        lungo = mongoService.mongoOp.count(query, Bio.class);
+
+        return lungo != null ? lungo.intValue() : 0;
+    }
+
+    public List<Bio> getSessoLungo() {
+        List<Bio> listaLunghe = null;
+        Query query = new Query();
+
+        query.addCriteria(Criteria.where("sesso").regex(".{2,}"));
+        listaLunghe = mongoService.mongoOp.find(query, Bio.class);
+
+        return listaLunghe;
+    }
+
+    public List<Bio> getSessoErrato() {
+        List<Bio> listaLunghe = null;
+        Query query = new Query();
+
+        query.addCriteria(Criteria.where("sesso").regex("[^M^F]{1}"));
+        listaLunghe = mongoService.mongoOp.find(query, Bio.class);
+
+        return listaLunghe;
+    }
+
+    public int countNazionalitaGenere() {
+        return ((Long) repository.countBioByErroreIs(AETypeBioError.nazionalitaGenere)).intValue();
     }
 
     public void fixErroriSesso() {
@@ -453,6 +513,20 @@ public class BioBackend extends WikiBackend {
         for (Bio bio : lista) {
             bio.errato = true;
             bio.errore = AETypeBioError.sessoMancante;
+            save(bio);
+        }
+
+        lista = getSessoLungo();
+        for (Bio bio : lista) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoLungo;
+            save(bio);
+        }
+
+        lista = getSessoErrato();
+        for (Bio bio : lista) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoErrato;
             save(bio);
         }
     }

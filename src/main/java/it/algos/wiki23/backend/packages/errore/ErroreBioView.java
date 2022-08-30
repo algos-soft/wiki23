@@ -1,19 +1,22 @@
 package it.algos.wiki23.backend.packages.errore;
 
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
+import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
-import it.algos.wiki23.backend.packages.attivita.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.mongodb.core.query.*;
+import org.vaadin.crudui.crud.*;
 
 import java.util.*;
 
@@ -30,6 +33,7 @@ public class ErroreBioView extends WikiView {
 
     //--per eventuali metodi specifici
     private BioBackend backend;
+    private ComboBox comboType;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -38,8 +42,9 @@ public class ErroreBioView extends WikiView {
      */
     @Autowired
     public BioService bioService;
+
     //--per eventuali metodi specifici
-    private BioDialog dialog;
+    private ErroreBioDialog dialog;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -94,11 +99,34 @@ public class ErroreBioView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        int nulli = backend.getSessoMancante();
+        int nulli = backend.countSessoMancante();
+        int lunghi = backend.countSessoLungo();
+        int errati = backend.countSessoErrato();
+        int nazionalita = backend.countNazionalitaGenere();
 
         addSpanVerde(String.format("SessoMancante: %s", nulli));
+        addSpanVerde(String.format("SessoLungo: %s", lunghi));
+        addSpanVerde(String.format("SessoErrato: %s", errati));
+        addSpanVerde(String.format("NazionalitàGenere: %s", nazionalita));
+    }
+    @Override
+    protected void fixTopLayout() {
+        super.fixTopLayout();
+        this.fixBottoniTopSpecificiErrori();
     }
 
+    protected void fixBottoniTopSpecificiErrori() {
+        comboType = new ComboBox<>();
+        comboType.setPlaceholder(TAG_ALTRE_BY + "errore");
+        comboType.setWidth("26ex");
+        comboType.getElement().setProperty("title", "Filtro di selezione");
+        comboType.setClearButtonVisible(true);
+        comboType.setItems(AETypeBioError.values());
+        comboType.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder2.add(comboType);
+
+        this.add(topPlaceHolder2);
+    }
 
     /**
      * autoCreateColumns=false <br>
@@ -131,13 +159,36 @@ public class ErroreBioView extends WikiView {
     }
 
     protected void sincroFiltri() {
-        List items;
+        List<Bio> items;
         items = bioService.fetchErrori();
+
+        if (comboType != null && comboType.getValue() != null) {
+            if (comboType.getValue() instanceof AETypeBioError errore) {
+                items = items.stream()
+                        .filter(bio -> bio.errore.equals(errore))
+                        .toList();
+            }
+        }
+
         if (items != null) {
             grid.setItems((List) items);
             elementiFiltrati = items.size();
             sicroBottomLayout();
         }
     }
+
+    public void updateItem(AEntity entityBeanSenzaTempl) {
+        Bio bioMongoCompleto = null;
+
+        if (entityBeanSenzaTempl instanceof Bio bioSenzaTempl) {
+            bioMongoCompleto = backend.findByKey(bioSenzaTempl.pageId);
+        }
+
+        if (bioMongoCompleto != null) {
+            dialog = appContext.getBean(ErroreBioDialog.class, bioMongoCompleto, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
+            dialog.openBio(this::saveHandler, this::annullaHandler, null, null);
+        }
+    }
+
 
 }

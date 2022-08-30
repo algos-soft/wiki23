@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.packages.bio;
 
 import it.algos.vaad23.backend.entity.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
@@ -34,40 +35,62 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
     @Override
     void delete(Bio entity);
+
     Bio findFirstByPageId(long pageID);
+
     Bio findFirstByWikiTitle(String wikiTitle);
 
     long countBioByAttivita(String attivita);
+
     long countBioByAttivita2(String attivita);
+
     long countBioByAttivita3(String attivita);
+
     long countBioByNazionalita(String nazionalita);
 
     long countBioByGiornoNato(String giornoNato);
+
     long countBioByGiornoMorto(String giornoMorto);
+
     long countBioByAnnoNato(String annoNato);
+
     long countBioByAnnoMorto(String annoMorto);
 
     @Query(value = "{ 'nome' : ?0 }", fields = "{ 'nome' : 1, 'cognome' : 1 }")
     List<Bio> findByNomeIncludeNomeAndCognomeFields(String nome);
 
     List<Bio> findAllByAttivitaOrderByOrdinamento(String attivita);
+
     List<Bio> findAllByAttivita2OrderByOrdinamento(String attivita2);
+
     List<Bio> findAllByAttivita3OrderByOrdinamento(String attivita2);
 
     List<Bio> findAllByNazionalitaOrderByCognome(String nazionalita);
+
     List<Bio> findAllByNazionalitaOrderByOrdinamento(String nazionalita);
+
     List<Bio> findAllByAnnoNatoOrderByGiornoNatoOrdAscOrdinamentoAsc(String annoNato);
+
     List<Bio> findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(String annoMorto);
 
 
     List<Bio> findAllByGiornoNatoOrderByAnnoNatoOrdAscOrdinamentoAsc(String annoNato);
+
     List<Bio> findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(String annoNato);
+
     List<Bio> findAllByErrato(boolean errato);
 
 
     long countBioByErratoIsTrue();
+
     long countBioBySessoIsNull();
+
     long countBioBySessoEquals(String sesso);
+
+    long countBioByErroreIs(AETypeBioError error);
+
     List<Bio> findBySessoIsNull();
+
+    List<Bio> findBySessoIsLike(String regex);
 
 }// end of crud repository class

@@ -106,7 +106,7 @@ public class BioService extends WAbstractService {
      *
      * @return mappa chiave-valore
      */
-    public LinkedHashMap<String, String> estraeMappa(final Bio bio) {
+    public Map<String, String> estraeMappa(final Bio bio) {
         return estraeMappa(bio.getTmplBio());
     }
 
@@ -124,7 +124,7 @@ public class BioService extends WAbstractService {
         LinkedHashMap<String, String> mappa = null;
         LinkedHashMap mappaGraffe = null;
         boolean continua = true;
-        String sepRE = "\n\\|";
+        String sepRE = "\n *\\|";
         String[] righe = null;
         String chiave;
         String valore;

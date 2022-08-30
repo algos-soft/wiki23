@@ -50,7 +50,7 @@ public class ElaboraService extends WAbstractService {
     public Bio esegue(Bio bio) {
 
         //--Recupera i valori base di tutti i parametri dal tmplBioServer
-        LinkedHashMap<String, String> mappa = bioService.estraeMappa(bio);
+        Map<String, String> mappa = bioService.estraeMappa(bio);
 
         //--Elabora valori validi dei parametri significativi
         //--Inserisce i valori nella entity Bio
@@ -73,7 +73,7 @@ public class ElaboraService extends WAbstractService {
     }
 
     //--Inserisce i valori nella entity Bio
-    public void setValue(Bio bio, HashMap<String, String> mappa) {
+    public void setValue(Bio bio, Map<String, String> mappa) {
         String value;
         String message;
 
@@ -159,8 +159,13 @@ public class ElaboraService extends WAbstractService {
      * @return testo/parametro regolato in uscita
      */
     public String fixSesso(String testoGrezzo) {
-        String testoValido = fixValoreGrezzo(testoGrezzo);
-        testoValido = testoValido.toLowerCase();
+        String testoValido = testoGrezzo;
+
+        if (textService.isEmpty(testoValido)) {
+            return VUOTA;
+        }
+
+        testoValido = testoValido.trim();
 
         if (MASCHI.contains(testoValido)) {
             testoValido = "M";
@@ -170,7 +175,16 @@ public class ElaboraService extends WAbstractService {
             testoValido = "F";
         }
 
-        return testoValido;
+        if (testoValido.length() > 1) {
+            testoValido = testoValido.substring(0, 1);
+        }
+
+        if (testoValido.equals("M") || testoValido.equals("F")) {
+            return testoValido;
+        }
+        else {
+            return VUOTA;
+        }
     }
 
 
@@ -288,6 +302,7 @@ public class ElaboraService extends WAbstractService {
                 testoValido = primo + SPAZIO + mese;
             }
         }
+
 
         return testoValido.trim();
     }
@@ -591,13 +606,12 @@ public class ElaboraService extends WAbstractService {
             nazionalita2 = nazionalitaBackend.findFirstBySingolare(nazionalitaTxt);
             if (nazionalita2 != null) {
                 logger.info(new WrapLog().message(String.format("Nella bio %s modificato il genere di %s in %s (che esiste)", bio.wikiTitle, testoGrezzo, nazionalitaTxt)).usaDb());
+                bio.errato = true;
+                bio.errore = AETypeBioError.nazionalitaGenere;
             }
             else {
-                logger.info(new WrapLog().message(String.format("NON modificato il genere di %s (non esiste %s)", testoGrezzo, nazionalitaTxt)));
                 nazionalitaTxt = nazionalita.getSingolare();
             }
-
-
         }
 
         return nazionalitaTxt;

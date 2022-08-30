@@ -508,19 +508,29 @@ public class ElaboraServiceTest extends WikiTest {
         System.out.println("16 - nazionalità maschile e femminile");
         System.out.println(VUOTA);
 
-        //        sorgente = "Karel Škorpil";
-        //        bio= queryService.getBio(sorgente);
+        sorgente = "Karel Škorpil";
+        bio = queryService.getBio(sorgente);
+    }
 
-//        sorgente = "F";
-//        sorgente2 = "ceca";
-//        ottenuto = service.nazionalitaValida(sorgente, sorgente2);
-//        printNome(sorgente2, ottenuto);
-//        System.out.println(VUOTA);
-//
-//        sorgente = "M";
-//        sorgente2 = "ceca";
-//        ottenuto = service.nazionalitaValida(sorgente, sorgente2);
-//        printNome(sorgente2, ottenuto);
+    @Test
+    @Order(17)
+    @DisplayName("17 - nazionalità maschile e femminile")
+    void ciclo17() {
+        System.out.println("17 - nazionalità maschile e femminile");
+        System.out.println(VUOTA);
+
+        sorgente = "Laura Mancinelli";
+        bio = queryService.getBio(sorgente);
+    }
+    @Test
+    @Order(18)
+    @DisplayName("18 - nazionalità maschile e femminile")
+    void ciclo18() {
+        System.out.println("18 - nazionalità maschile e femminile");
+        System.out.println(VUOTA);
+
+        sorgente = "Johann Georg Kastner";
+        bio = queryService.getBio(sorgente);
     }
 
 
