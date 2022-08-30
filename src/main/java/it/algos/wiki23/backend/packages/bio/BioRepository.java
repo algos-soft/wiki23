@@ -82,6 +82,7 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
 
     long countBioByErratoIsTrue();
+    long countBioByOrdinamentoIsNull();
 
     long countBioBySessoIsNull();
 

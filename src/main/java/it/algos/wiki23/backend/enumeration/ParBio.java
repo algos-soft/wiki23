@@ -68,6 +68,7 @@ public enum ParBio {
             String valueTmp = VUOTA;
             if (textService.isValid(valuePropertyForzaOrdinamento)) {
                 bio.ordinamento = elaboraService.fixOrdinamento(valuePropertyForzaOrdinamento);
+                bio.ordinamento = bio.ordinamento.equals(VUOTA) ? null : bio.ordinamento;
                 return;
             }
             if (textService.isValid(bio.cognome)) {
@@ -76,9 +77,11 @@ public enum ParBio {
                     valueTmp += String.format(", %s", elaboraService.fixNome(bio.nome));
                 }
                 bio.ordinamento = valueTmp;
+                bio.ordinamento = bio.ordinamento.equals(VUOTA) ? null : bio.ordinamento;
                 return;
             }
             bio.ordinamento = elaboraService.fixCognome(bio.wikiTitle);
+            bio.ordinamento = bio.ordinamento.equals(VUOTA) ? null : bio.ordinamento;
         }
 
         @Override

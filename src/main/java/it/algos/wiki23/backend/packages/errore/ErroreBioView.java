@@ -33,6 +33,7 @@ public class ErroreBioView extends WikiView {
 
     //--per eventuali metodi specifici
     private BioBackend backend;
+
     private ComboBox comboType;
 
     /**
@@ -103,12 +104,15 @@ public class ErroreBioView extends WikiView {
         int lunghi = backend.countSessoLungo();
         int errati = backend.countSessoErrato();
         int nazionalita = backend.countNazionalitaGenere();
+        int ordinamento = backend.countNazionalitaGenere();
 
-        addSpanVerde(String.format("SessoMancante: %s", nulli));
-        addSpanVerde(String.format("SessoLungo: %s", lunghi));
-        addSpanVerde(String.format("SessoErrato: %s", errati));
-        addSpanVerde(String.format("NazionalitàGenere: %s", nazionalita));
+        addSpanVerde(String.format("%s: %s", AETypeBioError.sessoMancante, nulli));
+        addSpanVerde(String.format("%s: %s", AETypeBioError.sessoLungo, lunghi));
+        addSpanVerde(String.format("%s: %s", AETypeBioError.sessoErrato, errati));
+        addSpanVerde(String.format("%s: %s", AETypeBioError.nazionalitaGenere, nazionalita));
+        addSpanVerde(String.format("%s: %s", AETypeBioError.mancaOrdinamento, ordinamento));
     }
+
     @Override
     protected void fixTopLayout() {
         super.fixTopLayout();

@@ -375,9 +375,9 @@ public class BioBackend extends WikiBackend {
     public List<Bio> findSenzaTmpl(Sort sort) {
         Document doc = null;
 
-        if (sort == null) {
+//        if (sort == null) {
             doc = new Document("ordinamento", 1);
-        }
+//        }
 
         return mongoService.projectionExclude(Bio.class, this, doc, "tmplBio");
     }
@@ -434,10 +434,9 @@ public class BioBackend extends WikiBackend {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void errori() {
-        int prima = countErrori();
         resetErrori();
-        int dopo = countErrori();
         fixErroriSesso();
+        fixMancaOrdinamento();
     }
 
     public void resetErrori() {
@@ -470,6 +469,9 @@ public class BioBackend extends WikiBackend {
         lungo = mongoService.mongoOp.count(query, Bio.class);
 
         return lungo != null ? lungo.intValue() : 0;
+    }
+    public int countOrdinamento() {
+        return ((Long) repository.countBioByOrdinamentoIsNull()).intValue();
     }
 
     public List<Bio> getSessoLungo() {
@@ -529,6 +531,8 @@ public class BioBackend extends WikiBackend {
             bio.errore = AETypeBioError.sessoErrato;
             save(bio);
         }
+    }
+    public void fixMancaOrdinamento() {
     }
 
 }// end of crud backend class
