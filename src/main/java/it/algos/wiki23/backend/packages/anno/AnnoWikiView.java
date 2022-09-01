@@ -5,7 +5,9 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -117,28 +119,83 @@ public class AnnoWikiView extends WikiView {
     protected void addColumnsOneByOne() {
         super.addColumnsOneByOne();
 
-        grid.addColumn(new ComponentRenderer<>(entity -> {
-            Label label = new Label(((AnnoWiki) entity).pageNati);
-            if (((AnnoWiki) entity).nati) {
-                label.getElement().getStyle().set("color", "green");
+        Grid.Column paginaNati = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String wikiTitle = ((AnnoWiki) entity).pageNati;
+            Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+            if (((AnnoWiki) entity).esistePaginaNati) {
+                anchor.getElement().getStyle().set("color", "green");
             }
             else {
-                label.getElement().getStyle().set("color", "red");
+                anchor.getElement().getStyle().set("color", "red");
             }
-            return label;
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+            return new Span(anchor);
         })).setHeader("Nati").setKey("pageNati").setFlexGrow(0).setWidth("12em");
 
-        grid.addColumn(new ComponentRenderer<>(entity -> {
-            Label label = new Label(((AnnoWiki) entity).pageMorti);
-            if (((AnnoWiki) entity).morti) {
-                label.getElement().getStyle().set("color", "green");
+        Grid.Column paginaMorti = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String wikiTitle = ((AnnoWiki) entity).pageMorti;
+            Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+            if (((AnnoWiki) entity).esistePaginaMorti) {
+                anchor.getElement().getStyle().set("color", "green");
             }
             else {
-                label.getElement().getStyle().set("color", "red");
+                anchor.getElement().getStyle().set("color", "red");
             }
-            return label;
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+            return new Span(anchor);
         })).setHeader("Morti").setKey("pageMorti").setFlexGrow(0).setWidth("12em");
 
+        Grid.Column cancellaNati = grid.addColumn(new ComponentRenderer<>(entity -> {
+            if (((AnnoWiki) entity).bioNati == 0) {
+                if (((AnnoWiki) entity).esistePaginaNati) {
+                    String link = PATH_WIKI_EDIT + ((AnnoWiki) entity).pageNati + TAG_DELETE;
+                    Anchor anchor = new Anchor(link, "DEL");
+                    anchor.getElement().getStyle().set("color", "red");
+                    anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+                    return new Span(anchor);
+                }
+                else {
+                    Label label = new Label("OK");
+                    label.getElement().getStyle().set("color", "red");
+                    return label;
+                }
+            }
+            else {
+                Label label = new Label("OK");
+                label.getElement().getStyle().set("color", "green");
+                return label;
+            }
+        })).setHeader("Nati").setKey("cancellaNati").setFlexGrow(0).setWidth("8em");
+
+        Grid.Column cancellaMorti = grid.addColumn(new ComponentRenderer<>(entity -> {
+            if (((AnnoWiki) entity).bioMorti == 0) {
+                if (((AnnoWiki) entity).esistePaginaMorti) {
+                    String link = PATH_WIKI_EDIT + ((AnnoWiki) entity).pageMorti + TAG_DELETE;
+                    Anchor anchor = new Anchor(link, "del");
+                    anchor.getElement().getStyle().set("color", "red");
+                    anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+                    return new Span(anchor);
+                }
+                else {
+                    Label label = new Label("OK");
+                    label.getElement().getStyle().set("color", "red");
+                    return label;
+                }
+            }
+            else {
+                Label label = new Label("OK");
+                label.getElement().getStyle().set("color", "green");
+                return label;
+            }
+        })).setHeader("Morti").setKey("cancellaMorti").setFlexGrow(0).setWidth("8em");
+
+
+        Grid.Column ordine = grid.getColumnByKey("ordine");
+        Grid.Column nome = grid.getColumnByKey("nome");
+        Grid.Column bioNati = grid.getColumnByKey("bioNati");
+        Grid.Column bioMorti = grid.getColumnByKey("bioMorti");
+
+        grid.setColumnOrder(ordine, nome, bioNati, bioMorti, paginaNati, paginaMorti, cancellaNati,cancellaMorti);
     }
 
     /**

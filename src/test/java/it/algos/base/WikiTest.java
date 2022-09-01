@@ -176,29 +176,47 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of(null, false),
                 Arguments.of(VUOTA, false),
                 Arguments.of("Roberto il Forte", true),
-//                Arguments.of("Claude de Chastellux", true),
-//                Arguments.of("John Murphy (politico statunitense)", true),
-//                Arguments.of("Meena Keshwar Kamal", true),
-//                Arguments.of("Werburga", true),
-//                Arguments.of("Roman Protasevič", true),
-//                Arguments.of("Aldelmo di Malmesbury", true),
-//                Arguments.of("Aelfric il grammatico", true),
-//                Arguments.of("Bernart Arnaut d'Armagnac", true),
-//                Arguments.of("Elfleda di Whitby", true),
-//                Arguments.of("Gaetano Anzalone", true),
-//                Arguments.of("Colin Campbell (generale)", true),
-//                Arguments.of("Louis Winslow Austin", true),
-//                Arguments.of("San Nicanore", true),
-//                Arguments.of("Regno di Napoli (1908-1745)", false),
-//                Arguments.of("Regno di Napoli (1806-1815)", false),
-//                Arguments.of("Rossi", false),
-//                Arguments.of("Bartolomeo Giuseppe Amico di Castell'Alfero", true),
-//                Arguments.of("Lucio Anneo Seneca", true),
-//                Arguments.of("Bodhidharma", true),
+                //                Arguments.of("Claude de Chastellux", true),
+                //                Arguments.of("John Murphy (politico statunitense)", true),
+                //                Arguments.of("Meena Keshwar Kamal", true),
+                //                Arguments.of("Werburga", true),
+                //                Arguments.of("Roman Protasevič", true),
+                //                Arguments.of("Aldelmo di Malmesbury", true),
+                //                Arguments.of("Aelfric il grammatico", true),
+                //                Arguments.of("Bernart Arnaut d'Armagnac", true),
+                //                Arguments.of("Elfleda di Whitby", true),
+                //                Arguments.of("Gaetano Anzalone", true),
+                //                Arguments.of("Colin Campbell (generale)", true),
+                //                Arguments.of("Louis Winslow Austin", true),
+                //                Arguments.of("San Nicanore", true),
+                //                Arguments.of("Regno di Napoli (1908-1745)", false),
+                //                Arguments.of("Regno di Napoli (1806-1815)", false),
+                //                Arguments.of("Rossi", false),
+                //                Arguments.of("Bartolomeo Giuseppe Amico di Castell'Alfero", true),
+                //                Arguments.of("Lucio Anneo Seneca", true),
+                //                Arguments.of("Bodhidharma", true),
                 Arguments.of("Ashur-uballit I", true)
         );
     }
 
+    //--wikiTitle
+    protected static Stream<Arguments> BIOGRAFIE() {
+        return Stream.of(
+                Arguments.of(VUOTA),
+                Arguments.of("Jacques de Molay"),
+                Arguments.of("Roberto il Forte"),
+                Arguments.of("Agnese di Borgogna"),
+                Arguments.of("Matteo Renzi"),
+                Arguments.of("Hunter King"),
+                Arguments.of("Laura Mancinelli"),
+                Arguments.of("Johann Georg Kastner"),
+                Arguments.of("Meirchion Gul"),
+                Arguments.of("Vincenzo Vacirca"),
+                Arguments.of("Ashur-uballit I"),
+                Arguments.of("Albia Dominica"),
+                Arguments.of("Rinaldo II di Bar")
+        );
+    }
 
     //--titolo
     //--pagina esistente
@@ -257,14 +275,14 @@ public abstract class WikiTest extends AlgosTest {
     //--typeLista
     protected static Stream<Arguments> NAZIONALITA() {
         return Stream.of(
-//                Arguments.of(VUOTA, AETypeLista.listaBreve),
-//                Arguments.of(VUOTA, AETypeLista.nazionalitaSingolare),
-//                Arguments.of("azeri", AETypeLista.nazionalitaPlurale),
-//                Arguments.of("arabi", AETypeLista.nazionalitaPlurale),
-//                Arguments.of("libanesi", AETypeLista.nazionalitaPlurale),
+                //                Arguments.of(VUOTA, AETypeLista.listaBreve),
+                //                Arguments.of(VUOTA, AETypeLista.nazionalitaSingolare),
+                //                Arguments.of("azeri", AETypeLista.nazionalitaPlurale),
+                //                Arguments.of("arabi", AETypeLista.nazionalitaPlurale),
+                //                Arguments.of("libanesi", AETypeLista.nazionalitaPlurale),
                 Arguments.of("afghani", AETypeLista.nazionalitaPlurale),
-//                Arguments.of("mongoli", AETypeLista.nazionalitaPlurale),
-//                Arguments.of("assiri", AETypeLista.nazionalitaPlurale),
+                //                Arguments.of("mongoli", AETypeLista.nazionalitaPlurale),
+                //                Arguments.of("assiri", AETypeLista.nazionalitaPlurale),
                 Arguments.of("capoverdiani", AETypeLista.nazionalitaPlurale)
 
         );
@@ -760,11 +778,8 @@ public abstract class WikiTest extends AlgosTest {
         }
     }
 
-    protected void printMappa(Map<String, String> mappa) {
+    protected void printMappaBio(Map<String, String> mappa) {
         if (mappa != null) {
-            message = String.format("Faccio vedere una mappa");
-            System.out.println(message);
-            System.out.println(VUOTA);
             for (String key : mappa.keySet()) {
                 System.out.print(key);
                 System.out.print(FORWARD);

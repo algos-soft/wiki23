@@ -8,6 +8,8 @@ import it.algos.wiki23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -23,10 +25,11 @@ import java.util.stream.*;
  * Date: Mon, 30-May-2022
  * Time: 06:51
  */
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
+@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("Text Service")
+@Tag("production")
+@DisplayName("BioService Service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class BioServiceTest extends WikiTest {
 
@@ -89,50 +92,25 @@ public class BioServiceTest extends WikiTest {
     }
 
 
-    @Test
+    @ParameterizedTest
+    @MethodSource(value = "BIOGRAFIE")
     @Order(3)
     @DisplayName("3 - estrae mappa")
-    void mappa() {
+        //--wikiTitle
+    void estraeMappa(String wikiTitle) {
         System.out.println("3 - estrae mappa");
+        sorgente = wikiTitle;
 
-        sorgente = "Matteo Renzi";
         bio = queryService.getBio(sorgente);
         mappaOttenuta = service.estraeMappa(bio);
-        assertNotNull(mappaOttenuta);
-        printMappa(mappaOttenuta);
-    }
 
-    @Test
-    @Order(4)
-    @DisplayName("4 - estrae altra mappa")
-    void mappa4() {
-        System.out.println("4 - estrae altra mappa");
-
-        sorgente = "Hunter King";
-        bio = queryService.getBio(sorgente);
-        mappaOttenuta = service.estraeMappa(bio);
-        assertNotNull(mappaOttenuta);
+        System.out.println(String.format("Faccio vedere una mappa di %s", wikiTitle));
         System.out.println(VUOTA);
-        System.out.println(String.format("bio.sesso: %s",bio.sesso));
+        System.out.println("Template:");
+        System.out.println(String.format("%s", bio != null ? bio.tmplBio : "(null)"));
         System.out.println(VUOTA);
-        printMappa(mappaOttenuta);
-    }
-
-
-    @Test
-    @Order(5)
-    @DisplayName("5 - estrae altra mappa")
-    void mappa5() {
-        System.out.println("5 - estrae altra mappa");
-
-        sorgente = "Laura Mancinelli";
-        bio = queryService.getBio(sorgente);
-        mappaOttenuta = service.estraeMappa(bio);
-        assertNotNull(mappaOttenuta);
-        System.out.println(VUOTA);
-        System.out.println(String.format("bio.sesso: %s",bio.sesso));
-        System.out.println(VUOTA);
-        printMappa(mappaOttenuta);
+        System.out.println("Mappa:");
+        printMappaBio(mappaOttenuta);
     }
 
 

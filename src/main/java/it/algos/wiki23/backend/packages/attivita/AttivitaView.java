@@ -198,26 +198,22 @@ public class AttivitaView extends WikiView {
 
         Grid.Column pluraleLista = grid.addColumn(new ComponentRenderer<>(entity -> {
             String wikiTitle = textService.primaMaiuscola(((Attivita) entity).pluraleLista);
-            Label label = new Label(wikiTitle);
-            label.getElement().getStyle().set("color", "red");
             Anchor anchor = new Anchor(PATH_WIKI + PATH_ATTIVITA + SLASH + wikiTitle, wikiTitle);
-            anchor.getElement().getStyle().set("color", "green");
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-            Span span = new Span(anchor);
-
             if (((Attivita) entity).esistePaginaLista) {
-                return span;
+                anchor.getElement().getStyle().set("color", "green");
             }
             else {
-                return label;
+                anchor.getElement().getStyle().set("color", "red");
             }
+            return new Span(anchor);
         })).setHeader("pluraleLista").setKey("pluraleLista").setFlexGrow(0).setWidth("18em");
 
         Grid.Column linkPagina = grid.addColumn(new ComponentRenderer<>(entity -> {
             String wikiTitle = textService.primaMaiuscola(((Attivita) entity).linkPaginaAttivita);
             Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
             anchor.getElement().getStyle().set("color", "green");
-            Span span = new Span(anchor);
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
 
             return new Span(anchor);
         })).setHeader("linkPagina").setKey("linkPagina").setFlexGrow(0).setWidth("18em");

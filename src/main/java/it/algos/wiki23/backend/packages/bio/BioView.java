@@ -119,6 +119,7 @@ public class BioView extends WikiView {
         int numBio = 0;
         WResult result;
         categoria = WPref.categoriaBio.getStr();
+
         result = appContext.getBean(QueryInfoCat.class).urlRequest(categoria);
         numBio = result.getIntValue();
 
@@ -234,8 +235,9 @@ public class BioView extends WikiView {
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void sincroFiltri() {
+        long inizio = System.currentTimeMillis();
         List<Bio> items = backend.findAll(sortOrder);
-
+        logger.info(new WrapLog().exception(new AlgosException(String.format("Items %s", dateService.deltaText(inizio)))));
         final String textWikiTitle = searchFieldWikiTitle != null ? searchFieldWikiTitle.getValue() : VUOTA;
         if (textService.isValidNoSpace(textWikiTitle)) {
             items = items

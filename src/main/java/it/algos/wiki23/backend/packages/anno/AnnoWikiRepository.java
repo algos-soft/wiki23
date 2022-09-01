@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.entity.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -34,6 +35,7 @@ public interface AnnoWikiRepository extends MongoRepository<AnnoWiki, String> {
 
     @Override
     List<AnnoWiki> findAll();
+    List<AnnoWiki> findAllByOrderByOrdineDesc();
 
     <AnnoWiki extends AEntity> AnnoWiki insert(AnnoWiki entity);
 

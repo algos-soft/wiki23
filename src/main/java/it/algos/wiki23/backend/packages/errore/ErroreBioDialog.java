@@ -88,22 +88,22 @@ public class ErroreBioDialog extends BioDialog {
         super.fixBottom();
 
         buttonFixSex = new Button();
-        buttonFixSex.setText("Fix sex");
+        buttonFixSex.setText("Fix sex M");
         buttonFixSex.getElement().setAttribute("theme", "error");
         buttonFixSex.setIcon(new Icon(VaadinIcon.UPLOAD));
-        buttonFixSex.addClickListener(event -> fixSex());
+        buttonFixSex.addClickListener(event -> fixSex("M"));
+        bottomPlaceHolder.add(buttonFixSex);
+
+        buttonFixSex = new Button();
+        buttonFixSex.setText("Fix sex F");
+        buttonFixSex.getElement().setAttribute("theme", "error");
+        buttonFixSex.setIcon(new Icon(VaadinIcon.UPLOAD));
+        buttonFixSex.addClickListener(event -> fixSex("F"));
         bottomPlaceHolder.add(buttonFixSex);
     }
 
-    protected void fixSex() {
-        String newSex = currentItem.sesso;
-        try {
-            binder.writeBean(currentItem);
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(unErrore)));
-        }
-
-        newSex = currentItem.sesso;
+    protected void fixSex(String newSex) {
+        currentItem.sesso = newSex;
         String wikiTitle = currentItem.wikiTitle;
         String summary = "[[Utente:Biobot/fixPar|fixPar]]";
         String tagRegex = "\n*\\| *Sesso *= *[MF]*\n*\\|";

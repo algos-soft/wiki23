@@ -105,7 +105,7 @@ public class AnnoWikiBackend extends WikiBackend {
 
     @Override
     public List<AnnoWiki> findAll() {
-        return repository.findAll();
+        return repository.findAllByOrderByOrdineDesc();
     }
 
     public List<String> findAllNomi() {
@@ -169,8 +169,8 @@ public class AnnoWikiBackend extends WikiBackend {
             wikiTitleNati = wikiUtility.wikiTitleNatiAnno(anno.nome);
             wikiTitleMorti = wikiUtility.wikiTitleMortiAnno(anno.nome);
 
-            annoWiki.nati = queryService.isEsiste(wikiTitleNati);
-            annoWiki.morti = queryService.isEsiste(wikiTitleMorti);
+            annoWiki.esistePaginaNati = queryService.isEsiste(wikiTitleNati);
+            annoWiki.esistePaginaMorti = queryService.isEsiste(wikiTitleMorti);
 
             update(annoWiki);
 

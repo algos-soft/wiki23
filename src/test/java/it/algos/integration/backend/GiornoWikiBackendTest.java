@@ -6,11 +6,14 @@ import it.algos.wiki23.backend.packages.giorno.*;
 import org.junit.jupiter.api.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.context.annotation.Scope;
@@ -26,11 +29,11 @@ import com.vaadin.flow.component.textfield.TextField;
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("integration")
+@Tag("production")
 @Tag("backend")
 @DisplayName("GiornoWiki Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class GiornoWikiBackendTest extends AlgosTest {
+public class GiornoWikiBackendTest extends WikiTest {
 
     /**
      * The Service.
@@ -46,6 +49,19 @@ public class GiornoWikiBackendTest extends AlgosTest {
 
 
     private List<GiornoWiki> listaBeans;
+
+    //--giorno
+    //--esistente
+    protected static Stream<Arguments> GIORNI() {
+        return Stream.of(
+                Arguments.of(null, false),
+                Arguments.of(VUOTA, false),
+                Arguments.of("23 febbraio", true),
+                Arguments.of("43 marzo", false),
+                Arguments.of("19 dicembra", false),
+                Arguments.of("4 gennaio", true)
+                );
+    }
 
     /**
      * Qui passa una volta sola <br>
@@ -119,6 +135,39 @@ public class GiornoWikiBackendTest extends AlgosTest {
         assertNotNull(listaBeans);
         message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "GiornoWiki");
         System.out.println(message);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - giorni esistenti")
+    void isEsisteCiclo() {
+        System.out.println("3 - giorni esistenti");
+
+        //--giorno
+        //--esistente
+        System.out.println(VUOTA);
+        GIORNI().forEach(this::isEsisteBase);
+    }
+
+
+
+
+    //--giorno
+    //--esistente
+    void isEsisteBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoBooleano = (boolean) mat[1];
+
+        ottenutoBooleano = backend.isEsiste(sorgente);
+        assertEquals(previstoBooleano, ottenutoBooleano);
+        if (ottenutoBooleano) {
+            System.out.println(String.format("Il giorno %s esiste",sorgente));
+        }
+        else {
+            System.out.println(String.format("Il giorno %s non esiste",sorgente));
+        }
+        System.out.println(VUOTA);
     }
 
     /**

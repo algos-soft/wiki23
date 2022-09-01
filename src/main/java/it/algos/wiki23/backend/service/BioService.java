@@ -107,7 +107,7 @@ public class BioService extends WAbstractService {
      * @return mappa chiave-valore
      */
     public Map<String, String> estraeMappa(final Bio bio) {
-        return estraeMappa(bio.getTmplBio());
+        return bio != null ? estraeMappa(bio.getTmplBio()) : null;
     }
 
     /**
@@ -192,10 +192,10 @@ public class BioService extends WAbstractService {
             }
         }
 
-        //--controllo e aggiunta di un parametro che verrà elaborato
-        if (!mappa.containsKey("ForzaOrdinamento")) {
-            mappa.put("ForzaOrdinamento", VUOTA);
-        }
+//        //--controllo e aggiunta di un parametro che verrà elaborato
+//        if (!mappa.containsKey("ForzaOrdinamento")) {
+//            mappa.put("ForzaOrdinamento", VUOTA);
+//        }
 
         return mappa;
     }
@@ -845,7 +845,8 @@ public class BioService extends WAbstractService {
     /**
      * Cerca tutte le entities di una collection filtrate con un flag. <br>
      * Selects documents in a collection or view and returns a list of the selected documents. <br>
-     **
+     * *
+     *
      * @return lista di entityBeans
      *
      * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)

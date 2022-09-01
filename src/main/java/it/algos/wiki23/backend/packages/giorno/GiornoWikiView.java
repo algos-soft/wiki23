@@ -4,10 +4,13 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad23.backend.boot.VaadCost.PATH_WIKI;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import static it.algos.wiki23.backend.service.BioService.*;
 import it.algos.wiki23.backend.statistiche.*;
 import it.algos.wiki23.backend.upload.*;
 import org.springframework.beans.factory.annotation.*;
@@ -124,17 +127,20 @@ public class GiornoWikiView extends WikiView {
         super.addColumnsOneByOne();
 
         grid.addColumn(new ComponentRenderer<>(entity -> {
-            Label label = new Label(((GiornoWiki) entity).pageNati);
-            label.getElement().getStyle().set("color", "green");
-            return label;
+            String wikiTitle =((GiornoWiki) entity).pageNati;
+            Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+            anchor.getElement().getStyle().set("color", "green");
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+            return new Span(anchor);
         })).setHeader("Nati").setKey("pageNati").setFlexGrow(0).setWidth("14em");
 
         grid.addColumn(new ComponentRenderer<>(entity -> {
-            Label label = new Label(((GiornoWiki) entity).pageMorti);
-            label.getElement().getStyle().set("color", "green");
-            return label;
+            String wikiTitle =((GiornoWiki) entity).pageMorti;
+            Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+            anchor.getElement().getStyle().set("color", "green");
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+            return new Span(anchor);
         })).setHeader("Morti").setKey("pageMorti").setFlexGrow(0).setWidth("14em");
-
     }
 
 

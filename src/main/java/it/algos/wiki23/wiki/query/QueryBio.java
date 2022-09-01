@@ -143,10 +143,19 @@ public class QueryBio extends AQuery {
      * @return bio della pagina
      */
     public Bio getBio(final String wikiTitleGrezzoBio) {
-        Bio bio;
-        WrapBio wrap = getWrap(wikiTitleGrezzoBio);
-        bio = bioBackend.newEntity(wrap);
-        bio = elaboraService.esegue(bio);
+        Bio bio = null;
+        WrapBio wrap;
+
+        if (textService.isEmpty(wikiTitleGrezzoBio)) {
+            return null;
+        }
+
+        wrap = getWrap(wikiTitleGrezzoBio);
+        if (wrap != null) {
+            bio = bioBackend.newEntity(wrap);
+            bio = elaboraService.esegue(bio);
+        }
+
         return bio;
     }
 

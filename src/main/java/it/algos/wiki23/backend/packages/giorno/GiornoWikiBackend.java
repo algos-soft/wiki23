@@ -119,6 +119,14 @@ public class GiornoWikiBackend extends WikiBackend {
         return repository.findFirstByNome(nome);
     }
 
+    public boolean isEsiste(final String nome) {
+        return repository.findFirstByNome(nome) != null;
+    }
+
+    public boolean isNotEsiste(final String nome) {
+        return !isEsiste(nome);
+    }
+
     /**
      * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>

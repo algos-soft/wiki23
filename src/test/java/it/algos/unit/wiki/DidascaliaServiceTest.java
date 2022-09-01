@@ -46,15 +46,6 @@ public class DidascaliaServiceTest extends WikiTest {
     @InjectMocks
     public DidascaliaService service;
 
-    //--titolo
-    protected static Stream<Arguments> PAGINE() {
-        return Stream.of(
-                Arguments.of("Jacques de Molay"),
-                Arguments.of("Roberto il Forte"),
-                Arguments.of("Agnese di Borgogna"),
-                Arguments.of("Rinaldo II di Bar")
-        );
-    }
 
     private String wikiTitleDue = "Sonia Todd";
 
@@ -367,7 +358,7 @@ public class DidascaliaServiceTest extends WikiTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "PAGINE")
+    @MethodSource(value = "BIOGRAFIE")
     @Order(11)
     @DisplayName("11 - Didascalie parziali")
         //--titolo
@@ -377,6 +368,11 @@ public class DidascaliaServiceTest extends WikiTest {
 
         sorgente = wikiTitle;
         bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
+        if (textService.isEmpty(wikiTitle)) {
+            assertNull(bio);
+            return;
+        }
+
         assertNotNull(bio);
         tmpl = bio.getTmplBio();
         tmpl = tmpl.replaceAll(CAPO, SPAZIO);
@@ -437,7 +433,7 @@ public class DidascaliaServiceTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "PAGINE")
+    @MethodSource(value = "BIOGRAFIE")
     @Order(12)
     @DisplayName("12 - Didascalie complete")
         //--titolo
@@ -451,6 +447,10 @@ public class DidascaliaServiceTest extends WikiTest {
 
         sorgente = wikiTitle;
         bio = appContext.getBean(QueryBio.class).getBio(wikiTitle);
+        if (textService.isEmpty(wikiTitle)) {
+            assertNull(bio);
+            return;
+        }
         assertNotNull(bio);
         tmpl = bio.getTmplBio();
         tmpl = tmpl.replaceAll(CAPO, SPAZIO);
