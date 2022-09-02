@@ -200,21 +200,25 @@ public abstract class WikiTest extends AlgosTest {
     }
 
     //--wikiTitle
+    //--numero parametri
     protected static Stream<Arguments> BIOGRAFIE() {
         return Stream.of(
-                Arguments.of(VUOTA),
-                Arguments.of("Jacques de Molay"),
-                Arguments.of("Roberto il Forte"),
-                Arguments.of("Agnese di Borgogna"),
-                Arguments.of("Matteo Renzi"),
-                Arguments.of("Hunter King"),
-                Arguments.of("Laura Mancinelli"),
-                Arguments.of("Johann Georg Kastner"),
-                Arguments.of("Meirchion Gul"),
-                Arguments.of("Vincenzo Vacirca"),
-                Arguments.of("Ashur-uballit I"),
-                Arguments.of("Albia Dominica"),
-                Arguments.of("Rinaldo II di Bar")
+                Arguments.of(VUOTA,0),
+                Arguments.of("Jacques de Molay",15),
+                Arguments.of("Roberto il Forte",17),
+                Arguments.of("Agnese di Borgogna",17),
+                Arguments.of("Matteo Renzi",15),
+                Arguments.of("Hunter King",10),
+                Arguments.of("Laura Mancinelli",17),
+                Arguments.of("Johann Georg Kastner",14),
+                Arguments.of("Meirchion Gul",15),
+                Arguments.of("Vincenzo Vacirca",15),
+                Arguments.of("Ashur-uballit I",15),
+                Arguments.of("Albia Dominica",14),
+                Arguments.of("Angelo Inganni",12),
+                Arguments.of("Andrey Guryev",17),
+                Arguments.of("Ingen Ryūki",15),
+                Arguments.of("Rinaldo II di Bar",14)
         );
     }
 

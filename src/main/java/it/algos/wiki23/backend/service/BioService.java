@@ -107,32 +107,21 @@ public class BioService extends WAbstractService {
      * @return mappa chiave-valore
      */
     public Map<String, String> estraeMappa(final Bio bio) {
-        return bio != null ? estraeMappa(bio.getTmplBio()) : null;
-    }
-
-    /**
-     * Estrae una mappa chiave-valore dal testo del template <br>
-     * Presuppone che le righe siano separate da pipe e return
-     * Controlla che non ci siano doppie graffe annidate nel valore dei parametri
-     *
-     * @param tmplBioServer testo completo del template
-     *
-     * @return mappa chiave-valore
-     */
-    public LinkedHashMap<String, String> estraeMappa(final String tmplBioServer) {
-        String tmplBio = tmplBioServer;
+        String message;
+        String tmplBio;
         LinkedHashMap<String, String> mappa = null;
         LinkedHashMap mappaGraffe = null;
         boolean continua = true;
-        String sepRE = "\n *\\|";
+        String regexSeparatore = "\n *\\|";
         String[] righe = null;
         String chiave;
         String valore;
         int pos;
 
-        if (textService.isEmpty(tmplBioServer)) {
+        if (bio == null) {
             return null;
         }
+        tmplBio = bio.getTmplBio();
 
         if (tmplBio.startsWith(DOPPIE_GRAFFE_INI) && tmplBio.endsWith(DOPPIE_GRAFFE_END)) {
             tmplBio = textService.setNoDoppieGraffe(tmplBio);
@@ -150,7 +139,7 @@ public class BioService extends WAbstractService {
                 tmplBio = tmplBio.substring(1).trim();
             }
 
-            righe = tmplBio.split(sepRE);
+            righe = tmplBio.split(regexSeparatore);
             if (righe.length == 1) {
                 mappa = getMappaRigaUnica(tmplBio);
                 continua = false;
@@ -192,10 +181,15 @@ public class BioService extends WAbstractService {
             }
         }
 
-//        //--controllo e aggiunta di un parametro che verrà elaborato
-//        if (!mappa.containsKey("ForzaOrdinamento")) {
-//            mappa.put("ForzaOrdinamento", VUOTA);
-//        }
+        //        //--controllo e aggiunta di un parametro che verrà elaborato
+        //        if (!mappa.containsKey("ForzaOrdinamento")) {
+        //            mappa.put("ForzaOrdinamento", VUOTA);
+        //        }
+
+        if (mappa != null && mappa.size() < 10) {
+            message = String.format("Parametri insufficienti nella bio %s", bio.wikiTitle);
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+        }
 
         return mappa;
     }

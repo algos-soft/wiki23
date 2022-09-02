@@ -31,6 +31,9 @@ public class TaskGiorni extends AlgosTask {
         long inizio;
 
         if (WPref.usaTaskGiorni.is()) {
+            fixNext();
+
+            //--Le statistiche comprendono anche l'elaborazione
             appContext.getBean(StatisticheGiorni.class).upload();
 
             inizio = System.currentTimeMillis();
@@ -48,6 +51,12 @@ public class TaskGiorni extends AlgosTask {
     @Override
     public String getPattern() {
         return PATTERN;
+    }
+
+    public void fixNext() {
+        LocalDateTime adesso = LocalDateTime.now();
+        LocalDateTime prossimo = adesso.plusDays(1);
+        WPref.uploadGiorniPrevisto.setValue(prossimo);
     }
 
     public void loggerUpload(long inizio) {

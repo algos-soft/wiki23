@@ -1,7 +1,9 @@
 package it.algos.wiki23.backend.packages.anno;
 
+import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -67,7 +69,7 @@ public class AnnoWikiView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("ordine", "nome", "bioNati", "bioMorti");
+        super.gridPropertyNamesList = Arrays.asList("ordine", "nome", "bioNati", "bioMorti", "natiOk", "mortiOk");
         super.formPropertyNamesList = Arrays.asList("code", "descrizione"); // controllare la congruità con la Entity
         super.sortOrder = Sort.by(Sort.Direction.DESC, "ordine");
         super.usaRowIndex = false;
@@ -75,6 +77,9 @@ public class AnnoWikiView extends WikiView {
         super.lastElaborazione = WPref.elaboraAnni;
         super.durataElaborazione = WPref.elaboraAnniTime;
         super.lastStatistica = WPref.statisticaAnni;
+        super.lastUpload = WPref.uploadAnni;
+        super.durataUpload = WPref.uploadAnniTime;
+        super.nextUpload = WPref.uploadAnniPrevisto;
         super.usaBottoneDeleteReset = true;
         super.usaReset = true;
         super.usaBottoneElabora = true;
@@ -108,7 +113,26 @@ public class AnnoWikiView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
+        addSpanRossoSmall(String.format("%s: %s", "Pagine da cancellare", backend.countListeDaCancellare()));
     }
+
+    @Override
+    protected void fixTopLayout() {
+        super.fixTopLayout();
+        this.fixBottoniTopSpecificiAnni();
+    }
+
+    protected void fixBottoniTopSpecificiAnni() {
+        boxPagineDaCancellare = new Checkbox();
+        boxPagineDaCancellare.setLabel("Da cancellare");
+        boxPagineDaCancellare.addValueChangeListener(event -> sincroCancellare());
+        HorizontalLayout layout5 = new HorizontalLayout(boxPagineDaCancellare);
+        layout5.setAlignItems(Alignment.CENTER);
+        topPlaceHolder2.add(layout5);
+
+        this.add(topPlaceHolder2);
+    }
+
 
     /**
      * autoCreateColumns=false <br>
@@ -145,57 +169,14 @@ public class AnnoWikiView extends WikiView {
             return new Span(anchor);
         })).setHeader("Morti").setKey("pageMorti").setFlexGrow(0).setWidth("12em");
 
-        Grid.Column cancellaNati = grid.addColumn(new ComponentRenderer<>(entity -> {
-            if (((AnnoWiki) entity).bioNati == 0) {
-                if (((AnnoWiki) entity).esistePaginaNati) {
-                    String link = PATH_WIKI_EDIT + ((AnnoWiki) entity).pageNati + TAG_DELETE;
-                    Anchor anchor = new Anchor(link, "DEL");
-                    anchor.getElement().getStyle().set("color", "red");
-                    anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-                    return new Span(anchor);
-                }
-                else {
-                    Label label = new Label("OK");
-                    label.getElement().getStyle().set("color", "red");
-                    return label;
-                }
-            }
-            else {
-                Label label = new Label("OK");
-                label.getElement().getStyle().set("color", "green");
-                return label;
-            }
-        })).setHeader("Nati").setKey("cancellaNati").setFlexGrow(0).setWidth("8em");
-
-        Grid.Column cancellaMorti = grid.addColumn(new ComponentRenderer<>(entity -> {
-            if (((AnnoWiki) entity).bioMorti == 0) {
-                if (((AnnoWiki) entity).esistePaginaMorti) {
-                    String link = PATH_WIKI_EDIT + ((AnnoWiki) entity).pageMorti + TAG_DELETE;
-                    Anchor anchor = new Anchor(link, "del");
-                    anchor.getElement().getStyle().set("color", "red");
-                    anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-                    return new Span(anchor);
-                }
-                else {
-                    Label label = new Label("OK");
-                    label.getElement().getStyle().set("color", "red");
-                    return label;
-                }
-            }
-            else {
-                Label label = new Label("OK");
-                label.getElement().getStyle().set("color", "green");
-                return label;
-            }
-        })).setHeader("Morti").setKey("cancellaMorti").setFlexGrow(0).setWidth("8em");
-
-
         Grid.Column ordine = grid.getColumnByKey("ordine");
         Grid.Column nome = grid.getColumnByKey("nome");
         Grid.Column bioNati = grid.getColumnByKey("bioNati");
         Grid.Column bioMorti = grid.getColumnByKey("bioMorti");
+        Grid.Column natiOk = grid.getColumnByKey("natiOk");
+        Grid.Column mortiOk = grid.getColumnByKey("mortiOk");
 
-        grid.setColumnOrder(ordine, nome, bioNati, bioMorti, paginaNati, paginaMorti, cancellaNati,cancellaMorti);
+        grid.setColumnOrder(ordine, nome, bioNati, bioMorti, paginaNati, paginaMorti, natiOk, mortiOk);
     }
 
     /**
@@ -209,6 +190,24 @@ public class AnnoWikiView extends WikiView {
         super.fixBodyLayout();
     }
 
+    protected void sincroCancellare() {
+        List<AnnoWiki> items = null;
+
+        if (boxPagineDaCancellare != null) {
+            if (boxPagineDaCancellare.getValue()) {
+                items = backend.fetchDaCancellare();
+            }
+            else {
+                items = backend.findAll(sortOrder);
+            }
+        }
+
+        if (items != null) {
+            grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
+        }
+    }
 
     /**
      * Apre una pagina su wiki, specifica del programma/package in corso <br>

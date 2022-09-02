@@ -45,5 +45,8 @@ public interface AnnoWikiRepository extends MongoRepository<AnnoWiki, String> {
     void delete(AnnoWiki entity);
 
     AnnoWiki findFirstByNome(String nome);
+    long countAnnoWikiByNatiOkFalse();
+    long countAnnoWikiByMortiOkFalse();
+    List<AnnoWiki> findAllByNatiOkFalseOrMortiOkFalse();
 
 }// end of crud repository class

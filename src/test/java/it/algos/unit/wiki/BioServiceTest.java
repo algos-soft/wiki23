@@ -97,20 +97,28 @@ public class BioServiceTest extends WikiTest {
     @Order(3)
     @DisplayName("3 - estrae mappa")
         //--wikiTitle
-    void estraeMappa(String wikiTitle) {
+        //--numero parametri
+    void estraeMappa(String wikiTitle, int numPar) {
         System.out.println("3 - estrae mappa");
         sorgente = wikiTitle;
 
         bio = queryService.getBio(sorgente);
         mappaOttenuta = service.estraeMappa(bio);
+        ottenutoIntero = mappaOttenuta != null ? mappaOttenuta.size() : 0;
 
         System.out.println(String.format("Faccio vedere una mappa di %s", wikiTitle));
         System.out.println(VUOTA);
         System.out.println("Template:");
         System.out.println(String.format("%s", bio != null ? bio.tmplBio : "(null)"));
         System.out.println(VUOTA);
-        System.out.println("Mappa:");
-        printMappaBio(mappaOttenuta);
+        if (ottenutoIntero == numPar) {
+            System.out.println("Mappa:");
+            printMappaBio(mappaOttenuta);
+        }
+        else {
+            System.out.println(String.format("I parametri di %s non ci sono tutti", sorgente));
+            assertEquals(numPar, ottenutoIntero);
+        }
     }
 
 

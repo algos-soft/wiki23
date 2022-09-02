@@ -144,6 +144,21 @@ public class AnnoWikiBackend extends WikiBackend {
         return true;
     }
 
+    public int countListeDaCancellare() {
+        int daCancellare = 0;
+
+        daCancellare += ((Long) repository.countAnnoWikiByNatiOkFalse()).intValue();
+        daCancellare += ((Long) repository.countAnnoWikiByMortiOkFalse()).intValue();
+
+        return daCancellare;
+    }
+
+    public List<AnnoWiki> fetchDaCancellare() {
+        List<AnnoWiki> lista = null;
+        lista = repository.findAllByNatiOkFalseOrMortiOkFalse();
+        return lista;
+    }
+
     /**
      * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
@@ -156,21 +171,49 @@ public class AnnoWikiBackend extends WikiBackend {
         String time;
         int tot = count();
         Anno anno;
+        int bioNati = 0;
+        int bioMorti = 0;
         String wikiTitleNati;
         String wikiTitleMorti;
+        boolean esistePaginaNati = false;
+        boolean esistePaginaMorti = false;
+        boolean natiOk = false;
+        boolean mortiOk = false;
 
         //--Per ogni anno calcola quante biografie lo usano (nei 2 parametri)
         //--Memorizza e registra il dato nella entityBean
         for (AnnoWiki annoWiki : findAll()) {
             anno = annoBackend.findByNome(annoWiki.nome);
-            annoWiki.bioNati = bioBackend.countAnnoNato(annoWiki.nome);
-            annoWiki.bioMorti = bioBackend.countAnnoMorto(annoWiki.nome);
+            bioNati = bioBackend.countAnnoNato(annoWiki.nome);
+            bioMorti = bioBackend.countAnnoMorto(annoWiki.nome);
+
+            annoWiki.bioNati = bioNati;
+            annoWiki.bioMorti = bioMorti;
 
             wikiTitleNati = wikiUtility.wikiTitleNatiAnno(anno.nome);
             wikiTitleMorti = wikiUtility.wikiTitleMortiAnno(anno.nome);
 
-            annoWiki.esistePaginaNati = queryService.isEsiste(wikiTitleNati);
-            annoWiki.esistePaginaMorti = queryService.isEsiste(wikiTitleMorti);
+            esistePaginaNati = queryService.isEsiste(wikiTitleNati);
+            esistePaginaMorti = queryService.isEsiste(wikiTitleMorti);
+
+            annoWiki.esistePaginaNati = esistePaginaNati;
+            annoWiki.esistePaginaMorti = esistePaginaMorti;
+
+            if (esistePaginaNati) {
+                natiOk = bioNati > 0;
+            }
+            else {
+                natiOk = bioNati == 0;
+            }
+            if (esistePaginaMorti) {
+                mortiOk = bioMorti > 0;
+            }
+            else {
+                mortiOk = bioMorti == 0;
+            }
+
+            annoWiki.natiOk = natiOk;
+            annoWiki.mortiOk = mortiOk;
 
             update(annoWiki);
 

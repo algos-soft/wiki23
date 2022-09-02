@@ -77,10 +77,10 @@ public class GiornoWikiView extends WikiView {
 
         super.lastElaborazione = WPref.elaboraGiorni;
         super.durataElaborazione = WPref.elaboraGiorniTime;
+        super.lastStatistica = WPref.statisticaGiorni;
         super.lastUpload = WPref.uploadGiorni;
         super.durataUpload = WPref.uploadGiorniTime;
         super.nextUpload = WPref.uploadGiorniPrevisto;
-        super.lastStatistica = WPref.statisticaGiorni;
         super.usaBottoneDeleteReset = true;
         super.usaReset = true;
         super.usaBottoneElabora = true;
@@ -114,6 +114,7 @@ public class GiornoWikiView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
+        addSpanRossoSmall(String.format("%s: %s", "Pagine da cancellare", "0"));
     }
 
 

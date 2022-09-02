@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
+import java.time.*;
+
 /**
  * Project wiki23
  * Created by Algos
@@ -28,6 +30,9 @@ public class TaskAnni extends AlgosTask{
         long inizio;
 
         if (WPref.usaTaskAnni.is()) {
+            fixNext();
+
+            //--Le statistiche comprendono anche l'elaborazione
             appContext.getBean(StatisticheAnni.class).upload();
 
             inizio = System.currentTimeMillis();
@@ -46,6 +51,12 @@ public class TaskAnni extends AlgosTask{
     @Override
     public String getPattern() {
         return PATTERN;
+    }
+
+    public void fixNext() {
+        LocalDateTime adesso = LocalDateTime.now();
+        LocalDateTime prossimo = adesso.plusDays(1);
+        WPref.uploadGiorniPrevisto.setValue(prossimo);
     }
 
     public void loggerUpload(long inizio) {

@@ -907,6 +907,9 @@ public abstract class WikiView extends CrudView {
     public void addSpanVerdeSmall(final String message) {
         infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde).fontHeight(AEFontHeight.em7)));
     }
+    public void addSpanRossoSmall(final String message) {
+        infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).fontHeight(AEFontHeight.em7)));
+    }
 
     public void addSpanRossoBold(final String message) {
         alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).weight(AEFontWeight.bold)));

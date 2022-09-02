@@ -81,12 +81,12 @@ public class AttivitaBackend extends WikiBackend {
      * Usa il @Builder di Lombok <br>
      * Eventuali regolazioni iniziali delle property <br>
      *
-     * @param singolare        di riferimento (obbligatorio, unico)
-     * @param pluraleParagrafo di riferimento (obbligatorio, non unico)
-     * @param pluraleLista     di riferimento (obbligatorio, non unico)
-     * @param linkPaginaAttivita       di riferimento (obbligatorio, non unico)
-     * @param typeGenere       (obbligatorio, non unico)
-     * @param aggiunta         flag (facoltativo, di default false)
+     * @param singolare          di riferimento (obbligatorio, unico)
+     * @param pluraleParagrafo   di riferimento (obbligatorio, non unico)
+     * @param pluraleLista       di riferimento (obbligatorio, non unico)
+     * @param linkPaginaAttivita di riferimento (obbligatorio, non unico)
+     * @param typeGenere         (obbligatorio, non unico)
+     * @param aggiunta           flag (facoltativo, di default false)
      *
      * @return la nuova entityBean appena creata (non salvata)
      */
@@ -469,86 +469,19 @@ public class AttivitaBackend extends WikiBackend {
         return paragrafo;
     }
 
-    //    /**
-    //     * Aggiunge le ex-attività NON presenti nel modulo 'Modulo:Bio/Plurale attività' <br>
-    //     * Le recupera dal modulo 'Modulo:Bio/Plurale attività genere' <br>
-    //     * Le aggiunge se trova la corrispondenza tra il nome con e senza EX <br>
-    //     */
-    //    private void aggiunge() {
-    //        List<Genere> listaEx = genereBackend.findStartingEx();
-    //        String attivitaSingolare;
-    //        String genereSingolare;
-    //        Attivita entity;
-    //        String message;
-    //        int size = 0;
-    //        String singolare;
-    //        String pagina = VUOTA;
-    //        String paragrafo;
-    //        AETypeGenere type = null;
-    //
-    //        if (listaEx == null || listaEx.size() == 0) {
-    //            message = "Il modulo genere deve essere scaricato PRIMA di quello di attività";
-    //            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
-    //            return;
-    //        }
-    //
-    //        if (listaEx != null) {
-    //            for (Genere genere : listaEx) {
-    //                attivitaSingolare = VUOTA;
-    //                genereSingolare = genere.singolare;
-    //
-    //                if (genereSingolare.startsWith(TAG_EX_SPAZIO)) {
-    //                    attivitaSingolare = genereSingolare.substring(TAG_EX_SPAZIO.length());
-    //                }
-    //                if (genereSingolare.startsWith(TAG_EX2)) {
-    //                    attivitaSingolare = genereSingolare.substring(TAG_EX2.length());
-    //                }
-    //
-    //                if (textService.isEmpty(attivitaSingolare)) {
-    //                    continue;
-    //                }
-    //
-    //                entity = findFirstBySingolare(attivitaSingolare);
-    //
-    //                if (entity == null) {
-    //                    Object genere2 = genere;
-    //                    singolare = genere.singolare;
-    //                    switch (genere.getType()) {
-    //                        case maschile -> {
-    //                            type = AETypeGenere.maschile;
-    //                            pagina = genere.pluraleMaschile;
-    //                        }
-    //                        case femminile -> {
-    //                            type = AETypeGenere.femminile;
-    //                            pagina = genere.pluraleFemminile;
-    //                        }
-    //                        case entrambi -> {
-    //                            type = AETypeGenere.maschile;
-    //                            pagina = genere.pluraleMaschile;
-    //                        }
-    //                        //                        case nessuno -> {}
-    //                    } ;
-    //                    paragrafo = pagina;
-    //                    //                    if (creaIfNotExist(singolare, paragrafo, pagina, type, true) != null) {
-    //                    //                        size++;
-    //                    //                    }
-    //                    logger.info(new WrapLog().message(genereSingolare));
-    //                }
-    //                else {
-    //                    singolare = genere.singolare;
-    //                    paragrafo = entity.pluraleParagrafo;
-    //                    pagina = entity.pluraleLista;
-    //                    type = entity.type;
-    //                    //                    if (creaIfNotExist(singolare, pagina, paragrafo, type, true) != null) {
-    //                    //                        size++;
-    //                    //                    }
-    //                }
-    //            }
-    //        }
-    //
-    //        message = String.format("Aggiunte %s ex-attività dalla collection genere", textService.format(size));
-    //        logger.info(new WrapLog().message(message));
-    //    }
+    public int countAttivitaDaCancellare() {
+        int daCancellare = 0;
+        List<Attivita> listaPlurali = findAttivitaDistinctByPluraliOld();
+
+        for (Attivita attivita : listaPlurali) {
+            if (attivita.esistePaginaLista && !attivita.superaSoglia) {
+                daCancellare++;
+            }
+        }
+
+        return daCancellare;
+    }
+
 
     /**
      * Esegue un azione di elaborazione, specifica del programma/package in corso <br>

@@ -60,11 +60,17 @@ public class AnnoWiki extends AEntity {
     @AIField(type = AETypeField.text, widthEM = 10, header = "morti", caption = "Anno di morte")
     public String pageMorti;
 
-    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.thumb, headerIcon = VaadinIcon.LINES)
+    @AIField(type = AETypeField.booleano)
     public boolean esistePaginaNati;
 
-    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.yesNoReverse, headerIcon = VaadinIcon.HAMMER)
+    @AIField(type = AETypeField.booleano)
     public boolean esistePaginaMorti;
+
+    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.thumb, header = "n")
+    public boolean natiOk;
+
+    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.thumb, header = "m")
+    public boolean mortiOk;
 
     @Override
     public String toString() {

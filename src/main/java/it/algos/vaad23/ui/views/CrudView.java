@@ -214,7 +214,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected Grid<AEntity> grid;
 
-    protected Sort sortOrder;
+    public Sort sortOrder;
 
     protected ComboBox<AETypeLog> comboTypeLog;
 

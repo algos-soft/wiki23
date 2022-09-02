@@ -114,6 +114,7 @@ public class AttivitaView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
+        addSpanRossoSmall(String.format("%s: %s", "Liste da cancellare", backend.countAttivitaDaCancellare()));
 
         String modulo = PATH_WIKI + PATH_MODULO;
 

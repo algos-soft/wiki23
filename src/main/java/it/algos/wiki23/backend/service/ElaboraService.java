@@ -85,7 +85,9 @@ public class ElaboraService extends WAbstractService {
                 } catch (AlgosException unErrore) {
                     message = String.format("Exception %s nel ParBio %s della bio %s", unErrore.getMessage(), par.getTag(), bio.wikiTitle);
                     //                        logger.info(message, this.getClass(), "setValue");
+                    int b = 88;
                 } catch (Exception unErrore) {
+                    int a = 87;
                     //                        logger.info(String.format("%s nel ParBio %s", unErrore.toString(), par.getTag()), this.getClass(), "setValue");
                 }
             }
@@ -302,7 +304,6 @@ public class ElaboraService extends WAbstractService {
                 testoValido = primo + SPAZIO + mese;
             }
         }
-
 
         return testoValido.trim();
     }
