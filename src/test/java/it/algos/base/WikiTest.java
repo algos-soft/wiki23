@@ -217,7 +217,10 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Albia Dominica",14),
                 Arguments.of("Angelo Inganni",12),
                 Arguments.of("Andrey Guryev",17),
-                Arguments.of("Ingen Ryūki",15),
+                Arguments.of("Ingen Ryūki",16),
+                Arguments.of("Giorgio Merula",17),
+                Arguments.of("Rob Paulsen",13),
+                Arguments.of("Aleksandr Isaevič Solženicyn",22),
                 Arguments.of("Rinaldo II di Bar",14)
         );
     }

@@ -45,7 +45,7 @@ public class TaskGiorni extends AlgosTask {
     /**
      * Descrizione: ogni giorno della settimana, alle 2 di notte
      */
-    private static final String PATTERN = "1 4 * * *";
+    private static final String PATTERN = "0 2 * * *";
 
 
     @Override

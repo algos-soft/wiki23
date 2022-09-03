@@ -31,7 +31,7 @@ import java.util.stream.*;
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("integration")
+@Tag("production")
 @Tag("wiki")
 @DisplayName("DidascaliaService - Elaborazione delle didascalie.")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -378,10 +378,13 @@ public class DidascaliaServiceTest extends WikiTest {
         tmpl = tmpl.replaceAll(CAPO, SPAZIO);
         System.out.println(VUOTA);
         System.out.println(String.format("Biografia: %s", sorgente));
-        System.out.println(String.format("TmplBio: %s", tmpl.substring(0, 140)));
-        System.out.println(String.format("%s", tmpl.substring(140, 280)));
-        System.out.println(String.format("%s", tmpl.substring(280, Math.min(420, tmpl.length()))));
-
+        System.out.println(String.format("TmplBio: %s", tmpl.substring(0, Math.min(140, tmpl.length()))));
+        if (tmpl.length() > 140) {
+            System.out.println(String.format("%s", tmpl.substring(140, Math.min(280, tmpl.length()))));
+        }
+        if (tmpl.length() > 280) {
+            System.out.println(String.format("%s", tmpl.substring(280, Math.min(420, tmpl.length()))));
+        }
         System.out.println(VUOTA);
         ottenuto = service.giornoNato(bio);
         System.out.println(String.format("giornoNato: %s", ottenuto));
@@ -457,9 +460,12 @@ public class DidascaliaServiceTest extends WikiTest {
         System.out.println(VUOTA);
         System.out.println(String.format("Biografia: %s", sorgente));
         System.out.println(String.format("TmplBio: %s", tmpl.substring(0, 140)));
-        System.out.println(String.format("%s", tmpl.substring(140, 280)));
-        System.out.println(String.format("%s", tmpl.substring(280, Math.min(420, tmpl.length()))));
-
+        if (tmpl.length() > 140) {
+            System.out.println(String.format("%s", tmpl.substring(140, Math.min(280, tmpl.length()))));
+        }
+        if (tmpl.length() > 280) {
+            System.out.println(String.format("%s", tmpl.substring(280, Math.min(420, tmpl.length()))));
+        }
         System.out.println(VUOTA);
         ottenuto = service.didascaliaGiornoNato(bio);
         message = bio.giornoNato;
