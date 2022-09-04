@@ -385,6 +385,11 @@ public class DidascaliaServiceTest extends WikiTest {
         if (tmpl.length() > 280) {
             System.out.println(String.format("%s", tmpl.substring(280, Math.min(420, tmpl.length()))));
         }
+
+        System.out.println(VUOTA);
+        ottenuto = service.getNomeCognome(bio);
+        System.out.println(String.format("getNomeCognome: %s", ottenuto));
+
         System.out.println(VUOTA);
         ottenuto = service.giornoNato(bio);
         System.out.println(String.format("giornoNato: %s", ottenuto));

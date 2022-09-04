@@ -169,6 +169,37 @@ public abstract class WikiTest extends AlgosTest {
 
     protected LinkedHashMap<String, List<WrapLista>> mappaWrap;
 
+
+    //--valore grezzo
+    //--valore valido
+    protected static Stream<Arguments> NOMI() {
+        return Stream.of(
+                Arguments.of(VUOTA),
+                Arguments.of("Marcello<ref>Da levare</ref>", "Marcello"),
+                Arguments.of("Marcello <ref>Da levare</ref>", "Marcello"),
+                Arguments.of("Marcello {{#tag:ref", "Marcello"),
+                Arguments.of("Marcello{{#tag:ref", "Marcello"),
+                Arguments.of("Marcello<!--", "Marcello"),
+                Arguments.of("Marcello <nowiki>", "Marcello"),
+                Arguments.of("Marcello<nowiki>", "Marcello"),
+                Arguments.of("Marcello{{graffe iniziali", "Marcello"),
+                Arguments.of("Marcello {{graffe iniziali", "Marcello"),
+                Arguments.of("Marcello=", "Marcello"),
+                Arguments.of("Marcello =", "Marcello"),
+                Arguments.of("Marcello ecc.", "Marcello"),
+                Arguments.of("Marcello ?", "Marcello"),
+                Arguments.of("Marcello?", "Marcello"),
+                Arguments.of("Antonio [html:pippoz]", "Antonio"),
+                Arguments.of("Roberto Marco Maria", "Roberto"),
+                Arguments.of("Colin Campbell (generale)", "Colin"),
+                Arguments.of("Giovan Battista", "Giovan Battista"),
+                Arguments.of("Anna Maria", "Anna Maria"),
+                Arguments.of("testo errato", "testo errato"),
+                Arguments.of("antonio", "Antonio"),
+                Arguments.of("[[Roberto]]", "Roberto")
+        );
+    }
+
     //--titolo
     //--pagina valida
     protected static Stream<Arguments> PAGINE_BIO() {
@@ -176,25 +207,25 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of(null, false),
                 Arguments.of(VUOTA, false),
                 Arguments.of("Roberto il Forte", true),
-                //                Arguments.of("Claude de Chastellux", true),
-                //                Arguments.of("John Murphy (politico statunitense)", true),
-                //                Arguments.of("Meena Keshwar Kamal", true),
-                //                Arguments.of("Werburga", true),
-                //                Arguments.of("Roman Protasevič", true),
-                //                Arguments.of("Aldelmo di Malmesbury", true),
-                //                Arguments.of("Aelfric il grammatico", true),
-                //                Arguments.of("Bernart Arnaut d'Armagnac", true),
-                //                Arguments.of("Elfleda di Whitby", true),
-                //                Arguments.of("Gaetano Anzalone", true),
-                //                Arguments.of("Colin Campbell (generale)", true),
-                //                Arguments.of("Louis Winslow Austin", true),
-                //                Arguments.of("San Nicanore", true),
-                //                Arguments.of("Regno di Napoli (1908-1745)", false),
-                //                Arguments.of("Regno di Napoli (1806-1815)", false),
-                //                Arguments.of("Rossi", false),
-                //                Arguments.of("Bartolomeo Giuseppe Amico di Castell'Alfero", true),
-                //                Arguments.of("Lucio Anneo Seneca", true),
-                //                Arguments.of("Bodhidharma", true),
+                Arguments.of("Claude de Chastellux", true),
+                Arguments.of("John Murphy (politico statunitense)", true),
+                Arguments.of("Meena Keshwar Kamal", true),
+                Arguments.of("Werburga", true),
+                Arguments.of("Roman Protasevič", true),
+                Arguments.of("Aldelmo di Malmesbury", true),
+                Arguments.of("Aelfric il grammatico", true),
+                Arguments.of("Bernart Arnaut d'Armagnac", true),
+                Arguments.of("Elfleda di Whitby", true),
+                Arguments.of("Gaetano Anzalone", true),
+                Arguments.of("Colin Campbell (generale)", true),
+                Arguments.of("Louis Winslow Austin", true),
+                Arguments.of("San Nicanore", true),
+                Arguments.of("Regno di Napoli (1908-1745)", false),
+                Arguments.of("Regno di Napoli (1806-1815)", false),
+                Arguments.of("Rossi", false),
+                Arguments.of("Bartolomeo Giuseppe Amico di Castell'Alfero", true),
+                Arguments.of("Lucio Anneo Seneca", true),
+                Arguments.of("Bodhidharma", true),
                 Arguments.of("Ashur-uballit I", true)
         );
     }
@@ -203,25 +234,25 @@ public abstract class WikiTest extends AlgosTest {
     //--numero parametri
     protected static Stream<Arguments> BIOGRAFIE() {
         return Stream.of(
-                Arguments.of(VUOTA,0),
-                Arguments.of("Jacques de Molay",15),
-                Arguments.of("Roberto il Forte",17),
-                Arguments.of("Agnese di Borgogna",17),
-                Arguments.of("Matteo Renzi",15),
-                Arguments.of("Hunter King",10),
-                Arguments.of("Laura Mancinelli",17),
-                Arguments.of("Johann Georg Kastner",14),
-                Arguments.of("Meirchion Gul",15),
-                Arguments.of("Vincenzo Vacirca",15),
-                Arguments.of("Ashur-uballit I",15),
-                Arguments.of("Albia Dominica",14),
-                Arguments.of("Angelo Inganni",12),
-                Arguments.of("Andrey Guryev",17),
-                Arguments.of("Ingen Ryūki",16),
-                Arguments.of("Giorgio Merula",17),
-                Arguments.of("Rob Paulsen",13),
-                Arguments.of("Aleksandr Isaevič Solženicyn",22),
-                Arguments.of("Rinaldo II di Bar",14)
+                Arguments.of(VUOTA, 0),
+                Arguments.of("Jacques de Molay", 15),
+                Arguments.of("Roberto il Forte", 17),
+                Arguments.of("Agnese di Borgogna", 17),
+                Arguments.of("Matteo Renzi", 15),
+                Arguments.of("Hunter King", 10),
+                Arguments.of("Laura Mancinelli", 17),
+                Arguments.of("Johann Georg Kastner", 14),
+                Arguments.of("Meirchion Gul", 15),
+                Arguments.of("Vincenzo Vacirca", 15),
+                Arguments.of("Ashur-uballit I", 15),
+                Arguments.of("Albia Dominica", 14),
+                Arguments.of("Angelo Inganni", 12),
+                Arguments.of("Andrey Guryev", 17),
+                Arguments.of("Ingen Ryūki", 16),
+                Arguments.of("Giorgio Merula", 17),
+                Arguments.of("Rob Paulsen", 13),
+                Arguments.of("Aleksandr Isaevič Solženicyn", 22),
+                Arguments.of("Rinaldo II di Bar", 14)
         );
     }
 

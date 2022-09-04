@@ -6,6 +6,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import static it.algos.wiki23.backend.service.WikiApiService.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.apache.commons.lang3.*;
 import org.json.simple.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
@@ -836,7 +837,7 @@ public class WikiBotService extends WAbstractService {
         }
 
         //--solo date certe ed esatte
-        if (valoreGrezzo.contains(CIRCA)) {
+        if (valoreGrezzo.contains(SPAZIO + CIRCA)) {
             return VUOTA;
         }
 
@@ -850,8 +851,8 @@ public class WikiBotService extends WAbstractService {
         valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
         valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
         valoreGrezzo = textService.levaDopoUguale(valoreGrezzo);
-        valoreGrezzo = textService.levaDopoCirca(valoreGrezzo);
-        valoreGrezzo = textService.levaCoda(valoreGrezzo, CIRCA);
+//        valoreGrezzo = this.levaDopoCirca(valoreGrezzo); //solo per nomi e cognomi
+        valoreGrezzo = textService.levaCoda(valoreGrezzo, CIRCA);//solo per date
         valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
         valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
         if (valoreGrezzo.endsWith("ca.")) {
@@ -871,6 +872,26 @@ public class WikiBotService extends WAbstractService {
 
         valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
         return valoreGrezzo.trim();
+    }
+
+
+    public String levaDopoCirca(final String testoIn) {
+        String testoOut = testoIn;
+        String tag;
+
+        if (textService.isValid(testoOut) ) {
+            testoOut = StringUtils.stripEnd(testoIn, SPAZIO);
+            tag = SPAZIO+CIRCA;
+            if (testoOut.contains(tag)) {
+                testoOut = testoOut.substring(0, testoOut.indexOf(tag));
+                testoOut = StringUtils.stripEnd(testoOut, SPAZIO);
+            }
+            else {
+                testoOut = testoIn;
+            }
+        }
+
+        return testoOut;
     }
     //
     //    /**

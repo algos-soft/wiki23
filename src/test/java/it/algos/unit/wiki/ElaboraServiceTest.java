@@ -38,23 +38,23 @@ import org.springframework.boot.test.context.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ElaboraServiceTest extends WikiTest {
 
-    protected static final String NOME_1 = "";
-
-    protected static final String NOME_2 = "Marcello <ref>Da levare</ref>";
-
-    protected static final String NOME_3 = "Antonio [html:pippoz]";
-
-    protected static final String NOME_4 = "Roberto Marco Maria";
-
-    protected static final String NOME_5 = "Colin Campbell (generale)";
-
-    protected static final String NOME_6 = "Giovan Battista";
-
-    protected static final String NOME_7 = "Anna Maria";
-
-    protected static final String NOME_8 = "testo errato";
-
-    protected static final String NOME_9 = "[[Roberto]]";
+    //    protected static final String NOME_1 = "";
+    //
+    //    protected static final String NOME_2 = "Marcello <ref>Da levare</ref>";
+    //
+    //    protected static final String NOME_3 = "Antonio [html:pippoz]";
+    //
+    //    protected static final String NOME_4 = "Roberto Marco Maria";
+    //
+    //    protected static final String NOME_5 = "Colin Campbell (generale)";
+    //
+    //    protected static final String NOME_6 = "Giovan Battista";
+    //
+    //    protected static final String NOME_7 = "Anna Maria";
+    //
+    //    protected static final String NOME_8 = "testo errato";
+    //
+    //    protected static final String NOME_9 = "[[Roberto]]";
 
     protected static final String COGNOME_1 = "";
 
@@ -223,9 +223,6 @@ public class ElaboraServiceTest extends WikiTest {
     @InjectMocks
     private ElaboraService service;
 
-    public static String[] NOMI() {
-        return new String[]{NOME_1, NOME_2, NOME_3, NOME_4, NOME_5, NOME_6, NOME_7, NOME_8, NOME_9};
-    }
 
     public static String[] COGNOMI() {
         return new String[]{COGNOME_1, COGNOME_2, COGNOME_3, COGNOME_4, COGNOME_5, COGNOME_6, COGNOME_7, COGNOME_8, COGNOME_9};
@@ -285,11 +282,15 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "NOMI")
     @Order(1)
     @DisplayName("1 - fixNome (come stringa)")
-    void fixNome(String nome) {
+        //--valore grezzo
+        //--valore valido
+    void fixNome(String grezzo, String valido) {
         System.out.println("1 - fixNome (come stringa)");
 
-        sorgente = nome;
+        sorgente = grezzo;
+        previsto = valido;
         ottenuto = service.fixNome(sorgente);
+        assertEquals(previsto, ottenuto);
         printNome(sorgente, ottenuto);
     }
 
@@ -522,6 +523,7 @@ public class ElaboraServiceTest extends WikiTest {
         sorgente = "Laura Mancinelli";
         bio = queryService.getBio(sorgente);
     }
+
     @Test
     @Order(18)
     @DisplayName("18 - nazionalità maschile e femminile")
