@@ -87,6 +87,7 @@ public abstract class WikiTest extends AlgosTest {
     @Autowired
     public AnnoBackend annoBackend;
 
+
     protected final static long BIO_SALVINI_PAGEID = 132555;
 
     protected final static long BIO_RENZI_PAGEID = 134246;
@@ -174,29 +175,92 @@ public abstract class WikiTest extends AlgosTest {
     //--valore valido
     protected static Stream<Arguments> NOMI() {
         return Stream.of(
-                Arguments.of(VUOTA),
+                Arguments.of(VUOTA, VUOTA),
                 Arguments.of("Marcello<ref>Da levare</ref>", "Marcello"),
                 Arguments.of("Marcello <ref>Da levare</ref>", "Marcello"),
                 Arguments.of("Marcello {{#tag:ref", "Marcello"),
                 Arguments.of("Marcello{{#tag:ref", "Marcello"),
+                Arguments.of("Marcello <!--", "Marcello"),
                 Arguments.of("Marcello<!--", "Marcello"),
-                Arguments.of("Marcello <nowiki>", "Marcello"),
-                Arguments.of("Marcello<nowiki>", "Marcello"),
                 Arguments.of("Marcello{{graffe iniziali", "Marcello"),
                 Arguments.of("Marcello {{graffe iniziali", "Marcello"),
+                Arguments.of("Marcello <nowiki>", "Marcello"),
+                Arguments.of("Marcello<nowiki>", "Marcello"),
                 Arguments.of("Marcello=", "Marcello"),
                 Arguments.of("Marcello =", "Marcello"),
-                Arguments.of("Marcello ecc.", "Marcello"),
                 Arguments.of("Marcello ?", "Marcello"),
                 Arguments.of("Marcello?", "Marcello"),
+                Arguments.of("Marcello ecc.", "Marcello"),
+                Arguments.of("Marcelloecc.", "Marcello"),
                 Arguments.of("Antonio [html:pippoz]", "Antonio"),
                 Arguments.of("Roberto Marco Maria", "Roberto"),
                 Arguments.of("Colin Campbell (generale)", "Colin"),
                 Arguments.of("Giovan Battista", "Giovan Battista"),
                 Arguments.of("Anna Maria", "Anna Maria"),
-                Arguments.of("testo errato", "testo errato"),
+                Arguments.of("testo errato", "Testo"),
                 Arguments.of("antonio", "Antonio"),
                 Arguments.of("[[Roberto]]", "Roberto")
+        );
+    }
+
+    //--valore grezzo
+    //--valore valido
+    protected static Stream<Arguments> COGNOMI() {
+        return Stream.of(
+                Arguments.of(VUOTA, VUOTA),
+                Arguments.of("Brambilla<ref>Da levare</ref>", "Brambilla"),
+                Arguments.of("Brambilla <ref>Da levare</ref>", "Brambilla"),
+                Arguments.of("Brambilla {{#tag:ref", "Brambilla"),
+                Arguments.of("Brambilla{{#tag:ref", "Brambilla"),
+                Arguments.of("Brambilla <!--", "Brambilla"),
+                Arguments.of("Brambilla<!--", "Brambilla"),
+                Arguments.of("Brambilla{{graffe iniziali", "Brambilla"),
+                Arguments.of("Brambilla {{graffe iniziali", "Brambilla"),
+                Arguments.of("Brambilla <nowiki>", "Brambilla"),
+                Arguments.of("Brambilla<nowiki>", "Brambilla"),
+                Arguments.of("Brambilla=", "Brambilla"),
+                Arguments.of("Brambilla =", "Brambilla"),
+                Arguments.of("Brambilla ?", "Brambilla"),
+                Arguments.of("Brambilla?", "Brambilla"),
+                Arguments.of("Brambilla ecc.", "Brambilla"),
+                Arguments.of("Brambillaecc..", "Brambilla"),
+                Arguments.of("Brambilla [html:pippoz]", "Brambilla"),
+                Arguments.of("Brambilla (generale)", "Colin"),
+                Arguments.of("testo errato", "Testo"),
+                Arguments.of("brambilla", "Brambilla"),
+                Arguments.of("Bayley", "Bayley"),
+                Arguments.of("Mora Porras", "Mora Porras"),
+                Arguments.of("Ørsted", "Ørsted"),
+                Arguments.of("de Bruillard", "de Bruillard"),
+                Arguments.of("[[Brambilla]]", "Brambilla")
+        );
+    }
+
+    //--nome anno
+    //--type nato/morto
+    //--previsto
+    protected static Stream<Arguments> TITOLO_ANNI() {
+        return Stream.of(
+                Arguments.of(null, AETypeLista.annoNascita, VUOTA),
+                Arguments.of(VUOTA, AETypeLista.annoMorte, VUOTA),
+                Arguments.of("214 a.C.", AETypeLista.annoNascita, "Nati nel 214 a.C."),
+                Arguments.of("214", AETypeLista.annoMorte, "Morti nel 214"),
+                Arguments.of("735", AETypeLista.annoNascita, "Nati nel 735"),
+                Arguments.of("735", AETypeLista.annoMorte, "Morti nel 735"),
+                Arguments.of("18 a.C.", AETypeLista.annoNascita, "Nati nel 18 a.C."),
+                Arguments.of("18 a.C.", AETypeLista.annoMorte, "Morti nel 18 a.C."),
+                Arguments.of("123", AETypeLista.annoNascita, "Nati nel 123"),
+                Arguments.of("123", AETypeLista.annoMorte, "Morti nel 123"),
+                Arguments.of("1", AETypeLista.annoNascita, "Nati nell'1"),
+                Arguments.of("1", AETypeLista.annoMorte, "Morti nell'1"),
+                Arguments.of("11", AETypeLista.annoNascita, "Nati nell'11"),
+                Arguments.of("11", AETypeLista.annoMorte, "Morti nell'11"),
+                Arguments.of("24 a.C.", AETypeLista.annoNascita, "Nati nel 24 a.C."),
+                Arguments.of("24 a.C.", AETypeLista.annoMorte, "Morti nel 24 a.C."),
+                Arguments.of("865 a.C.", AETypeLista.annoNascita, "Nati nell'865 a.C."),
+                Arguments.of("865 a.C.", AETypeLista.annoMorte, "Morti nell'865 a.C."),
+                Arguments.of("1 a.C.", AETypeLista.annoNascita, "Nati nell'1 a.C."),
+                Arguments.of("1 a.C.", AETypeLista.annoMorte, "Morti nell'1 a.C.")
         );
     }
 
@@ -384,6 +448,7 @@ public abstract class WikiTest extends AlgosTest {
 
         elaboraService.wikiBotService = wikiBotService;
         wikiUtility.queryService = queryService;
+        wikiUtility.regexService = regexService;
     }
 
     /**

@@ -3,11 +3,14 @@ package it.algos.unit.wiki;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.boot.test.context.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -42,6 +45,9 @@ public class WikiUtilityTest extends WikiTest {
     @BeforeAll
     protected void setUpAll() {
         super.setUpAll();
+
+        //--reindirizzo l'istanza della superclasse
+        service = wikiUtility;
     }
 
     /**
@@ -60,6 +66,7 @@ public class WikiUtilityTest extends WikiTest {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixRiferimentiIncrociati() {
+        super.fixRiferimentiIncrociati();
         service.textService = textService;
     }
 
@@ -74,8 +81,7 @@ public class WikiUtilityTest extends WikiTest {
     }
 
 
-
-//    @Test
+    //    @Test
     @Order(1)
     @DisplayName("1 - WikiTitle di tutte le 366 pagine giorni di nascita e morte")
     void wikiTitleGiorno() {
@@ -111,7 +117,7 @@ public class WikiUtilityTest extends WikiTest {
     }
 
 
-//    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - WikiTitle di tutte le 3030 (circa) pagine anni di nascita e morte")
     void wikiTitleAnno() {
@@ -146,7 +152,7 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println(buffer.toString());
     }
 
-    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - Nati nel")
     void nati() {
@@ -179,7 +185,7 @@ public class WikiUtilityTest extends WikiTest {
 
     }
 
-    @Test
+    //    @Test
     @Order(4)
     @DisplayName("4 - Morti nel")
     void morti() {
@@ -190,7 +196,7 @@ public class WikiUtilityTest extends WikiTest {
         }
     }
 
-//    @Test
+    //    @Test
     @Order(5)
     @DisplayName("5 - Link giorno nato")
     void linkGiornoNato() {
@@ -206,7 +212,7 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println(String.format("%s (nato il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
 
         previsto = "(n.&nbsp;[[Nati il 20 ottobre|20 ottobre]])";
-        ottenuto = service.linkGiornoNatoCoda(bio,true);
+        ottenuto = service.linkGiornoNatoCoda(bio, true);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (nato il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
@@ -214,8 +220,7 @@ public class WikiUtilityTest extends WikiTest {
     }
 
 
-
-    @Test
+    //    @Test
     @Order(6)
     @DisplayName("6 - Link giorno morto")
     void linkGiornoMorto() {
@@ -231,7 +236,7 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println(String.format("%s (morto il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
 
         previsto = "(†&nbsp;[[Morti l'8 novembre|8 novembre]])";
-        ottenuto = service.linkGiornoMortoCoda(bio,true);
+        ottenuto = service.linkGiornoMortoCoda(bio, true);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (morto il %s)%s%s", bio.getWikiTitle(), bio.giornoNato, FORWARD, ottenuto));
@@ -239,7 +244,7 @@ public class WikiUtilityTest extends WikiTest {
 
     }
 
-//    @Test
+    //    @Test
     @Order(7)
     @DisplayName("7 - Link anno nato")
     void linkAnnoNato() {
@@ -255,7 +260,7 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println(String.format("%s (nato nel %s)%s%s", bio.getWikiTitle(), bio.annoNato, FORWARD, ottenuto));
 
         previsto = "(n.&nbsp;[[Nati nel 1792|1792]])";
-        ottenuto = service.linkAnnoNatoCoda(bio,true);
+        ottenuto = service.linkAnnoNatoCoda(bio, true);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (nato nel %s)%s%s", bio.getWikiTitle(), bio.annoNato, FORWARD, ottenuto));
@@ -264,7 +269,7 @@ public class WikiUtilityTest extends WikiTest {
     }
 
 
-    @Test
+    //    @Test
     @Order(8)
     @DisplayName("8 - Link anno morto")
     void linkAnnoMorto() {
@@ -279,9 +284,8 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println("Senza icona e senza parentesi (usato prima della didascalia in giorni)");
         System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));
 
-
         previsto = "(†&nbsp;[[Morti nell'835|835]])";
-        ottenuto = service.linkAnnoMortoCoda(bio,true);
+        ottenuto = service.linkAnnoMortoCoda(bio, true);
         assertEquals(previsto, ottenuto);
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));
@@ -289,6 +293,22 @@ public class WikiUtilityTest extends WikiTest {
 
     }
 
+    @ParameterizedTest
+    @MethodSource(value = "TITOLO_ANNI")
+    @Order(9)
+    @DisplayName("9 - Titolo pagine")
+    void uploadVari(String nomeAnno, final AETypeLista type, String titolo) {
+        sorgente = nomeAnno;
+        previsto = titolo;
+
+        ottenuto = switch (type) {
+            case annoNascita -> service.wikiTitleNatiAnno(sorgente);
+            case annoMorte -> service.wikiTitleMortiAnno(sorgente);
+            default -> {yield VUOTA;}
+        };
+        assertEquals(previsto, ottenuto);
+        System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

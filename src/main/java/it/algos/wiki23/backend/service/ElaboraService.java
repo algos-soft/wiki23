@@ -101,12 +101,12 @@ public class ElaboraService extends WAbstractService {
      * Nei nomi composti, prende solo il primo <br>
      * Se esiste nella lista dei Prenomi (nomi doppi), lo accetta <br>
      *
-     * @param testoGrezzo in entrata da elaborare
+     * @param valorePropertyTmplBioServer in entrata da elaborare
      *
      * @return testoValido regolato in uscita
      */
-    public String fixNome(final String testoGrezzo) {
-        String testoValido = wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+    public String fixNome(final String valorePropertyTmplBioServer) {
+        String testoValido = wikiBotService.fixBase(valorePropertyTmplBioServer);
         List<String> listaDoppiNomi;
 
         if (testoValido.contains(SPAZIO)) {
@@ -116,18 +116,22 @@ public class ElaboraService extends WAbstractService {
             }
         }
 
-        return testoValido;
+        return textService.isValid(testoValido) ? textService.primaMaiuscola(testoValido) : VUOTA;
     }
 
     /**
      * Regola la property <br>
      *
-     * @param testoGrezzo in entrata da elaborare
+     * @param valorePropertyTmplBioServer in entrata da elaborare
      *
      * @return testoValido regolato in uscita
      */
-    public String fixCognome(String testoGrezzo) {
-        return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+    public String fixCognome(String valorePropertyTmplBioServer) {
+        String testoValido = wikiBotService.fixBase(valorePropertyTmplBioServer);
+
+//                testoValido = this.levaDopoCirca(testoValido); //solo per nomi e cognomi
+
+        return textService.isValid(testoValido) ? textService.primaMaiuscola(testoValido) : VUOTA;
     }
 
     /**

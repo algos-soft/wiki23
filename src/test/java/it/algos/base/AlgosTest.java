@@ -191,6 +191,8 @@ public abstract class AlgosTest {
     @InjectMocks
     protected WebService webService;
 
+    @InjectMocks
+    public RegexService regexService;
 
 
     //--tag
@@ -273,6 +275,7 @@ public abstract class AlgosTest {
         assertNotNull(htmlService);
         assertNotNull(webService);
         assertNotNull(loggerBackend);
+        assertNotNull(regexService);
     }
 
 

@@ -812,7 +812,7 @@ public class WikiBotService extends WAbstractService {
      * Elimina gli eventuali contenuti IN CODA che non devono essere presi in considerazione <br>
      * Restituisce un valore GREZZO che deve essere ancora elaborato <br>
      * <p>
-     * Tag chiave di troncatura sempre validi:
+     * Tag chiave di troncature sempre valide:
      * REF = "<ref"
      * NOTE = "<!--"
      * GRAFFE = "{{"
@@ -851,7 +851,7 @@ public class WikiBotService extends WAbstractService {
         valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
         valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
         valoreGrezzo = textService.levaDopoUguale(valoreGrezzo);
-//        valoreGrezzo = this.levaDopoCirca(valoreGrezzo); //solo per nomi e cognomi
+        //        valoreGrezzo = this.levaDopoCirca(valoreGrezzo); //solo per nomi e cognomi
         valoreGrezzo = textService.levaCoda(valoreGrezzo, CIRCA);//solo per date
         valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
         valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
@@ -875,13 +875,51 @@ public class WikiBotService extends WAbstractService {
     }
 
 
+    /**
+     * Elimina gli eventuali contenuti IN CODA che non devono essere presi in considerazione <br>
+     * Restituisce un valore GREZZO che deve essere ancora elaborato <br>
+     * <p>
+     * Tag chiave di troncature sempre valide:
+     * REF = "<ref"
+     * REF = ""{{#tag:ref""
+     * NOTE = "<!--"
+     * GRAFFE = "{{"
+     * UGUALE = "="
+     * NO WIKI = "<nowiki>"
+     * INTERROGATIVO = "?"
+     * ECC = "ecc."
+     *
+     * @param valorePropertyTmplBioServer testo originale proveniente dalla property tmplBioServer della entity Bio
+     *
+     * @return valore grezzo troncato dopo alcuni tag chiave (<ref>, {{, ecc.) <br>
+     */
+    public String fixBase(String valorePropertyTmplBioServer) {
+        String valoreGrezzo = valorePropertyTmplBioServer.trim();
+
+        if (textService.isEmpty(valorePropertyTmplBioServer)) {
+            return VUOTA;
+        }
+
+        valoreGrezzo = textService.levaDopoRef(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoTagRef(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoNote(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoUguale(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
+        valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
+        return valoreGrezzo.trim();
+    }
+
+
     public String levaDopoCirca(final String testoIn) {
         String testoOut = testoIn;
         String tag;
 
-        if (textService.isValid(testoOut) ) {
+        if (textService.isValid(testoOut)) {
             testoOut = StringUtils.stripEnd(testoIn, SPAZIO);
-            tag = SPAZIO+CIRCA;
+            tag = SPAZIO + CIRCA;
             if (testoOut.contains(tag)) {
                 testoOut = testoOut.substring(0, testoOut.indexOf(tag));
                 testoOut = StringUtils.stripEnd(testoOut, SPAZIO);

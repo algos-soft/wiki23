@@ -29,6 +29,7 @@ import java.util.stream.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("production")
 @Tag("upload")
 @DisplayName("Anni upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -40,17 +41,6 @@ public class UploadAnniTest extends WikiTest {
      */
     private UploadAnni istanza;
 
-    //--nome anno
-    //--type nato/morto
-    protected static Stream<Arguments> ANNI() {
-        return Stream.of(
-                Arguments.of(null, AETypeLista.annoNascita),
-                Arguments.of(VUOTA, AETypeLista.annoMorte),
-                Arguments.of("214 a.C.", AETypeLista.annoNascita),
-                Arguments.of("123", AETypeLista.annoNascita),
-                Arguments.of("123", AETypeLista.annoMorte)
-        );
-    }
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -87,7 +77,7 @@ public class UploadAnniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-        @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - Upload test di un anno morto senza indicare con/senza paragrafi ma li mette di default")
     void uploadMortiTest() {
@@ -96,7 +86,7 @@ public class UploadAnniTest extends WikiTest {
         appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
     }
 
-        @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - Upload test di un anno morto con paragrafi ma non li mette perché troppe poche voci")
     void uploadMortiTest2() {
@@ -106,7 +96,7 @@ public class UploadAnniTest extends WikiTest {
     }
 
 
-        @Test
+    //    @Test
     @Order(4)
     @DisplayName("4 - Upload test di un anno nato con e senza paragrafi")
     void uploadTestNato() {
@@ -117,7 +107,7 @@ public class UploadAnniTest extends WikiTest {
         //        appContext.getBean(UploadAnni.class).conParagrafi().nascita().test().upload(sorgente);
     }
 
-        @Test
+    //    @Test
     @Order(5)
     @DisplayName("5 - Upload reale di un anno morto con paragrafi")
     void uploadNatiTest() {
@@ -136,9 +126,9 @@ public class UploadAnniTest extends WikiTest {
     }
 
 
-    //    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "ANNI")
-    @DisplayName("7 - Upload vari")
+    @DisplayName("7 - Titolo pagine")
     void uploadVari(String nomeAnno, final AETypeLista type) {
         sorgente = nomeAnno;
         appContext.getBean(UploadAnni.class).morte().upload(sorgente);
@@ -155,7 +145,7 @@ public class UploadAnniTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-    @Test
+    //    @Test
     @Order(8)
     @DisplayName("8 - Upload test di un anno anno morto con paragrafi")
     void uploadTestMorto2() {
@@ -165,7 +155,7 @@ public class UploadAnniTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-    @Test
+    //    @Test
     @Order(9)
     @DisplayName("9 - Upload test di un anno anno morto con paragrafi")
     void uploadTestMorto3() {
@@ -175,7 +165,7 @@ public class UploadAnniTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-        @Test
+    //    @Test
     @Order(10)
     @DisplayName("10 - Upload test di un anno anno nato con paragrafi")
     void uploadTestMorto4() {
@@ -185,7 +175,7 @@ public class UploadAnniTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-        @Test
+    //    @Test
     @Order(11)
     @DisplayName("11 - Upload test di un anno anno nato con paragrafi")
     void uploadTestMorto5() {

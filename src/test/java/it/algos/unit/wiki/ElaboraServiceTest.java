@@ -38,41 +38,6 @@ import org.springframework.boot.test.context.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ElaboraServiceTest extends WikiTest {
 
-    //    protected static final String NOME_1 = "";
-    //
-    //    protected static final String NOME_2 = "Marcello <ref>Da levare</ref>";
-    //
-    //    protected static final String NOME_3 = "Antonio [html:pippoz]";
-    //
-    //    protected static final String NOME_4 = "Roberto Marco Maria";
-    //
-    //    protected static final String NOME_5 = "Colin Campbell (generale)";
-    //
-    //    protected static final String NOME_6 = "Giovan Battista";
-    //
-    //    protected static final String NOME_7 = "Anna Maria";
-    //
-    //    protected static final String NOME_8 = "testo errato";
-    //
-    //    protected static final String NOME_9 = "[[Roberto]]";
-
-    protected static final String COGNOME_1 = "";
-
-    protected static final String COGNOME_2 = "Brambilla <ref>Da levare</ref>";
-
-    protected static final String COGNOME_3 = "Rossi [html:pippoz]";
-
-    protected static final String COGNOME_4 = "Bayley";
-
-    protected static final String COGNOME_5 = "Mora Porras";
-
-    protected static final String COGNOME_6 = "Ørsted";
-
-    protected static final String COGNOME_7 = "de Bruillard";
-
-    protected static final String COGNOME_8 = "testo errato";
-
-    protected static final String COGNOME_9 = "[[Rossi]]";
 
     protected static final String GIORNO_1 = "";
 
@@ -224,10 +189,6 @@ public class ElaboraServiceTest extends WikiTest {
     private ElaboraService service;
 
 
-    public static String[] COGNOMI() {
-        return new String[]{COGNOME_1, COGNOME_2, COGNOME_3, COGNOME_4, COGNOME_5, COGNOME_6, COGNOME_7, COGNOME_8, COGNOME_9};
-    }
-
     public static String[] GIORNI() {
         return new String[]{
                 GIORNO_1, GIORNO_2, GIORNO_3, GIORNO_4, GIORNO_5, GIORNO_6, GIORNO_7,
@@ -299,11 +260,15 @@ public class ElaboraServiceTest extends WikiTest {
     @MethodSource(value = "COGNOMI")
     @Order(2)
     @DisplayName("2 - fixCognome (come stringa)")
-    void fixCognome(String cognome) {
+        //--valore grezzo
+        //--valore valido
+    void fixCognome(String grezzo, String valido) {
         System.out.println("2 - fixCognome (come stringa)");
 
-        sorgente = cognome;
+        sorgente = grezzo;
+        previsto = valido;
         ottenuto = service.fixCognome(sorgente);
+        assertEquals(previsto, ottenuto);
         printNome(sorgente, ottenuto);
     }
 

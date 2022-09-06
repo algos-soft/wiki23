@@ -269,24 +269,6 @@ public class WikiUtility extends WAbstractService {
         return giorno != null ? textService.primaMaiuscola(giorno.getMese().nome) : VUOTA;
     }
 
-
-//    public String fixParagrafoNazionalita(final Bio bio) {
-//        String paragrafo;
-//        Nazionalita nazionalita = nazionalitaBackend.findFirstBySingolare(bio.nazionalita);
-//        paragrafo= nazionalita != null ? textService.primaMaiuscola(nazionalita.plurale) : TAG_LISTA_ALTRE;
-//
-//        return switch ((AETypeLink) WPref.linkAttNaz.getEnumCurrentObj()) {
-//            case voce -> textService.setDoppieQuadre(paragrafo);
-//            case lista -> {
-//                annoMorto = this.wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
-//                yield textService.setDoppieQuadre(annoMorto);
-//            }
-//            case nessuno -> paragrafo;
-//        };
-//
-//        return nazionalita != null ? textService.primaMaiuscola(nazionalita.plurale) : TAG_LISTA_ALTRE;
-//    }
-
     /**
      * I numeri che iniziano (parlato) con vocale richiedono l'apostrofo  <br>
      * Sono:
@@ -303,13 +285,13 @@ public class WikiUtility extends WAbstractService {
         String testo = VUOTA;
         String tagNormale = tag + " il ";
         String tagSpecifico = tag + " l'";
-        String regex = "(1|11.*|8.*)";
+        String regex = "(1 *|11.*|8.*)";
 
         if (textService.isEmpty(giorno)) {
             return VUOTA;
         }
 
-        if (Pattern.matches(regex, giorno)) {
+        if (regexService.isEsiste(giorno, regex)) {
             return tagSpecifico + giorno;
         }
         else {
@@ -325,29 +307,25 @@ public class WikiUtility extends WAbstractService {
      * tutti quelli che iniziano con 8
      *
      * @param tag  nati/morti
-     * @param anno di riferimento
+     * @param textMatcher di riferimento
      *
      * @return titolo della pagina wiki
      */
-    private String natiMortiAnno(String tag, String anno) {
-        String testo = VUOTA;
-        String tagSpecifico = "l'";
-        tag += " nel";
-        List<Integer> lista = Arrays.asList(1, 8, 11);
-        String regex = "(1|11|8.*)";
+    private String natiMortiAnno(String tag, String textMatcher) {
+        String tagBase = tag + SPAZIO + "nel" + SPAZIO;
+        String tagSpecifico = tag + SPAZIO + "nell'";
+        String textPattern = "^1$|^11$|^1 *a\\.C\\.|^8.*";
 
-        if (textService.isEmpty(anno)) {
+        if (textService.isEmpty(textMatcher)) {
             return VUOTA;
         }
 
-        if (Pattern.matches(regex, anno)) {
-            testo = tag + tagSpecifico + anno;
+        if (regexService.isEsiste(textMatcher, textPattern)) {
+            return tagSpecifico + textMatcher;
         }
         else {
-            testo = tag + SPAZIO + anno;
+            return tagBase + textMatcher;
         }
-
-        return testo;
     }
 
 
