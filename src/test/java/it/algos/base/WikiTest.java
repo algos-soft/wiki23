@@ -264,6 +264,27 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
+
+    //--nome giorno
+    //--type nato/morto
+    //--previsto
+    protected static Stream<Arguments> TITOLO_GIORNI() {
+        return Stream.of(
+                Arguments.of(null, AETypeLista.giornoNascita, VUOTA),
+                Arguments.of(VUOTA, AETypeLista.giornoMorte, VUOTA),
+                Arguments.of("7 aprile", AETypeLista.giornoNascita, "Nati il 7 aprile"),
+                Arguments.of("7 aprile", AETypeLista.giornoMorte, "Morti il 7 aprile"),
+                Arguments.of("1º ottobre", AETypeLista.giornoNascita, "Nati il 1º ottobre"),
+                Arguments.of("1º ottobre", AETypeLista.giornoMorte, "Morti il 1º ottobre"),
+                Arguments.of("7 agosto", AETypeLista.giornoNascita, "Nati il 7 agosto"),
+                Arguments.of("7 agosto", AETypeLista.giornoMorte, "Morti il 7 agosto"),
+                Arguments.of("8 dicembre", AETypeLista.giornoNascita, "Nati l'8 dicembre"),
+                Arguments.of("8 dicembre", AETypeLista.giornoMorte, "Morti l'8 dicembre"),
+                Arguments.of("11 maggio", AETypeLista.giornoNascita, "Nati l'11 maggio"),
+                Arguments.of("11 maggio", AETypeLista.giornoMorte, "Morti l'11 maggio")
+                );
+    }
+
     //--titolo
     //--pagina valida
     protected static Stream<Arguments> PAGINE_BIO() {

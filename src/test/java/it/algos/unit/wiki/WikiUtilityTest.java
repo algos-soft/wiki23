@@ -296,14 +296,32 @@ public class WikiUtilityTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "TITOLO_ANNI")
     @Order(9)
-    @DisplayName("9 - Titolo pagine")
-    void uploadVari(String nomeAnno, final AETypeLista type, String titolo) {
+    @DisplayName("9 - Titolo anni")
+    void titoloAnni(String nomeAnno, final AETypeLista type, String titolo) {
         sorgente = nomeAnno;
         previsto = titolo;
 
         ottenuto = switch (type) {
             case annoNascita -> service.wikiTitleNatiAnno(sorgente);
             case annoMorte -> service.wikiTitleMortiAnno(sorgente);
+            default -> {yield VUOTA;}
+        };
+        assertEquals(previsto, ottenuto);
+        System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "TITOLO_GIORNI")
+    @Order(10)
+    @DisplayName("10 - Titolo giorni")
+    void titoloGiorni(String nomeGiorno, final AETypeLista type, String titolo) {
+        sorgente = nomeGiorno;
+        previsto = titolo;
+
+        ottenuto = switch (type) {
+            case giornoNascita -> service.wikiTitleNatiGiorno(sorgente);
+            case giornoMorte -> service.wikiTitleMortiGiorno(sorgente);
             default -> {yield VUOTA;}
         };
         assertEquals(previsto, ottenuto);

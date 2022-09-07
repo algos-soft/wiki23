@@ -272,30 +272,28 @@ public class WikiUtility extends WAbstractService {
     /**
      * I numeri che iniziano (parlato) con vocale richiedono l'apostrofo  <br>
      * Sono:
-     * 1
+     * 8
      * 11
-     * tutti quelli che iniziano con 8
      *
      * @param tag    nati/morti
-     * @param giorno di riferimento
+     * @param textMatcher di riferimento
      *
      * @return titolo della pagina wiki
      */
-    public String natiMortiGiorno(String tag, String giorno) {
-        String testo = VUOTA;
-        String tagNormale = tag + " il ";
-        String tagSpecifico = tag + " l'";
-        String regex = "(1 *|11.*|8.*)";
+    public String natiMortiGiorno(String tag, String textMatcher) {
+        String tagBase = tag + SPAZIO + "il" + SPAZIO;
+        String tagSpecifico = tag + SPAZIO + "l'";
+        String textPattern = "^8 .+|^11 .+";
 
-        if (textService.isEmpty(giorno)) {
+        if (textService.isEmpty(textMatcher)) {
             return VUOTA;
         }
 
-        if (regexService.isEsiste(giorno, regex)) {
-            return tagSpecifico + giorno;
+        if (regexService.isEsiste(textMatcher, textPattern)) {
+            return tagSpecifico + textMatcher;
         }
         else {
-            return tagNormale + giorno;
+            return tagBase + textMatcher;
         }
     }
 
