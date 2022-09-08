@@ -238,7 +238,7 @@ public class ElaboraServiceTest extends WikiTest {
         printGiorno(sorgente, ottenutoGiorno);
     }
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(6)
     @DisplayName("6 - fixGiornoValido (come stringa)")

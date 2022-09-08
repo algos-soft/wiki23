@@ -199,6 +199,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Anna Maria", "Anna Maria"),
                 Arguments.of("testo errato", "Testo"),
                 Arguments.of("antonio", "Antonio"),
+                Arguments.of("(antonio)", "Antonio"),
+                Arguments.of("[antonio]", "Antonio"),
                 Arguments.of("[[Roberto]]", "Roberto")
         );
     }
@@ -232,6 +234,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Ørsted", "Ørsted"),
                 Arguments.of("bruillard", "Bruillard"),
                 Arguments.of("de Bruillard", "de Bruillard"),
+                Arguments.of("(Brambilla)", "Brambilla"),
+                Arguments.of("[Brambilla]", "Brambilla"),
                 Arguments.of("[[Brambilla]]", "Brambilla")
         );
     }
@@ -271,8 +275,9 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("3 dicembre ?", VUOTA),
                 Arguments.of("?", VUOTA),
                 Arguments.of("3 dicembre circa", VUOTA),
-                Arguments.of("[[8 agosto]]", "8 agosto"),
+                Arguments.of("(8 agosto)", "8 agosto"),
                 Arguments.of("[8 agosto]", "8 agosto"),
+                Arguments.of("[[8 agosto]]", "8 agosto"),
                 Arguments.of("21[Maggio]", "21 maggio"),
                 Arguments.of("21 [Maggio]", "21 maggio"),
                 Arguments.of("21 [[Maggio]]", "21 maggio"),
@@ -287,12 +292,6 @@ public abstract class WikiTest extends AlgosTest {
     }
 
 
-    protected static final String ANNO_14 = "754 A.C.";
-
-    protected static final String ANNO_15 = "754 AC";
-
-    protected static final String ANNO_16 = "754 ac";
-
     //--valore grezzo
     //--valore valido
     protected static Stream<Arguments> ANNI() {
@@ -300,8 +299,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of(VUOTA, VUOTA),
                 Arguments.of("3145", VUOTA),
                 Arguments.of("1874", "1874"),
-                Arguments.of("[1954]", "1954"),
                 Arguments.of("(1954)", "1954"),
+                Arguments.of("[1954]", "1954"),
                 Arguments.of("[[1954]]", "1954"),
                 Arguments.of("1649 circa", VUOTA),
                 Arguments.of("1649<ref>Da levare</ref>", "1649"),
@@ -321,9 +320,10 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("1880ecc.", VUOTA),
                 Arguments.of("1880 ecc.", VUOTA),
                 Arguments.of("novecento", VUOTA),
+                Arguments.of("secolo", VUOTA),
                 Arguments.of("3 secolo", VUOTA),
                 Arguments.of("1532/1537", VUOTA),
-                Arguments.of("754 a.C. circa", VUOTA),
+                Arguments.of("368 a.C. circa", VUOTA),
                 Arguments.of("testo errato", VUOTA),
                 Arguments.of("424 [html:pippoz]", "424"),
                 Arguments.of("754 a.C.", "754 a.C."),

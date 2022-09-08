@@ -937,8 +937,16 @@ public class WikiBotService extends WAbstractService {
         valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
         valoreGrezzo = textService.levaDopoHtml(valoreGrezzo);
         valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
-        valoreGrezzo = textService.levaDopoParentesiIni(valoreGrezzo);
         valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
+        if (valoreGrezzo.startsWith(PARENTESI_TONDA_INI)) {
+            valoreGrezzo = valoreGrezzo.replaceAll(PARENTESI_TONDA_INI_REGEX, VUOTA);
+            valoreGrezzo = valoreGrezzo.replaceAll(PARENTESI_TONDA_END_REGEX, VUOTA);
+
+        }
+        else {
+            valoreGrezzo = textService.levaDopoParentesiIni(valoreGrezzo);
+        }
+
         return valoreGrezzo.trim();
     }
 

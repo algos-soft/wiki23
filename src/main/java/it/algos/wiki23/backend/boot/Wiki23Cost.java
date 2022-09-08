@@ -46,6 +46,8 @@ public class Wiki23Cost {
 
     public static final String ANNI = "Anni";
 
+    public static final String ANNI_AC = "a.C.";
+
     public static final String ATT = "Attività";
 
     public static final String NAZ = "Nazionalità";

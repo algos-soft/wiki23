@@ -127,6 +127,10 @@ public class VaadCost {
 
     public static final String PARENTESI_TONDA_END = ")";
 
+    public static final String PARENTESI_TONDA_INI_REGEX = "\\(";
+
+    public static final String PARENTESI_TONDA_END_REGEX = "\\)";
+
     public static final String SLASH = "/";
 
     public static final String PIPE = "|";
