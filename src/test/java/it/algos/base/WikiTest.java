@@ -186,12 +186,12 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Marcello {{graffe iniziali", "Marcello"),
                 Arguments.of("Marcello <nowiki>", "Marcello"),
                 Arguments.of("Marcello<nowiki>", "Marcello"),
-                Arguments.of("Marcello=", "Marcello"),
-                Arguments.of("Marcello =", "Marcello"),
-                Arguments.of("Marcello ?", "Marcello"),
-                Arguments.of("Marcello?", "Marcello"),
-                Arguments.of("Marcello ecc.", "Marcello"),
-                Arguments.of("Marcelloecc.", "Marcello"),
+                Arguments.of("Marcello=", VUOTA),
+                Arguments.of("Marcello =", VUOTA),
+                Arguments.of("Marcello ?", VUOTA),
+                Arguments.of("Marcello?", VUOTA),
+                Arguments.of("Marcello ecc.", VUOTA),
+                Arguments.of("Marcelloecc.", VUOTA),
                 Arguments.of("Antonio [html:pippoz]", "Antonio"),
                 Arguments.of("Roberto Marco Maria", "Roberto"),
                 Arguments.of("Colin Campbell (generale)", "Colin"),
@@ -218,21 +218,124 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Brambilla {{graffe iniziali", "Brambilla"),
                 Arguments.of("Brambilla <nowiki>", "Brambilla"),
                 Arguments.of("Brambilla<nowiki>", "Brambilla"),
-                Arguments.of("Brambilla=", "Brambilla"),
-                Arguments.of("Brambilla =", "Brambilla"),
-                Arguments.of("Brambilla ?", "Brambilla"),
-                Arguments.of("Brambilla?", "Brambilla"),
-                Arguments.of("Brambilla ecc.", "Brambilla"),
-                Arguments.of("Brambillaecc..", "Brambilla"),
+                Arguments.of("Brambilla=", VUOTA),
+                Arguments.of("Brambilla =", VUOTA),
+                Arguments.of("Brambilla ?", VUOTA),
+                Arguments.of("Brambilla?", VUOTA),
+                Arguments.of("Brambilla ecc.", VUOTA),
+                Arguments.of("Brambillaecc.", VUOTA),
                 Arguments.of("Brambilla [html:pippoz]", "Brambilla"),
-                Arguments.of("Brambilla (generale)", "Colin"),
-                Arguments.of("testo errato", "Testo"),
-                Arguments.of("brambilla", "Brambilla"),
+                Arguments.of("Brambilla Generale", "Brambilla Generale"),
+                Arguments.of("Brambilla (generale)", "Brambilla"),
                 Arguments.of("Bayley", "Bayley"),
                 Arguments.of("Mora Porras", "Mora Porras"),
                 Arguments.of("Ørsted", "Ørsted"),
+                Arguments.of("bruillard", "Bruillard"),
                 Arguments.of("de Bruillard", "de Bruillard"),
                 Arguments.of("[[Brambilla]]", "Brambilla")
+        );
+    }
+
+
+    //--valore grezzo
+    //--valore valido
+    protected static Stream<Arguments> GIORNI() {
+        return Stream.of(
+                Arguments.of(VUOTA, VUOTA),
+                Arguments.of("3 dicembre<ref>Da levare</ref>", "3 dicembre"),
+                Arguments.of("3 dicembre <ref>Da levare</ref>", "3 dicembre"),
+                Arguments.of("3 dicembre {{#tag:ref", "3 dicembre"),
+                Arguments.of("3 dicembre{{#tag:ref", "3 dicembre"),
+                Arguments.of("3 dicembre <!--", "3 dicembre"),
+                Arguments.of("3 dicembre<!--", "3 dicembre"),
+                Arguments.of("3 dicembre{{graffe iniziali", "3 dicembre"),
+                Arguments.of("3 dicembre {{graffe iniziali", "3 dicembre"),
+                Arguments.of("3 dicembre <nowiki>", "3 dicembre"),
+                Arguments.of("3 dicembre<nowiki>", "3 dicembre"),
+                Arguments.of("3 luglio=", VUOTA),
+                Arguments.of("27  ottobre=", VUOTA),
+                Arguments.of("17 marzo ecc.", VUOTA),
+                Arguments.of("17 marzoecc..", VUOTA),
+                Arguments.of("31 febbraio", VUOTA),
+                Arguments.of("4 termidoro", VUOTA),
+                Arguments.of("17 marzo [html:pippoz]", "17 marzo"),
+                Arguments.of("17 marzo", "17 marzo"),
+                Arguments.of("testo errato", VUOTA),
+                Arguments.of("4 termidoro", VUOTA),
+                Arguments.of("12 [[Luglio]] <ref>Da levare</ref>", "12 luglio"),
+                Arguments.of("24aprile", "24 aprile"),
+                Arguments.of("2 Novembre", "2 novembre"),
+                Arguments.of("2Novembre", "2 novembre"),
+                Arguments.of("2novembre", "2 novembre"),
+                Arguments.of("3 dicembre?", VUOTA),
+                Arguments.of("3 dicembre ?", VUOTA),
+                Arguments.of("?", VUOTA),
+                Arguments.of("3 dicembre circa", VUOTA),
+                Arguments.of("[[8 agosto]]", "8 agosto"),
+                Arguments.of("[8 agosto]", "8 agosto"),
+                Arguments.of("21[Maggio]", "21 maggio"),
+                Arguments.of("21 [Maggio]", "21 maggio"),
+                Arguments.of("21 [[Maggio]]", "21 maggio"),
+                Arguments.of("[4 febbraio]", "4 febbraio"),
+                Arguments.of("settembre 5", VUOTA),
+                Arguments.of("27 ottobre <!--eh eh eh-->", "27 ottobre"),
+                Arguments.of("29 giugno <nowiki> levare", "29 giugno"),
+                Arguments.of("dicembre", VUOTA),
+                Arguments.of("12/5", VUOTA),
+                Arguments.of("12-5", VUOTA)
+        );
+    }
+
+
+    protected static final String ANNO_14 = "754 A.C.";
+
+    protected static final String ANNO_15 = "754 AC";
+
+    protected static final String ANNO_16 = "754 ac";
+
+    //--valore grezzo
+    //--valore valido
+    protected static Stream<Arguments> ANNI() {
+        return Stream.of(
+                Arguments.of(VUOTA, VUOTA),
+                Arguments.of("3145", VUOTA),
+                Arguments.of("1874", "1874"),
+                Arguments.of("[1954]", "1954"),
+                Arguments.of("(1954)", "1954"),
+                Arguments.of("[[1954]]", "1954"),
+                Arguments.of("1649 circa", VUOTA),
+                Arguments.of("1649<ref>Da levare</ref>", "1649"),
+                Arguments.of("1649 <ref>Da levare</ref>", "1649"),
+                Arguments.of("879{{#tag:ref", "879"),
+                Arguments.of("879 {{#tag:ref", "879"),
+                Arguments.of("1250<!--", "1250"),
+                Arguments.of("1250 <!--", "1250"),
+                Arguments.of("1817{{graffe iniziali", "1817"),
+                Arguments.of("1817 {{graffe iniziali", "1817"),
+                Arguments.of("1940<nowiki>", "1940"),
+                Arguments.of("1940 <nowiki>", "1940"),
+                Arguments.of("1936=", VUOTA),
+                Arguments.of("1936 =", VUOTA),
+                Arguments.of("1512 ?", VUOTA),
+                Arguments.of("1512?", VUOTA),
+                Arguments.of("1880ecc.", VUOTA),
+                Arguments.of("1880 ecc.", VUOTA),
+                Arguments.of("novecento", VUOTA),
+                Arguments.of("3 secolo", VUOTA),
+                Arguments.of("1532/1537", VUOTA),
+                Arguments.of("754 a.C. circa", VUOTA),
+                Arguments.of("testo errato", VUOTA),
+                Arguments.of("424 [html:pippoz]", "424"),
+                Arguments.of("754 a.C.", "754 a.C."),
+                Arguments.of("754 a.c.", "754 a.C."),
+                Arguments.of("754a.c.", "754 a.C."),
+                Arguments.of("754a.C.", "754 a.C."),
+                Arguments.of("754 A.C.", "754 a.C."),
+                Arguments.of("754A.C.", "754 a.C."),
+                Arguments.of("754 AC", "754 a.C."),
+                Arguments.of("754AC", "754 a.C."),
+                Arguments.of("754 ac", "754 a.C."),
+                Arguments.of("754ac", "754 a.C.")
         );
     }
 
@@ -282,7 +385,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("8 dicembre", AETypeLista.giornoMorte, "Morti l'8 dicembre"),
                 Arguments.of("11 maggio", AETypeLista.giornoNascita, "Nati l'11 maggio"),
                 Arguments.of("11 maggio", AETypeLista.giornoMorte, "Morti l'11 maggio")
-                );
+        );
     }
 
     //--titolo

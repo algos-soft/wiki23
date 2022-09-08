@@ -106,9 +106,14 @@ public class ElaboraService extends WAbstractService {
      * @return testoValido regolato in uscita
      */
     public String fixNome(final String valorePropertyTmplBioServer) {
-        String testoValido = wikiBotService.fixBase(valorePropertyTmplBioServer);
+        String testoValido = wikiBotService.fixElimina(valorePropertyTmplBioServer);
         List<String> listaDoppiNomi;
 
+        if (textService.isEmpty(testoValido)) {
+            return VUOTA;
+        }
+
+        testoValido = wikiBotService.fixDopo(testoValido);
         if (testoValido.contains(SPAZIO)) {
             listaDoppiNomi = doppionomeBackend.fetchCode();
             if (!listaDoppiNomi.contains(testoValido)) {
@@ -127,11 +132,19 @@ public class ElaboraService extends WAbstractService {
      * @return testoValido regolato in uscita
      */
     public String fixCognome(String valorePropertyTmplBioServer) {
-        String testoValido = wikiBotService.fixBase(valorePropertyTmplBioServer);
+        String testoValido = wikiBotService.fixElimina(valorePropertyTmplBioServer);
 
-//                testoValido = this.levaDopoCirca(testoValido); //solo per nomi e cognomi
+        if (textService.isEmpty(testoValido)) {
+            return VUOTA;
+        }
 
-        return textService.isValid(testoValido) ? textService.primaMaiuscola(testoValido) : VUOTA;
+        testoValido = wikiBotService.fixDopo(testoValido);
+        if (testoValido.contains(SPAZIO)) {
+            return testoValido;
+        }
+        else {
+            return textService.isValid(testoValido) ? textService.primaMaiuscola(testoValido) : VUOTA;
+        }
     }
 
     /**
@@ -225,28 +238,6 @@ public class ElaboraService extends WAbstractService {
     }
 
 
-    /**
-     * Regola questa property <br>
-     * <p>
-     * Regola il testo con le regolazioni specifiche della property <br>
-     * Controlla che il valore esista nella collezione linkata <br>
-     *
-     * @param testoGrezzo in entrata da elaborare
-     *
-     * @return testo/parametro regolato in uscita
-     */
-    public String fixGiornoValido(String testoGrezzo) {
-        String testoValido = fixGiorno(testoGrezzo);
-        GiornoWiki giorno = null;
-
-        try {
-            giorno = giornoWikiBackend.findByNome(testoValido);
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(unErrore).usaDb());
-        }
-
-        return giorno != null ? giorno.nome : VUOTA;
-    }
 
     /**
      * Regola questa property <br>
@@ -257,16 +248,22 @@ public class ElaboraService extends WAbstractService {
      * Forza a minuscolo il primo carattere del mese <br>
      * Forza a ordinale un eventuale primo giorno del mese scritto come numero o come grado <br>
      *
-     * @param testoGrezzo in entrata da elaborare
+     * @param valorePropertyTmplBioServer in entrata da elaborare
      *
      * @return testo/parametro regolato in uscita
      */
-    public String fixGiorno(String testoGrezzo) {
-        //--se contiene un punto interrogativo (in coda) è valido
-        String testoValido = wikiBotService.estraeValoreInizialeGrezzoPuntoEscluso(testoGrezzo);
+    public String fixGiorno(String valorePropertyTmplBioServer) {
+        String testoValido = wikiBotService.fixElimina(valorePropertyTmplBioServer);
         int pos;
         String primo;
         String mese;
+        GiornoWiki giorno = null;
+
+        if (textService.isEmpty(testoValido)) {
+            return VUOTA;
+        }
+
+        testoValido = wikiBotService.fixDopo(testoValido);
 
         //--spazio singolo
         testoValido = textService.fixOneSpace(testoValido);
@@ -294,8 +291,78 @@ public class ElaboraService extends WAbstractService {
             return VUOTA;
         }
 
-        //--minuscola
+        //--Forza a ordinale un eventuale primo giorno del mese scritto come numero o come grado
+        if (testoValido.contains(SPAZIO)) {
+            pos = testoValido.indexOf(SPAZIO);
+            primo = testoValido.substring(0, pos);
+            mese = testoValido.substring(pos + SPAZIO.length());
+
+            if (primo.equals("1") || primo.equals("1°")) {
+                primo = "1º";
+                testoValido = primo + SPAZIO + mese;
+            }
+        }
+
+        //--tutto minuscolo
         testoValido = testoValido.toLowerCase();
+        try {
+            giorno = giornoWikiBackend.findByNome(testoValido);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+        }
+
+        return giorno != null ? giorno.nome : VUOTA;
+    }
+
+
+    /**
+     * Regola questa property <br>
+     * <p>
+     * Regola il testo con le regolazioni specifiche della property <br>
+     * Controlla che il valore esista nella collezione linkata <br>
+     *
+     * @param valorePropertyTmplBioServer in entrata da elaborare
+     *
+     * @return testo/parametro regolato in uscita
+     */
+    public String fixGiornoValido(String valorePropertyTmplBioServer) {
+        String testoValido = wikiBotService.fixElimina(valorePropertyTmplBioServer);
+        int pos;
+        String primo;
+        String mese;
+        GiornoWiki giorno = null;
+
+        if (textService.isEmpty(testoValido)) {
+            return VUOTA;
+        }
+
+        testoValido = wikiBotService.fixDopo(testoValido);
+
+        //--spazio singolo
+        testoValido = textService.fixOneSpace(testoValido);
+
+        //--senza spazio
+        if (!testoValido.contains(SPAZIO)) {
+            testoValido = separaMese(testoValido);
+        }
+
+        if (!testoValido.contains(SPAZIO)) {
+            return VUOTA;
+        }
+
+        //--elimina eventuali quadre (ini o end) rimaste
+        testoValido = testoValido.replaceAll(QUADRA_INI_REGEX, VUOTA);
+        testoValido = testoValido.replaceAll(QUADRA_END_REGEX, VUOTA);
+
+        //--deve iniziare con un numero
+        if (!Character.isDigit(testoValido.charAt(0))) {
+            return VUOTA;
+        }
+
+        //--deve finire con una lettera
+        if (Character.isDigit(testoValido.charAt(testoValido.length() - 1))) {
+            return VUOTA;
+        }
 
         //--Forza a ordinale un eventuale primo giorno del mese scritto come numero o come grado
         if (testoValido.contains(SPAZIO)) {
@@ -309,8 +376,15 @@ public class ElaboraService extends WAbstractService {
             }
         }
 
-        return testoValido.trim();
+        try {
+            giorno = giornoWikiBackend.findByNome(testoValido);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+        }
+
+        return giorno != null ? giorno.nome : VUOTA;
     }
+
 
     public int fixGiornoOrd(String testoGrezzo) {
         int giornoOrdine = 0;

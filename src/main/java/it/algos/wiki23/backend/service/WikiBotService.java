@@ -879,21 +879,52 @@ public class WikiBotService extends WAbstractService {
      * Elimina gli eventuali contenuti IN CODA che non devono essere presi in considerazione <br>
      * Restituisce un valore GREZZO che deve essere ancora elaborato <br>
      * <p>
-     * Tag chiave di troncature sempre valide:
-     * REF = "<ref"
-     * REF = ""{{#tag:ref""
-     * NOTE = "<!--"
-     * GRAFFE = "{{"
+     * Tag chiave di contenuti che invalidano il valore:
      * UGUALE = "="
-     * NO WIKI = "<nowiki>"
      * INTERROGATIVO = "?"
      * ECC = "ecc."
      *
      * @param valorePropertyTmplBioServer testo originale proveniente dalla property tmplBioServer della entity Bio
      *
+     * @return valore grezzo ammesso
+     */
+    public String fixElimina(String valorePropertyTmplBioServer) {
+        String valoreGrezzo = valorePropertyTmplBioServer.trim();
+
+        if (textService.isEmpty(valorePropertyTmplBioServer)) {
+            return VUOTA;
+        }
+
+        if (valoreGrezzo.endsWith(ECC)) {
+            return VUOTA;
+        }
+        if (valoreGrezzo.endsWith(PUNTO_INTERROGATIVO)) {
+            return VUOTA;
+        }
+        if (valoreGrezzo.endsWith(UGUALE)) {
+            return VUOTA;
+        }
+
+        return valoreGrezzo.trim();
+    }
+
+
+    /**
+     * Elimina gli eventuali contenuti IN CODA che non devono essere presi in considerazione <br>
+     * Restituisce un valore GREZZO che deve essere ancora elaborato <br>
+     * <p>
+     * Tag chiave di troncature sempre valide:
+     * REF = "<ref"
+     * REF = ""{{#tag:ref""
+     * NOTE = "<!--"
+     * GRAFFE = "{{"
+     * NO WIKI = "<nowiki>"
+     *
+     * @param valorePropertyTmplBioServer testo originale proveniente dalla property tmplBioServer della entity Bio
+     *
      * @return valore grezzo troncato dopo alcuni tag chiave (<ref>, {{, ecc.) <br>
      */
-    public String fixBase(String valorePropertyTmplBioServer) {
+    public String fixDopo(String valorePropertyTmplBioServer) {
         String valoreGrezzo = valorePropertyTmplBioServer.trim();
 
         if (textService.isEmpty(valorePropertyTmplBioServer)) {
@@ -904,10 +935,9 @@ public class WikiBotService extends WAbstractService {
         valoreGrezzo = textService.levaDopoTagRef(valoreGrezzo);
         valoreGrezzo = textService.levaDopoNote(valoreGrezzo);
         valoreGrezzo = textService.levaDopoGraffe(valoreGrezzo);
-        valoreGrezzo = textService.levaDopoUguale(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoHtml(valoreGrezzo);
         valoreGrezzo = textService.levaDopoWiki(valoreGrezzo);
-        valoreGrezzo = textService.levaDopoEccetera(valoreGrezzo);
-        valoreGrezzo = textService.levaDopoInterrogativo(valoreGrezzo);
+        valoreGrezzo = textService.levaDopoParentesiIni(valoreGrezzo);
         valoreGrezzo = textService.setNoQuadre(valoreGrezzo);
         return valoreGrezzo.trim();
     }

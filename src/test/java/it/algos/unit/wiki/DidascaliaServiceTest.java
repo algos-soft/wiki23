@@ -542,6 +542,14 @@ public class DidascaliaServiceTest extends WikiTest {
         previsto = "[[Roman Protasevič]], attivista e giornalista bielorusso";
     }
 
+    @ParameterizedTest
+    @MethodSource(value = "GIORNI")
+    @Order(13)
+    @DisplayName("13 - Didascalie varie con simboli specifici nato e morto")
+        //--valore grezzo
+        //--valore valido
+    void didascalia2(final String wikiTitle, final boolean paginaValida) {
+    }
 
     /**
      * Qui passa una volta sola, chiamato alla fine di tutti i tests <br>
