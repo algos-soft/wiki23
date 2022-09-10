@@ -163,7 +163,8 @@ public class ElaboraService extends WAbstractService {
             testoGrezzo = textService.levaCodaDaUltimo(testoGrezzo, DOPPIE_GRAFFE_END);
         }
 
-        return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+//        return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+        return testoGrezzo;
     }
 
     /**

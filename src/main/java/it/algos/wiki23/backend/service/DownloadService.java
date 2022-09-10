@@ -58,43 +58,67 @@ public class DownloadService extends WAbstractService {
         List<Long> listaPageIdsDaLeggere;
         List<WrapBio> listaWrapBio;
 
-        logger.info(new WrapLog().message("Inizio ciclo").type(AETypeLog.bio));
+        logger.info(new WrapLog().message("Inizio ciclo").type(AETypeLog.bio).usaDb());
 
         //--Controlla quante pagine ci sono nella categoria
         checkCategoria(categoryTitle);
 
+        logger.info(new WrapLog().message("Inizio ciclo/2").type(AETypeLog.bio).usaDb());
+
         //--Controlla il collegamento come bot
         checkBot();
+
+        logger.info(new WrapLog().message("Inizio ciclo/3").type(AETypeLog.bio).usaDb());
 
         //--Crea la lista di tutti i (long) pageIds della category
         listaPageIds = getListaPageIds(categoryTitle);
 
+        logger.info(new WrapLog().message("Inizio ciclo/4").type(AETypeLog.bio).usaDb());
+
         //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
         listaMongoIds = getListaMongoIds();
+
+        logger.info(new WrapLog().message("Inizio ciclo/5").type(AETypeLog.bio).usaDb());
 
         //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
         listaMongoIdsDaCancellare = deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
 
+        logger.info(new WrapLog().message("Inizio ciclo/6").type(AETypeLog.bio).usaDb());
+
         //--Cancella dal database (mongo) locale le entities non più presenti nella category <br>
         cancellaEntitiesNonInCategory(listaMongoIdsDaCancellare);
+
+        logger.info(new WrapLog().message("Inizio ciclo/7").type(AETypeLog.bio).usaDb());
 
         //--Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare
         listaPageIdsDaCreare = deltaPageIds(listaPageIds, listaMongoIds, "listaPageIdsDaCreare");
 
+        logger.info(new WrapLog().message("Inizio ciclo/8").type(AETypeLog.bio).usaDb());
+
         //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
         creaNewEntities(listaPageIdsDaCreare);
+
+        logger.info(new WrapLog().message("Inizio ciclo/9").type(AETypeLog.bio).usaDb());
 
         //--Usa la lista di pageIds della categoria e recupera una lista (stessa lunghezza) di wrapTimes con l'ultima modifica sul server
         listaWrapTime = getListaWrapTime(listaPageIds);
 
+        logger.info(new WrapLog().message("Inizio ciclo/10").type(AETypeLog.bio).usaDb());
+
         //--Elabora la lista di wrapTimes e costruisce una lista di pageIds da leggere
         listaPageIdsDaLeggere = elaboraListaWrapTime(listaWrapTime);
+
+        logger.info(new WrapLog().message("Inizio ciclo/11").type(AETypeLog.bio).usaDb());
 
         //--Legge tutte le pagine
         listaWrapBio = getListaWrapBio(listaPageIdsDaLeggere);
 
+        logger.info(new WrapLog().message("Inizio ciclo/12").type(AETypeLog.bio).usaDb());
+
         //--Crea/aggiorna le voci biografiche <br>
         creaElaboraListaBio(listaWrapBio);
+
+        logger.info(new WrapLog().message("Inizio ciclo/13").type(AETypeLog.bio).usaDb());
 
         //--durata del ciclo completo
         fixInfoDurataCiclo(inizio);
