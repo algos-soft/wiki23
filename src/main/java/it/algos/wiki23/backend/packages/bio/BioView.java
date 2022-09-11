@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
@@ -72,7 +73,7 @@ public class BioView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "ordinamento", "sesso", "nome", "cognome",
+        super.gridPropertyNamesList = Arrays.asList("pageId", "elaborato", "ordinamento", "sesso", "nome", "cognome",
                 "giornoNato",
                 "annoNato",
                 "giornoMorto", "annoMorto",
@@ -205,9 +206,21 @@ public class BioView extends WikiView {
     protected void fixBodyLayout() {
         super.fixBodyLayout();
 
+        Grid.Column pagina = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String wikiTitle = textService.primaMaiuscola(((Bio) entity).wikiTitle);
+            String link = PATH_WIKI_EDIT + wikiTitle + TAG_EDIT_ZERO;
+            Anchor anchor = new Anchor(link, wikiTitle);
+            anchor.getElement().getStyle().set("color", "green");
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+
+            return new Span(anchor);
+        })).setHeader("pagina").setKey("pagina").setFlexGrow(0).setWidth("18em");
+
         HeaderRow headerRow = grid.prependHeaderRow();
+        Grid.Column ordine = grid.getColumnByKey(FIELD_KEY_ORDER);
         Grid.Column pageId = grid.getColumnByKey("pageId");
         Grid.Column wikiTitle = grid.getColumnByKey("wikiTitle");
+        Grid.Column ordinamento = grid.getColumnByKey("ordinamento");
         Grid.Column elaborato = grid.getColumnByKey("elaborato");
         Grid.Column sesso = grid.getColumnByKey("sesso");
         Grid.Column nome = grid.getColumnByKey("nome");
@@ -220,14 +233,14 @@ public class BioView extends WikiView {
         Grid.Column attivita2 = grid.getColumnByKey("attivita2");
         Grid.Column attivita3 = grid.getColumnByKey("attivita3");
         Grid.Column nazionalita = grid.getColumnByKey("nazionalita");
-        Grid.Column nazionalita2 = grid.getColumnByKey("nazionalita");
 
-        headerRow.join(pageId, wikiTitle, elaborato).setText("Wiki");
+        grid.setColumnOrder(ordine, pageId, pagina, elaborato, ordinamento, sesso, nome, cognome, giornoNato, annoNato, giornoMorto, annoMorto, attivita, attivita2, attivita3, nazionalita);
+
+        headerRow.join(pageId, pagina, elaborato, ordinamento).setText("Wiki");
         headerRow.join(sesso, nome, cognome).setText("Anagrafica");
         headerRow.join(giornoNato, annoNato).setText("Nascita");
         headerRow.join(giornoMorto, annoMorto).setText("Morte");
         headerRow.join(attivita, attivita2, attivita3).setText("Attività");
-        //        headerRow.join(nazionalita,nazionalita2).setText("Nazionalità");
     }
 
 
