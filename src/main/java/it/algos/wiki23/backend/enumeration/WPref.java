@@ -39,6 +39,8 @@ public enum WPref implements AIGenPref {
     uploadNazionalitaTime("uploadNazionalitaTime", AETypePref.integer, 0, "Durata upload delle nazionalità in minuti."),
     uploadNazionalitaPrevisto("uploadNazionalitaPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per le nazionalità."),
 
+    resetBio("resetBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download completo delle voci biografiche."),
+    resetBioTime("resetBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata download completo delle biografie in minuti."),
     downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download delle voci biografiche."),
     downloadBioTime("downloadBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata ciclo completo download delle biografie in minuti."),
     downloadBioPrevisto("downloadBioPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo download previsto delle voci biografiche."),
@@ -70,6 +72,8 @@ public enum WPref implements AIGenPref {
     uploadAnniPrevisto("uploadAnniPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per gli anni."),
     statisticaAnni("statisticaAnni", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per gli anni."),
 
+    usaSottoGiorniAnni("usaSottoGiorniAnni", AETypePref.bool, false, "Usa le sotto-sottopagine (nazionalità/mesi) per giorni/anni"),
+    sogliaSottoPaginaGiorniAnni("sogliaSottoPaginaGiorniAnni", AETypePref.integer, 50, "Soglia minima per creare una sottopagina di un giorno o anno sul server wiki"),
 
     categoriaBio("categoriaBio", AETypePref.string, "BioBot", "Categoria di riferimento per le Biografie"),
     sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, 50, "Soglia minima per creare la pagina di una attività o nazionalità sul server wiki"),
@@ -81,7 +85,7 @@ public enum WPref implements AIGenPref {
     usaTreAttivita("usaTreAttivita", AETypePref.bool, false, "Considera tutte le attività (tre) nelle liste di attività"),
     usaParagrafiDimensionati("usaParagrafiDimensionati", AETypePref.bool, true, "Nel titolo del paragrafo aggiunge la dimensione delle " +
             "voci elencate"),
-    usaLinkStatistiche("usaLinkStatistiche", AETypePref.bool, false, "Link alle liste di attività nel template statistiche, anche se " +
+    usaLinkStatistiche("usaLinkStatistiche", AETypePref.bool, true, "Link alle liste di attività nel template statistiche, anche se " +
             "rossi"),
     typeTocAttNaz("typeTocAttNaz", AETypePref.enumerationType, AETypeToc.noToc, "Type di TOC in attività e nazionalità",
             AETypeToc.noToc
@@ -97,9 +101,9 @@ public enum WPref implements AIGenPref {
     ),
     usaParagrafiGiorni("usaParagrafiGiorni", AETypePref.bool, true, "Usa i paragrafi (secoli) nelle pagine dei giorni"),
     usaParagrafiAnni("usaParagrafiAnni", AETypePref.bool, true, "Usa i paragrafi (mesi) nelle pagine degli anni"),
-    usaParagrafiAttNaz("usaParagrafiAttNaz", AETypePref.bool, false, "Usa i paragrafi (nazionalità/attività) nelle pagine attività/nazionalità"),
+    usaParagrafiAttNaz("usaParagrafiAttNaz", AETypePref.bool, true, "Usa i paragrafi (nazionalità/attività) nelle pagine attività/nazionalità"),
     usaSottoSottoAttNaz("usaSottoSottoAttNaz", AETypePref.bool, false, "Usa le sotto-sottopagine (nazionalità/attività) di lettere alfabetiche"),
-    usaDivAttNaz("usaDivAttNaz", AETypePref.bool, true, "Usa i {{Div col}} nelle pagine attività e nazionalità"),
+    usaDivAttNaz("usaDivAttNaz", AETypePref.bool, false, "Usa i {{Div col}} nelle pagine attività e nazionalità"),
 
     simboloNato("simboloNato", AETypePref.string, "n.", "Simbolo della nascita nelle didascalie"),
     simboloMorto("simboloMorto", AETypePref.string, "†", "Simbolo della morte nelle didascalie"),
@@ -124,7 +128,7 @@ public enum WPref implements AIGenPref {
     usaRigheAnni("usaRigheAnni", AETypePref.bool, true, "Usa righe raggruppate per giorno nelle liste degli anni"),
     sogliaCognomiMongo("sogliaCognomiMongo", AETypePref.integer, 30, "Soglia minima per creare una entity nella collezione Cognomi sul mongoDB"),
     sogliaCognomiWiki("sogliaCognomiWiki", AETypePref.integer, 50, "Soglia minima per creare una pagina Cognomi sul server wiki"),
-    usaLoggerTask("usaLoggerTask", AETypePref.bool, false, "Registra sul log interno l'esecuzione dell task programmate"),
+    usaLoggerTask("usaLoggerTask", AETypePref.bool, true, "Registra sul log interno l'esecuzione dell task programmate"),
     ;
 
 

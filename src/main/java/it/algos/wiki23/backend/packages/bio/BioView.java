@@ -89,6 +89,8 @@ public class BioView extends WikiView {
         );
         super.sortOrder = Sort.by(Sort.Direction.DESC, "ordinamento");
 
+        super.lastReset = WPref.resetBio;
+        super.durataReset = WPref.resetBioTime;
         super.lastDownload = WPref.downloadBio;
         super.durataDownload = WPref.downloadBioTime;
         super.nextDownload = WPref.downloadBioPrevisto;
@@ -128,7 +130,7 @@ public class BioView extends WikiView {
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
         alertPlaceHolder.add(new Span(anchor));
 
-        addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie", categoria, textService.format(numBio)));
+        addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie (probabile)", categoria, textService.format(numBio-1)));
     }
 
     @Override
@@ -393,8 +395,14 @@ public class BioView extends WikiView {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void download() {
-        downloadService.ciclo();
-        refresh();
+        if (backend.count() == 0) {
+            downloadService.cicloIniziale();
+        }
+        else {
+            downloadService.cicloCorrente();
+        }
+
+        reload();
     }
 
     /**
@@ -477,6 +485,41 @@ public class BioView extends WikiView {
         backend.update(bio);
         grid.setItems(crudBackend.findAll(sortOrder));
         Avviso.show(String.format("%s successfully elaborated", bio)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
+    protected void deleteEsegue() {
+        super.deleteEsegue();
+
+
+        if (WPref.resetBio != null) {
+            WPref.resetBio.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.resetBioTime != null) {
+            WPref.resetBioTime.setValue(0);
+        }
+
+        if (WPref.downloadBio != null) {
+            WPref.downloadBio.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.downloadBioTime != null) {
+            WPref.downloadBioTime.setValue(0);
+        }
+
+        if (WPref.downloadBioPrevisto != null) {
+            WPref.downloadBioPrevisto.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.elaboraBio != null) {
+            WPref.elaboraBio.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.elaboraBioTime != null) {
+            WPref.elaboraBioTime.setValue(0);
+        }
+
+        reload();
     }
 
     protected void getInput() {

@@ -533,6 +533,14 @@ public class BioBackend extends WikiBackend {
         }
     }
     public void fixMancaOrdinamento() {
+        List<Bio> lista;
+
+        lista = repository.findByOrdinamentoIsNull();
+        for (Bio bio : lista) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.mancaOrdinamento;
+            save(bio);
+        }
     }
 
 }// end of crud backend class

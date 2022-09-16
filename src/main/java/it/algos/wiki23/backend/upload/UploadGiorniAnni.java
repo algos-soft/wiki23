@@ -176,7 +176,7 @@ public abstract class UploadGiorniAnni extends Upload {
      * 3) sopra le 200 voci con paragrafi normali
      */
     public String testoBody(Map<String, List<WrapLista>> mappa) {
-        String testo;
+        //        String testo;
         int numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
         int sogliaIncludeAll = WPref.sogliaIncludeAll.getInt();
         int sogliaIncludeParagrafo = WPref.sogliaIncludeParagrafo.getInt();
@@ -192,27 +192,29 @@ public abstract class UploadGiorniAnni extends Upload {
         //--meno di 50 (secondo il flag)
         if (numVoci < sogliaIncludeParagrafo) {
             if (righeRaggruppate) {
-                testo = senzaParagrafiMaRaggruppate(mappa);
+                return senzaParagrafiMaRaggruppate(mappa);
             }
             else {
-                testo = senzaParagrafi(mappa);
+                return senzaParagrafiNonRaggruppate(mappa);
             }
-            return testo;
         }
 
-        //--meno di 200 (secondo il flag)
+        //--da 50 a 200 (secondo il flag)
         if (numVoci < sogliaIncludeAll) {
-            testo = conParagrafi(mappa, true);
+            return conParagrafiSenzaSottopagine(mappa);
         }
         else {
-            testo = conParagrafi(mappa, false);
+            if (true) {
+                return conParagrafiSenzaSottopagine(mappa);
+            }
+            else {
+                return conParagrafiConSottopagine(mappa);
+            }
         }
-
-        return testo;
     }
 
 
-    public String senzaParagrafi(Map<String, List<WrapLista>> mappa) {
+    public String senzaParagrafiNonRaggruppate(Map<String, List<WrapLista>> mappa) {
         StringBuffer buffer = new StringBuffer();
         List<WrapLista> lista;
 
@@ -282,7 +284,7 @@ public abstract class UploadGiorniAnni extends Upload {
         return buffer.toString().trim();
     }
 
-    public String conParagrafi(Map<String, List<WrapLista>> mappa, boolean includeOnly) {
+    public String conParagrafiSenzaSottopagine(Map<String, List<WrapLista>> mappa) {
         StringBuffer buffer = new StringBuffer();
         List<WrapLista> lista;
         int numVoci;
@@ -295,8 +297,37 @@ public abstract class UploadGiorniAnni extends Upload {
             numVoci = lista.size();
             usaDiv = lista.size() > maxDiv;
             titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
-            //            buffer.append(wikiUtility.fixTitolo(VUOTA, titoloParagrafoLink, numVoci));
-            buffer.append(fixTitolo(titoloParagrafoLink, numVoci, includeOnly));
+            buffer.append(fixTitolo(titoloParagrafoLink, numVoci, true));
+            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+            for (WrapLista wrap : lista) {
+                buffer.append(ASTERISCO);
+                if (textService.isValid(wrap.titoloSottoParagrafo)) {
+                    buffer.append(wrap.titoloSottoParagrafo);
+                    buffer.append(SEP);
+                }
+                buffer.append(wrap.didascaliaBreve);
+                buffer.append(CAPO);
+            }
+            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
+        }
+
+        return buffer.toString().trim();
+    }
+
+    public String conParagrafiConSottopagine(Map<String, List<WrapLista>> mappa) {
+        StringBuffer buffer = new StringBuffer();
+        List<WrapLista> lista;
+        int numVoci;
+        int maxDiv = WPref.sogliaDiv.getInt();
+        boolean usaDiv;
+        String titoloParagrafoLink;
+
+        for (String keyParagrafo : mappa.keySet()) {
+            lista = mappa.get(keyParagrafo);
+            numVoci = lista.size();
+            usaDiv = lista.size() > maxDiv;
+            titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
+            buffer.append(fixTitolo(titoloParagrafoLink, numVoci, false));
             buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
             for (WrapLista wrap : lista) {
                 buffer.append(ASTERISCO);

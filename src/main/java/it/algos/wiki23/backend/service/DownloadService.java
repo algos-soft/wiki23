@@ -37,19 +37,51 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class DownloadService extends WAbstractService {
 
-    public void ciclo() {
-        ciclo(WPref.categoriaBio.getStr());
+    public void cicloIniziale() {
+        cicloIniziale(WPref.categoriaBio.getStr());
+    }
+
+
+    /**
+     * Ciclo iniziale di download con un reset completo <br>
+     * Cancella (drop) il database <br>
+     * Legge tutte le pagine sul server di wikipedia <br>
+     */
+    public void cicloIniziale(final String categoryTitle) {
+        long inizio = System.currentTimeMillis();
+        List<Long> listaPageIds;
+
+        //--Cancella (drop) il database
+        mongoService.deleteAll(Bio.class);
+
+        //--Controlla quante pagine ci sono nella categoria
+        checkCategoria(categoryTitle);
+
+        //--Controlla il collegamento come bot
+        checkBot();
+
+        //--Crea la lista di tutti i (long) pageIds della category
+        listaPageIds = getListaPageIds(categoryTitle);
+
+        //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
+        creaNewEntities(listaPageIds);
+
+        //--durata del ciclo completo
+        fixInfoDurataReset(inizio);
+    }
+
+    public void cicloCorrente() {
+        cicloCorrente(WPref.categoriaBio.getStr());
     }
 
     /**
-     * Ciclo di download <br>
+     * Ciclo corrente di download <br>
      * Parte dalla lista di tutti i (long) pageIds della categoria <br>
      * Usa la lista di pageIds e si recupera una lista (stessa lunghezza) di miniWrap <br>
      * Elabora la lista di miniWrap e costruisce una lista di pageIds da leggere <br>
      */
-    public void ciclo(final String categoryTitle) {
+    public void cicloCorrente(final String categoryTitle) {
         long inizio = System.currentTimeMillis();
-        String message;
         List<Long> listaPageIds;
         List<Long> listaMongoIds;
         List<Long> listaMongoIdsDaCancellare;
@@ -58,67 +90,41 @@ public class DownloadService extends WAbstractService {
         List<Long> listaPageIdsDaLeggere;
         List<WrapBio> listaWrapBio;
 
-        logger.info(new WrapLog().message("Inizio ciclo").type(AETypeLog.bio).usaDb());
-
         //--Controlla quante pagine ci sono nella categoria
         checkCategoria(categoryTitle);
-
-        logger.info(new WrapLog().message("Inizio ciclo/2").type(AETypeLog.bio).usaDb());
 
         //--Controlla il collegamento come bot
         checkBot();
 
-        logger.info(new WrapLog().message("Inizio ciclo/3").type(AETypeLog.bio).usaDb());
-
         //--Crea la lista di tutti i (long) pageIds della category
         listaPageIds = getListaPageIds(categoryTitle);
-
-        logger.info(new WrapLog().message("Inizio ciclo/4").type(AETypeLog.bio).usaDb());
 
         //--Crea la lista di tutti i (long) pageIds esistenti nel database (mongo) locale
         listaMongoIds = getListaMongoIds();
 
-        logger.info(new WrapLog().message("Inizio ciclo/5").type(AETypeLog.bio).usaDb());
-
         //--Recupera i (long) pageIds non più presenti nella category e da cancellare dal database (mongo) locale
         listaMongoIdsDaCancellare = deltaPageIds(listaMongoIds, listaPageIds, "listaMongoIdsDaCancellare");
-
-        logger.info(new WrapLog().message("Inizio ciclo/6").type(AETypeLog.bio).usaDb());
 
         //--Cancella dal database (mongo) locale le entities non più presenti nella category <br>
         cancellaEntitiesNonInCategory(listaMongoIdsDaCancellare);
 
-        logger.info(new WrapLog().message("Inizio ciclo/7").type(AETypeLog.bio).usaDb());
-
         //--Recupera i (long) pageIds presenti nella category e non esistenti ancora nel database (mongo) locale e da creare
         listaPageIdsDaCreare = deltaPageIds(listaPageIds, listaMongoIds, "listaPageIdsDaCreare");
-
-        logger.info(new WrapLog().message("Inizio ciclo/8").type(AETypeLog.bio).usaDb());
 
         //--Crea le nuove voci presenti nella category e non ancora esistenti nel database (mongo) locale
         creaNewEntities(listaPageIdsDaCreare);
 
-        logger.info(new WrapLog().message("Inizio ciclo/9").type(AETypeLog.bio).usaDb());
-
         //--Usa la lista di pageIds della categoria e recupera una lista (stessa lunghezza) di wrapTimes con l'ultima modifica sul server
         listaWrapTime = getListaWrapTime(listaPageIds);
-
-        logger.info(new WrapLog().message("Inizio ciclo/10").type(AETypeLog.bio).usaDb());
 
         //--Elabora la lista di wrapTimes e costruisce una lista di pageIds da leggere
         listaPageIdsDaLeggere = elaboraListaWrapTime(listaWrapTime);
 
-        logger.info(new WrapLog().message("Inizio ciclo/11").type(AETypeLog.bio).usaDb());
-
         //--Legge tutte le pagine
         listaWrapBio = getListaWrapBio(listaPageIdsDaLeggere);
 
-        logger.info(new WrapLog().message("Inizio ciclo/12").type(AETypeLog.bio).usaDb());
-
         //--Crea/aggiorna le voci biografiche <br>
         creaElaboraListaBio(listaWrapBio);
-
-        logger.info(new WrapLog().message("Inizio ciclo/13").type(AETypeLog.bio).usaDb());
 
         //--durata del ciclo completo
         fixInfoDurataCiclo(inizio);
@@ -574,14 +580,50 @@ public class DownloadService extends WAbstractService {
                 bioBackend.insert(bio);
             }
 
-            //            bio = bioBackend.newEntity(wrap);
-            //            bio = elaboraService.esegue(bio);
-            //            bioBackend.save(bio);
             return true;
         }
 
         return false;
     }
+
+    public void fixInfoDurataReset(final long inizio) {
+        String message;
+        long fine = System.currentTimeMillis();
+        Long delta = fine - inizio;
+
+        if (WPref.resetBio != null) {
+            WPref.resetBio.setValue(LocalDateTime.now());
+        }
+
+        if (WPref.resetBioTime != null) {
+            delta = delta / 1000 / 60;
+            WPref.resetBioTime.setValue(delta.intValue());
+        }
+
+        if (WPref.downloadBio != null) {
+            WPref.downloadBio.setValue(LocalDateTime.now());
+        }
+
+        if (WPref.downloadBioTime != null) {
+            WPref.downloadBioTime.setValue(0);
+        }
+
+        if (WPref.downloadBioPrevisto != null) {
+            WPref.downloadBioPrevisto.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.elaboraBio != null) {
+            WPref.elaboraBio.setValue(LocalDateTime.now());
+        }
+
+        if (WPref.elaboraBioTime != null) {
+            WPref.elaboraBioTime.setValue(0);
+        }
+
+        message = String.format("Ciclo completo di reset in, %s", dateService.deltaText(inizio));
+        logger.info(new WrapLog().message(message).type(AETypeLog.bio));
+    }
+
 
     public void fixInfoDurataCiclo(final long inizio) {
         String message;

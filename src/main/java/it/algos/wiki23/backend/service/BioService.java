@@ -186,9 +186,9 @@ public class BioService extends WAbstractService {
         //            mappa.put("ForzaOrdinamento", VUOTA);
         //        }
 
-        if (mappa != null && mappa.size() < 9) {
+        if (mappa != null && mappa.size() < 8) {
             message = String.format("Parametri insufficienti nella bio %s", bio.wikiTitle);
-            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
         }
 
         return mappa;

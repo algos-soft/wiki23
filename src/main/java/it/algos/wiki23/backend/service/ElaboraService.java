@@ -59,6 +59,32 @@ public class ElaboraService extends WAbstractService {
         }
 
         bio.elaborato = true;
+        bio = fixErrori(bio);
+        return bio;
+    }
+
+    public Bio fixErrori(Bio bio) {
+        if ( textService.isEmpty(bio.sesso)) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoMancante;
+            return bio;
+        }
+        if (bio.sesso.length() > 1) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoLungo;
+            return bio;
+        }
+        if (regexService.isEsiste(bio.sesso, "[^M^F]{1}")) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoErrato;
+            return bio;
+        }
+        if ( textService.isEmpty(bio.ordinamento)) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.mancaOrdinamento;
+            return bio;
+        }
+
         return bio;
     }
 
@@ -163,7 +189,7 @@ public class ElaboraService extends WAbstractService {
             testoGrezzo = textService.levaCodaDaUltimo(testoGrezzo, DOPPIE_GRAFFE_END);
         }
 
-//        return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+        //        return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
         return testoGrezzo;
     }
 
@@ -471,10 +497,10 @@ public class ElaboraService extends WAbstractService {
             testoValido += ANNI_AC;
         }
 
-//        //--non deve contenere caratteri divisivi di due anni
-//        if (testoValido.contains(SLASH) || testoValido.contains(PIPE) || testoValido.contains(TRATTINO)) {
-//            return VUOTA;
-//        }
+        //        //--non deve contenere caratteri divisivi di due anni
+        //        if (testoValido.contains(SLASH) || testoValido.contains(PIPE) || testoValido.contains(TRATTINO)) {
+        //            return VUOTA;
+        //        }
 
         try {
             anno = annoWikiBackend.findByNome(testoValido);
@@ -658,7 +684,7 @@ public class ElaboraService extends WAbstractService {
      * <p>
      * Regola il testo con le regolazioni di base (fixValoreGrezzo) <br>
      *
-     * @param genere      maschile/femminile nella forma M/F
+     * @param bio         di riferimento
      * @param testoGrezzo in entrata da elaborare
      *
      * @return testo/parametro regolato in uscita

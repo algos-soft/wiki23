@@ -45,10 +45,11 @@ public class ListaAnniTest extends WikiTest {
 
     //--nome anno
     //--typeCrono
-    protected static Stream<Arguments> ANNI() {
+    protected static Stream<Arguments> LISTA_ANNI() {
         return Stream.of(
                 Arguments.of(VUOTA, AETypeLista.annoNascita),
                 Arguments.of(VUOTA, AETypeLista.annoMorte),
+                Arguments.of("1278", AETypeLista.annoNascita),
                 Arguments.of("483", AETypeLista.annoNascita),
                 Arguments.of("1392", AETypeLista.annoNascita),
                 Arguments.of("1785", AETypeLista.annoNascita),
@@ -99,7 +100,7 @@ public class ListaAnniTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "ANNI")
+    @MethodSource(value = "LISTA_ANNI")
     @Order(2)
     @DisplayName("2 - Lista bio di vari anni")
         //--nome anno
@@ -130,7 +131,7 @@ public class ListaAnniTest extends WikiTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "ANNI")
+    @MethodSource(value = "LISTA_ANNI")
     @Order(3)
     @DisplayName("3 - Lista wrapLista di vari anni")
         //--nome anno
@@ -162,7 +163,7 @@ public class ListaAnniTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "ANNI")
+    @MethodSource(value = "LISTA_ANNI")
     @Order(4)
     @DisplayName("4 - Mappa wrapLista di vari anni")
         //--nome anno
@@ -193,7 +194,7 @@ public class ListaAnniTest extends WikiTest {
 
 
 ////    @ParameterizedTest
-//    @MethodSource(value = "ANNI")
+//    @MethodSource(value = "LISTA_ANNI")
 //    @Order(5)
 //    @DisplayName("5 - Mappa didascalie di vari anni")
 //        //--nome anno
@@ -223,7 +224,7 @@ public class ListaAnniTest extends WikiTest {
 //    }
 
 ////    @ParameterizedTest
-//    @MethodSource(value = "ANNI")
+//    @MethodSource(value = "LISTA_ANNI")
 //    @Order(6)
 //    @DisplayName("6 - Testo body di vari anni")
 //        //--nome anno

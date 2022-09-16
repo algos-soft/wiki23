@@ -104,7 +104,7 @@ public class ErroreBioView extends WikiView {
         int lunghi = backend.countSessoLungo();
         int errati = backend.countSessoErrato();
         int nazionalita = backend.countNazionalitaGenere();
-        int ordinamento = backend.countNazionalitaGenere();
+        int ordinamento = backend.countOrdinamento();
 
         addSpanVerde(String.format("%s: %s", AETypeBioError.sessoMancante, nulli));
         addSpanVerde(String.format("%s: %s", AETypeBioError.sessoLungo, lunghi));
@@ -149,7 +149,7 @@ public class ErroreBioView extends WikiView {
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
 
             return new Span(anchor);
-        })).setHeader("pagina").setKey("pagina").setFlexGrow(0).setWidth("18em");
+        })).setHeader("pagina").setKey("wikiTitle").setFlexGrow(0).setWidth("18em");
 
         Grid.Column ordine = grid.getColumnByKey(FIELD_KEY_ORDER);
         Grid.Column pageId = grid.getColumnByKey("pageId");

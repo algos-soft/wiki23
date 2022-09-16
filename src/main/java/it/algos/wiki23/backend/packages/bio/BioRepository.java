@@ -91,6 +91,7 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     long countBioByErroreIs(AETypeBioError error);
 
     List<Bio> findBySessoIsNull();
+    List<Bio> findByOrdinamentoIsNull();
 
     List<Bio> findBySessoIsLike(String regex);
 
