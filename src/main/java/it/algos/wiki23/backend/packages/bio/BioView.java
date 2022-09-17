@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
+import java.net.*;
 import java.util.*;
 
 /**
@@ -130,7 +131,7 @@ public class BioView extends WikiView {
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
         alertPlaceHolder.add(new Span(anchor));
 
-        addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie (probabile)", categoria, textService.format(numBio-1)));
+        addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie (probabile)", categoria, textService.format(numBio - 1)));
     }
 
     @Override
@@ -210,7 +211,13 @@ public class BioView extends WikiView {
 
         Grid.Column pagina = grid.addColumn(new ComponentRenderer<>(entity -> {
             String wikiTitle = textService.primaMaiuscola(((Bio) entity).wikiTitle);
-            String link = PATH_WIKI_EDIT + wikiTitle + TAG_EDIT_ZERO;
+            String wikiTitleEncoded = VUOTA;
+            try {
+                wikiTitleEncoded = URLEncoder.encode(wikiTitle, ENCODE);
+            } catch (Exception unErrore) {
+                logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+            }
+            String link = PATH_WIKI_EDIT + wikiTitleEncoded + TAG_EDIT_ZERO;
             Anchor anchor = new Anchor(link, wikiTitle);
             anchor.getElement().getStyle().set("color", "green");
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
@@ -489,7 +496,6 @@ public class BioView extends WikiView {
 
     protected void deleteEsegue() {
         super.deleteEsegue();
-
 
         if (WPref.resetBio != null) {
             WPref.resetBio.setValue(ROOT_DATA_TIME);

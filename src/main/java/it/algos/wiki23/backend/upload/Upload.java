@@ -130,6 +130,8 @@ public abstract class Upload {
 
     protected Lista lista;
 
+    protected String nomeSottoPagina;
+
     /**
      * Mappa delle didascalie che hanno una valore valido per la pagina specifica <br>
      * La mappa è composta da una chiave (ordinata) che corrisponde al titolo del paragrafo <br>
@@ -248,11 +250,24 @@ public abstract class Upload {
 
 
     protected WResult registra(String wikiTitle, String newText) {
-        String newTextSignificativo = newText.substring(newText.indexOf("</noinclude>"));
-        return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
-        //                return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
+        String newTextSignificativo = VUOTA;
+//        String tag = "</noinclude>";
+        String tag = "progetto=biografie";
+
+        if (newText.contains(tag)) {
+            newTextSignificativo = newText.substring(newText.indexOf(tag));
+        }
+
+        if (textService.isValid(newTextSignificativo)) {
+            return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
+        }
+        else {
+            return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText, summary);
+        }
     }
 
+    public void uploadSottoPagine(String wikiTitle, String parente, String sottoPagina, List<WrapLista> lista) {
+    }
 
     public void fixUploadMinuti(final long inizio) {
         long fine = System.currentTimeMillis();
@@ -276,4 +291,5 @@ public abstract class Upload {
             return;
         }
     }
+
 }

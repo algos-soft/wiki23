@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -142,15 +143,16 @@ public class ErroreBioDialog extends BioDialog {
         currentItem.sesso = newSex;
         String wikiTitle = currentItem.wikiTitle;
         String summary = "[[Utente:Biobot/fixPar|fixPar]]";
-        String tagRegex = "\n*\\| *Sesso *= *[MF]*\n*\\|";
+        String tagRegex = "\n*\\| *Sesso *= *[MF]* *\n*\\|";
         String tag = "\n|Sesso = %s\n|";
         String tagNew;
         String oldText;
-        String newText;
+        String newText = VUOTA;
         WResult result = WResult.errato();
         Bio bio;
         String message;
         boolean esisteParametroVuoto = false;
+        int tot;
 
         if (textService.isEmpty(newSex)) {
             Notification.show(String.format("Manca il parametro 'sesso' nella biografia %s", currentItem.wikiTitle)).addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -166,16 +168,25 @@ public class ErroreBioDialog extends BioDialog {
 
         tagNew = String.format(tag, newSex);
         oldText = wikiApiService.legge(wikiTitle);
-        esisteParametroVuoto = regexService.isEsiste(oldText, tagRegex);
 
-        if (!esisteParametroVuoto) {
-            message = String.format("La pagina %s non ha il parametro sesso", currentItem.wikiTitle);
-            Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
-            close();
-            return;
+        switch (regexService.count(oldText, tagRegex)) {
+            case 0 -> {
+                message = String.format("La pagina %s non ha il parametro sesso", currentItem.wikiTitle);
+                Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                close();
+                return;
+            }
+            case 1 -> {
+                newText = regexService.replaceFirst(oldText, tagRegex, tagNew);
+            }
+            default -> {
+                message = String.format("La pagina %s ha diverse occorrenze del parametro sesso", currentItem.wikiTitle);
+                Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                close();
+                return;
+            }
         }
 
-        newText = regexService.replaceFirst(oldText, tagRegex, tagNew);
         if (textService.isValid(newText)) {
             result = wikiApiService.scrive(wikiTitle, newText, summary);
         }
@@ -211,7 +222,7 @@ public class ErroreBioDialog extends BioDialog {
         String nazionalitaNew = currentItem.nazionalita;
         String wikiTitle = currentItem.wikiTitle;
         String summary = "[[Utente:Biobot/fixPar|fixPar]]";
-        String tagRegex = "\n*\\| *Nazionalità *= *%s*\n*\\|";
+        String tagRegex = "\n*\\| *Nazionalità *= *%s *\n*[\\|\\}]";
         String tagNew = "\n|Nazionalità = %s\n|";
         String oldText;
         String newText;
@@ -222,6 +233,8 @@ public class ErroreBioDialog extends BioDialog {
         String nazionalitaOld = mappa.get("Nazionalità");
         String message;
         boolean esisteParametroNazionalita = false;
+        String realeOld;
+        String realeNew;
 
         tagRegex = String.format(tagRegex, nazionalitaOld);
         tagNew = String.format(tagNew, nazionalitaNew);
@@ -236,7 +249,10 @@ public class ErroreBioDialog extends BioDialog {
             return;
         }
 
-        newText = regexService.replaceFirst(oldText, tagRegex, tagNew);
+        realeOld = regexService.getReal(oldText, tagRegex);
+        realeNew = realeOld.replace(nazionalitaOld, nazionalitaNew);
+        newText = oldText.replace(realeOld, realeNew);
+
         if (textService.isValid(newText)) {
             result = wikiApiService.scrive(wikiTitle, newText, summary);
         }

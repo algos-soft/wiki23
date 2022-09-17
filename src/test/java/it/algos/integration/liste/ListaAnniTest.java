@@ -49,6 +49,7 @@ public class ListaAnniTest extends WikiTest {
         return Stream.of(
                 Arguments.of(VUOTA, AETypeLista.annoNascita),
                 Arguments.of(VUOTA, AETypeLista.annoMorte),
+                Arguments.of("1892", AETypeLista.annoMorte),
                 Arguments.of("1278", AETypeLista.annoNascita),
                 Arguments.of("483", AETypeLista.annoNascita),
                 Arguments.of("1392", AETypeLista.annoNascita),

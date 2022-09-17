@@ -218,16 +218,25 @@ public class UploadAnniTest extends WikiTest {
         printRisultato(ottenutoRisultato);
 
         sorgente = "1873";
-        WPref.usaRigheAnni.setValue(false);
+        WPref.usaSottoGiorniAnni.setValue(false);
         ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
         printRisultato(ottenutoRisultato);
 
         sorgente = "1892";
-        WPref.usaRigheAnni.setValue(true);
+        WPref.usaSottoGiorniAnni.setValue(true);
         ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
         printRisultato(ottenutoRisultato);
 
         WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
+    }
+
+    //    @Test
+    @Order(13)
+    @DisplayName("13 - Upload pagina che va in errore")
+    void uploadBug() {
+        sorgente = "1933";
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
     }
 
     /**

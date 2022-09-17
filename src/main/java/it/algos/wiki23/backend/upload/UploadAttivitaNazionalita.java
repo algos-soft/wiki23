@@ -23,7 +23,6 @@ import java.util.*;
  */
 public abstract class UploadAttivitaNazionalita extends Upload {
 
-    protected String nomeSottoPagina;
 
 
     /**
@@ -253,8 +252,6 @@ public abstract class UploadAttivitaNazionalita extends Upload {
         return buffer.toString().trim();
     }
 
-    public void uploadSottoPagine(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
-    }
 
     public String testoSottoPagina(String attNazPrincipale, String attNazSottoPagina, List<WrapLista> listaWrap) {
         StringBuffer buffer = new StringBuffer();
