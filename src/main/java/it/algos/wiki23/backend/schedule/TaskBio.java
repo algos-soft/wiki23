@@ -52,9 +52,9 @@ public class TaskBio extends AlgosTask {
     }
 
     /**
-     * Descrizione: ogni giorno della settimana, a mezzanotte (una per adesso)
+     * Descrizione: a mezzanotte escluso la domenica/lunedì
      */
-    private static final String PATTERN = "0 1 * * *";
+    private static final String PATTERN = AESchedule.zeroNoLunedi.getPattern();
 
 
     @Override

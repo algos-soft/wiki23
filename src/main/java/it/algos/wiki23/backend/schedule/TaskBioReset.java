@@ -19,7 +19,7 @@ import java.time.*;
  * User: gac
  * Date: Tue, 13-Sep-2022
  * Time: 19:55
- * "sun", "mon", "tue", "wed", "thu", "fri" e "sat".
+ * <p>
  * Il download-reset completo (questo task) che cancella (drop) tutta la collection 'bio' viene effettuata SOLO il lunedì
  * Nella giornata di lunedì gli altri task NON devono girare
  */
@@ -37,7 +37,6 @@ public class TaskBioReset extends AlgosTask {
     private DownloadService service;
 
 
-
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         long inizio = System.currentTimeMillis();
@@ -49,10 +48,9 @@ public class TaskBioReset extends AlgosTask {
     }
 
     /**
-     * Descrizione: ogni settimana, a mezzogiorno della domenica
+     * Descrizione: ogni settimana, a mezzanotte della domenica/lunedi
      */
-    private static final String PATTERN = "0 12 * * Sun";
-
+    private static final String PATTERN = AESchedule.zeroLunedi.getPattern();
 
 
     @Override

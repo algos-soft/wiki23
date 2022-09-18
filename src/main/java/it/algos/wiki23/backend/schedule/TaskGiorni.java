@@ -43,9 +43,9 @@ public class TaskGiorni extends AlgosTask {
     }
 
     /**
-     * Descrizione: ogni giorno della settimana, alle 2 di notte
+     * Descrizione: alle 2 di notte escluso il lunedì
      */
-    private static final String PATTERN = "0 3 * * *";
+    private static final String PATTERN = AESchedule.dueNoLunedi.getPattern();
 
 
     @Override
