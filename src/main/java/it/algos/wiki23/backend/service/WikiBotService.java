@@ -860,9 +860,9 @@ public class WikiBotService extends WAbstractService {
         }
 
         //--solo date singole
-//        if (valoreGrezzo.contains(SLASH)) {
-//            return VUOTA;
-//        }
+        //        if (valoreGrezzo.contains(SLASH)) {
+        //            return VUOTA;
+        //        }
         if (valoreGrezzo.contains(" o ")) {
             return VUOTA;
         }
@@ -902,6 +902,9 @@ public class WikiBotService extends WAbstractService {
             return VUOTA;
         }
         if (valoreGrezzo.endsWith(UGUALE)) {
+            return VUOTA;
+        }
+        if (valoreGrezzo.endsWith(PUNTO_INTERROGATIVO + PARENTESI_TONDA_END)) {
             return VUOTA;
         }
 

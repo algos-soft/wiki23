@@ -33,6 +33,7 @@ import java.util.stream.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("liste")
+@Tag("production")
 @DisplayName("Giorni lista")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ListaGiorniTest extends WikiTest {
@@ -46,7 +47,7 @@ public class ListaGiorniTest extends WikiTest {
 
     //--nome giorno
     //--typeCrono
-    protected static Stream<Arguments> GIORNI() {
+    protected static Stream<Arguments> GIORNI_LISTA() {
         return Stream.of(
                 Arguments.of(VUOTA, AETypeLista.giornoNascita),
                 Arguments.of(VUOTA, AETypeLista.giornoMorte),
@@ -93,7 +94,7 @@ public class ListaGiorniTest extends WikiTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "GIORNI")
+    @MethodSource(value = "GIORNI_LISTA")
     @Order(2)
     @DisplayName("2 - Lista bio di vari giorni")
         //--nome giorno
@@ -125,7 +126,7 @@ public class ListaGiorniTest extends WikiTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "GIORNI")
+    @MethodSource(value = "GIORNI_LISTA")
     @Order(3)
     @DisplayName("3 - Lista wrapLista di vari giorni")
         //--nome giorno
@@ -156,7 +157,7 @@ public class ListaGiorniTest extends WikiTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "GIORNI")
+    @MethodSource(value = "GIORNI_LISTA")
     @Order(4)
     @DisplayName("4 - Mappa wrapLista di vari giorni")
         //--nome giorno
@@ -187,7 +188,7 @@ public class ListaGiorniTest extends WikiTest {
 
 
 ////    @ParameterizedTest
-//    @MethodSource(value = "GIORNI")
+//    @MethodSource(value = "GIORNI_LISTA")
 //    @Order(5)
 //    @DisplayName("5 - Mappa didascalie di vari giorni")
 //        //--nome giorno
@@ -218,7 +219,7 @@ public class ListaGiorniTest extends WikiTest {
 
 
 //    @ParameterizedTest
-//    @MethodSource(value = "GIORNI")
+//    @MethodSource(value = "GIORNI_LISTA")
 //    @Order(6)
 //    @DisplayName("6 - Testo body di vari giorni")
 //        //--nome giorno

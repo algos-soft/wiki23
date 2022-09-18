@@ -274,6 +274,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("3 dicembre?", VUOTA),
                 Arguments.of("3 dicembre ?", VUOTA),
                 Arguments.of("?", VUOTA),
+                Arguments.of("(?)", VUOTA),
                 Arguments.of("3 dicembre circa", VUOTA),
                 Arguments.of("[[3 dicembre]]ca", VUOTA),
                 Arguments.of("(8 agosto)", "8 agosto"),
@@ -288,7 +289,9 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("29 giugno <nowiki> levare", "29 giugno"),
                 Arguments.of("dicembre", VUOTA),
                 Arguments.of("12/5", VUOTA),
-                Arguments.of("12-5", VUOTA)
+                Arguments.of("12-5", VUOTA),
+                Arguments.of("9 pianepsione", VUOTA),
+                Arguments.of("9 [[pianepsione]]", VUOTA)
         );
     }
 
@@ -325,6 +328,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("1936 =", VUOTA),
                 Arguments.of("1512 ?", VUOTA),
                 Arguments.of("1512?", VUOTA),
+                Arguments.of("1512 (?)", VUOTA),
+                Arguments.of("1512(?)", VUOTA),
                 Arguments.of("1880ecc.", VUOTA),
                 Arguments.of("1880 ecc.", VUOTA),
                 Arguments.of("novecento", VUOTA),
@@ -343,7 +348,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("754 AC", "754 a.C."),
                 Arguments.of("754AC", "754 a.C."),
                 Arguments.of("754 ac", "754 a.C."),
-                Arguments.of("754ac", "754 a.C.")
+                Arguments.of("754ac", "754 a.C."),
+                Arguments.of("[[390 a.C.|390]]/[[389 a.C.|389]] o 389/[[388 a.C.]]", VUOTA)
         );
     }
 
@@ -432,32 +438,32 @@ public abstract class WikiTest extends AlgosTest {
     //--numero parametri
     protected static Stream<Arguments> BIOGRAFIE() {
         return Stream.of(
-                //                Arguments.of(VUOTA, 0),
-                //                Arguments.of("Jacques de Molay", 15),
-                //                Arguments.of("Roberto il Forte", 17),
-                //                Arguments.of("Agnese di Borgogna", 17),
-                //                Arguments.of("Matteo Renzi", 15),
-                //                Arguments.of("Hunter King", 10),
-                //                Arguments.of("Laura Mancinelli", 17),
-                //                Arguments.of("Johann Georg Kastner", 14),
-                //                Arguments.of("Meirchion Gul", 15),
-                //                Arguments.of("Vincenzo Vacirca", 15),
-                //                Arguments.of("Ashur-uballit I", 15),
-                //                Arguments.of("Albia Dominica", 15),
-                //                Arguments.of("Angelo Inganni", 12),
-                //                Arguments.of("Andrey Guryev", 17),
-                //                Arguments.of("Ingen Ryūki", 16),
-                //                Arguments.of("Giorgio Merula", 17),
-                //                Arguments.of("Rob Paulsen", 13),
-                //                Arguments.of("Aleksandr Isaevič Solženicyn", 22),
-                //                Arguments.of("Aloisio Gonzaga", 19),
-                //                Arguments.of("Alex Bagnoli", 18),
-                Arguments.of("Harry Fielder", 14),
-                Arguments.of("Yehudai Gaon", 15),
-                Arguments.of("Kaku Takagawa", 12),
+                Arguments.of(VUOTA, 0),
+                Arguments.of("Jacques de Molay", 15),
+                Arguments.of("Roberto il Forte", 17),
+                Arguments.of("Agnese di Borgogna", 17),
+                Arguments.of("Matteo Renzi", 14),
+                Arguments.of("Hunter King", 10),
+                Arguments.of("Laura Mancinelli", 17),
+                Arguments.of("Johann Georg Kastner", 14),
+                Arguments.of("Meirchion Gul", 15),
+                Arguments.of("Vincenzo Vacirca", 15),
+                Arguments.of("Ashur-uballit I", 15),
+                Arguments.of("Albia Dominica", 15),
+                Arguments.of("Angelo Inganni", 12),
+                Arguments.of("Andrey Guryev", 17),
+                Arguments.of("Ingen Ryūki", 16),
+                Arguments.of("Giorgio Merula", 17),
+                Arguments.of("Rob Paulsen", 13),
+                Arguments.of("Aleksandr Isaevič Solženicyn", 22),
+                Arguments.of("Aloisio Gonzaga", 19),
+                Arguments.of("Alex Bagnoli", 18),
+                Arguments.of("Harry Fielder", 15),
+                Arguments.of("Yehudai Gaon", 16),
+                Arguments.of("Kaku Takagawa", 13),
                 Arguments.of("Filippo Tornielli", 12),
-                Arguments.of("Mario Tosi (fotografo)", 12),
-                Arguments.of("Giuseppe Trombone de Mier", 11),
+                Arguments.of("Mario Tosi (fotografo)", 13),
+                Arguments.of("Giuseppe Trombone de Mier", 12),
                 Arguments.of("Rinaldo II di Bar", 14)
         );
     }
