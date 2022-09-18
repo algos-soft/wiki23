@@ -25,6 +25,7 @@ import java.util.*;
  * User: gac
  * Date: Tue, 05-Jul-2022
  * Time: 19:03
+ * Il ciclo normale di download (questo task) viene effettuata tutti i giorni ESCULSO il lunedì
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
