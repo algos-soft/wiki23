@@ -50,7 +50,7 @@ public class TaskBioReset extends AlgosTask {
     /**
      * Descrizione: ogni settimana, a mezzanotte della domenica/lunedi
      */
-    private static final String PATTERN = AESchedule.zeroLunedi.getPattern();
+    private static final String PATTERN = AESchedule.zeroCinqueLunedi.getPattern();
 
 
     @Override
