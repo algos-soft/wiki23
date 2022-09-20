@@ -186,7 +186,7 @@ public class UploadAnniTest extends WikiTest {
         printRisultato(ottenutoRisultato);
     }
 
-    @Test
+//    @Test
     @Order(12)
     @DisplayName("12 - Upload test di 5 situazioni diverse")
     void uploadTestNato2() {
@@ -228,6 +228,26 @@ public class UploadAnniTest extends WikiTest {
         printRisultato(ottenutoRisultato);
 
         WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
+    }
+
+    @Test
+    @DisplayName("13 - Upload usaRigheAnni")
+    void usaRigheAnni() {
+        System.out.println("13 - Upload usaRigheAnni");
+        System.out.println(VUOTA);
+        boolean usaRigheOld = WPref.usaRigheAnni.is();
+        sorgente = "1307";
+
+
+        WPref.usaRigheAnni.setValue(false);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).test().morte().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaRigheAnni.setValue(true);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).test().morte().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaRigheAnni.setValue(usaRigheOld);
     }
 
     //    @Test

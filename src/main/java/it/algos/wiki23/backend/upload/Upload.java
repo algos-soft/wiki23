@@ -39,9 +39,9 @@ import java.util.*;
  */
 public abstract class Upload {
 
-    protected static final String INFO_PAGINA_ATTIVITA = "Questa pagina di una singola '''attività''' viene creata solo se le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
+    protected static final String INFO_PAGINA_ATTIVITA = "Questa pagina di una singola '''attività''' è stata creata perché le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
 
-    protected static final String INFO_PAGINA_NAZIONALITA = "Questa pagina di una singola '''nazionalità''' viene creata solo se le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
+    protected static final String INFO_PAGINA_NAZIONALITA = "Questa pagina di una singola '''nazionalità''' è stata creata perché le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
 
     protected static final String INFO_PARAGRAFI_ATTIVITA = "La lista è suddivisa in paragrafi per ogni '''attività''' individuata. Se il numero di voci biografiche nel" +
             " paragrafo supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità, viene creata una '''sottopagina'''.";

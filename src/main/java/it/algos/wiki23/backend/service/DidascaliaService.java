@@ -407,47 +407,6 @@ public class DidascaliaService extends WAbstractService {
         return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
     }
 
-
-    /**
-     * Costruisce una wrapLista specializzata per le righe delle pagine 'Nazionalità' <br>
-     * Contiene il paragrafo 'attivita'
-     * Contiene il sotto-paragrafo 'primoCarattere'
-     * Contiene la didascalia con 'wikiTitle', 'attività/nazionalità', 'luogo e anno di nascita', 'luogo e anno di morte'
-     *
-     * @param bio completa
-     *
-     * @return wrapLista
-     */
-    public WrapLista getWrapNazionalita(final Bio bio) {
-        Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
-        String paragrafo = attivita != null ? textService.primaMaiuscola(attivita.pluraleParagrafo) : TAG_LISTA_ALTRE;
-
-        String titoloParagrafoLink;
-        if (textService.isEmpty(paragrafo)) {
-            paragrafo = TAG_LISTA_ALTRE;
-        }
-
-        if (!paragrafo.equals(TAG_LISTA_ALTRE)) {
-            if (attivita.esistePaginaLista) {
-                titoloParagrafoLink = PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivita.pluraleLista);
-                titoloParagrafoLink = titoloParagrafoLink + PIPE + paragrafo;
-                titoloParagrafoLink = textService.setDoppieQuadre(titoloParagrafoLink);
-            }
-            else {
-                titoloParagrafoLink = paragrafo;
-            }
-        }
-        else {
-            titoloParagrafoLink = paragrafo;
-        }
-
-        String sottoParagrafo = bio.ordinamento.substring(0, 1);
-        String didascalia = this.lista(bio);
-
-        return new WrapLista(paragrafo, titoloParagrafoLink, sottoParagrafo, didascalia);
-    }
-
-
     /**
      * Costruisce una wrapLista specializzata per le righe delle pagine 'Attività' <br>
      * Contiene il paragrafo 'nazionalità'
@@ -486,6 +445,47 @@ public class DidascaliaService extends WAbstractService {
 
         return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
     }
+
+    /**
+     * Costruisce una wrapLista specializzata per le righe delle pagine 'Nazionalità' <br>
+     * Contiene il paragrafo 'attivita'
+     * Contiene il sotto-paragrafo 'primoCarattere'
+     * Contiene la didascalia con 'wikiTitle', 'attività/nazionalità', 'luogo e anno di nascita', 'luogo e anno di morte'
+     *
+     * @param bio completa
+     *
+     * @return wrapLista
+     */
+    public WrapLista getWrapNazionalita(final Bio bio) {
+        Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
+        String paragrafo;
+        String paragrafoLink;
+
+        if (attivita != null) {
+            paragrafo = textService.primaMaiuscola(attivita.pluraleLista);
+            if (attivita.esistePaginaLista) {
+                paragrafoLink = switch ((AETypeLink) WPref.linkAttNaz.getEnumCurrentObj()) {
+                    case voce -> textService.setDoppieQuadre(paragrafo);
+                    case lista -> textService.setDoppieQuadre(PATH_ATTIVITA + SLASH + paragrafo + PIPE + paragrafo);
+                    case nessuno -> paragrafo;
+                };
+            }
+            else {
+                paragrafoLink = paragrafo;
+            }
+        }
+        else {
+            paragrafo = TAG_LISTA_ALTRE;
+            paragrafoLink = TAG_LISTA_ALTRE;
+        }
+
+        String sottoParagrafo = bio.ordinamento.substring(0, 1);
+        String didascalia = this.lista(bio);
+
+        return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
+    }
+
+
 
     /**
      * Costruisce una wrapLista <br>

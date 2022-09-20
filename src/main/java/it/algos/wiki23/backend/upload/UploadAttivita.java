@@ -90,7 +90,9 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
         buffer.append(textService.setRef(INFO_PARAGRAFI_NAZIONALITA));
         buffer.append(" per nazionalità.");
         buffer.append(textService.setRef(INFO_NAZIONALITA_PREVISTE));
-        buffer.append(textService.setRef(INFO_ALTRE_NAZIONALITA));
+        if (mappaWrap.containsKey(TAG_LISTA_ALTRE)) {
+            buffer.append(textService.setRef(INFO_ALTRE_NAZIONALITA));
+        }
 
         return buffer.toString();
     }
@@ -116,7 +118,7 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
         buffer.append(textService.setRef(INFO_ATTIVITA_PREVISTE));
         buffer.append(String.format(" quella di '''%s'''", attivita.toLowerCase()));
         if (nazionalita.equals(TAG_LISTA_ALTRE)) {
-            buffer.append(" e non usano il parametro ''nazionalità'' oppure hanno un'nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]");
+            buffer.append(" e non usano il parametro ''nazionalità'' oppure hanno un'nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''");
         }
         else {
             buffer.append(String.format(" e sono '''%s'''.", nazionalita.toLowerCase()));

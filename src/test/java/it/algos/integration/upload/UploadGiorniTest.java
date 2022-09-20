@@ -3,6 +3,7 @@ package it.algos.integration.upload;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.upload.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,11 +90,19 @@ public class UploadGiorniTest extends WikiTest {
 
     @Test
     @Order(3)
-    @DisplayName("3 - Upload test di un giorno morto standard")
-    void uploadTestMorto() {
-        System.out.println("3 - Upload test di un giorno morto standard");
+    @DisplayName("3 - Upload con e senza usaSottoGiorniAnni")
+    void usaSottoGiorniAnni() {
+        System.out.println("3 - Upload con e senza usaSottoGiorniAnni");
         sorgente = "25 settembre";
+        boolean usaSottoGiorniAnni = WPref.usaSottoGiorniAnni.is();
+
+        WPref.usaSottoGiorniAnni.setValue(false);
         appContext.getBean(UploadGiorni.class).morte().test().upload(sorgente);
+
+        WPref.usaSottoGiorniAnni.setValue(true);
+        appContext.getBean(UploadGiorni.class).morte().test().upload(sorgente);
+
+        WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
     }
 
     //            @Test

@@ -327,35 +327,6 @@ public abstract class UploadGiorniAnni extends Upload {
         return buffer.toString().trim();
     }
 
-    public String conParagrafiSenzaSottopagine(Map<String, List<WrapLista>> mappa, boolean includeOnly) {
-        StringBuffer buffer = new StringBuffer();
-        List<WrapLista> lista;
-        int numVoci;
-        int maxDiv = WPref.sogliaDiv.getInt();
-        boolean usaDiv;
-        String titoloParagrafoLink;
-
-        for (String keyParagrafo : mappa.keySet()) {
-            lista = mappa.get(keyParagrafo);
-            numVoci = lista.size();
-            usaDiv = lista.size() > maxDiv;
-            titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
-            buffer.append(fixTitolo(titoloParagrafoLink, numVoci, includeOnly));
-            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
-            for (WrapLista wrap : lista) {
-                buffer.append(ASTERISCO);
-                if (textService.isValid(wrap.titoloSottoParagrafo)) {
-                    buffer.append(wrap.titoloSottoParagrafo);
-                    buffer.append(SEP);
-                }
-                buffer.append(wrap.didascaliaBreve);
-                buffer.append(CAPO);
-            }
-            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
-        }
-
-        return buffer.toString().trim();
-    }
 
     public String conParagrafiConSottopagine(Map<String, List<WrapLista>> mappa) {
         StringBuffer buffer = new StringBuffer();
@@ -382,13 +353,49 @@ public abstract class UploadGiorniAnni extends Upload {
                 uploadSottoPagine(sottoPagina, nomeLista, keyParagrafo, lista);
             }
             else {
+                buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
                 for (WrapLista wrap : lista) {
                     buffer.append(ASTERISCO);
+                    if (textService.isValid(wrap.titoloSottoParagrafo)) {
+                        buffer.append(wrap.titoloSottoParagrafo);
+                        buffer.append(SEP);
+                    }
                     buffer.append(wrap.didascaliaBreve);
                     buffer.append(CAPO);
                 }
                 buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
             }
+        }
+
+        return buffer.toString().trim();
+    }
+
+
+    public String conParagrafiSenzaSottopagine(Map<String, List<WrapLista>> mappa, boolean includeOnly) {
+        StringBuffer buffer = new StringBuffer();
+        List<WrapLista> lista;
+        int numVoci;
+        int maxDiv = WPref.sogliaDiv.getInt();
+        boolean usaDiv;
+        String titoloParagrafoLink;
+
+        for (String keyParagrafo : mappa.keySet()) {
+            lista = mappa.get(keyParagrafo);
+            numVoci = lista.size();
+            usaDiv = lista.size() > maxDiv;
+            titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
+            buffer.append(fixTitolo(titoloParagrafoLink, numVoci, includeOnly));
+            buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
+            for (WrapLista wrap : lista) {
+                buffer.append(ASTERISCO);
+                if (textService.isValid(wrap.titoloSottoParagrafo)) {
+                    buffer.append(wrap.titoloSottoParagrafo);
+                    buffer.append(SEP);
+                }
+                buffer.append(wrap.didascaliaBreve);
+                buffer.append(CAPO);
+            }
+            buffer.append(usaDiv ? "{{Div col end}}" + CAPO : VUOTA);
         }
 
         return buffer.toString().trim();

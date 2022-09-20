@@ -10,6 +10,7 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
+import it.algos.wiki23.backend.statistiche.*;
 import it.sauronsoftware.cron4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
@@ -47,6 +48,7 @@ public class TaskBio extends AlgosTask {
         if (WPref.usaTaskBio.is()) {
             fixNext();
             service.cicloCorrente();
+            appContext.getBean(StatisticheBio.class).upload();
             loggerDownload(inizio);
         }
     }
