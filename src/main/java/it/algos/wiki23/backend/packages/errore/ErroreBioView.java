@@ -8,6 +8,8 @@ import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.core.query.*;
 import org.vaadin.crudui.crud.*;
 
+import java.net.*;
 import java.util.*;
 
 /**
@@ -104,7 +107,7 @@ public class ErroreBioView extends WikiView {
         int lunghi = backend.countSessoLungo();
         int errati = backend.countSessoErrato();
         int nazionalita = backend.countNazionalitaGenere();
-        int ordinamento = backend.countNazionalitaGenere();
+        int ordinamento = backend.countOrdinamento();
 
         addSpanVerde(String.format("%s: %s", AETypeBioError.sessoMancante, nulli));
         addSpanVerde(String.format("%s: %s", AETypeBioError.sessoLungo, lunghi));
@@ -143,13 +146,19 @@ public class ErroreBioView extends WikiView {
 
         Grid.Column pagina = grid.addColumn(new ComponentRenderer<>(entity -> {
             String wikiTitle = textService.primaMaiuscola(((Bio) entity).wikiTitle);
-            String link = PATH_WIKI_EDIT + wikiTitle + TAG_EDIT_ZERO;
+            String wikiTitleEncoded = VUOTA;
+            try {
+                wikiTitleEncoded = URLEncoder.encode(wikiTitle, ENCODE);
+            } catch (Exception unErrore) {
+                logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+            }
+            String link = PATH_WIKI_EDIT + wikiTitleEncoded + TAG_EDIT_ZERO;
             Anchor anchor = new Anchor(link, wikiTitle);
             anchor.getElement().getStyle().set("color", "green");
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
 
             return new Span(anchor);
-        })).setHeader("pagina").setKey("pagina").setFlexGrow(0).setWidth("18em");
+        })).setHeader("pagina").setKey("wikiTitle").setFlexGrow(0).setWidth("18em");
 
         Grid.Column ordine = grid.getColumnByKey(FIELD_KEY_ORDER);
         Grid.Column pageId = grid.getColumnByKey("pageId");

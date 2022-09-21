@@ -42,6 +42,11 @@ public class UploadGiorni extends UploadGiorniAnni {
     }// end of constructor
 
 
+    public UploadGiorni typeCrono(AETypeLista type) {
+        this.typeCrono = type;
+        return this;
+    }
+
     public UploadGiorni nascita() {
         this.typeCrono = AETypeLista.giornoNascita;
         return this;
@@ -52,6 +57,20 @@ public class UploadGiorni extends UploadGiorniAnni {
         return this;
     }
 
+    public UploadGiorni test() {
+        this.uploadTest = true;
+        return this;
+    }
+
+    public void uploadSottoPagine(String wikiTitle, String parente, String sottoPagina, List<WrapLista> lista) {
+        UploadGiorni giorno = appContext.getBean(UploadGiorni.class).typeCrono(typeCrono);
+
+        if (uploadTest) {
+            giorno = giorno.test();
+        }
+
+        giorno.uploadSottoPagina(wikiTitle, parente, sottoPagina, lista);
+    }
 
     /**
      * Esegue la scrittura di tutte le pagine <br>

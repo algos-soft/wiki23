@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
+import java.net.*;
 import java.util.*;
 
 /**
@@ -72,7 +74,7 @@ public class BioView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("pageId", "wikiTitle", "elaborato", "ordinamento", "sesso", "nome", "cognome",
+        super.gridPropertyNamesList = Arrays.asList("pageId", "elaborato", "ordinamento", "sesso", "nome", "cognome",
                 "giornoNato",
                 "annoNato",
                 "giornoMorto", "annoMorto",
@@ -88,6 +90,8 @@ public class BioView extends WikiView {
         );
         super.sortOrder = Sort.by(Sort.Direction.DESC, "ordinamento");
 
+        super.lastReset = WPref.resetBio;
+        super.durataReset = WPref.resetBioTime;
         super.lastDownload = WPref.downloadBio;
         super.durataDownload = WPref.downloadBioTime;
         super.nextDownload = WPref.downloadBioPrevisto;
@@ -127,7 +131,7 @@ public class BioView extends WikiView {
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
         alertPlaceHolder.add(new Span(anchor));
 
-        addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie", categoria, textService.format(numBio)));
+        addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie (probabile)", categoria, textService.format(numBio - 1)));
     }
 
     @Override
@@ -205,9 +209,27 @@ public class BioView extends WikiView {
     protected void fixBodyLayout() {
         super.fixBodyLayout();
 
+        Grid.Column pagina = grid.addColumn(new ComponentRenderer<>(entity -> {
+            String wikiTitle = textService.primaMaiuscola(((Bio) entity).wikiTitle);
+            String wikiTitleEncoded = VUOTA;
+            try {
+                wikiTitleEncoded = URLEncoder.encode(wikiTitle, ENCODE);
+            } catch (Exception unErrore) {
+                logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+            }
+            String link = PATH_WIKI_EDIT + wikiTitleEncoded + TAG_EDIT_ZERO;
+            Anchor anchor = new Anchor(link, wikiTitle);
+            anchor.getElement().getStyle().set("color", "green");
+            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+
+            return new Span(anchor);
+        })).setHeader("pagina").setKey("pagina").setFlexGrow(0).setWidth("18em");
+
         HeaderRow headerRow = grid.prependHeaderRow();
+        Grid.Column ordine = grid.getColumnByKey(FIELD_KEY_ORDER);
         Grid.Column pageId = grid.getColumnByKey("pageId");
         Grid.Column wikiTitle = grid.getColumnByKey("wikiTitle");
+        Grid.Column ordinamento = grid.getColumnByKey("ordinamento");
         Grid.Column elaborato = grid.getColumnByKey("elaborato");
         Grid.Column sesso = grid.getColumnByKey("sesso");
         Grid.Column nome = grid.getColumnByKey("nome");
@@ -220,14 +242,14 @@ public class BioView extends WikiView {
         Grid.Column attivita2 = grid.getColumnByKey("attivita2");
         Grid.Column attivita3 = grid.getColumnByKey("attivita3");
         Grid.Column nazionalita = grid.getColumnByKey("nazionalita");
-        Grid.Column nazionalita2 = grid.getColumnByKey("nazionalita");
 
-        headerRow.join(pageId, wikiTitle, elaborato).setText("Wiki");
+        grid.setColumnOrder(ordine, pageId, pagina, elaborato, ordinamento, sesso, nome, cognome, giornoNato, annoNato, giornoMorto, annoMorto, attivita, attivita2, attivita3, nazionalita);
+
+        headerRow.join(pageId, pagina, elaborato, ordinamento).setText("Wiki");
         headerRow.join(sesso, nome, cognome).setText("Anagrafica");
         headerRow.join(giornoNato, annoNato).setText("Nascita");
         headerRow.join(giornoMorto, annoMorto).setText("Morte");
         headerRow.join(attivita, attivita2, attivita3).setText("Attività");
-        //        headerRow.join(nazionalita,nazionalita2).setText("Nazionalità");
     }
 
 
@@ -380,8 +402,14 @@ public class BioView extends WikiView {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void download() {
-        downloadService.ciclo();
-        refresh();
+        if (backend.count() == 0) {
+            downloadService.cicloIniziale();
+        }
+        else {
+            downloadService.cicloCorrente();
+        }
+
+        reload();
     }
 
     /**
@@ -464,6 +492,40 @@ public class BioView extends WikiView {
         backend.update(bio);
         grid.setItems(crudBackend.findAll(sortOrder));
         Avviso.show(String.format("%s successfully elaborated", bio)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
+    protected void deleteEsegue() {
+        super.deleteEsegue();
+
+        if (WPref.resetBio != null) {
+            WPref.resetBio.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.resetBioTime != null) {
+            WPref.resetBioTime.setValue(0);
+        }
+
+        if (WPref.downloadBio != null) {
+            WPref.downloadBio.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.downloadBioTime != null) {
+            WPref.downloadBioTime.setValue(0);
+        }
+
+        if (WPref.downloadBioPrevisto != null) {
+            WPref.downloadBioPrevisto.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.elaboraBio != null) {
+            WPref.elaboraBio.setValue(ROOT_DATA_TIME);
+        }
+
+        if (WPref.elaboraBioTime != null) {
+            WPref.elaboraBioTime.setValue(0);
+        }
+
+        reload();
     }
 
     protected void getInput() {

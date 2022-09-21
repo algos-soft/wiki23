@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.upload.*;
 import org.junit.jupiter.api.*;
@@ -126,7 +127,7 @@ public class UploadAnniTest extends WikiTest {
     }
 
 
-//    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "ANNI")
     @DisplayName("7 - Titolo pagine")
     void uploadVari(String nomeAnno, final AETypeLista type) {
@@ -183,6 +184,100 @@ public class UploadAnniTest extends WikiTest {
         sorgente = "1524";
         ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
         printRisultato(ottenutoRisultato);
+    }
+
+//    @Test
+    @Order(12)
+    @DisplayName("12 - Upload test di 5 situazioni diverse")
+    void uploadTestNato2() {
+        System.out.println("12 - Upload test di 5 situazioni diverse");
+        System.out.println(VUOTA);
+        System.out.println("1512 - Anno con meno di 50 voci e con righe raggruppate");
+        System.out.println("1438 - Anno con meno di 50 voci e senza righe raggruppate");
+        System.out.println("1577 - Anno con più di 50 voci e meno di 200");
+        System.out.println("1873 - Anno con più di 200 voci e senza sottopagine");
+        System.out.println("1892 - Anno con più di 200 voci e con sottopagine oltre le 50 voci");
+        System.out.println(VUOTA);
+        boolean usaRigheOld = WPref.usaRigheAnni.is();
+        boolean usaSottoGiorniAnni = WPref.usaSottoGiorniAnni.is();
+
+        sorgente = "1512";
+        WPref.usaRigheAnni.setValue(true);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        sorgente = "1438";
+        WPref.usaRigheAnni.setValue(false);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaRigheAnni.setValue(usaRigheOld);
+
+        sorgente = "1577";
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        sorgente = "1873";
+        WPref.usaSottoGiorniAnni.setValue(false);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        sorgente = "1892";
+        WPref.usaSottoGiorniAnni.setValue(true);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
+    }
+
+//    @Test
+    @DisplayName("13 - Upload usaRigheAnni")
+    void usaRigheAnni() {
+        System.out.println("13 - Upload usaRigheAnni");
+        System.out.println(VUOTA);
+        boolean usaRigheOld = WPref.usaRigheAnni.is();
+        sorgente = "1307";
+
+
+        WPref.usaRigheAnni.setValue(false);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).test().morte().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaRigheAnni.setValue(true);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).test().morte().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaRigheAnni.setValue(usaRigheOld);
+    }
+
+    //    @Test
+    @Order(14)
+    @DisplayName("14 - Upload pagina che va in errore")
+    void uploadBug() {
+        sorgente = "1933";
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+    }
+
+
+    @Test
+    @DisplayName("15 - Upload usaSottoGiorniAnni")
+    void usaSottoGiorniAnni() {
+        System.out.println("15 - Upload usaSottoGiorniAnni");
+        System.out.println(VUOTA);
+        boolean usaSottoGiorniAnni = WPref.usaSottoGiorniAnni.is();
+        sorgente = "1892";
+
+
+        WPref.usaSottoGiorniAnni.setValue(false);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).test().morte().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaSottoGiorniAnni.setValue(true);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).test().morte().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
     }
 
     /**

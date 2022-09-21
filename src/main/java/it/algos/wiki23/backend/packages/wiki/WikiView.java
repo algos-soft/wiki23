@@ -147,6 +147,10 @@ public abstract class WikiView extends CrudView {
 
     protected boolean usaInfoDownload;
 
+    protected WPref lastReset;
+
+    protected WPref durataReset;
+
     protected WPref lastDownload;
 
     protected WPref durataDownload;
@@ -247,7 +251,6 @@ public abstract class WikiView extends CrudView {
         this.usaBottoneErrori = false;
         this.usaBottoneUploadAll = true;
         this.usaBottoneUploadPagina = false;
-        //        this.usaBottoneModulo = true;
         this.usaBottoneCategoria = false;
         this.usaBottoneStatistiche = false;
         this.usaBottoneUploadStatistiche = false;
@@ -301,6 +304,18 @@ public abstract class WikiView extends CrudView {
     public void fixInfo() {
         infoPlaceHolder.removeAll();
         if (usaInfoDownload) {
+            if (lastReset != null && lastReset.get() instanceof LocalDateTime reset) {
+                if (reset.equals(ROOT_DATA_TIME)) {
+                    message = "Reset non ancora effettuato";
+                }
+                else {
+                    message = String.format("Ultimo reset effettuato il %s", dateService.get(reset));
+                    if (durataReset != null && durataDownload.get() instanceof Integer durata) {
+                        message += String.format(" in circa %d %s.", durata, "minuti");
+                    }
+                }
+                addSpanVerdeSmall(message);
+            }
             if (lastDownload != null && lastDownload.get() instanceof LocalDateTime download) {
                 if (download.equals(ROOT_DATA_TIME)) {
                     message = "Download non ancora effettuato";
@@ -308,10 +323,14 @@ public abstract class WikiView extends CrudView {
                 else {
                     message = String.format("Ultimo download effettuato il %s", dateService.get(download));
                     if (durataDownload != null && durataDownload.get() instanceof Integer durata) {
-                        message += String.format(" in circa %d %s.", durata, unitaMisuraDownload);
+                        if (durata > 0) {
+                            message += String.format(" in circa %d %s.", durata, unitaMisuraDownload);
+                        }
                     }
                     if (nextDownload != null && nextDownload.get() instanceof LocalDateTime next) {
-                        message += String.format(" Prossimo download previsto %s.", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next));
+                        if (!next.equals(ROOT_DATA_TIME)) {
+                            message += String.format(" Prossimo download previsto %s.", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next));
+                        }
                     }
                 }
                 addSpanVerdeSmall(message);
@@ -323,7 +342,9 @@ public abstract class WikiView extends CrudView {
                 else {
                     message = String.format("Ultimo elaborazione effettuata il %s", dateService.get(elaborazione));
                     if (durataElaborazione != null && durataElaborazione.get() instanceof Integer durata) {
-                        message += String.format(" in circa %d %s.", durata, unitaMisuraElaborazione);
+                        if (durata > 0) {
+                            message += String.format(" in circa %d %s.", durata, unitaMisuraElaborazione);
+                        }
                     }
                 }
 
@@ -392,7 +413,7 @@ public abstract class WikiView extends CrudView {
         if (usaBottoneDeleteAll) {
             buttonDeleteAll = new Button();
             buttonDeleteAll.getElement().setAttribute("theme", "error");
-            buttonDeleteAll.getElement().setProperty("title", "Delete: cancella tutta la collectionD");
+            buttonDeleteAll.getElement().setProperty("title", "Delete: cancella tutta la collection");
             buttonDeleteAll.addClickListener(event -> deleteAll());
             buttonDeleteAll.setIcon(new Icon(VaadinIcon.TRASH));
             topPlaceHolder.add(buttonDeleteAll);
@@ -907,6 +928,7 @@ public abstract class WikiView extends CrudView {
     public void addSpanVerdeSmall(final String message) {
         infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde).fontHeight(AEFontHeight.em7)));
     }
+
     public void addSpanRossoSmall(final String message) {
         infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).fontHeight(AEFontHeight.em7)));
     }

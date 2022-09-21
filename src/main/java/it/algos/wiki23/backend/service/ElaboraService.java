@@ -59,6 +59,32 @@ public class ElaboraService extends WAbstractService {
         }
 
         bio.elaborato = true;
+        bio = fixErrori(bio);
+        return bio;
+    }
+
+    public Bio fixErrori(Bio bio) {
+        if ( textService.isEmpty(bio.sesso)) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoMancante;
+            return bio;
+        }
+        if (bio.sesso.length() > 1) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoLungo;
+            return bio;
+        }
+        if (regexService.isEsiste(bio.sesso, "[^M^F]{1}")) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.sessoErrato;
+            return bio;
+        }
+        if ( textService.isEmpty(bio.ordinamento)) {
+            bio.errato = true;
+            bio.errore = AETypeBioError.mancaOrdinamento;
+            return bio;
+        }
+
         return bio;
     }
 
@@ -163,7 +189,8 @@ public class ElaboraService extends WAbstractService {
             testoGrezzo = textService.levaCodaDaUltimo(testoGrezzo, DOPPIE_GRAFFE_END);
         }
 
-        return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+        //        return wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+        return testoGrezzo;
     }
 
     /**
@@ -236,7 +263,6 @@ public class ElaboraService extends WAbstractService {
 
         return testoValido;
     }
-
 
 
     /**
@@ -354,6 +380,10 @@ public class ElaboraService extends WAbstractService {
         testoValido = testoValido.replaceAll(QUADRA_INI_REGEX, VUOTA);
         testoValido = testoValido.replaceAll(QUADRA_END_REGEX, VUOTA);
 
+        //--elimina eventuali tonde (ini o end) rimaste
+        testoValido = testoValido.replaceAll(PARENTESI_TONDA_INI, VUOTA);
+        testoValido = testoValido.replaceAll(PARENTESI_TONDA_END, VUOTA);
+
         //--deve iniziare con un numero
         if (!Character.isDigit(testoValido.charAt(0))) {
             return VUOTA;
@@ -433,41 +463,52 @@ public class ElaboraService extends WAbstractService {
      * Regola il testo con le regolazioni di base (fixValoreGrezzo) <br>
      * Elimina il testo se contiene la dicitura 'circa' (tipico dell'anno)
      *
-     * @param testoGrezzo in entrata da elaborare
+     * @param valorePropertyTmplBioServer in entrata da elaborare
      *
      * @return testo/parametro regolato in uscita
      */
-    public String fixAnno(String testoGrezzo) {
-        //--se contiene un punto interrogativo (in coda) è valido
-        String testoValido = wikiBotService.estraeValoreInizialeGrezzoPuntoAmmesso(testoGrezzo);
+    public String fixAnno(String valorePropertyTmplBioServer) {
+        String testoValido = wikiBotService.fixElimina(valorePropertyTmplBioServer);
+        String textPattern;
+        AnnoWiki anno = null;
 
         if (textService.isEmpty(testoValido)) {
             return VUOTA;
         }
 
+        testoValido = wikiBotService.fixDopo(testoValido);
+
+        //--elimina eventuali quadre (ini o end) rimaste
+        testoValido = testoValido.replaceAll(QUADRA_INI_REGEX, VUOTA);
+        testoValido = testoValido.replaceAll(QUADRA_END_REGEX, VUOTA);
+
         //--deve iniziare con un numero
-        if (!Character.isDigit(testoValido.charAt(0))) {
+        textPattern = "^[1-9].*";
+        if (!regexService.isEsiste(testoValido, textPattern)) {
             return VUOTA;
         }
 
-        //--tag non ammesso
-        if (testoValido.contains("secolo")) {
-            return VUOTA;
+        //--ante cristo
+        textPattern = "^[1-9]{1,3} *[aA]\\.*[cC]$|^[1-9]{1,3} *[aA]\\.*[cC]\\.*$";
+        if (regexService.isEsiste(testoValido, textPattern)) {
+            textPattern = "^[1-9]{1,3}";
+            testoValido = regexService.getReal(testoValido, textPattern);
+            testoValido += SPAZIO;
+            testoValido += ANNI_AC;
         }
 
-        //--non deve contenere caratteri alfabetici
-        //--solo (eventualmente): A, a, C, c
-        //--per gli anni prima di Cristo
-        if (contieneCaratteriAlfabetici(testoValido)) {
-            return VUOTA;
+        //        //--non deve contenere caratteri divisivi di due anni
+        //        if (testoValido.contains(SLASH) || testoValido.contains(PIPE) || testoValido.contains(TRATTINO)) {
+        //            return VUOTA;
+        //        }
+
+        try {
+            anno = annoWikiBackend.findByNome(testoValido);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
         }
 
-        //--non deve contenere caratteri divisivi di due anni
-        if (testoValido.contains(SLASH) || testoValido.contains(PIPE) || testoValido.contains(TRATTINO)) {
-            return VUOTA;
-        }
-
-        return testoValido.trim();
+        return anno != null ? anno.nome : VUOTA;
     }
 
 
@@ -643,7 +684,7 @@ public class ElaboraService extends WAbstractService {
      * <p>
      * Regola il testo con le regolazioni di base (fixValoreGrezzo) <br>
      *
-     * @param genere      maschile/femminile nella forma M/F
+     * @param bio         di riferimento
      * @param testoGrezzo in entrata da elaborare
      *
      * @return testo/parametro regolato in uscita

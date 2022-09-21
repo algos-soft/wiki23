@@ -2,6 +2,9 @@ package it.algos.wiki23.backend.schedule;
 
 import com.google.common.util.concurrent.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.sauronsoftware.cron4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
@@ -29,12 +32,20 @@ public class ScheduleWiki extends Scheduler {
      */
     @Autowired
     public ApplicationContext appContext;
+    /**
+     * Istanza di una interfaccia <br>
+     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public LogService logger;
 
 
     @PostConstruct
     public void startBio() throws IllegalStateException {
         if (!isStarted()) {
             super.start();
+            schedule(appContext.getBean(TaskBioReset.class));
             schedule(appContext.getBean(TaskBio.class));
             schedule(appContext.getBean(TaskGiorni.class));
             schedule(appContext.getBean(TaskAnni.class));

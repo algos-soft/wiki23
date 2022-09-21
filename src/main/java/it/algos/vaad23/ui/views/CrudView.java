@@ -17,7 +17,6 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -214,7 +213,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected Grid<AEntity> grid;
 
-    public Sort sortOrder;
+    protected Sort sortOrder;
 
     protected ComboBox<AETypeLog> comboTypeLog;
 
@@ -502,8 +501,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     protected void fixItems() {
-        List items = null;
-        //        items = crudBackend.findAll(sortOrder);
+        List items;
+        items = crudBackend.findAll(sortOrder);
         if (items != null) {
             grid.setItems(items);
         }

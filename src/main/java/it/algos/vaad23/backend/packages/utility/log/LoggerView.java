@@ -66,6 +66,7 @@ public class LoggerView extends CrudView {
         super.usaBottoneNew = false;
         super.usaBottoneDelete = false;
         super.usaComboType = true;
+        super.dialogClazz = LoggerDialog.class;
     }
 
     /**

@@ -145,27 +145,45 @@ public class AnnoWikiView extends WikiView {
 
         Grid.Column paginaNati = grid.addColumn(new ComponentRenderer<>(entity -> {
             String wikiTitle = ((AnnoWiki) entity).pageNati;
-            Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+            int numVoci = ((AnnoWiki) entity).bioNati;
+            Anchor anchor;
             if (((AnnoWiki) entity).esistePaginaNati) {
-                anchor.getElement().getStyle().set("color", "green");
+                if (numVoci == 0) {
+                    anchor = new Anchor(PATH_WIKI_EDIT + wikiTitle + TAG_DELETE, wikiTitle);
+                    anchor.getElement().getStyle().set("color", "red");
+                }
+                else {
+                    anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+                    anchor.getElement().getStyle().set("color", "green");
+                }
+                anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
             }
             else {
+                anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
                 anchor.getElement().getStyle().set("color", "red");
             }
-            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
             return new Span(anchor);
         })).setHeader("Nati").setKey("pageNati").setFlexGrow(0).setWidth("12em");
 
         Grid.Column paginaMorti = grid.addColumn(new ComponentRenderer<>(entity -> {
             String wikiTitle = ((AnnoWiki) entity).pageMorti;
-            Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+            int numVoci = ((AnnoWiki) entity).bioMorti;
+            Anchor anchor;
             if (((AnnoWiki) entity).esistePaginaMorti) {
-                anchor.getElement().getStyle().set("color", "green");
+                if (numVoci == 0) {
+                    anchor = new Anchor(PATH_WIKI_EDIT + wikiTitle + TAG_DELETE, wikiTitle);
+                    anchor.getElement().getStyle().set("color", "red");
+                }
+                else {
+                    anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
+                    anchor.getElement().getStyle().set("color", "green");
+                }
+                anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
             }
             else {
+                anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
                 anchor.getElement().getStyle().set("color", "red");
             }
-            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
             return new Span(anchor);
         })).setHeader("Morti").setKey("pageMorti").setFlexGrow(0).setWidth("12em");
 

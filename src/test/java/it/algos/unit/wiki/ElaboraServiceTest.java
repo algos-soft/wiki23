@@ -5,6 +5,7 @@ import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.giorno.*;
@@ -37,8 +38,6 @@ import org.springframework.boot.test.context.*;
 @DisplayName("ElaboraService - Elaborazione delle biografie.")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ElaboraServiceTest extends WikiTest {
-
-
 
 
     protected static final String ATT_1 = "";
@@ -107,7 +106,6 @@ public class ElaboraServiceTest extends WikiTest {
      */
     @InjectMocks
     private ElaboraService service;
-
 
 
     public static String[] ATTIVITA_ELABORA() {
@@ -180,7 +178,7 @@ public class ElaboraServiceTest extends WikiTest {
         printNome(sorgente, ottenuto);
     }
 
-//    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - fixSesso (come stringa)")
     void fixSesso() {
@@ -222,7 +220,7 @@ public class ElaboraServiceTest extends WikiTest {
     }
 
 
-//    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(5)
     @DisplayName("5 - fixGiornoLink (come Giorno esistente)")
@@ -238,7 +236,7 @@ public class ElaboraServiceTest extends WikiTest {
         printGiorno(sorgente, ottenutoGiorno);
     }
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "GIORNI")
     @Order(6)
     @DisplayName("6 - fixGiornoValido (come stringa)")
@@ -409,6 +407,55 @@ public class ElaboraServiceTest extends WikiTest {
 
         sorgente = "Johann Georg Kastner";
         bio = queryService.getBio(sorgente);
+    }
+
+
+    @Test
+    @Order(19)
+    @DisplayName("19 - fixErrori")
+    void fixErrori() {
+        System.out.println("19 - fixErrori");
+        System.out.println(VUOTA);
+
+        sorgente = "Johann Georg Kastner";
+        bio = queryService.getBio(sorgente);
+        bio = service.fixErrori(bio);
+        assertFalse(bio.errato);
+        assertNull(bio.errore);
+
+        //--sessoMancante
+        bio.sesso = null;
+        bio = service.fixErrori(bio);
+        assertTrue(bio.errato);
+        assertEquals(AETypeBioError.sessoMancante, bio.errore);
+        bio.sesso = "";
+        bio = service.fixErrori(bio);
+        assertTrue(bio.errato);
+        assertEquals(AETypeBioError.sessoMancante, bio.errore);
+
+        
+        //--sessoLungo
+        bio.sesso = "troppiCaratteri";
+        bio = service.fixErrori(bio);
+        assertTrue(bio.errato);
+        assertEquals(AETypeBioError.sessoLungo, bio.errore);
+
+        //--sessoErrato
+        bio.sesso = "X";
+        bio = service.fixErrori(bio);
+        assertTrue(bio.errato);
+        assertEquals(AETypeBioError.sessoErrato, bio.errore);
+
+        //--mancaOrdinamento
+        bio.sesso = "F";
+        bio.ordinamento = null;
+        bio = service.fixErrori(bio);
+        assertTrue(bio.errato);
+        assertEquals(AETypeBioError.mancaOrdinamento, bio.errore);
+        bio.ordinamento = "";
+        bio = service.fixErrori(bio);
+        assertTrue(bio.errato);
+        assertEquals(AETypeBioError.mancaOrdinamento, bio.errore);
     }
 
 

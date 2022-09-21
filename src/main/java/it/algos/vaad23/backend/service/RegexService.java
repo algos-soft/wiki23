@@ -88,4 +88,29 @@ public class RegexService extends AbstractService {
         return textReplaced;
     }
 
+    /**
+     * Numero di occorrenze di un pattern in una stringa <br>
+     *
+     * @param textMatcher della stringa da spazzolare
+     * @param textPattern da trovare
+     *
+     * @return numero di occorrenze
+     */
+    public int count(final String textMatcher, final String textPattern) {
+        int occorrenze = 0;
+        Pattern pattern;
+        Matcher matcher;
+
+        if (isEsiste(textMatcher, textPattern)) {
+            pattern = Pattern.compile(textPattern);
+            matcher = pattern.matcher(textMatcher);
+            while (matcher.find()) {
+                occorrenze++;
+            }
+        }
+
+        return occorrenze;
+    }
+
+
 }

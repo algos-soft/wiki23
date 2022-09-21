@@ -125,12 +125,20 @@ public class UploadNazionalitaTest extends WikiTest {
         appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
     }
 
-    @Test
+//    @Test
     @Order(7)
     @DisplayName("7 - Upload test di una nazionalità plurale")
     void upload7() {
         System.out.println("7 - Upload test di una nazionalità plurale");
         sorgente = "algerini";
+        appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
+    }
+    @Test
+    @Order(8)
+    @DisplayName("8 - Upload test di una nazionalità plurale")
+    void upload8() {
+        System.out.println("7 - Upload test di una nazionalità plurale");
+        sorgente = "norvegesi";
         appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
     }
 

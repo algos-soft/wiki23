@@ -127,6 +127,20 @@ public class QueryReadTest extends WikiTest {
         ottenuto = ottenuto.length() < MAX ? ottenuto : ottenuto.substring(0, Math.min(MAX, ottenuto.length()));
         System.out.println((ottenuto));
     }
+    @Test
+    @Order(6)
+    @DisplayName("6 - Titolo 'strano'")
+    void valida6() {
+        System.out.println(("6 - Titolo 'strano'"));
+        System.out.println(VUOTA);
+
+        sorgente = "Othon & Tomasini";
+        ottenuto = appContext.getBean(QueryRead.class).getText(sorgente);
+        assertTrue(textService.isValid(ottenuto));
+
+        ottenuto = ottenuto.length() < MAX ? ottenuto : ottenuto.substring(0, Math.min(MAX, ottenuto.length()));
+        System.out.println((ottenuto));
+    }
 
 
 

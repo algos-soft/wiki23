@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -54,7 +55,35 @@ public class ErroreBioDialog extends BioDialog {
     @Autowired
     public RegexService regexService;
 
-    protected Button buttonFixSex;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public QueryService queryService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public BioBackend bioBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public BioService bioService;
+
+    protected Button buttonFixSexM;
+
+    protected Button buttonFixSexF;
+
+    protected Button buttonFixNazionalita;
 
     /**
      * Constructor not @Autowired. <br>
@@ -81,40 +110,49 @@ public class ErroreBioDialog extends BioDialog {
         super(entityBean, operation, crudBackend, fields);
         super.currentItem = entityBean;
         super.backend = crudBackend;
+        super.usaUnaSolaColonna = false;
     }// end of constructor not @Autowired
 
     @Override
     protected void fixBottom() {
         super.fixBottom();
 
-        buttonFixSex = new Button();
-        buttonFixSex.setText("Fix sex M");
-        buttonFixSex.getElement().setAttribute("theme", "error");
-        buttonFixSex.setIcon(new Icon(VaadinIcon.UPLOAD));
-        buttonFixSex.addClickListener(event -> fixSex("M"));
-        bottomPlaceHolder.add(buttonFixSex);
+        buttonFixSexM = new Button();
+        buttonFixSexM.setText("Fix sex M");
+        buttonFixSexM.getElement().setAttribute("theme", "error");
+        buttonFixSexM.setIcon(new Icon(VaadinIcon.UPLOAD));
+        buttonFixSexM.addClickListener(event -> fixSex("M"));
+        bottomPlaceHolder.add(buttonFixSexM);
 
-        buttonFixSex = new Button();
-        buttonFixSex.setText("Fix sex F");
-        buttonFixSex.getElement().setAttribute("theme", "error");
-        buttonFixSex.setIcon(new Icon(VaadinIcon.UPLOAD));
-        buttonFixSex.addClickListener(event -> fixSex("F"));
-        bottomPlaceHolder.add(buttonFixSex);
+        buttonFixSexF = new Button();
+        buttonFixSexF.setText("Fix sex F");
+        buttonFixSexF.getElement().setAttribute("theme", "error");
+        buttonFixSexF.setIcon(new Icon(VaadinIcon.UPLOAD));
+        buttonFixSexF.addClickListener(event -> fixSex("F"));
+        bottomPlaceHolder.add(buttonFixSexF);
+
+        buttonFixNazionalita = new Button();
+        buttonFixNazionalita.setText("Fix nazionalità");
+        buttonFixNazionalita.getElement().setAttribute("theme", "error");
+        buttonFixNazionalita.setIcon(new Icon(VaadinIcon.UPLOAD));
+        buttonFixNazionalita.addClickListener(event -> fixNazionalita());
+        bottomPlaceHolder.add(buttonFixNazionalita);
     }
 
     protected void fixSex(String newSex) {
         currentItem.sesso = newSex;
         String wikiTitle = currentItem.wikiTitle;
         String summary = "[[Utente:Biobot/fixPar|fixPar]]";
-        String tagRegex = "\n*\\| *Sesso *= *[MF]*\n*\\|";
+        String tagRegex = "\n*\\| *Sesso *= *[MF]* *\n*\\|";
         String tag = "\n|Sesso = %s\n|";
         String tagNew;
         String oldText;
-        String newText;
+        String newText = VUOTA;
         WResult result = WResult.errato();
         Bio bio;
         String message;
         boolean esisteParametroVuoto = false;
+        int tot;
 
         if (textService.isEmpty(newSex)) {
             Notification.show(String.format("Manca il parametro 'sesso' nella biografia %s", currentItem.wikiTitle)).addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -130,16 +168,25 @@ public class ErroreBioDialog extends BioDialog {
 
         tagNew = String.format(tag, newSex);
         oldText = wikiApiService.legge(wikiTitle);
-        esisteParametroVuoto = regexService.isEsiste(oldText, tagRegex);
 
-        if (!esisteParametroVuoto) {
-            message = String.format("La pagina %s non ha il parametro sesso", currentItem.wikiTitle);
-            Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
-            close();
-            return;
+        switch (regexService.count(oldText, tagRegex)) {
+            case 0 -> {
+                message = String.format("La pagina %s non ha il parametro sesso", currentItem.wikiTitle);
+                Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                close();
+                return;
+            }
+            case 1 -> {
+                newText = regexService.replaceFirst(oldText, tagRegex, tagNew);
+            }
+            default -> {
+                message = String.format("La pagina %s ha diverse occorrenze del parametro sesso", currentItem.wikiTitle);
+                Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                close();
+                return;
+            }
         }
 
-        newText = regexService.replaceFirst(oldText, tagRegex, tagNew);
         if (textService.isValid(newText)) {
             result = wikiApiService.scrive(wikiTitle, newText, summary);
         }
@@ -157,6 +204,66 @@ public class ErroreBioDialog extends BioDialog {
                     message = String.format("Non sono riuscito a modificare il parametro sesso della bio %s", currentItem.wikiTitle);
                     Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
+            }
+            else {
+                message = String.format("Non sono riuscito a registrare %s sul mongoDB", currentItem.wikiTitle);
+                Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        }
+        else {
+            message = String.format("Non sono riuscito a modificare la pagina wiki %s", currentItem.wikiTitle);
+            Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+
+        close();
+    }
+
+    protected void fixNazionalita() {
+        String nazionalitaNew = currentItem.nazionalita;
+        String wikiTitle = currentItem.wikiTitle;
+        String summary = "[[Utente:Biobot/fixPar|fixPar]]";
+        String tagRegex = "\n*\\| *Nazionalità *= *%s *\n*[\\|\\}]";
+        String tagNew = "\n|Nazionalità = %s\n|";
+        String oldText;
+        String newText;
+        WResult result = WResult.errato();
+        WrapBio wrap = queryService.getBioWrap(wikiTitle);
+        Bio bio = bioBackend.newEntity(wrap); ;
+        Map<String, String> mappa = bioService.estraeMappa(bio);
+        String nazionalitaOld = mappa.get("Nazionalità");
+        String message;
+        boolean esisteParametroNazionalita = false;
+        String realeOld;
+        String realeNew;
+
+        tagRegex = String.format(tagRegex, nazionalitaOld);
+        tagNew = String.format(tagNew, nazionalitaNew);
+
+        oldText = wikiApiService.legge(wikiTitle);
+        esisteParametroNazionalita = regexService.isEsiste(oldText, tagRegex);
+
+        if (!esisteParametroNazionalita) {
+            message = String.format("La pagina %s non ha il parametro nazionalità come previsto", currentItem.wikiTitle);
+            Notification.show(message).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            close();
+            return;
+        }
+
+        realeOld = regexService.getReal(oldText, tagRegex);
+        realeNew = realeOld.replace(nazionalitaOld, nazionalitaNew);
+        newText = oldText.replace(realeOld, realeNew);
+
+        if (textService.isValid(newText)) {
+            result = wikiApiService.scrive(wikiTitle, newText, summary);
+        }
+
+        if (result.isValido()) {
+            bio = wikiApiService.downloadAndSave(wikiTitle);
+            if (bio != null && bio.nazionalita.equals(nazionalitaNew)) {
+                bio.errato = false;
+                backend.save(bio);
+                message = String.format("La biografia %s ha adesso il parametro nazionalità = %s", currentItem.wikiTitle, nazionalitaNew);
+                Notification.show(message).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             }
             else {
                 message = String.format("Non sono riuscito a registrare %s sul mongoDB", currentItem.wikiTitle);

@@ -241,7 +241,7 @@ public class DownloadServiceTest extends WikiTest {
         queryService.logAsBot();
 
         sorgente = CATEGORIA_ESISTENTE_MEDIA;
-        service.ciclo(sorgente);
+        service.cicloCorrente(sorgente);
     }
 
     /**

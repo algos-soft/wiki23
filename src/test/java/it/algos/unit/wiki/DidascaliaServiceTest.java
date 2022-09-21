@@ -391,6 +391,10 @@ public class DidascaliaServiceTest extends WikiTest {
         System.out.println(String.format("getNomeCognome: %s", ottenuto));
 
         System.out.println(VUOTA);
+        ottenuto = bio.ordinamento;
+        System.out.println(String.format("ordinamento: %s", ottenuto));
+
+        System.out.println(VUOTA);
         ottenuto = service.giornoNato(bio);
         System.out.println(String.format("giornoNato: %s", ottenuto));
         ottenuto = service.giornoNatoSimbolo(bio);
