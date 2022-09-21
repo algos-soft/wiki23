@@ -251,7 +251,6 @@ public abstract class WikiView extends CrudView {
         this.usaBottoneErrori = false;
         this.usaBottoneUploadAll = true;
         this.usaBottoneUploadPagina = false;
-        //        this.usaBottoneModulo = true;
         this.usaBottoneCategoria = false;
         this.usaBottoneStatistiche = false;
         this.usaBottoneUploadStatistiche = false;

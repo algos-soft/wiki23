@@ -72,7 +72,7 @@ public enum WPref implements AIGenPref {
     uploadAnniPrevisto("uploadAnniPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per gli anni."),
     statisticaAnni("statisticaAnni", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per gli anni."),
 
-    usaSottoGiorniAnni("usaSottoGiorniAnni", AETypePref.bool, false, "Usa le sotto-sottopagine (nazionalità/mesi) per giorni/anni"),
+    usaSottoGiorniAnni("usaSottoGiorniAnni", AETypePref.bool, false, "Usa le sotto-sottopagine (secoli/mesi) per giorni/anni"),
     sogliaSottoPaginaGiorniAnni("sogliaSottoPaginaGiorniAnni", AETypePref.integer, 50, "Soglia minima per creare una sottopagina di un giorno o anno sul server wiki"),
 
     categoriaBio("categoriaBio", AETypePref.string, "BioBot", "Categoria di riferimento per le Biografie"),

@@ -163,6 +163,7 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(CAPO);
         buffer.append(tmpListaPersoneIni(numVoci));
         buffer.append(senzaParagrafiNonRaggruppate(lista));
+        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
         buffer.append(portale());
 
         return registra(wikiTitle, buffer.toString().trim());

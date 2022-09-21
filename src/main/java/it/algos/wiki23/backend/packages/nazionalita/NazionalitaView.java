@@ -48,15 +48,6 @@ public class NazionalitaView extends WikiView {
     //--per eventuali metodi specifici
     private NazionalitaBackend backend;
 
-    private TextField searchFieldPlurale;
-
-    protected IndeterminateCheckbox boxSuperaSoglia;
-
-    protected IndeterminateCheckbox boxEsistePagina;
-
-    protected Checkbox boxDistinctPlurali;
-
-    protected Checkbox boxPagineDaCancellare;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
