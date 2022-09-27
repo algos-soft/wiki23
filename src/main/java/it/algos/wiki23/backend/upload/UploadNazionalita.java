@@ -129,7 +129,7 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
     }
 
 
-    protected String incipitSottoSottoPagina(String attivita, String nazionalita, String keyParagrafo, int numVoci) {
+    protected String incipitSottoSottoPagina(String nazionalita, String attivita, String keyParagrafo, int numVoci) {
         StringBuffer buffer = new StringBuffer();
         String att = textService.primaMaiuscola(attivita) + SLASH + textService.primaMaiuscola(nazionalita); ;
         String naz = textService.primaMaiuscola(keyParagrafo);
@@ -144,7 +144,7 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
         buffer.append(textService.setRef(INFO_PERSONA_NAZIONALITA));
         buffer.append(" presenti");
         buffer.append(textService.setRef(INFO_LISTA));
-        buffer.append(" nell'enciclopedia che hanno come attività");
+        buffer.append(" nell'enciclopedia che hanno come nazionalità");
         buffer.append(textService.setRef(INFO_NAZIONALITA_PREVISTE));
         buffer.append(String.format(" quella di '''%s'''", nazionalita.toLowerCase()));
         if (naz.equals(TAG_LISTA_ALTRE)) {
