@@ -42,8 +42,8 @@ public class TaskBioReset extends AlgosTask {
         long inizio = System.currentTimeMillis();
 
         if (WPref.usaTaskBio.is()) {
-            service.cicloIniziale();
-            loggerDownload(inizio);
+//            service.cicloIniziale();
+//            loggerDownload(inizio);
         }
     }
 
