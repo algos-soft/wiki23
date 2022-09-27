@@ -10,7 +10,7 @@ package it.algos.wiki23.backend.enumeration;
 public enum AETypeQuery {
     getSenzaLoginSenzaCookies("GET senza login e senza cookies"),
     getLoggatoConCookies("GET loggato con cookies di botLogin"),
-    post("POST"),
+    post("POST senza loginCookies"),
     postPiuCookies("POST con loginCookies"),
     login("preliminary GET + POST"),
     ;

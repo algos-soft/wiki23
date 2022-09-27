@@ -386,6 +386,10 @@ public abstract class AQuery {
         URLConnection urlConn;
         String urlResponse;
         switch (queryType) {
+            case getSenzaLoginSenzaCookies -> {
+                urlDomain = fixAssert(urlDomain);
+                result.setCookies(botLogin != null ? botLogin.getCookies() : null);
+            }
             case getLoggatoConCookies -> {
                 urlDomain = fixAssert(urlDomain);
                 result.setCookies(botLogin != null ? botLogin.getCookies() : null);
@@ -406,46 +410,6 @@ public abstract class AQuery {
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }
-        return result;
-    }
-
-
-    public WResult urlRequestContinue(WResult result, final String urlDomainGrezzo, final String info) {
-        String message;
-        String urlDomain;
-        String tokenContinue = VUOTA;
-        URLConnection urlConn;
-        String urlResponse;
-        int pageIdsRecuperati;
-        int cicli = 0;
-
-        try {
-            do {
-                urlDomain = urlDomainGrezzo + tokenContinue;
-                urlConn = this.creaGetConnection(urlDomain);
-                uploadCookies(urlConn, result.getCookies());
-                urlResponse = sendRequest(urlConn);
-                result = elaboraResponse(result, urlResponse);
-                if (result.isValido()) {
-                    result.setCicli(++cicli);
-                }
-                tokenContinue = WIKI_QUERY_CAT_CONTINUE + result.getToken();
-            }
-            while (textService.isValid(result.getToken()));
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(unErrore).usaDb());
-        }
-
-        if (result.isValido()) {
-            pageIdsRecuperati = result.getIntValue();
-            message = String.format("Recuperati %s pageIds dalla categoria '%s' in %d cicli", textService.format(pageIdsRecuperati), info, cicli);
-            result.setMessage(message);
-        }
-        else {
-            message = String.format("Nessun pageIds dalla categoria '%s'", info);
-            result.setMessage(message);
-        }
-
         return result;
     }
 

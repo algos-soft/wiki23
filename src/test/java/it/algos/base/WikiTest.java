@@ -754,12 +754,16 @@ public abstract class WikiTest extends AlgosTest {
         }
     }
 
+    protected void printString(List<String> listaString) {
+        printString(listaString,listaString.size());
+    }
+
     protected void printString(List<String> listaString, int max) {
         int cont = 0;
 
         if (listaString != null) {
             System.out.println(VUOTA);
-            System.out.println(String.format("Valori:"));
+            System.out.println(String.format("Valori (%d):",listaString.size()));
             for (String riga : listaString.subList(0, Math.min(max, listaString.size()))) {
                 cont++;
                 System.out.print(cont);

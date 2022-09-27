@@ -177,6 +177,16 @@ public class AttivitaBackend extends WikiBackend {
         return lista;
     }
 
+    public List<String> findAllPagine() {
+        List<String> lista = new ArrayList<>();
+
+        for (String wikiTitle : findAllPlurali()) {
+            lista.add(PATH_ATTIVITA + SLASH + textService.primaMaiuscola(wikiTitle));
+        }
+
+        return lista;
+    }
+
     public boolean isExist(final String attivitaSingolare) {
         return findFirstBySingolare(attivitaSingolare) != null;
     }
@@ -203,8 +213,8 @@ public class AttivitaBackend extends WikiBackend {
      *
      * @return the FIRST founded entity
      */
-    public Attivita findFirstByPlurale(final String attivitaPlurale) {
-        return repository.findFirstByPluraleParagrafo(attivitaPlurale);
+    public Attivita findFirstByPluraleLista(final String attivitaPlurale) {
+        return repository.findFirstByPluraleLista(attivitaPlurale);
     }
 
 
@@ -216,6 +226,28 @@ public class AttivitaBackend extends WikiBackend {
         return repository.findAllByPluraleParagrafoOrderBySingolareAsc(paragrafo);
     }
 
+    public String pluraleBySingolarePlurale(final String attivitaSingolarePlurale) {
+        Attivita attivita;
+        attivita = findFirstBySingolare(attivitaSingolarePlurale);
+
+        if (attivita != null) {
+            return attivita.pluraleLista;
+        }
+        else {
+            attivita = findFirstByPluraleLista(attivitaSingolarePlurale);
+            if (attivita != null) {
+                return attivita.pluraleLista;
+            }
+            else {
+                return VUOTA;
+            }
+        }
+    }
+
+    public List<String> findAllSingolariBySingolare(final String attivitaSingolare) {
+        String attivitaPlurale = pluraleBySingolarePlurale(attivitaSingolare);
+        return findSingolariByPlurale(attivitaPlurale);
+    }
 
     /**
      * Crea una lista di singolari che hanno lo stesso plurale. <br>

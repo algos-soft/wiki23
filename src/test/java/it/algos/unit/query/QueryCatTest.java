@@ -133,6 +133,7 @@ public class QueryCatTest extends WikiTest {
     @DisplayName("30 - Obbligatorio PRIMA del 31 per regolare il botLogin")
     void nonCollegato() {
         assertNotNull(botLogin);
+        botLogin.setUserType(AETypeUser.anonymous);
         assertTrue(botLogin.getUserType().name().equals(AETypeUser.anonymous.name()));
     }
 
@@ -153,6 +154,7 @@ public class QueryCatTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
+        System.out.println(VUOTA);
         printRisultato(ottenutoRisultato);
     }
 
@@ -217,6 +219,7 @@ public class QueryCatTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come user", wikiCategoria));
+        System.out.println(VUOTA);
         printRisultato(ottenutoRisultato);
     }
 
@@ -248,6 +251,7 @@ public class QueryCatTest extends WikiTest {
 
         System.out.println(VUOTA);
         System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come admin", wikiCategoria));
+        System.out.println(VUOTA);
         printRisultato(ottenutoRisultato);
     }
 
@@ -272,8 +276,8 @@ public class QueryCatTest extends WikiTest {
     void esisteCollegatoBot(final String wikiCategoria, boolean nonUsato, boolean nonUsato2, final boolean categoriaEsistenteBot) {
         System.out.println("61 - Test per categorie collegamento bot");
         System.out.println("Il botLogin è stato regolato nel test '60'");
-
         sorgente = wikiCategoria;
+
         ottenutoRisultato = appContext.getBean(QueryCat.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertEquals(categoriaEsistenteBot, ottenutoRisultato.isValido());
@@ -294,6 +298,7 @@ public class QueryCatTest extends WikiTest {
     void getLista(final String wikiCategoria, final boolean categoriaEsistente) {
         System.out.println("70 - Recupera direttamente la lista di pageids");
         System.out.println("Il botLogin viene resettato per collegarsi come anonymous");
+        sorgente = wikiCategoria;
 
         listaPageIds = appContext.getBean(QueryCat.class).getListaPageIds(wikiCategoria);
         if (categoriaEsistente) {
@@ -301,11 +306,9 @@ public class QueryCatTest extends WikiTest {
             assertEquals(categoriaEsistente, listaPageIds.size() > 0);
 
             System.out.println(VUOTA);
-            System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", wikiCategoria));
+            System.out.println(String.format("Esamino la categoria [[%s]] in collegamento come anonymous", sorgente));
             System.out.println(VUOTA);
-            System.out.println(String.format("La categoria [[%s]] contiene %d elementi. Ne stampo SOLO i primi 10 (se ci sono)", sorgente,
-                    listaPageIds.size()
-            ));
+            System.out.println(String.format("La categoria [[%s]] contiene %d elementi. Ne stampo SOLO i primi 10 (se ci sono)", sorgente, listaPageIds.size()));
             printLista(listaPageIds.subList(0, Math.min(10, listaPageIds.size())));
         }
         else {

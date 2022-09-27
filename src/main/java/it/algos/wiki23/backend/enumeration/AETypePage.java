@@ -9,5 +9,5 @@ package it.algos.wiki23.backend.enumeration;
  */
 public enum AETypePage {
     nonEsiste, redirect, disambigua, testoVuoto, testoSenzaTmpl, testoConTmpl, mancaTmpl, indeterminata, categoria, contienePipe, pagina,
-    login, pageIds
+    login, pageIds, listWikiTitles
 }

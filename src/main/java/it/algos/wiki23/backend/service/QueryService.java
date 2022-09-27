@@ -92,12 +92,21 @@ public class QueryService extends WAbstractService {
     public Bio getBio(final String wikiTitleGrezzo) {
         return appContext.getBean(QueryBio.class).getBio(wikiTitleGrezzo);
     }
+
     public Bio getBio(final Long pageId) {
         return appContext.getBean(QueryBio.class).getBio(pageId);
     }
 
     public boolean isEsiste(final String wikiTitleGrezzo) {
         return appContext.getBean(QueryExist.class).isEsiste(wikiTitleGrezzo);
+    }
+
+    public List<String> getList(final String tagIniziale) {
+        return appContext.getBean(QueryList.class).getLista(tagIniziale);
+    }
+
+    public List<String> getList(final String tagIniziale, final int nameSpace) {
+        return appContext.getBean(QueryList.class).nameSpace(nameSpace).getLista(tagIniziale);
     }
 
 }

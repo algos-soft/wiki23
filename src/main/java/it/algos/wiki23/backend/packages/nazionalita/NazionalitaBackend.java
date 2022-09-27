@@ -185,6 +185,29 @@ public class NazionalitaBackend extends WikiBackend {
         return repository.findAllByPluraleListaOrderBySingolareAsc(plurale);
     }
 
+    public String pluraleBySingolarePlurale(final String nazionalitaSingolarePlurale) {
+        Nazionalita nazionalita;
+        nazionalita = findFirstBySingolare(nazionalitaSingolarePlurale);
+
+        if (nazionalita != null) {
+            return nazionalita.pluraleLista;
+        }
+        else {
+            nazionalita = findFirstByPlurale(nazionalitaSingolarePlurale);
+            if (nazionalita != null) {
+                return nazionalita.pluraleLista;
+            }
+            else {
+                return VUOTA;
+            }
+        }
+    }
+
+    public List<String> findAllSingolariBySingolare(final String singolare) {
+        String plurale = pluraleBySingolarePlurale(singolare);
+        return findSingolariByPlurale(plurale);
+    }
+
     public List<String> findSingolariByPlurale(final String plurale) {
         List<String> listaNomi = new ArrayList<>();
         List<Nazionalita> listaNazionalita = findAllByPlurale(plurale);

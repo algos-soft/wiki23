@@ -262,20 +262,20 @@ public abstract class UploadGiorniAnni extends Upload {
     }
 
 
-    public String senzaParagrafiNonRaggruppate( List<WrapLista> lista) {
+    public String senzaParagrafiNonRaggruppate(List<WrapLista> lista) {
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("{{Div col}}" + CAPO);
-            for (WrapLista wrap : lista) {
-                buffer.append(ASTERISCO);
+        for (WrapLista wrap : lista) {
+            buffer.append(ASTERISCO);
 
-                if (textService.isValid(wrap.titoloSottoParagrafo)) {
-                    buffer.append(wrap.titoloSottoParagrafo);
-                    buffer.append(SEP);
-                }
-                buffer.append(wrap.didascaliaBreve);
-                buffer.append(CAPO);
+            if (textService.isValid(wrap.titoloSottoParagrafo)) {
+                buffer.append(wrap.titoloSottoParagrafo);
+                buffer.append(SEP);
             }
+            buffer.append(wrap.didascaliaBreve);
+            buffer.append(CAPO);
+        }
 
         buffer.append("{{Div col end}}" + CAPO);
         return buffer.toString().trim();
@@ -405,10 +405,16 @@ public abstract class UploadGiorniAnni extends Upload {
     protected String fixTitolo(String titoloParagrafoLink, int numVoci, boolean includeOnly) {
         String titolo = VUOTA;
         String tag = "<includeonly>=</includeonly>";
+        String tagIniOld = "<span style";
+        String tagIniNew = "<noinclude>" + tagIniOld;
+        String tagEndOld = "</span>";
+        String tagEndNew = tagEndOld + "</noinclude>";
 
         titolo = wikiUtility.fixTitolo(VUOTA, titoloParagrafoLink, numVoci);
 
         if (includeOnly) {
+            titolo = textService.sostituisce(titolo, tagIniOld, tagIniNew);
+            titolo = textService.sostituisce(titolo, tagEndOld, tagEndNew);
             titolo = titolo.trim();
             titolo = CAPO + tag + titolo + tag + CAPO;
         }

@@ -477,7 +477,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         else {
             this.addColumnsOneByOne();
         }
-        this.fixSearch();
+//        this.fixSearch();
 
         // Pass all objects to a grid from a Spring Data repository object
         this.fixItems();

@@ -48,6 +48,10 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
     long countBioByNazionalita(String nazionalita);
 
+    long countBioByAttivitaAndNazionalita(String attivita, String nazionalita);
+
+    long countBioByNazionalitaAndAttivita(String nazionalita, String attivita);
+
     long countBioByGiornoNato(String giornoNato);
 
     long countBioByGiornoMorto(String giornoMorto);
@@ -69,6 +73,8 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
     List<Bio> findAllByNazionalitaOrderByOrdinamento(String nazionalita);
 
+    List<Bio> findAllByAttivitaAndNazionalitaOrderByOrdinamento(String attivita, String nazionalita);
+
     List<Bio> findAllByAnnoNatoOrderByGiornoNatoOrdAscOrdinamentoAsc(String annoNato);
 
     List<Bio> findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(String annoMorto);
@@ -82,6 +88,7 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
 
     long countBioByErratoIsTrue();
+
     long countBioByOrdinamentoIsNull();
 
     long countBioBySessoIsNull();
@@ -91,6 +98,7 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     long countBioByErroreIs(AETypeBioError error);
 
     List<Bio> findBySessoIsNull();
+
     List<Bio> findByOrdinamentoIsNull();
 
     List<Bio> findBySessoIsLike(String regex);

@@ -9,6 +9,7 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.bson.*;
+import org.checkerframework.checker.units.qual.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.query.*;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.*;
 
 import java.time.*;
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project wiki
@@ -272,6 +274,65 @@ public class BioBackend extends WikiBackend {
         return numBio > 0 ? numBio.intValue() : 0;
     }
 
+    public int countAttivitaNazionalita(final String attivitaSingolare, final String nazionalitaSingolare) {
+        Long numBio = repository.countBioByAttivitaAndNazionalita(attivitaSingolare, nazionalitaSingolare);
+        return numBio > 0 ? numBio.intValue() : 0;
+    }
+
+    /**
+     * Conta tutte le biografie incrociate di un'attività plurale con una nazionalità plurale. <br>
+     * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     *
+     * @param attivitaSingolarePlurale    da controllare/convertire in plurale
+     * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
+     *
+     * @return conteggio di biografie che usano l'attività e la nazionalità
+     */
+    public int countAttivitaNazionalitaAll(final String attivitaSingolarePlurale, final String nazionalitaSingolarePlurale) {
+        return countAttivitaNazionalitaAll(attivitaSingolarePlurale, nazionalitaSingolarePlurale, VUOTA);
+    }
+
+    /**
+     * Conta tutte le biografie incrociate di un'attività plurale con una nazionalità plurale. <br>
+     * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     *
+     * @param attivitaSingolarePlurale    da controllare/convertire in plurale
+     * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
+     * @param letteraIniziale             della (eventuale) sottoSottoPagina
+     *
+     * @return conteggio di biografie che usano l'attività e la nazionalità
+     */
+    public int countAttivitaNazionalitaAll(String attivitaSingolarePlurale, String nazionalitaSingolarePlurale, String letteraIniziale) {
+        int numBio = 0;
+        List<String> listaAttivita;
+        List<String> listaNazionalita;
+        String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
+        String nazionalitaPlurale = nazionalitaBackend.pluraleBySingolarePlurale(nazionalitaSingolarePlurale);
+
+        listaAttivita = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+        listaNazionalita = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
+
+        for (String attivitaSingola : listaAttivita) {
+            for (String nazionalitaSingola : listaNazionalita) {
+                numBio += countAttivitaNazionalita(attivitaSingola, nazionalitaSingola);
+            }
+        }
+
+        if (textService.isValid(letteraIniziale)) {
+            numBio = findAllAttivitaNazionalita(attivitaSingolarePlurale, nazionalitaSingolarePlurale, letteraIniziale).size();
+        }
+
+        return numBio;
+    }
+
+
+    public int countNazionalitaAttivita(final String nazionalita, final String attivitaSingolare) {
+        Long numBio = repository.countBioByNazionalitaAndAttivita(nazionalita, attivitaSingolare);
+        return numBio > 0 ? numBio.intValue() : 0;
+    }
+
 
     /**
      * Conta tutte le biografie con una serie di nazionalità plurali. <br>
@@ -350,6 +411,62 @@ public class BioBackend extends WikiBackend {
         return repository.findAllByErrato(true);
     }
 
+    public List<Bio> findAttivitaNazionalita(final String attivitaSingolare, final String nazionalitaSingolare) {
+        return repository.findAllByAttivitaAndNazionalitaOrderByOrdinamento(attivitaSingolare, nazionalitaSingolare);
+    }
+
+
+    /**
+     * Recupera tutte le biografie incrociate di un'attività plurale con una nazionalità plurale. <br>
+     * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     *
+     * @param attivitaSingolarePlurale    da controllare/convertire in plurale
+     * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
+     *
+     * @return Lista di biografie che usano l'attività e la nazionalità
+     */
+    public List<Bio> findAllAttivitaNazionalita(String attivitaSingolarePlurale, String nazionalitaSingolarePlurale) {
+        return findAllAttivitaNazionalita(attivitaSingolarePlurale, nazionalitaSingolarePlurale,VUOTA);
+    }
+
+        /**
+         * Recupera tutte le biografie incrociate di un'attività plurale con una nazionalità plurale. <br>
+         * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+         * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+         *
+         * @param attivitaSingolarePlurale    da controllare/convertire in plurale
+         * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
+         * @param letteraIniziale             della (eventuale) sottoSottoPagina
+         *
+         * @return Lista di biografie che usano l'attività e la nazionalità
+         */
+    public List<Bio> findAllAttivitaNazionalita(String attivitaSingolarePlurale, String nazionalitaSingolarePlurale, String letteraIniziale) {
+        List<Bio> lista = new ArrayList<>();
+        List<String> listaAttivita;
+        List<String> listaNazionalita;
+        String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
+        String nazionalitaPlurale = nazionalitaBackend.pluraleBySingolarePlurale(nazionalitaSingolarePlurale);
+
+        listaAttivita = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+        listaNazionalita = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
+
+        for (String attivitaSingola : listaAttivita) {
+            for (String nazionalitaSingola : listaNazionalita) {
+                lista.addAll(findAttivitaNazionalita(attivitaSingola, nazionalitaSingola));
+            }
+        }
+
+        if (textService.isValid(letteraIniziale)) {
+            lista = lista
+                    .stream()
+                    .filter(bio -> (textService.isValid(bio.cognome)&&bio.cognome.startsWith(letteraIniziale)))
+                    .collect(Collectors.toList());
+        }
+
+        return bioService.sortByForzaOrdinamento(lista);
+    }
+
     /**
      * Controlla l'esistenza della property <br>
      * La lista funziona anche se la property del sort è errata <br>
@@ -375,9 +492,9 @@ public class BioBackend extends WikiBackend {
     public List<Bio> findSenzaTmpl(Sort sort) {
         Document doc = null;
 
-//        if (sort == null) {
-            doc = new Document("ordinamento", 1);
-//        }
+        //        if (sort == null) {
+        doc = new Document("ordinamento", 1);
+        //        }
 
         return mongoService.projectionExclude(Bio.class, this, doc, "tmplBio");
     }
@@ -470,6 +587,7 @@ public class BioBackend extends WikiBackend {
 
         return lungo != null ? lungo.intValue() : 0;
     }
+
     public int countOrdinamento() {
         return ((Long) repository.countBioByOrdinamentoIsNull()).intValue();
     }
@@ -532,6 +650,7 @@ public class BioBackend extends WikiBackend {
             save(bio);
         }
     }
+
     public void fixMancaOrdinamento() {
         List<Bio> lista;
 

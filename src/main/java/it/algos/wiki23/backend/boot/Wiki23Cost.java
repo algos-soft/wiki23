@@ -79,6 +79,11 @@ public class Wiki23Cost {
 
     public static final String ACTION_QUERY = API_BASE + "&action=query";
 
+
+    public static final String WIKI_QUERY_LIST = ACTION_QUERY + "&list=allpages&aplimit=500&apprefix=";
+
+    public static final String LIST_NAME_SPACE = "&apnamespace=";
+
     public static final String API_TITLES = "&titles=";
 
     public static final String API_PAGEIDS = "&pageids=";
@@ -191,9 +196,13 @@ public class Wiki23Cost {
 
     public static final String KEY_JSON_CONTINUE_CM = "cmcontinue";
 
+    public static final String KEY_JSON_CONTINUE_LIST = "apcontinue";
+
     public static final String KEY_JSON_ALL = "all";
 
     public static final String KEY_JSON_PAGES = "pages";
+
+    public static final String KEY_JSON_ALL_PAGES = "allpages";
 
     public static final String KEY_JSON_NUM_PAGES = "numpages";
 

@@ -140,12 +140,12 @@ public class AttivitaBackendTest extends WikiTest {
         printSingolari(listaBeans);
     }
 
-//    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "SORT")
     @Order(3)
     @DisplayName("3 - findAll sort")
-        //--direzione
-        //--property
+    //--direzione
+    //--property
     void findAllSort(final Sort.Direction direction, final String property) {
         System.out.println("3 - findAll sort");
         int num = 10;
@@ -224,7 +224,7 @@ public class AttivitaBackendTest extends WikiTest {
         //--esiste
     void findByPlurale(String plurale, boolean esiste) {
         System.out.println("8 - findByPlurale e trova 'attività'");
-        entityBean = backend.findFirstByPlurale(plurale);
+        entityBean = backend.findFirstByPluraleLista(plurale);
         assertEquals(entityBean != null, esiste);
         if (esiste) {
             System.out.println(String.format("L'attività '%s' esiste", plurale));
@@ -249,7 +249,7 @@ public class AttivitaBackendTest extends WikiTest {
         listaStr = backend.findSingolariByPlurale(plurale);
         assertNotNull(listaStr);
         assertEquals(listaStr.size() > 0, esiste);
-        printAllSingolari(plurale,  listaStr,"attività");
+        printAllSingolari(plurale, listaStr, "attività");
     }
 
 
@@ -271,6 +271,147 @@ public class AttivitaBackendTest extends WikiTest {
         System.out.println("11 - countBySingolare");
         ottenutoIntero = bioBackend.countAttivita(singolare);
         System.out.println(String.format("L'attività '%s' contiene %s voci biografiche", singolare, ottenutoIntero));
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - attivitaNazionalita")
+    void attivitaNazionalita() {
+        System.out.println("12 - attivitaNazionalita");
+
+        sorgente = "altista";
+        sorgente2 = "australiano";
+        ottenutoIntero = bioBackend.countAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        listBio = bioBackend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        printBio(listBio);
+
+        System.out.println(VUOTA);
+
+        sorgente = "altista";
+        sorgente2 = "australiana";
+        ottenutoIntero = bioBackend.countAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        listBio = bioBackend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        printBio(listBio);
+
+        System.out.println(VUOTA);
+
+        sorgente = "ex altista";
+        sorgente2 = "australiano";
+        ottenutoIntero = bioBackend.countAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        listBio = bioBackend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        printBio(listBio);
+
+        System.out.println(VUOTA);
+
+        sorgente = "ex altista";
+        sorgente2 = "australiana";
+        ottenutoIntero = bioBackend.countAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        listBio = bioBackend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        printBio(listBio);
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - attivitaNazionalitaAll")
+    void attivitaNazionalitaAll() {
+        System.out.println("13 - attivitaNazionalitaAll");
+        int somma = 0;
+        String attivitaPlurale;
+        String nazionalitaPlurale;
+
+        sorgente = "altista";
+        attivitaPlurale = backend.findFirstBySingolare(sorgente).pluraleLista;
+        listaStr = backend.findAllSingolariBySingolare(sorgente);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività %s contiene %d attività singolari:", sorgente, listaStr.size()));
+        System.out.println(listaStr);
+        System.out.println(String.format("L'attività %s appartiene all'attività plurale: [%s]", sorgente, attivitaPlurale));
+
+        sorgente = "australiano";
+        nazionalitaPlurale = nazionalitaBackend.findFirstBySingolare(sorgente).pluraleLista;
+        listaStr = nazionalitaBackend.findAllSingolariBySingolare(sorgente);
+        System.out.println(VUOTA);
+        System.out.println(String.format("La nazionalità %s contiene %d nazionalità singolari:", sorgente, listaStr.size()));
+        System.out.println(listaStr);
+        System.out.println(String.format("La nazionalità %s appartiene alla nazionalità plurale: [%s]", sorgente, nazionalitaPlurale));
+
+        sorgente = "altista";
+        sorgente2 = "australiano";
+        previstoIntero = 9;
+        ottenutoIntero = bioBackend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d voci di %s %s", ottenutoIntero, sorgente, sorgente2));
+
+        sorgente = "altista";
+        sorgente2 = "australiano";
+        listBio = bioBackend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        System.out.println(VUOTA);
+        printBio(listBio);
+
+        sorgente = attivitaPlurale;
+        sorgente2 = nazionalitaPlurale;
+        previstoIntero = 9;
+        ottenutoIntero = bioBackend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d voci di %s %s", ottenutoIntero, sorgente, sorgente2));
+    }
+
+
+    @Test
+    @Order(14)
+    @DisplayName("14 - attivitaNazionalitaAll con sottoSottoPagina")
+    void attivitaNazionalitaAll2() {
+        System.out.println("14 - attivitaNazionalitaAll con sottoSottoPagina");
+        int somma = 0;
+
+        sorgente = "batteristi";
+        sorgente2 = "statunitensi";
+        sorgente3 = "C";
+        previstoIntero = 53;
+        ottenutoIntero = bioBackend.countAttivitaNazionalitaAll(sorgente, sorgente2, sorgente3);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d voci di %s %s %s", ottenutoIntero, sorgente, sorgente2, sorgente3));
+    }
+
+
+    @Test
+    @Order(15)
+    @DisplayName("15 - pluraleBySingolarePlurale")
+    void pluraleBySingolarePlurale() {
+        System.out.println("15 - pluraleBySingolarePlurale");
+        previsto = "abati e badesse";
+
+        sorgente = "abati e badesse";
+        ottenuto = backend.pluraleBySingolarePlurale(sorgente);
+        assertEquals(previsto, ottenuto);
+
+        sorgente = "abate";
+        ottenuto = backend.pluraleBySingolarePlurale(sorgente);
+        assertEquals(previsto, ottenuto);
+
+        sorgente = "badessa";
+        ottenuto = backend.pluraleBySingolarePlurale(sorgente);
+        assertEquals(previsto, ottenuto);
+
     }
 
     /**

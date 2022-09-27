@@ -305,6 +305,17 @@ public class ColumnService extends AbstractService {
                     }
                     icon.setSize("1em");
                     return icon;
+                case thumbReverse:
+                    if (status) {
+                        icon = new Icon(VaadinIcon.THUMBS_DOWN);
+                        icon.setColor("red");
+                    }
+                    else {
+                        icon = new Icon(VaadinIcon.THUMBS_UP);
+                        icon.setColor("green");
+                    }
+                    icon.setSize("1em");
+                    return icon;
                 default:
                     logger.error(new WrapLog().exception(new AlgosException("Switch - caso non definito")).usaDb());
                     break;

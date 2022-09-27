@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.packages.wiki;
 import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.checkbox.*;
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
@@ -172,6 +173,8 @@ public abstract class WikiView extends CrudView {
     protected WikiBackend crudBackend;
 
     protected VerticalLayout infoPlaceHolder;
+
+    protected ComboBox comboType;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>

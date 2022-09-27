@@ -50,9 +50,6 @@ public class AttivitaView extends WikiView {
     private AttivitaBackend backend;
 
 
-    private ComboBox comboType;
-
-
     //--per eventuali metodi specifici
     private AttivitaDialog dialog;
 

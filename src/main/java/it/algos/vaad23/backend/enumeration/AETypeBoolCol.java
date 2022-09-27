@@ -8,5 +8,5 @@ package it.algos.vaad23.backend.enumeration;
  * Time: 07:09
  */
 public enum AETypeBoolCol {
-    boolGrezzo, checkBox, checkIcon, checkIconReverse, customLabel, yesNo, yesNoReverse, yesNoBold, thumb
+    boolGrezzo, checkBox, checkIcon, checkIconReverse, customLabel, yesNo, yesNoReverse, yesNoBold, thumb, thumbReverse
 }

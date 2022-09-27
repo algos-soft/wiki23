@@ -63,6 +63,8 @@ public class WikiBotService extends WAbstractService {
 
     public static final String WIKI_QUERY_CAT_CONTINUE = "&cmcontinue=";
 
+    public static final String WIKI_QUERY_LIST_CONTINUE = "&apcontinue=";
+
     public static final String WIKI_QUERY_CAT_TYPE = "&cmtype=";
 
     public static final String WIKI_QUERY_CAT_PROP = "&cmprop=";

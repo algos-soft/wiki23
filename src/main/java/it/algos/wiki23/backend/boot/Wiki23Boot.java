@@ -17,6 +17,7 @@ import it.algos.wiki23.backend.packages.errore.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
+import it.algos.wiki23.backend.packages.pagina.*;
 import it.algos.wiki23.backend.packages.professione.*;
 import it.algos.wiki23.backend.packages.statistica.*;
 import it.algos.wiki23.backend.packages.wiki.*;
@@ -167,6 +168,7 @@ public class Wiki23Boot extends VaadBoot {
         VaadVar.menuRouteList.add(CognomeView.class);
         VaadVar.menuRouteList.add(StatisticaBioView.class);
         VaadVar.menuRouteList.add(ErroreBioView.class);
+        VaadVar.menuRouteList.add(PaginaView.class);
     }
 
     @Override

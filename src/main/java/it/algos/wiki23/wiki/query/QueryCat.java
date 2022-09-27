@@ -35,7 +35,7 @@ import java.util.*;
 public class QueryCat extends AQuery {
 
     /**
-     * Lista dei pageids di una categoria <br>
+     * Lista dei pageIds di una categoria <br>
      *
      * @param catTitleGrezzo della categoria wiki (necessita di codifica) usato nella urlRequest
      *
@@ -155,6 +155,45 @@ public class QueryCat extends AQuery {
         return urlRequestContinue(result, urlDomain, wikiTitoloGrezzoPaginaCategoria);
     }
 
+
+    public WResult urlRequestContinue(WResult result, final String urlDomainGrezzo, final String info) {
+        String message;
+        String urlDomain;
+        String tokenContinue = VUOTA;
+        URLConnection urlConn;
+        String urlResponse;
+        int pageIdsRecuperati;
+        int cicli = 0;
+
+        try {
+            do {
+                urlDomain = urlDomainGrezzo + tokenContinue;
+                urlConn = this.creaGetConnection(urlDomain);
+                uploadCookies(urlConn, result.getCookies());
+                urlResponse = sendRequest(urlConn);
+                result = elaboraResponse(result, urlResponse);
+                if (result.isValido()) {
+                    result.setCicli(++cicli);
+                }
+                tokenContinue = WIKI_QUERY_CAT_CONTINUE + result.getToken();
+            }
+            while (textService.isValid(result.getToken()));
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+        }
+
+        if (result.isValido()) {
+            pageIdsRecuperati = result.getIntValue();
+            message = String.format("Recuperati %s pageIds dalla categoria '%s' in %d cicli", textService.format(pageIdsRecuperati), info, cicli);
+            result.setMessage(message);
+        }
+        else {
+            message = String.format("Nessun pageIds dalla categoria '%s'", info);
+            result.setMessage(message);
+        }
+
+        return result;
+    }
 
     protected WResult elaboraResponse(WResult result, final String rispostaDellaQuery) {
         List<Long> listaNew = new ArrayList<>();
