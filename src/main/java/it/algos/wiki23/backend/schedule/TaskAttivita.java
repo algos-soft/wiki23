@@ -50,10 +50,10 @@ public class TaskAttivita extends AlgosTask {
 
 
     /**
-     * Descrizione: ogni settimana la mattina di lunedì
-     * 0 10 * * Mon
+     * Descrizione: ogni settimana la mattina di martedì
+     * 0 10 * * Tue
      */
-    private static final String PATTERN = "0 10 * * Mon";
+    private static final String PATTERN = "0 10 * * tue";
 
 
     @Override

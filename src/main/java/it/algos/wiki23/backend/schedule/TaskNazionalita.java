@@ -48,10 +48,10 @@ public class TaskNazionalita extends AlgosTask {
 
 
     /**
-     * Descrizione: ogni settimana la mattina del martedì
-     * * 0 10 * * Tue
+     * Descrizione: ogni settimana la mattina di giovedì
+     * * 0 10 * * Thu
      */
-    private static final String PATTERN = "0 10 * * Tue";
+    private static final String PATTERN = "0 10 * * Thu";
 
 
     @Override
