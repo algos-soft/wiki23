@@ -335,6 +335,55 @@ public class BioBackend extends WikiBackend {
 
 
     /**
+     * Conta tutte le biografie incrociate di una nazionalità plurale con un'attività plurale. <br>
+     * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     *
+     * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
+     * @param attivitaSingolarePlurale    da controllare/convertire in plurale
+     *
+     * @return conteggio di biografie che usano l'attività e la nazionalità
+     */
+    public int countNazionalitaAttivitaAll(final String nazionalitaSingolarePlurale, final String attivitaSingolarePlurale) {
+        return countNazionalitaAttivitaAll(nazionalitaSingolarePlurale, attivitaSingolarePlurale, VUOTA);
+    }
+
+    /**
+     * Conta tutte le biografie incrociate di una nazionalità plurale con un'attività plurale. <br>
+     * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     *
+     * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
+     * @param attivitaSingolarePlurale    da controllare/convertire in plurale
+     * @param letteraIniziale             della (eventuale) sottoSottoPagina
+     *
+     * @return conteggio di biografie che usano l'attività e la nazionalità
+     */
+    public int countNazionalitaAttivitaAll(String nazionalitaSingolarePlurale, final String attivitaSingolarePlurale, String letteraIniziale) {
+        int numBio = 0;
+        List<String> listaNazionalita;
+        List<String> listaAttivita;
+        String nazionalitaPlurale = nazionalitaBackend.pluraleBySingolarePlurale(nazionalitaSingolarePlurale);
+        String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
+
+        listaNazionalita = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
+        listaAttivita = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+
+        for (String nazionalitaSingola : listaNazionalita) {
+            for (String attivitaSingola : listaAttivita) {
+                numBio += countNazionalitaAttivita(nazionalitaSingola, attivitaSingola);
+            }
+        }
+
+        if (textService.isValid(letteraIniziale)) {
+            numBio = findAllAttivitaNazionalita(attivitaSingolarePlurale, nazionalitaSingolarePlurale, letteraIniziale).size();
+        }
+
+        return numBio;
+    }
+
+
+    /**
      * Conta tutte le biografie con una serie di nazionalità plurali. <br>
      *
      * @param nazionalitaPlurale
@@ -415,6 +464,10 @@ public class BioBackend extends WikiBackend {
         return repository.findAllByAttivitaAndNazionalitaOrderByOrdinamento(attivitaSingolare, nazionalitaSingolare);
     }
 
+    public List<Bio> findNazionalitaAttivita(final String nazionalitaSingolare, final String attivitaSingolare) {
+        return repository.findAllByNazionalitaAndAttivitaOrderByOrdinamento(nazionalitaSingolare, attivitaSingolare);
+    }
+
 
     /**
      * Recupera tutte le biografie incrociate di un'attività plurale con una nazionalità plurale. <br>
@@ -427,20 +480,20 @@ public class BioBackend extends WikiBackend {
      * @return Lista di biografie che usano l'attività e la nazionalità
      */
     public List<Bio> findAllAttivitaNazionalita(String attivitaSingolarePlurale, String nazionalitaSingolarePlurale) {
-        return findAllAttivitaNazionalita(attivitaSingolarePlurale, nazionalitaSingolarePlurale,VUOTA);
+        return findAllAttivitaNazionalita(attivitaSingolarePlurale, nazionalitaSingolarePlurale, VUOTA);
     }
 
-        /**
-         * Recupera tutte le biografie incrociate di un'attività plurale con una nazionalità plurale. <br>
-         * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
-         * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
-         *
-         * @param attivitaSingolarePlurale    da controllare/convertire in plurale
-         * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
-         * @param letteraIniziale             della (eventuale) sottoSottoPagina
-         *
-         * @return Lista di biografie che usano l'attività e la nazionalità
-         */
+    /**
+     * Recupera tutte le biografie incrociate di un'attività plurale con una nazionalità plurale. <br>
+     * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     *
+     * @param attivitaSingolarePlurale    da controllare/convertire in plurale
+     * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
+     * @param letteraIniziale             della (eventuale) sottoSottoPagina
+     *
+     * @return Lista di biografie che usano l'attività e la nazionalità
+     */
     public List<Bio> findAllAttivitaNazionalita(String attivitaSingolarePlurale, String nazionalitaSingolarePlurale, String letteraIniziale) {
         List<Bio> lista = new ArrayList<>();
         List<String> listaAttivita;
@@ -460,7 +513,45 @@ public class BioBackend extends WikiBackend {
         if (textService.isValid(letteraIniziale)) {
             lista = lista
                     .stream()
-                    .filter(bio -> (textService.isValid(bio.cognome)&&bio.cognome.startsWith(letteraIniziale)))
+                    .filter(bio -> (textService.isValid(bio.cognome) && bio.cognome.startsWith(letteraIniziale)))
+                    .collect(Collectors.toList());
+        }
+
+        return bioService.sortByForzaOrdinamento(lista);
+    }
+
+
+    /**
+     * Conta tutte le biografie incrociate di una nazionalità plurale con un'attività plurale. <br>
+     * La nazionalità può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     * L'attività può essere espressa direttamente come plurale oppure come singolare e ne viene ricavato il plurale <br>
+     *
+     * @param nazionalitaSingolarePlurale da controllare/convertire in plurale
+     * @param attivitaSingolarePlurale    da controllare/convertire in plurale
+     * @param letteraIniziale             della (eventuale) sottoSottoPagina
+     *
+     * @return Lista di biografie che usano l'attività e la nazionalità
+     */
+    public List<Bio> findAllNazionalitaAttivita(String nazionalitaSingolarePlurale, String attivitaSingolarePlurale, String letteraIniziale) {
+        List<Bio> lista = new ArrayList<>();
+        List<String> listaNazionalita;
+        List<String> listaAttivita;
+        String nazionalitaPlurale = nazionalitaBackend.pluraleBySingolarePlurale(nazionalitaSingolarePlurale);
+        String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
+
+        listaNazionalita = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
+        listaAttivita = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+
+        for (String nazionalitaSingola : listaNazionalita) {
+            for (String attivitaSingola : listaAttivita) {
+                lista.addAll(findNazionalitaAttivita(nazionalitaSingola, attivitaSingola));
+            }
+        }
+
+        if (textService.isValid(letteraIniziale)) {
+            lista = lista
+                    .stream()
+                    .filter(bio -> (textService.isValid(bio.cognome) && bio.cognome.startsWith(letteraIniziale)))
                     .collect(Collectors.toList());
         }
 

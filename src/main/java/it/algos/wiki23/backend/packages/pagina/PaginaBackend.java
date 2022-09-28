@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.logic.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
+import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.data.mongodb.repository.*;
@@ -120,7 +121,7 @@ public class PaginaBackend extends WikiBackend {
         elaboraAnni();
         elaboraAttivita();
         elaboraNazionalita();
-        //        elaboraUtenteBot();
+        elaboraUtenteBot();
 
         super.fixElaboraMinuti(inizio, "cancellazioni");
     }
@@ -301,7 +302,7 @@ public class PaginaBackend extends WikiBackend {
                 else {
                     nazionalita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
                     nazionalita = textService.primaMinuscola(nazionalita);
-                    voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita,letteraIniziale);
+                    voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita, letteraIniziale);
                     if (voci > 50) {
                         creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, false);
                     }
@@ -313,7 +314,187 @@ public class PaginaBackend extends WikiBackend {
         }
     }
 
+    /**
+     * Pagine di nazionalità da cancellare:
+     */
     public void elaboraNazionalita() {
+        int nameSpace = 102;
+        String tag = "Biografie/Nazionalità/";
+        List<String> pagineAll = queryService.getList(tag, nameSpace);
+        List<String> valideBase = nazionalitaBackend.findAllPlurali();
+
+        elaboraNazionalitaPagine(valideBase, getPagine(pagineAll));
+        elaboraNazionalitaSottoPagine(valideBase, getSottoPagine(pagineAll));
+        elaboraNazionalitaSottoSottoPagine(valideBase, getSottoSottoPagine(pagineAll));
+    }
+
+
+    /**
+     * Quelle di primo livello che terminano con /
+     * Quelle di primo livello che terminano con /...
+     * Quelle di primo livello che non esistono in Nazionalita
+     * Quelle di primo livello femminili
+     * Quelle di primo livello singolari e non plurali
+     * Quelle di primo livello che non superano le 50 voci
+     */
+    public void elaboraNazionalitaPagine(List<String> valideBase, List<String> pagine) {
+        String tagBase = PATH_NAZIONALITA + SLASH;
+        String paginaBase;
+        int voci = 0;
+
+        for (String wikiTitle : pagine) {
+            // Quelle di primo livello che terminano con /
+            if (wikiTitle.endsWith(SLASH)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, true);
+                continue;
+            }
+
+            // Quelle di primo livello che terminano con /...
+            if (wikiTitle.endsWith(SLASH + TRE_PUNTI)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, true);
+                continue;
+            }
+
+            paginaBase = textService.levaTesta(wikiTitle, tagBase);
+            paginaBase = textService.primaMinuscola(paginaBase);
+
+            // Quelle di primo livello che non esistono in Nazionalita
+            if (!valideBase.contains(paginaBase)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, true);
+                continue;
+            }
+
+            // Quelle di primo livello femminili
+            // ???
+
+            // Quelle di primo livello singolari e non plurali
+            String gamma = nazionalitaBackend.pluraleBySingolarePlurale(paginaBase);
+            Nazionalita delta = nazionalitaBackend.findFirstBySingolare(paginaBase);
+            Nazionalita delta2 = nazionalitaBackend.findFirstByPluraleLista(paginaBase);
+            if (paginaBase.equals(gamma)) {
+                voci = bioBackend.countNazionalitaPlurale(paginaBase);
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, false);
+                continue;
+            }
+
+            // Quelle di primo livello che non superano le 50 voci
+            voci = bioBackend.countNazionalitaPlurale(paginaBase);
+            if (voci > 50) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, false);
+            }
+            else {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, true);
+            }
+        }
+    }
+
+    /**
+     * Quelle di secondo livello che terminano con /
+     * Quelle di secondo livello che terminano con /...
+     * Quelle di secondo livello che non hanno un corrispondente primo livello
+     * Quelle di secondo livello che non esistono in Attivita
+     * Quelle di secondo livello femminili
+     * Quelle di secondo livello singolari e non plurali
+     * Quelle di secondo livello che non superano le 50 voci
+     */
+    public void elaboraNazionalitaSottoPagine(List<String> valideBase, List<String> pagine) {
+        String tagBase = PATH_NAZIONALITA + SLASH;
+        int voci = 0;
+        String paginaParentePrimoLivello;
+        String nazionalita;
+        String attivita;
+
+        for (String wikiTitle : pagine) {
+            // Quelle di secondo livello che terminano con /
+            if (wikiTitle.endsWith(SLASH)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSotto, voci, true);
+                continue;
+            }
+
+            // Quelle di secondo livello che terminano con /...
+            if (wikiTitle.endsWith(SLASH + TRE_PUNTI)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSotto, voci, true);
+                continue;
+            }
+
+            // Quelle di secondo livello che non hanno un corrispondente primo livello
+            paginaParentePrimoLivello = textService.levaCodaDaUltimo(wikiTitle, SLASH);
+            nazionalita = textService.levaTesta(paginaParentePrimoLivello, tagBase);
+            nazionalita = textService.primaMinuscola(nazionalita);
+            if (!valideBase.contains(nazionalita)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSotto, voci, true);
+                continue;
+            }
+
+            // Quelle di secondo livello che non superano le 50 voci
+            attivita = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + 1);
+            attivita = textService.primaMinuscola(attivita);
+            voci = bioBackend.countNazionalitaAttivitaAll(nazionalita, attivita);
+            if (voci > 50) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSotto, voci, false);
+            }
+            else {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSotto, voci, true);
+            }
+        }
+    }
+
+    /**
+     * Quelle di terzo livello che terminano con /
+     * Quelle di terzo livello che terminano con /...
+     * Quelle di terzo livello che non hanno un corrispondente secondo livello
+     * Quelle di terzo livello che hanno un secondo livello che non supera le 50 voci
+     */
+    public void elaboraNazionalitaSottoSottoPagine(List<String> valideBase, List<String> pagine) {
+        String tagBase = PATH_NAZIONALITA + SLASH;
+        int voci = 0;
+        String paginaParentePrimoLivello;
+        String paginaParenteSecondoLivello;
+        String letteraIniziale;
+        Pagina pagina;
+        String attivita;
+        String nazionalita;
+
+        for (String wikiTitle : pagine) {
+            // Quelle di terzo livello che terminano con /
+            if (wikiTitle.endsWith(SLASH)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
+                continue;
+            }
+
+            // Quelle di terzo livello che terminano con /...
+            if (wikiTitle.endsWith(SLASH + TRE_PUNTI)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
+                continue;
+            }
+
+            // Quelle di terzo livello che non hanno un corrispondente secondo livello
+            paginaParenteSecondoLivello = textService.levaCodaDaUltimo(wikiTitle, SLASH);
+            paginaParentePrimoLivello = textService.levaCodaDaUltimo(paginaParenteSecondoLivello, SLASH);
+            letteraIniziale = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + 1);
+            nazionalita = textService.levaTesta(paginaParentePrimoLivello, tagBase);
+            nazionalita = textService.primaMinuscola(nazionalita);
+            pagina = findByPagina(paginaParenteSecondoLivello);
+            if (pagina == null) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
+            }
+            else {
+                if (pagina.cancella) {
+                    creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
+                }
+                else {
+                    attivita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
+                    attivita = textService.primaMinuscola(attivita);
+                    voci = bioBackend.countNazionalitaAttivitaAll(nazionalita, attivita, letteraIniziale);
+                    if (voci > 50) {
+                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, false);
+                    }
+                    else {
+                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
+                    }
+                }
+            }
+        }
     }
 
     public void elaboraUtenteBot() {
@@ -324,11 +505,11 @@ public class PaginaBackend extends WikiBackend {
 
         pagine = queryService.getList(tagNati, nameSpace);
         for (String wikiTitle : pagine) {
-            creaIfNotExist(wikiTitle, AETypePaginaCancellare.bioBotNati);
+            creaIfNotExist(wikiTitle, AETypePaginaCancellare.bioBotNati, 0, true);
         }
         pagine = queryService.getList(tagMorti, nameSpace);
         for (String wikiTitle : pagine) {
-            creaIfNotExist(wikiTitle, AETypePaginaCancellare.bioBotMorti);
+            creaIfNotExist(wikiTitle, AETypePaginaCancellare.bioBotMorti, 0, true);
         }
     }
 

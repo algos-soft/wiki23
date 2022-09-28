@@ -41,8 +41,6 @@ import org.springframework.data.domain.*;
 @Route(value = "pagina", layout = MainLayout.class)
 public class PaginaView extends WikiView {
 
-    private static String PROJECT_PATH = "Progetto:Biografie/Attività/";
-
     //--per eventuali metodi specifici
     private PaginaBackend backend;
 
@@ -131,8 +129,19 @@ public class PaginaView extends WikiView {
 
         Grid.Column pagineCancellare = grid.addColumn(new ComponentRenderer<>(entity -> {
             String wikiTitle = ((Pagina) entity).pagina;
-            String link = wikiTitle.startsWith(PROJECT_PATH) ? textService.levaTesta(wikiTitle, PROJECT_PATH) : wikiTitle;
             Anchor anchor;
+            String link = wikiTitle;
+//            if (wikiTitle.startsWith(PATH_ATTIVITA)) {
+//                link = textService.levaTesta(wikiTitle, PATH_ATTIVITA);
+//            }
+//            else {
+//                if (wikiTitle.startsWith(PATH_NAZIONALITA)) {
+//                    link = textService.levaTesta(wikiTitle, PATH_NAZIONALITA);
+//                }
+//                else {
+//                    link = wikiTitle;
+//                }
+//            }
             if (((Pagina) entity).cancella) {
                 anchor = new Anchor(PATH_WIKI_EDIT + wikiTitle + TAG_DELETE, link);
                 anchor.getElement().getStyle().set("color", "red");

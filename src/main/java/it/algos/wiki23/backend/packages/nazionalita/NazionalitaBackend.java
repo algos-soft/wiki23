@@ -147,6 +147,22 @@ public class NazionalitaBackend extends WikiBackend {
         return repository.findFirstByPluraleLista(nazionalitaPlurale);
     }
 
+
+
+
+    /**
+     * Retrieves the first entity by a 'plural' property.
+     * Cerca una singola entity con una query. <br>
+     * Restituisce un valore valido ANCHE se esistono diverse entities <br>
+     *
+     * @param nazionalitaPlurale per costruire la query
+     *
+     * @return the FIRST founded entity
+     */
+    public Nazionalita findFirstByPluraleLista(final String nazionalitaPlurale) {
+        return repository.findFirstByPluraleLista(nazionalitaPlurale);
+    }
+
     public List<Nazionalita> findNazionalitaDistinctByPlurali() {
         List<Nazionalita> lista = new ArrayList<>();
         Set<String> set = new HashSet();

@@ -45,12 +45,13 @@ public class ScheduleWiki extends Scheduler {
     public void startBio() throws IllegalStateException {
         if (!isStarted()) {
             super.start();
-            schedule(appContext.getBean(TaskBioReset.class));
+//            schedule(appContext.getBean(TaskBioReset.class));
             schedule(appContext.getBean(TaskBio.class));
             schedule(appContext.getBean(TaskGiorni.class));
             schedule(appContext.getBean(TaskAnni.class));
             schedule(appContext.getBean(TaskAttivita.class));
             schedule(appContext.getBean(TaskNazionalita.class));
+            schedule(appContext.getBean(TaskElaborazione.class));
         }
     }
 
