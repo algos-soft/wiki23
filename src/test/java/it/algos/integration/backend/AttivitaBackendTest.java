@@ -31,6 +31,7 @@ import java.util.stream.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("production")
 @Tag("backend")
 @DisplayName("Attivita backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

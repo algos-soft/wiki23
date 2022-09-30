@@ -57,5 +57,3 @@ public class TaskElaborazione extends AlgosTask {
     }
 
 }
-
-}

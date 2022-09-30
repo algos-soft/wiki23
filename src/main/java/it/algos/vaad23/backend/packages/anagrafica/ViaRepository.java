@@ -3,9 +3,11 @@ package it.algos.vaad23.backend.packages.anagrafica;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
 import java.util.*;
 
 /**

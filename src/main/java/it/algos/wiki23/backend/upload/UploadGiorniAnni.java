@@ -33,6 +33,7 @@ public abstract class UploadGiorniAnni extends Upload {
 
     private AnnoWiki anno;
 
+    protected boolean usaSottoGiorniAnni;
 
     /**
      * Costruttore base con parametri <br>
@@ -75,6 +76,8 @@ public abstract class UploadGiorniAnni extends Upload {
      */
     public WResult upload(final String nomeGiornoAnno) {
         this.nomeLista = nomeGiornoAnno;
+        int numVoci = 0;
+        int lengthPagina = 0;
 
         if (textService.isValid(nomeGiornoAnno)) {
             wikiTitle = switch (typeCrono) {
@@ -103,6 +106,18 @@ public abstract class UploadGiorniAnni extends Upload {
                 case annoMorte -> appContext.getBean(ListaAnni.class).morte(nomeLista).mappaWrap();
                 default -> null;
             };
+
+            //--controllo delle dimensioni in byte della pagina wiki
+            usaSottoGiorniAnni = false;
+            if (WPref.usaSottoGiorniAnni.is()) {
+                numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
+                if (numVoci > 200) {
+                    lengthPagina = queryService.getLength(wikiTitle);
+                    if (lengthPagina > 200000) {
+                        usaSottoGiorniAnni = true;
+                    }
+                }
+            }
 
             if (uploadTest) {
                 this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiTitle;
@@ -205,7 +220,6 @@ public abstract class UploadGiorniAnni extends Upload {
         int sogliaIncludeAll = WPref.sogliaIncludeAll.getInt();
         int sogliaIncludeParagrafo = WPref.sogliaIncludeParagrafo.getInt();
         boolean righeRaggruppate;
-        boolean usaSottoGiorniAnni = WPref.usaSottoGiorniAnni.is();
 
         righeRaggruppate = switch (typeCrono) {
             case giornoNascita, giornoMorte -> WPref.usaRigheGiorni.is();

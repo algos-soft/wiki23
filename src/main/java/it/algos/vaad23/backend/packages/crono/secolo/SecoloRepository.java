@@ -35,6 +35,8 @@ public interface SecoloRepository extends MongoRepository<Secolo, String> {
     @Override
     void delete(Secolo entity);
 
+    Secolo findFirstByNome(String nome);
+
     Secolo findFirstByInizioGreaterThanEqualAndFineLessThanEqualAndAnteCristo(int inizio, int fine, boolean anteCristo);
 
     Secolo findFirstByInizioLessThanEqualAndFineGreaterThanEqualAndAnteCristo(int inizio, int fine, boolean anteCristo);

@@ -31,6 +31,7 @@ import org.springframework.test.context.junit.jupiter.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("production")
 @Tag("upload")
 @DisplayName("Nazionalità upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -133,7 +134,7 @@ public class UploadNazionalitaTest extends WikiTest {
         sorgente = "algerini";
         appContext.getBean(UploadNazionalita.class).test().upload(sorgente);
     }
-    @Test
+//    @Test
     @Order(8)
     @DisplayName("8 - Upload test di una nazionalità plurale")
     void upload8() {

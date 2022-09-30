@@ -12,7 +12,8 @@ import java.util.function.*;
  * Time: 21:20
  * <p>
  * Predicate(T): Takes one parameter type (T), produces boolean value <br>
- * Predicate<T> is a generic functional interface representing a single argument function that returns a boolean value <br>
+ * Predicate<T> is a generic functional interface representing <br>
+ * a single argument function that returns a boolean value <br>
  */
 public abstract class APredicate {
 

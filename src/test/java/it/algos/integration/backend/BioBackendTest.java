@@ -34,15 +34,16 @@ import javax.persistence.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("production")
 @Tag("backend")
 @DisplayName("Bio Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class BioBackendTest extends WikiTest {
 
-    /**
-     * The Service.
-     */
-    @InjectMocks
+    //    /**
+    //     * The Service.
+    //     */
+    //    @InjectMocks
     private BioBackend backend;
 
     @Autowired
@@ -120,6 +121,7 @@ public class BioBackendTest extends WikiTest {
      */
     protected void fixRiferimentiIncrociati() {
         super.fixRiferimentiIncrociati();
+        backend = bioBackend;
         backend.mongoService = mongoService;
     }
 
@@ -159,7 +161,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-//    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - findAll")
     void findAll() {
@@ -176,7 +178,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-//    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - findAll ridotto")
     void findAllRidotto() {
@@ -192,7 +194,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(message);
     }
 
-//    @Test
+    //    @Test
     @Order(4)
     @DisplayName("4 - find inesistente")
     void find() {
@@ -205,7 +207,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("La biografia '%s' non esiste su mongoDB", sorgente));
     }
 
-//    @Test
+    //    @Test
     @Order(5)
     @DisplayName("5 - find esistente")
     void find2() {
@@ -217,7 +219,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("Trovata la biografia '%s' su mongoDB", sorgente));
     }
 
-//    @Test
+    //    @Test
     @Order(6)
     @DisplayName("6 - controllo due biografie")
     void find3() {
@@ -238,7 +240,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-//    @Test
+    //    @Test
     @Order(7)
     @DisplayName("7 - insert")
     void insert() {
@@ -267,7 +269,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("Adesso sono tornate %s (dopo un delete)", textService.format(backend.count())));
     }
 
-//    @Test
+    //    @Test
     @Order(8)
     @DisplayName("8 - save")
     void save() {
@@ -307,7 +309,7 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("Adesso sono tornate %s (dopo un delete)", textService.format(backend.count())));
     }
 
-//    @Test
+    //    @Test
     @Order(9)
     @DisplayName("9 - sort")
     void find8() {
@@ -379,7 +381,7 @@ public class BioBackendTest extends WikiTest {
         printDieci(listaBeans);
     }
 
-//    @Test
+    //    @Test
     @Order(10)
     @DisplayName("10 - Index")
     void find9() {
@@ -396,15 +398,14 @@ public class BioBackendTest extends WikiTest {
         mongoService.mongoOp.findAll(clazz);
         printTimeEsatto();
 
-
         sorgente3 = "wikiTitle";
-//        collection.createIndex(Indexes.ascending(sorgente3), new IndexOptions().unique(false));
-//        ListIndexesIterable<Document> listaIndex = collection.listIndexes();
-//        for (Document doc : listaIndex) {
-//            String alfa = doc.toJson();
-//        }
-//
-//        collection.dropIndex(sorgente3 + "_1");
+        //        collection.createIndex(Indexes.ascending(sorgente3), new IndexOptions().unique(false));
+        //        ListIndexesIterable<Document> listaIndex = collection.listIndexes();
+        //        for (Document doc : listaIndex) {
+        //            String alfa = doc.toJson();
+        //        }
+        //
+        //        collection.dropIndex(sorgente3 + "_1");
         //
         //
         //
@@ -423,7 +424,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-    @Test
+    //    @Test
     @Order(11)
     @DisplayName("11 - count")
     void countSex() {
@@ -431,6 +432,78 @@ public class BioBackendTest extends WikiTest {
         String message;
 
         backend.fixErroriSesso();
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - findAllAnnoNatoMese")
+    void findAllAnnoNatoMese() {
+        System.out.println("12 - findAllAnnoNatoMese");
+        sorgente = "1645";
+
+        sorgente2 = VUOTA;
+        listaBeans = backend.findAllAnnoNatoMese(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+
+        sorgente2 = "marzo";
+        listaBeans = backend.findAllAnnoNatoMese(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        printBio(listaBeans);
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - countAllAnnoNatoMese")
+    void countAllAnnoNatoMese() {
+        System.out.println("13 - countAllAnnoNatoMese");
+        sorgente = "1645";
+
+        sorgente2 = VUOTA;
+        ottenutoIntero = backend.countAllAnnoNatoMese(sorgente, sorgente2);
+        assertTrue(ottenutoIntero > 0);
+        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s", ottenutoIntero, sorgente));
+
+        sorgente2 = "marzo";
+        ottenutoIntero = backend.countAllAnnoNatoMese(sorgente, sorgente2);
+        assertTrue(ottenutoIntero > 0);
+        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
+    }
+
+
+    @Test
+    @Order(14)
+    @DisplayName("14 - findAllAnnoMortoMese")
+    void findAllAnnoMortoMese() {
+        System.out.println("14 - findAllAnnoMortoMese");
+        sorgente = "1645";
+
+        sorgente2 = VUOTA;
+        listaBeans = backend.findAllAnnoMortoMese(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+
+        sorgente2 = "marzo";
+        listaBeans = backend.findAllAnnoMortoMese(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        printBio(listaBeans);
+    }
+
+
+    @Test
+    @Order(15)
+    @DisplayName("15 - countAllAnnoMortoMese")
+    void countAllAnnoMortoMese() {
+        System.out.println("15 - countAllAnnoMortoMese");
+        sorgente = "1645";
+
+        sorgente2 = VUOTA;
+        ottenutoIntero = backend.countAllAnnoMortoMese(sorgente, sorgente2);
+        assertTrue(ottenutoIntero > 0);
+        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s", ottenutoIntero, sorgente));
+
+        sorgente2 = "marzo";
+        ottenutoIntero = backend.countAllAnnoMortoMese(sorgente, sorgente2);
+        assertTrue(ottenutoIntero > 0);
+        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
     }
 
     void printDieci(List<Bio> lista) {

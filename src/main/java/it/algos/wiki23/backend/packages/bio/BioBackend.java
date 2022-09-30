@@ -3,9 +3,14 @@ package it.algos.wiki23.backend.packages.bio;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.vaad23.backend.packages.crono.mese.*;
+import it.algos.vaad23.backend.packages.crono.secolo.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.bson.*;
@@ -37,6 +42,39 @@ import java.util.stream.*;
  */
 @Service
 public class BioBackend extends WikiBackend {
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public GiornoBackend giornoBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AnnoBackend annoBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MeseBackend meseBackend;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public SecoloBackend secoloBackend;
 
     public BioRepository repository;
 
@@ -556,6 +594,170 @@ public class BioBackend extends WikiBackend {
         }
 
         return bioService.sortByForzaOrdinamento(lista);
+    }
+
+
+    public int countAllGiornoNatoSecolo(String giornoNato, String nomeSecolo) {
+        List<Bio> lista = findAllGiornoNatoSecolo(giornoNato, nomeSecolo);
+        return lista != null ? lista.size() : 0;
+    }
+
+    public List<Bio> findAllGiornoNatoSecolo(String giornoNato, String nomeSecolo) {
+        List<Bio> lista = new ArrayList<>();
+        List<Bio> listaAllGiorno = new ArrayList<>();
+        Secolo secolo = null;
+        Anno anno;
+
+        if (textService.isValid(nomeSecolo)) {
+            nomeSecolo = textService.primaMinuscola(nomeSecolo);
+            secolo = secoloBackend.findByNome(nomeSecolo);
+        }
+
+        if (textService.isValid(giornoNato)) {
+            listaAllGiorno = repository.findAllByGiornoNatoOrderByAnnoNatoOrdAscOrdinamentoAsc(giornoNato);
+        }
+
+        if (listaAllGiorno != null && textService.isValid(nomeSecolo)) {
+            for (Bio bio : listaAllGiorno) {
+                if (textService.isValid(bio.annoNato)) {
+                    anno = annoBackend.findByNome(bio.annoNato);
+                    if (anno != null) {
+                        if (anno.secolo.equals(secolo)) {
+                            lista.add(bio);
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            lista = listaAllGiorno;
+        }
+
+        return lista;
+    }
+
+
+
+
+    public int countAllGiornoMortoSecolo(String giornoMorto, String nomeSecolo) {
+        List<Bio> lista = findAllGiornoMortoSecolo(giornoMorto, nomeSecolo);
+        return lista != null ? lista.size() : 0;
+    }
+
+    public List<Bio> findAllGiornoMortoSecolo(String giornoMorto, String nomeSecolo) {
+        List<Bio> lista = new ArrayList<>();
+        List<Bio> listaAllGiorno = new ArrayList<>();
+        Secolo secolo = null;
+        Anno anno;
+
+        if (textService.isValid(nomeSecolo)) {
+            nomeSecolo = textService.primaMinuscola(nomeSecolo);
+            secolo = secoloBackend.findByNome(nomeSecolo);
+        }
+
+        if (textService.isValid(giornoMorto)) {
+            listaAllGiorno = repository.findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(giornoMorto);
+        }
+
+        if (listaAllGiorno != null && textService.isValid(nomeSecolo)) {
+            for (Bio bio : listaAllGiorno) {
+                if (textService.isValid(bio.annoMorto)) {
+                    anno = annoBackend.findByNome(bio.annoMorto);
+                    if (anno != null) {
+                        if (anno.secolo.equals(secolo)) {
+                            lista.add(bio);
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            lista = listaAllGiorno;
+        }
+
+        return lista;
+    }
+
+
+
+
+    public int countAllAnnoNatoMese(String annoNato, String nomeMese) {
+        List<Bio> lista = findAllAnnoNatoMese(annoNato, nomeMese);
+        return lista != null ? lista.size() : 0;
+    }
+
+    public List<Bio> findAllAnnoNatoMese(String annoNato, String nomeMese) {
+        List<Bio> lista = new ArrayList<>();
+        List<Bio> listaAllAnno = new ArrayList<>();
+        Mese mese = null;
+        Giorno giorno;
+
+        if (textService.isValid(nomeMese)) {
+            nomeMese = textService.primaMinuscola(nomeMese);
+            mese = meseBackend.findByNome(nomeMese);
+        }
+
+        if (textService.isValid(annoNato)) {
+            listaAllAnno = repository.findAllByAnnoNatoOrderByGiornoNatoOrdAscOrdinamentoAsc(annoNato);
+        }
+
+        if (listaAllAnno != null && textService.isValid(nomeMese)) {
+            for (Bio bio : listaAllAnno) {
+                if (textService.isValid(bio.giornoNato)) {
+                    giorno = giornoBackend.findByNome(bio.giornoNato);
+                    if (giorno != null) {
+                        if (giorno.mese.equals(mese)) {
+                            lista.add(bio);
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            lista = listaAllAnno;
+        }
+
+        return lista;
+    }
+
+
+    public int countAllAnnoMortoMese(String annoMorto, String nomeMese) {
+        List<Bio> lista = findAllAnnoMortoMese(annoMorto, nomeMese);
+        return lista != null ? lista.size() : 0;
+    }
+
+    public List<Bio> findAllAnnoMortoMese(String annoMorto, String nomeMese) {
+        List<Bio> lista = new ArrayList<>();
+        List<Bio> listaAllAnno = new ArrayList<>();
+        Mese mese = null;
+        Giorno giorno;
+
+        if (textService.isValid(nomeMese)) {
+            nomeMese = textService.primaMinuscola(nomeMese);
+            mese = meseBackend.findByNome(nomeMese);
+        }
+
+        if (textService.isValid(annoMorto)) {
+            listaAllAnno = repository.findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(annoMorto);
+        }
+
+        if (listaAllAnno != null && textService.isValid(nomeMese)) {
+            for (Bio bio : listaAllAnno) {
+                if (textService.isValid(bio.giornoMorto)) {
+                    giorno = giornoBackend.findByNome(bio.giornoMorto);
+                    if (giorno != null) {
+                        if (giorno.mese.equals(mese)) {
+                            lista.add(bio);
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            lista = listaAllAnno;
+        }
+
+        return lista;
     }
 
     /**

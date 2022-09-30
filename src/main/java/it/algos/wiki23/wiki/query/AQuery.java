@@ -405,8 +405,7 @@ public abstract class AQuery {
         try {
             urlConn = this.creaGetConnection(urlDomain);
             uploadCookies(urlConn, result.getCookies());
-            urlResponse = sendRequest(urlConn);
-            result = elaboraResponse(result, urlResponse);
+            urlResponse = sendRequest(urlConn);result = elaboraResponse(result, urlResponse);
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }

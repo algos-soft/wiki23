@@ -434,6 +434,7 @@ public class VaadCost {
     public static final String KEY_MAPPA_GIORNI_BISESTILE = "bisestile";
 
     public static final String WIDTH_EM = "18ex";
+
     public static final String WIDTH_EM_LARGE = "24ex";
 
     public static final String SUMMARY = "[[Utente:Biobot|Biobot]]";

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.time.*;
 import java.util.*;
 
 /**
@@ -108,5 +109,18 @@ public class QueryService extends WAbstractService {
     public List<String> getList(final String tagIniziale, final int nameSpace) {
         return appContext.getBean(QueryList.class).nameSpace(nameSpace).getLista(tagIniziale);
     }
+
+    public int getLength(final String wikiTitleGrezzo) {
+        return appContext.getBean(QueryInfo.class).getLength(wikiTitleGrezzo);
+    }
+
+    public String getTouched(final String wikiTitleGrezzo) {
+        return appContext.getBean(QueryInfo.class).getTouched(wikiTitleGrezzo);
+    }
+
+    public LocalDateTime getLast(final String wikiTitleGrezzo) {
+        return appContext.getBean(QueryInfo.class).getLast(wikiTitleGrezzo);
+    }
+
 
 }

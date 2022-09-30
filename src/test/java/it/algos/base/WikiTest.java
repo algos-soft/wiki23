@@ -3,6 +3,7 @@ package it.algos.base;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
@@ -85,8 +86,13 @@ public abstract class WikiTest extends AlgosTest {
     public GiornoBackend giornoBackend;
 
     @Autowired
+    public MeseBackend meseBackend;
+
+    @Autowired
     public AnnoBackend annoBackend;
 
+    @Autowired
+    public NazionalitaBackend backend;
 
     protected final static long BIO_SALVINI_PAGEID = 132555;
 
@@ -576,13 +582,16 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(didascaliaService);
         assertNotNull(bioService);
         assertNotNull(bioBackend);
-        assertNotNull(attivitaBackend);
         assertNotNull(botLogin);
         assertNotNull(queryService);
         assertNotNull(downloadService);
         assertNotNull(wikiUtility);
         assertNotNull(giornoBackend);
+        assertNotNull(meseBackend);
         assertNotNull(annoBackend);
+        assertNotNull(attivitaBackend);
+        assertNotNull(nazionalitaBackend);
+
     }
 
     /**
@@ -597,6 +606,10 @@ public abstract class WikiTest extends AlgosTest {
         elaboraService.wikiBotService = wikiBotService;
         wikiUtility.queryService = queryService;
         wikiUtility.regexService = regexService;
+        attivitaBackend.logger = logService;
+        nazionalitaBackend.logger = logService;
+        bioBackend.giornoBackend = giornoBackend;
+        bioBackend.meseBackend = meseBackend;
     }
 
     /**
@@ -755,7 +768,7 @@ public abstract class WikiTest extends AlgosTest {
     }
 
     protected void printString(List<String> listaString) {
-        printString(listaString,listaString.size());
+        printString(listaString, listaString.size());
     }
 
     protected void printString(List<String> listaString, int max) {
@@ -763,7 +776,7 @@ public abstract class WikiTest extends AlgosTest {
 
         if (listaString != null) {
             System.out.println(VUOTA);
-            System.out.println(String.format("Valori (%d):",listaString.size()));
+            System.out.println(String.format("Valori (%d):", listaString.size()));
             for (String riga : listaString.subList(0, Math.min(max, listaString.size()))) {
                 cont++;
                 System.out.print(cont);

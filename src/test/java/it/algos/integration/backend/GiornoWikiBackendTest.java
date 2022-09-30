@@ -30,6 +30,7 @@ import com.vaadin.flow.component.textfield.TextField;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("production")
+@Tag("production")
 @Tag("backend")
 @DisplayName("GiornoWiki Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

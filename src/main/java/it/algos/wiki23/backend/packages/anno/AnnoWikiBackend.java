@@ -4,6 +4,7 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.wrapper.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.data.domain.*;
@@ -115,6 +116,20 @@ public class AnnoWikiBackend extends WikiBackend {
     public AnnoWiki findByNome(final String nome) {
         return repository.findFirstByNome(nome);
     }
+
+    public List<String> findAllPagine() {
+        List<String> listaNomi = new ArrayList<>();
+        List<Anno> listaAnni = annoBackend.findAll();
+
+        for (Anno anno : listaAnni) {
+            listaNomi.add(wikiUtility.wikiTitleNatiAnno(anno.nome));
+            listaNomi.add(wikiUtility.wikiTitleMortiAnno(anno.nome));
+        }
+
+        return listaNomi;
+    }
+
+
 
 
     /**

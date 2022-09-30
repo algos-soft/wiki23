@@ -82,6 +82,8 @@ public class Wiki23Cost {
 
     public static final String WIKI_QUERY_LIST = ACTION_QUERY + "&list=allpages&aplimit=500&apprefix=";
 
+    public static final String WIKI_QUERY_INFO = ACTION_QUERY + "&prop=info&titles=";
+
     public static final String LIST_NAME_SPACE = "&apnamespace=";
 
     public static final String API_TITLES = "&titles=";
@@ -236,6 +238,10 @@ public class Wiki23Cost {
     public static final String KEY_JSON_CATEGORY_PAGES = "categorypages";
 
     public static final String KEY_JSON_CATEGORY_SIZE = "size";
+
+    public static final String KEY_JSON_TOUCHED = "touched";
+
+    public static final String KEY_JSON_LENGTH = "length";
 
     public static final String KEY_JSON_CODE = "code";
 

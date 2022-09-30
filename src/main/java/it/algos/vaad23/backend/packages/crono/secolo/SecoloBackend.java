@@ -86,6 +86,17 @@ public class SecoloBackend extends CrudBackend {
 
     /**
      * Seleziona un secolo dall'anno indicato <br>
+     *
+     * @param nome descrittivo
+     *
+     * @return secolo selezionato
+     */
+    public Secolo findByNome(final String nome) {
+        return repository.findFirstByNome(nome);
+    }
+
+    /**
+     * Seleziona un secolo dall'anno indicato <br>
      * SOLO per secoli AC <br>
      *
      * @param anno indicato per la selezione del secolo

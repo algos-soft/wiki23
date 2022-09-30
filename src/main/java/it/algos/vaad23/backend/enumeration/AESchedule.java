@@ -47,13 +47,13 @@ public enum AESchedule {
     minuto("* * * * *", "ogni minuto."),
 
     /**
-     * Pattern: 5 0 * * mon
+     * Pattern: 0 0 * * mon
      * Descrizione: ogni settimana ai cinque dopo mezzanotte tra domenica e lunedì
      */
     zeroCinqueLunedi("5 0 * * mon", "ogni settimana ai cinque dopo mezzanotte tra domenica e lunedì."),
 
     /**
-     * Pattern: 5 0 * * sun,tue,wed,thu,fri,sat
+     * Pattern: 0 0 * * sun,tue,wed,thu,fri,sat
      * Descrizione: ai cinque dopo mezzanotte di ogni giorno della settimana esclusa la notte tra domenica e lunedì
      */
     zeroCinqueNoLunedi("5 0 * * sun,tue,wed,thu,fri,sat", "ai cinque dopo mezzanotte di ogni giorno della settimana esclusa la notte tra domenica e lunedì."),

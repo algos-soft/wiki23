@@ -27,16 +27,12 @@ import org.springframework.data.domain.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("production")
 @Tag("backend")
 @DisplayName("Nazionalita Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class NazionalitaBackendTest extends WikiTest {
 
-    /**
-     * The Service.
-     */
-    @InjectMocks
-    public NazionalitaBackend backend;
 
     @Autowired
     private NazionalitaRepository repository;

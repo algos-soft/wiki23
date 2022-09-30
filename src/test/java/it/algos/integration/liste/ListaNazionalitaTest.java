@@ -35,6 +35,7 @@ import java.util.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Tag("integration")
 @Tag("production")
 @Tag("liste")
 @DisplayName("Nazionalità lista")

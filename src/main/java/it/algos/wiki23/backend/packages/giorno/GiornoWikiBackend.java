@@ -127,6 +127,19 @@ public class GiornoWikiBackend extends WikiBackend {
         return !isEsiste(nome);
     }
 
+
+    public List<String> findAllPagine() {
+        List<String> listaNomi = new ArrayList<>();
+        List<Giorno> listaGiorni = giornoBackend.findAll();
+
+        for (Giorno giorno : listaGiorni) {
+            listaNomi.add(wikiUtility.wikiTitleNatiGiorno(giorno.nome));
+            listaNomi.add(wikiUtility.wikiTitleMortiGiorno(giorno.nome));
+        }
+
+        return listaNomi;
+    }
+
     /**
      * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>
@@ -173,5 +186,6 @@ public class GiornoWikiBackend extends WikiBackend {
 
         super.fixElaboraMinuti(inizio, "giorni");
     }
+
 
 }// end of crud backend class

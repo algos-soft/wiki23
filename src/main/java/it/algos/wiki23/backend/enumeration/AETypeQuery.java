@@ -6,6 +6,8 @@ package it.algos.wiki23.backend.enumeration;
  * User: gac
  * Date: mar, 27-lug-2021
  * Time: 09:25
+ * GET più semplice
+ * POST più elaborata
  */
 public enum AETypeQuery {
     getSenzaLoginSenzaCookies("GET senza login e senza cookies"),

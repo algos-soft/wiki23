@@ -32,8 +32,9 @@ import java.util.stream.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("liste")
+@Tag("integration")
 @Tag("production")
+@Tag("liste")
 @DisplayName("Giorni lista")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ListaGiorniTest extends WikiTest {

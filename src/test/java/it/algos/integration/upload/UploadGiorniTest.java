@@ -31,6 +31,7 @@ import org.springframework.test.context.junit.jupiter.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("production")
 @Tag("upload")
 @DisplayName("Giorni upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -88,7 +89,7 @@ public class UploadGiorniTest extends WikiTest {
         appContext.getBean(UploadGiorni.class).conParagrafi().morte().test().upload(sorgente);
     }
 
-    @Test
+//    @Test
     @Order(3)
     @DisplayName("3 - Upload con e senza usaSottoGiorniAnni")
     void usaSottoGiorniAnni() {

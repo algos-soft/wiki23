@@ -31,6 +31,7 @@ import com.vaadin.flow.component.textfield.TextField;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("production")
 @Tag("backend")
 @DisplayName("Genere Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

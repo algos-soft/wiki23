@@ -82,9 +82,9 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     List<Bio> findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(String annoMorto);
 
 
-    List<Bio> findAllByGiornoNatoOrderByAnnoNatoOrdAscOrdinamentoAsc(String annoNato);
+    List<Bio> findAllByGiornoNatoOrderByAnnoNatoOrdAscOrdinamentoAsc(String giornoNato);
 
-    List<Bio> findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(String annoNato);
+    List<Bio> findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(String giornoMorto);
 
     List<Bio> findAllByErrato(boolean errato);
 

@@ -278,12 +278,12 @@ public class UploadAnniTest extends WikiTest {
         WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
     }
 
-    @Test
+//    @Test
     @Order(16)
     @DisplayName("16 - Upload test di un anno anno morto con <noinclude>")
     void uploadTestMorto7() {
         System.out.println("16 - Upload test di un anno anno morto con <noinclude>");
-        sorgente = "1348";
+        sorgente = "1982";
         ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
         printRisultato(ottenutoRisultato);
     }

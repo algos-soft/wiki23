@@ -30,6 +30,7 @@ import org.springframework.test.context.junit.jupiter.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
+@Tag("production")
 @Tag("upload")
 @DisplayName("Attività upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -125,7 +126,7 @@ public class UploadAttivitaTest extends WikiTest {
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
-        @Test
+//        @Test
     @Order(7)
     @DisplayName("7 - Upload di una attività plurale")
     void upload7() {
