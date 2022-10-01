@@ -192,7 +192,7 @@ public class BioService extends WAbstractService {
                 logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
             }
             else {
-                logger.info(new WrapLog().exception(new AlgosException(message)).usaDb());
+                logger.info(new WrapLog().exception(new AlgosException(message)));
             }
         }
 

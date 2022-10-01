@@ -36,10 +36,13 @@ public class TaskNazionalita extends AlgosTask {
         long inizio;
 
         if (WPref.usaTaskNazionalita.is()) {
+
+            //--Statistiche
             inizio = System.currentTimeMillis();
             appContext.getBean(StatisticheNazionalita.class).upload();
             loggerElabora(inizio);
 
+            //--Upload
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadNazionalita.class).uploadAll();
             loggerUpload(inizio);
@@ -51,7 +54,7 @@ public class TaskNazionalita extends AlgosTask {
      * Descrizione: ogni settimana la mattina di giovedì
      * * 0 10 * * Thu
      */
-    private static final String PATTERN = "0 10 * * Thu";
+    private static final String PATTERN = AESchedule.dieciGiovedi.getPattern();
 
 
     @Override

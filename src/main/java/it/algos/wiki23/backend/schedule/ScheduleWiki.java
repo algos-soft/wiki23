@@ -32,6 +32,7 @@ public class ScheduleWiki extends Scheduler {
      */
     @Autowired
     public ApplicationContext appContext;
+
     /**
      * Istanza di una interfaccia <br>
      * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
@@ -45,13 +46,13 @@ public class ScheduleWiki extends Scheduler {
     public void startBio() throws IllegalStateException {
         if (!isStarted()) {
             super.start();
-//            schedule(appContext.getBean(TaskBioReset.class));
-            schedule(appContext.getBean(TaskBio.class));
-            schedule(appContext.getBean(TaskGiorni.class));
-            schedule(appContext.getBean(TaskAnni.class));
-            schedule(appContext.getBean(TaskAttivita.class));
-            schedule(appContext.getBean(TaskNazionalita.class));
-            schedule(appContext.getBean(TaskElaborazione.class));
+            //            schedule(appContext.getBean(TaskBioReset.class));
+            schedule(appContext.getBean(TaskBio.class));            // AESchedule.zeroCinqueNoLunedi
+            schedule(appContext.getBean(TaskGiorni.class));         // AESchedule.dueNoLunedi
+            schedule(appContext.getBean(TaskAnni.class));           // AESchedule.quattroNoLunedi
+            schedule(appContext.getBean(TaskAttivita.class));       // AESchedule.dieciMartedi
+            schedule(appContext.getBean(TaskNazionalita.class));    // AESchedule.dieciGiovedi
+            schedule(appContext.getBean(TaskElaborazione.class));   // AESchedule.dieciSabato
         }
     }
 

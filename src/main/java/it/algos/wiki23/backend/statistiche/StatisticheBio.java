@@ -182,7 +182,7 @@ public class StatisticheBio extends Statistiche {
         buffer.append(pipe);
         buffer.append(tagSin);
         buffer.append("'''[[:Categoria:BioBot|Template bio]]''' ");
-        message = String.format("Una differenza di alcune decine di pagine tra la categoria e le voci gestite dal bot è '''fisiologica''' e dovuta a categorizzazioni diverse tra il software mediawiki ed il [[template:bio|template bio]]");
+        message = String.format("Una differenza di alcune pagine tra la categoria e le voci gestite dal bot è '''fisiologica''' e dovuta a categorizzazioni diverse tra il software mediawiki ed il [[template:bio|template bio]]");
         buffer.append(textService.setRef(message));
 
         buffer.append(doppioTag);
@@ -327,7 +327,7 @@ public class StatisticheBio extends Statistiche {
         buffer.append(CAPO);
         buffer.append(pipe);
         buffer.append(tagSin);
-        buffer.append("'''[[:Categoria:BioBot|Template bio]]''' ");
+        buffer.append("'''Giorni di attesa''' ");
         message = String.format("Giorni di attesa '''indicativi''' prima che ogni singola voce venga ricontrollata per registrare eventuali modifiche intervenute nei parametri significativi");
         buffer.append(textService.setRef(message));
 

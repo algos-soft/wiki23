@@ -38,10 +38,13 @@ public class TaskAttivita extends AlgosTask {
         long inizio;
 
         if (WPref.usaTaskAttivita.is()) {
+
+            //--Statistiche
             inizio = System.currentTimeMillis();
             appContext.getBean(StatisticheAttivita.class).upload();
             loggerElabora(inizio);
 
+            //--Upload
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadAttivita.class).uploadAll();
             loggerUpload(inizio);
@@ -53,7 +56,7 @@ public class TaskAttivita extends AlgosTask {
      * Descrizione: ogni settimana la mattina di martedì
      * 0 10 * * Tue
      */
-    private static final String PATTERN = "0 10 * * tue";
+    private static final String PATTERN = AESchedule.dieciMartedi.getPattern();
 
 
     @Override

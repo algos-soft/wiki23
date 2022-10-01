@@ -70,6 +70,37 @@ public enum AESchedule {
      */
     quattroNoLunedi("0 4 * * sun,tue,wed,thu,fri,sat", "alle quattro di ogni mattina della settimana escluso il lunedì."),
 
+    /**
+     * Pattern: 0 10 * * tue
+     * Descrizione: alle dieci di ogni martedì
+     */
+    dieciMartedi("0 10 * * tue", "alle dieci di ogni martedì."),
+
+    /**
+     * Pattern: 0 10 * * wed
+     * Descrizione: alle dieci di ogni mercoledì
+     */
+    dieciMercoledi("0 10 * * wed", "alle dieci di ogni mercoledì."),
+
+    /**
+     * Pattern: 0 10 * * thu
+     * Descrizione: alle dieci di ogni giovedì
+     */
+    dieciGiovedi("0 10 * * thu", "alle dieci di ogni giovedì."),
+
+    /**
+     * Pattern: 0 10 * * fri
+     * Descrizione: alle dieci di ogni venerdì
+     */
+    dieciVenerdi("0 10 * * fri", "alle dieci di ogni venerdì."),
+
+    /**
+     * Pattern: 0 10 * * sat
+     * Descrizione: alle dieci di ogni sabato
+     */
+    dieciSabato("0 10 * * sat", "alle dieci di ogni sabato."),
+
+
     ;
 
     /**

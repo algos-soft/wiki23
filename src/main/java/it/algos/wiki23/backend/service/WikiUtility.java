@@ -312,7 +312,7 @@ public class WikiUtility extends WAbstractService {
     private String natiMortiAnno(String tag, String textMatcher) {
         String tagBase = tag + SPAZIO + "nel" + SPAZIO;
         String tagSpecifico = tag + SPAZIO + "nell'";
-        String textPattern = "^1$|^11$|^1 *a\\.C\\.|^8.*";
+        String textPattern = "^1$|^11$|^1 *a\\.C\\.|^11 *a\\.C\\.|^8.*";
 
         if (textService.isEmpty(textMatcher)) {
             return VUOTA;

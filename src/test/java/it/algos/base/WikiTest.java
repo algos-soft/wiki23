@@ -378,6 +378,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("1", AETypeLista.annoMorte, "Morti nell'1"),
                 Arguments.of("11", AETypeLista.annoNascita, "Nati nell'11"),
                 Arguments.of("11", AETypeLista.annoMorte, "Morti nell'11"),
+                Arguments.of("11 a.C.", AETypeLista.annoNascita, "Nati nell'11 a.C."),
+                Arguments.of("11 a.C.", AETypeLista.annoMorte, "Morti nell'11 a.C."),
                 Arguments.of("24 a.C.", AETypeLista.annoNascita, "Nati nel 24 a.C."),
                 Arguments.of("24 a.C.", AETypeLista.annoMorte, "Morti nel 24 a.C."),
                 Arguments.of("865 a.C.", AETypeLista.annoNascita, "Nati nell'865 a.C."),

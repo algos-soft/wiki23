@@ -542,7 +542,7 @@ public class DownloadService extends WAbstractService {
                 }
                 else {
                     message = String.format("La pagina %s non è una biografia", wrap.getTitle());
-                    logger.info(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
+                    logger.warn(new WrapLog().message(message).usaDb().type(AETypeLog.bio));
                 }
             }
         }

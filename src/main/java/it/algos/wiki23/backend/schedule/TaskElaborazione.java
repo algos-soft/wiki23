@@ -46,9 +46,10 @@ public class TaskElaborazione extends AlgosTask {
     }
 
     /**
-     * Descrizione: ogni settimana, nella notte di lunedi
+     * Descrizione: ogni settimana la mattina di sabato
+     * 0 10 * * sat
      */
-    private static final String PATTERN = AESchedule.zeroCinqueLunedi.getPattern();
+    private static final String PATTERN = AESchedule.dieciSabato.getPattern();
 
 
     @Override

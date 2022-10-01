@@ -118,11 +118,11 @@ public class PaginaBackend extends WikiBackend {
         long inizio = System.currentTimeMillis();
         mongoService.deleteAll(Pagina.class);
 
-        elaboraGiorni();
-        elaboraAnni();
+//        elaboraGiorni();
+//        elaboraAnni();
         elaboraAttivita();
-        elaboraNazionalita();
-        elaboraUtenteBot();
+//        elaboraNazionalita();
+//        elaboraUtenteBot();
 
         super.fixElaboraMinuti(inizio, "cancellazioni");
     }
@@ -140,7 +140,7 @@ public class PaginaBackend extends WikiBackend {
         pagineAll.addAll(queryService.getList(tagMortiB));
         List<String> valideBase = giornoWikiBackend.findAllPagine();
 
-        elaboraGiornoPagine(valideBase, pagineAll);
+        elaboraGiornoPagine(valideBase, getLivello(pagineAll, 0));
         elaboraGiornoSottoPagine(valideBase, getLivello(pagineAll, 1));
     }
 
@@ -172,12 +172,13 @@ public class PaginaBackend extends WikiBackend {
             }
 
             voci = getVociGiorno(wikiTitle);
-            if (voci == 0) {
-                int a = 87;
-                voci = getVociGiorno(wikiTitle);
+            if (voci > 0) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoBase, voci, false);
+            }
+            else {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoBase, voci, true);
             }
 
-            creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoBase, voci, false);
         }
     }
 
@@ -235,7 +236,7 @@ public class PaginaBackend extends WikiBackend {
         pagineAll.addAll(queryService.getList(tagMorti));
         List<String> valideBase = annoWikiBackend.findAllPagine();
 
-        elaboraAnnoPagine(valideBase, pagineAll);
+        elaboraAnnoPagine(valideBase, getLivello(pagineAll, 0));
         elaboraAnnoSottoPagine(valideBase, getLivello(pagineAll, 1));
     }
 
@@ -268,7 +269,12 @@ public class PaginaBackend extends WikiBackend {
             }
 
             voci = getVociAnno(wikiTitle);
-            creaIfNotExist(wikiTitle, AETypePaginaCancellare.annoBase, voci, false);
+            if (voci > 0) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.annoBase, voci, false);
+            }
+            else {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.annoBase, voci, true);
+            }
         }
     }
 
@@ -325,8 +331,8 @@ public class PaginaBackend extends WikiBackend {
         List<String> pagineAll = queryService.getList(tag, nameSpace);
         List<String> valideBase = attivitaBackend.findAllPlurali();
 
-        elaboraAttivitaPagine(valideBase, getPagine(pagineAll));
-        elaboraAttivitaSottoPagine(valideBase, getSottoPagine(pagineAll));
+//        elaboraAttivitaPagine(valideBase, getPagine(pagineAll));
+//        elaboraAttivitaSottoPagine(valideBase, getSottoPagine(pagineAll));
         elaboraAttivitaSottoSottoPagine(valideBase, getSottoSottoPagine(pagineAll));
     }
 
@@ -476,25 +482,40 @@ public class PaginaBackend extends WikiBackend {
             attivita = textService.levaTesta(paginaParentePrimoLivello, tagBase);
             attivita = textService.primaMinuscola(attivita);
             pagina = findByPagina(paginaParenteSecondoLivello);
-            if (pagina == null) {
-                creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
+
+
+
+            nazionalita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
+            nazionalita = textService.primaMinuscola(nazionalita);
+            voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita, letteraIniziale);
+            if (voci > 50) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, false);
             }
             else {
-                if (pagina.cancella) {
-                    creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
-                }
-                else {
-                    nazionalita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
-                    nazionalita = textService.primaMinuscola(nazionalita);
-                    voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita, letteraIniziale);
-                    if (voci > 50) {
-                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, false);
-                    }
-                    else {
-                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
-                    }
-                }
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
             }
+
+
+
+//            if (pagina == null) {
+//                creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
+//            }
+//            else {
+//                if (pagina.cancella) {
+//                    creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
+//                }
+//                else {
+//                    nazionalita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
+//                    nazionalita = textService.primaMinuscola(nazionalita);
+//                    voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita, letteraIniziale);
+//                    if (voci > 50) {
+//                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, false);
+//                    }
+//                    else {
+//                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
+//                    }
+//                }
+//            }
         }
     }
 
@@ -507,8 +528,8 @@ public class PaginaBackend extends WikiBackend {
         List<String> pagineAll = queryService.getList(tag, nameSpace);
         List<String> valideBase = nazionalitaBackend.findAllPlurali();
 
-        elaboraNazionalitaPagine(valideBase, getPagine(pagineAll));
-        elaboraNazionalitaSottoPagine(valideBase, getSottoPagine(pagineAll));
+//        elaboraNazionalitaPagine(valideBase, getPagine(pagineAll));
+//        elaboraNazionalitaSottoPagine(valideBase, getSottoPagine(pagineAll));
         elaboraNazionalitaSottoSottoPagine(valideBase, getSottoSottoPagine(pagineAll));
     }
 
@@ -767,7 +788,7 @@ public class PaginaBackend extends WikiBackend {
         String nomeAnno;
 
         if (wikiTitle.contains(APICE)) {
-            nomeAnno = wikiTitle.substring(wikiTitle.indexOf(APICE)).trim();
+            nomeAnno = wikiTitle.substring(wikiTitle.indexOf(APICE) + 1).trim();
         }
         else {
             nomeAnno = wikiTitle.substring(wikiTitle.indexOf(SPAZIO)).trim();
