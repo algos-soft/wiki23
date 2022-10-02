@@ -118,11 +118,11 @@ public class PaginaBackend extends WikiBackend {
         long inizio = System.currentTimeMillis();
         mongoService.deleteAll(Pagina.class);
 
-//        elaboraGiorni();
-//        elaboraAnni();
+        elaboraGiorni();
+        elaboraAnni();
         elaboraAttivita();
-//        elaboraNazionalita();
-//        elaboraUtenteBot();
+        elaboraNazionalita();
+        elaboraUtenteBot();
 
         super.fixElaboraMinuti(inizio, "cancellazioni");
     }
