@@ -60,12 +60,12 @@ public class NazionalitaBackendTest extends WikiTest {
     //--esiste
     protected static Stream<Arguments> NAZIONALITA_PLURALI() {
         return Stream.of(
-                Arguments.of(VUOTA,false),
-                Arguments.of("tedesca",false),
-                Arguments.of("britannici",true),
-                Arguments.of("tedesco",false),
-                Arguments.of("tedeschi",true),
-                Arguments.of("non esiste",false)
+                Arguments.of(VUOTA, false),
+                Arguments.of("tedesca", false),
+                Arguments.of("britannici", true),
+                Arguments.of("tedesco", false),
+                Arguments.of("tedeschi", true),
+                Arguments.of("non esiste", false)
         );
     }
 
@@ -146,12 +146,12 @@ public class NazionalitaBackendTest extends WikiTest {
     }
 
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "SORT")
     @Order(3)
     @DisplayName("3 - findAll sort")
-        //--direzione
-        //--property
+    //--direzione
+    //--property
     void findAllSort(final Sort.Direction direction, final String property) {
         System.out.println("3 - findAll sort");
         int num = 10;
@@ -256,18 +256,7 @@ public class NazionalitaBackendTest extends WikiTest {
         listaStr = backend.findSingolariByPlurale(plurale);
         assertNotNull(listaStr);
         assertEquals(listaStr.size() > 0, esiste);
-        printAllSingolari(plurale,  listaStr,"nazionalità");
-    }
-
-
-    @Test
-    @Order(10)
-    @DisplayName("10 - findMappaSingolariByPlurale")
-    void findMappaByPlurali() {
-        System.out.println("10 - findMappaSingolariByPlurale");
-        mappa = backend.findMappaSingolariByPlurale();
-        assertNotNull(mappa);
-        printMappa(mappa, "di nazionalità plurali con le relative nazionalità singolari");
+        printAllSingolari(plurale, listaStr, "nazionalità");
     }
 
 
@@ -279,6 +268,172 @@ public class NazionalitaBackendTest extends WikiTest {
         System.out.println("11 - countBySingolare");
         ottenutoIntero = bioBackend.countNazionalita(singolare);
         System.out.println(String.format("La nazionalità '%s' contiene %s voci biografiche", singolare, ottenutoIntero));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "NAZIONALITA_SINGOLARE")
+    @Order(31)
+    @DisplayName("31 - findAllBySingolare e trova tutte le 'nazionalità singolari'")
+        //--nome singolare
+        //--esiste
+    void findAllBySingolare(String singolare, boolean esiste) {
+        System.out.println("31 - findAllBySingolare e trova tutte le 'nazionalità singolari'");
+        entityBean = backend.findFirstBySingolare(singolare);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("La nazionalità singolare '%s' esiste", singolare));
+            listaBeans = backend.findAllBySingolare(singolare);
+            assertNotNull(listaBeans);
+            assertEquals(listaBeans.size() > 0, esiste);
+            printBeans(listaBeans);
+        }
+        else {
+            System.out.println(String.format("La nazionalità singolare '%s' non esiste", singolare));
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "NAZIONALITA_PLURALI")
+    @Order(32)
+    @DisplayName("32 - findAllByPlurale e trova tutte le 'nazionalità singolari'")
+        //--nome plurale
+        //--esiste
+    void findAllByPlurale(String plurale, boolean esiste) {
+        System.out.println("32 - findAllByPlurale e trova tutte le 'nazionalità singolari'");
+        entityBean = backend.findFirstByPluraleLista(plurale);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("La nazionalità plurale '%s' esiste", plurale));
+            listaBeans = backend.findAllByPlurale(plurale);
+            assertNotNull(listaBeans);
+            assertEquals(listaBeans.size() > 0, esiste);
+            printBeans(listaBeans);
+        }
+        else {
+            System.out.println(String.format("La nazionalità plurale '%s' non esiste", plurale));
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "NAZIONALITA_TRUE")
+    @Order(33)
+    @DisplayName("33 - findAllBySingolarePlurale e trova tutte le 'nazionalità singolari'")
+        //--nome singolarePlurale
+        //--esiste
+    void findAllBySingolarePlurale(String singolarePlurale, boolean esiste) {
+        System.out.println("33 - findAllBySingolarePlurale e trova tutte le 'nazionalità singolari'");
+        entityBean = backend.findFirst(singolarePlurale);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("La nazionalità singolarePlurale '%s' esiste", singolarePlurale));
+            listaBeans = backend.findAllBySingolarePlurale(singolarePlurale);
+            assertNotNull(listaBeans);
+            assertEquals(listaBeans.size() > 0, esiste);
+            printBeans(listaBeans);
+        }
+        else {
+            System.out.println(String.format("La nazionalità singolarePlurale '%s' non esiste", singolarePlurale));
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "NAZIONALITA_SINGOLARE")
+    @Order(34)
+    @DisplayName("34 - findAllSingolariBySingolare e trova tutti i 'nomi singolari'")
+        //--nome singolare
+        //--esiste
+    void findAllSingolariBySingolare(String singolare, boolean esiste) {
+        System.out.println("34 - findAllSingolariBySingolare e trova tutti i 'nomi singolari'");
+        entityBean = backend.findFirstBySingolare(singolare);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("La nazionalità singolare '%s' esiste", singolare));
+            listaStr = backend.findAllSingolariBySingolare(singolare);
+            assertNotNull(listaStr);
+            assertEquals(listaStr.size() > 0, esiste);
+            System.out.println(String.format("Ci sono %d nazionalità singolari collegate a %s", listaStr.size(), singolare));
+            System.out.println(VUOTA);
+            for (String nome : listaStr) {
+                System.out.println(nome);
+            }
+        }
+        else {
+            System.out.println(String.format("La nazionalità singolare '%s' non esiste", singolare));
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "NAZIONALITA_PLURALI")
+    @Order(35)
+    @DisplayName("35 - findAllSingolariByPlurale e trova tutti i 'nomi singolari'")
+        //--nome plurale
+        //--esiste
+    void findAllSingolariByPlurale(String plurale, boolean esiste) {
+        System.out.println("35 - findAllSingolariByPlurale e trova tutti i 'nomi singolari'");
+        entityBean = backend.findFirstByPluraleLista(plurale);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("La nazionalità plurale '%s' esiste", plurale));
+            listaStr = backend.findAllSingolariByPlurale(plurale);
+            assertNotNull(listaStr);
+            assertEquals(listaStr.size() > 0, esiste);
+            System.out.println(String.format("Ci sono %d nazionalità singolari collegate a %s", listaStr.size(), plurale));
+            System.out.println(VUOTA);
+            for (String nome : listaStr) {
+                System.out.println(nome);
+            }
+        }
+        else {
+            System.out.println(String.format("La nazionalità plurale '%s' non esiste", plurale));
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "NAZIONALITA_TRUE")
+    @Order(36)
+    @DisplayName("36 - findAllSingolari e trova tutti i 'nomi singolari'")
+        //--nome singolarePlurale
+        //--esiste
+    void findAllSingolari(String singolarePlurale, boolean esiste) {
+        System.out.println("36 - findAllSingolari e trova tutti i 'nomi singolari'");
+        entityBean = backend.findFirst(singolarePlurale);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("La nazionalità singolarePlurale '%s' esiste", singolarePlurale));
+            listaStr = backend.findAllSingolari(singolarePlurale);
+            assertNotNull(listaStr);
+            assertEquals(listaStr.size() > 0, esiste);
+            System.out.println(String.format("Ci sono %d nazionalità singolarePlurale collegate a %s", listaStr.size(), singolarePlurale));
+            System.out.println(VUOTA);
+            for (String nome : listaStr) {
+                System.out.println(nome);
+            }
+        }
+        else {
+            System.out.println(String.format("La nazionalità singolarePlurale '%s' non esiste", singolarePlurale));
+        }
+    }
+
+
+    @Test
+    @Order(61)
+    @DisplayName("61 - findMappaSingolariByPlurale")
+    void findMappaByPlurali() {
+        System.out.println("61 - findMappaSingolariByPlurale");
+        mappa = backend.findMappaSingolariByPlurale();
+        assertNotNull(mappa);
+        printMappa(mappa, "di nazionalità plurali con le relative nazionalità singolari");
     }
 
     /**
@@ -295,6 +450,7 @@ public class NazionalitaBackendTest extends WikiTest {
     @AfterAll
     void tearDownAll() {
     }
+
     void printPlurali(List<Nazionalita> listaNazionalita) {
         System.out.println(String.format("Ci sono %d nazionalità plurali distinte", listaNazionalita.size()));
         System.out.println(VUOTA);
@@ -319,6 +475,7 @@ public class NazionalitaBackendTest extends WikiTest {
             System.out.println(bean);
         }
     }
+
     void printSingolariNazionalita(String plurale, List<Nazionalita> listaNazionalita) {
         System.out.println(String.format("Ci sono %d nazionalita singolari per %s", listaNazionalita.size(), plurale));
         System.out.println(VUOTA);

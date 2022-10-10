@@ -440,7 +440,7 @@ public abstract class AlgosTest {
     protected void print(List<String> lista, String message) {
         int k = 0;
         if (lista != null && lista.size() > 0) {
-            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size() - 1, message));
+            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size() , message));
         }
         else {
             System.out.println("La lista è vuota");
@@ -455,15 +455,25 @@ public abstract class AlgosTest {
             }
         }
     }
+    protected void print(List<String> lista) {
+        int k = 1;
+        if (arrayService.isAllValid(lista)) {
+            for (String stringa : lista) {
+                System.out.print(k++);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+                System.out.println(stringa);
+            }
+        }
+    }
 
 
     protected void printMappa(Map<String, List<String>> mappa, String titoloMappa) {
         List<String> lista;
         String riga;
-        String message = "esclusi i titoli";
         if (arrayService.isAllValid(mappa)) {
             System.out.println(VUOTA);
-            System.out.println(String.format("Ci sono %d elementi nella mappa %s %s", mappa.size(), titoloMappa, message));
+            System.out.println(String.format("Ci sono %d elementi nella mappa %s", mappa.size(), titoloMappa));
             System.out.println(VUOTA);
             for (String key : mappa.keySet()) {
                 lista = mappa.get(key);

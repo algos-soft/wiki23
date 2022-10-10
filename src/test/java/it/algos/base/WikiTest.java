@@ -172,7 +172,7 @@ public abstract class WikiTest extends AlgosTest {
 
     public static final String SINGOLARE = "singolare";
 
-    public static final String PLURALE = "plurale";
+    public static final String PLURALE = "pluraleLista";
 
     protected LinkedHashMap<String, List<WrapLista>> mappaWrap;
 
@@ -472,6 +472,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Filippo Tornielli", 12),
                 Arguments.of("Mario Tosi (fotografo)", 13),
                 Arguments.of("Giuseppe Trombone de Mier", 12),
+                Arguments.of("Herlindis di Maaseik", 17),
                 Arguments.of("Rinaldo II di Bar", 14)
         );
     }
@@ -511,6 +512,7 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
+
     //--nome attività
     //--typeLista
     protected static Stream<Arguments> ATTIVITA() {
@@ -524,7 +526,74 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("soprano", AETypeLista.attivitaSingolare),
                 Arguments.of("romanziere", AETypeLista.attivitaSingolare),
                 Arguments.of("accademici", AETypeLista.attivitaPlurale)
+        );
+    }
 
+    //--nome singolarePlurale
+    //--esiste
+    protected static Stream<Arguments> ATTIVITA_TRUE() {
+        return Stream.of(
+                Arguments.of(VUOTA, false),
+                Arguments.of("politico", true),
+                Arguments.of("politici", true),
+                Arguments.of("errata", false),
+                Arguments.of("fantasmi", false),
+                Arguments.of("attrice", true),
+                Arguments.of("attore", true),
+                Arguments.of("attori", true),
+                Arguments.of("nessuna", false),
+                Arguments.of("direttore di scena", false),
+                Arguments.of("accademici", true),
+                Arguments.of("vescovo ariano", true)
+        );
+    }
+
+    //--nome singolarePlurale
+    //--esiste
+    protected static Stream<Arguments> NAZIONALITA_TRUE() {
+        return Stream.of(
+                Arguments.of(VUOTA, false),
+                Arguments.of("turco", true),
+                Arguments.of("errata", false),
+                Arguments.of("tedesca", true),
+                Arguments.of("direttore di scena", false),
+                Arguments.of("brasiliano", true),
+                Arguments.of("vescovo ariano", false),
+                Arguments.of("errata", false),
+                Arguments.of("britannici", true),
+                Arguments.of("tedesco", true),
+                Arguments.of("tedeschi", true)
+                );
+    }
+
+    //--nome singolare
+    //--esiste
+    protected static Stream<Arguments> ATTIVITA_SINGOLARE() {
+        return Stream.of(
+                Arguments.of(VUOTA, false),
+                Arguments.of("politico", true),
+                Arguments.of("politici", false),
+                Arguments.of("errata", false),
+                Arguments.of("attrice", true),
+                Arguments.of("attrici", false),
+                Arguments.of("direttore di scena", false),
+                Arguments.of("vescovo ariano", true)
+
+        );
+    }
+
+    //--nome plurale
+    //--esiste
+    protected static Stream<Arguments> ATTIVITA_PLURALI() {
+        return Stream.of(
+                Arguments.of(VUOTA, false),
+                Arguments.of("politici", true),
+                Arguments.of("politico", false),
+                Arguments.of("fantasmi", false),
+                Arguments.of("attori", true),
+                Arguments.of("attrice", false),
+                Arguments.of("nessuna", false),
+                Arguments.of("accademici", true)
         );
     }
 
@@ -546,16 +615,16 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
-    //--direzione
-    //--property
-    protected static Stream<Arguments> SORT() {
-        return Stream.of(
-                Arguments.of(Sort.Direction.ASC, SINGOLARE),
-                Arguments.of(Sort.Direction.DESC, SINGOLARE),
-                Arguments.of(Sort.Direction.ASC, PLURALE),
-                Arguments.of(Sort.Direction.DESC, PLURALE)
-        );
-    }
+    //    //--direzione
+    //    //--property
+    //    protected static Stream<Arguments> SORT() {
+    //        return Stream.of(
+    //                Arguments.of(Sort.Direction.ASC, SINGOLARE),
+    //                Arguments.of(Sort.Direction.DESC, SINGOLARE),
+    //                Arguments.of(Sort.Direction.ASC, PLURALE),
+    //                Arguments.of(Sort.Direction.DESC, PLURALE)
+    //        );
+    //    }
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -999,6 +1068,10 @@ public abstract class WikiTest extends AlgosTest {
             System.out.print(SEP);
             if (textService.isValid(wrap.titoloParagrafoLink)) {
                 System.out.print(wrap.titoloParagrafoLink);
+                System.out.print(SEP);
+            }
+            if (textService.isValid(wrap.ordinamento)) {
+                System.out.print(wrap.ordinamento);
                 System.out.print(SEP);
             }
             if (textService.isValid(wrap.titoloSottoParagrafo)) {

@@ -53,32 +53,8 @@ public class AttivitaBackendTest extends WikiTest {
 
     private Attivita entityBean;
 
-    //--nome singolare
-    //--esiste
-    protected static Stream<Arguments> ATTIVITA_SINGOLARE() {
-        return Stream.of(
-                Arguments.of(VUOTA, false),
-                Arguments.of("politico", true),
-                Arguments.of("errata", false),
-                Arguments.of("attrice", true),
-                Arguments.of("direttore di scena", false),
-                Arguments.of("vescovo ariano", true)
 
-        );
-    }
 
-    //--nome plurale
-    //--esiste
-    protected static Stream<Arguments> ATTIVITA_PLURALI() {
-        return Stream.of(
-                Arguments.of(VUOTA, false),
-                Arguments.of("politici", true),
-                Arguments.of("fantasmi", false),
-                Arguments.of("attori", true),
-                Arguments.of("nessuna", false),
-                Arguments.of("accademici", true)
-        );
-    }
 
 
     /**
@@ -133,152 +109,377 @@ public class AttivitaBackendTest extends WikiTest {
     void findAll() {
         System.out.println("2 - findAll");
         String message;
+        int num = 10;
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
         message = String.format("Ci sono in totale %s attività", textService.format(listaBeans.size()));
         System.out.println(message);
-        printSingolari(listaBeans);
+        System.out.println(VUOTA);
+        message = String.format("Le prime %s attività", num);
+        System.out.println(message);
+        printSingolari(listaBeans.subList(0, num));
     }
 
-    //    @ParameterizedTest
-    @MethodSource(value = "SORT")
+    @Test
     @Order(3)
-    @DisplayName("3 - findAll sort")
-    //--direzione
-    //--property
-    void findAllSort(final Sort.Direction direction, final String property) {
-        System.out.println("3 - findAll sort");
+    @DisplayName("3 - findAll sort singolari")
+    void findAllSortSingolari() {
+        System.out.println("3 - findAll sort singolari");
         int num = 10;
-        Sort sort = Sort.by(direction, property);
+        Sort sort;
 
+        sort = Sort.by(Sort.Direction.ASC, SINGOLARE);
         listaBeans = backend.findAll(sort);
         assertNotNull(listaBeans);
-        System.out.println(String.format("Le prime %s attività ordinate per '%s' %s", num, property, direction));
+        message = String.format("Ci sono in totale %s attività", textService.format(listaBeans.size()));
+        System.out.println(message);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Le prime %s attività ordinate per '%s' %s", num, Sort.Direction.ASC, SINGOLARE));
         printSingolari(listaBeans.subList(0, num));
+
         System.out.println(VUOTA);
-        System.out.println(VUOTA);
+        sort = Sort.by(Sort.Direction.DESC, SINGOLARE);
+        listaBeans = backend.findAll(sort);
+        assertNotNull(listaBeans);
+        System.out.println(String.format("Le prime %s attività ordinate per '%s' %s", num, Sort.Direction.DESC, SINGOLARE));
+        printSingolari(listaBeans.subList(0, num));
     }
 
 
     @Test
     @Order(4)
-    @DisplayName("4 - findAllPlurali")
-    void allPlurali() {
-        System.out.println("4 - findAllPlurali (String plurale)");
-        listaStr = backend.findAllPlurali();
-        assertNotNull(listaStr);
-        print(listaStr, "di tutti i plurali distinti");
+    @DisplayName("4 - findAll (attività) plurali")
+    void findAttivitaDistinctByPluraliSortPlurali() {
+        System.out.println("4 - findAll (attività) plurali");
+        int num = 10;
+
+        listaBeans = backend.findAttivitaDistinctByPluraliSortPlurali();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s attività distinte", textService.format(listaBeans.size()));
+        System.out.println(message);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Le prime %s attività distinte ordinate per '%s' %s", num, Sort.Direction.ASC, PLURALE));
+        printPlurali(listaBeans.subList(0, num));
     }
+
 
     @Test
     @Order(5)
-    @DisplayName("5 - findAttivitaDistinctByPlurali (Attivita attività)")
-    void allDistinct() {
-        System.out.println("5 - findAttivitaDistinctByPlurali (Attivita attività)");
-        listaBeans = backend.findAttivitaDistinctByPluraliOld();
-        assertNotNull(listaBeans);
-        printPlurali(listaBeans);
+    @DisplayName("5 - findAll (stringa) plurali")
+    void allPlurali() {
+        System.out.println("5 - findAll (stringa) plurali");
+        int num = 10;
+
+        listaStr = backend.findAllPlurali();
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        System.out.println(String.format("I primi %s '%s'' distinti ordinati per '%s' %s", num, PLURALE, Sort.Direction.ASC, PLURALE));
+        print(listaStr.subList(0, num));
     }
 
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA_SINGOLARE")
     @Order(6)
-    @DisplayName("6 - isExist")
+    @DisplayName("6 - isExistSingolare")
         //--nome singolare
         //--esiste
-    void isExist(final String singolare, final boolean esiste) {
+    void isExistSingolare(final String singolare, final boolean esiste) {
         System.out.println("6 - isExist");
-        ottenutoBooleano = backend.isExist(singolare);
+        ottenutoBooleano = backend.isExistSingolare(singolare);
         assertEquals(esiste, ottenutoBooleano);
         if (ottenutoBooleano) {
-            System.out.println(String.format("L'attività '%s' esiste", singolare));
+            System.out.println(String.format("L'attività singolare '%s' esiste", singolare));
         }
         else {
-            System.out.println(String.format("L'attività '%s' non esiste", singolare));
+            System.out.println(String.format("L'attività singolare '%s' non esiste", singolare));
         }
     }
 
     @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_SINGOLARE")
+    @MethodSource(value = "ATTIVITA_PLURALI")
     @Order(7)
-    @DisplayName("7 - findBySingolare")
+    @DisplayName("7 - isExistPlurale")
+        //--nome plurale
+        //--esiste
+    void isExistPlurale(final String plurale, final boolean esiste) {
+        System.out.println("7 - isExistPlurale");
+        ottenutoBooleano = backend.isExistPlurale(plurale);
+        assertEquals(esiste, ottenutoBooleano);
+        if (ottenutoBooleano) {
+            System.out.println(String.format("L'attività plurale '%s' esiste", plurale));
+        }
+        else {
+            System.out.println(String.format("L'attività plurale '%s' non esiste", plurale));
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_TRUE")
+    @Order(8)
+    @DisplayName("8 - isExist")
+        //--nome singolarePlurale
+        //--esiste
+    void isExist(final String singolarePlurale, final boolean esiste) {
+        System.out.println("8 - isExist");
+        ottenutoBooleano = backend.isExist(singolarePlurale);
+        assertEquals(esiste, ottenutoBooleano);
+        if (ottenutoBooleano) {
+            System.out.println(String.format("L'attività singolare/plurale'%s' esiste", singolarePlurale));
+        }
+        else {
+            System.out.println(String.format("L'attività singolare/plurale '%s' non esiste", singolarePlurale));
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_SINGOLARE")
+    @Order(9)
+    @DisplayName("9 - findFirstBySingolare")
         //--nome singolare
         //--esiste
-    void findBySingolare(String singolare, boolean esiste) {
-        System.out.println("7 - findBySingolare");
+    void findFirstBySingolare(String singolare, boolean esiste) {
+        System.out.println("9 - findBySingolare");
         entityBean = backend.findFirstBySingolare(singolare);
         assertEquals(entityBean != null, esiste);
         if (esiste) {
-            System.out.println(String.format("L'attività '%s' esiste", singolare));
+            System.out.println(String.format("L'attività singolare '%s' esiste", singolare));
         }
         else {
-            System.out.println(String.format("L'attività '%s' non esiste", singolare));
+            System.out.println(String.format("L'attività singolare '%s' non esiste", singolare));
         }
     }
 
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA_PLURALI")
-    @Order(8)
-    @DisplayName("8 - findByPlurale e trova 'attività'")
+    @Order(10)
+    @DisplayName("10 - findFirstByPluraleLista")
         //--nome plurale
         //--esiste
-    void findByPlurale(String plurale, boolean esiste) {
-        System.out.println("8 - findByPlurale e trova 'attività'");
+    void findFirstByPluraleLista(String plurale, boolean esiste) {
+        System.out.println("10 - findFirstByPluraleLista");
         entityBean = backend.findFirstByPluraleLista(plurale);
         assertEquals(entityBean != null, esiste);
         if (esiste) {
-            System.out.println(String.format("L'attività '%s' esiste", plurale));
+            System.out.println(String.format("L'attività plurale '%s' esiste", plurale));
         }
         else {
-            System.out.println(String.format("L'attività '%s' non esiste", plurale));
+            System.out.println(String.format("L'attività plurale '%s' non esiste", plurale));
         }
-        listaBeans = backend.findAllByPagina(plurale);
-        assertNotNull(listaBeans);
-        assertEquals(listaBeans.size() > 0, esiste);
-        printSingolariAttivita(plurale, listaBeans);
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_TRUE")
+    @Order(11)
+    @DisplayName("11 - findFirst")
+        //--nome singolarePlurale
+        //--esiste
+    void findFirst(final String singolarePlurale, final boolean esiste) {
+        System.out.println("11 - findFirst");
+        entityBean = backend.findFirst(singolarePlurale);
+        assertEquals(entityBean != null, esiste);
+        if (esiste) {
+            System.out.println(String.format("L'attività singolare/plurale '%s' esiste", singolarePlurale));
+        }
+        else {
+            System.out.println(String.format("L'attività singolare/plurale '%s' non esiste", singolarePlurale));
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_SINGOLARE")
+    @Order(12)
+    @DisplayName("12 - findAllBySingolare e trova tutte le 'attività singolari'")
+        //--nome singolare
+        //--esiste
+    void findAllBySingolare(String singolare, boolean esiste) {
+        System.out.println("12 - findAllBySingolare e trova tutte le 'attività singolari'");
+        entityBean = backend.findFirstBySingolare(singolare);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("L'attività singolare '%s' esiste", singolare));
+            listaBeans = backend.findAllBySingolare(singolare);
+            assertNotNull(listaBeans);
+            assertEquals(listaBeans.size() > 0, esiste);
+            printSingolariAttivita(singolare, listaBeans);
+        }
+        else {
+            System.out.println(String.format("L'attività singolare '%s' non esiste", singolare));
+        }
     }
 
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA_PLURALI")
-    @Order(9)
-    @DisplayName("9 - findSingolariByPlurale e trova 'singolari'")
+    @Order(13)
+    @DisplayName("13 - findAllByPlurale e trova tutte le 'attività singolari'")
         //--nome plurale
         //--esiste
-    void findSingolariByPlurale(String plurale, boolean esiste) {
-        System.out.println("9 - findSingolariByPlurale e trova 'singolari'");
-        listaStr = backend.findSingolariByPlurale(plurale);
-        assertNotNull(listaStr);
-        assertEquals(listaStr.size() > 0, esiste);
-        printAllSingolari(plurale, listaStr, "attività");
+    void findAllByPlurale(String plurale, boolean esiste) {
+        System.out.println("13 - findAllByPlurale e trova tutte le 'attività singolari'");
+        entityBean = backend.findFirstByPluraleLista(plurale);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("L'attività plurale '%s' esiste", plurale));
+            listaBeans = backend.findAllByPlurale(plurale);
+            assertNotNull(listaBeans);
+            assertEquals(listaBeans.size() > 0, esiste);
+            printSingolariAttivita(plurale, listaBeans);
+        }
+        else {
+            System.out.println(String.format("L'attività plurale '%s' non esiste", plurale));
+        }
     }
 
 
-    @Test
-    @Order(10)
-    @DisplayName("10 - findMappaSingolariByPlurale")
-    void findMappaByPlurali() {
-        System.out.println("10 - findMappaSingolariByPlurale");
-        mappa = backend.findMappaSingolariByPlurale();
-        assertNotNull(mappa);
-        printMappa(mappa, "di attività plurali con le relative attività singolari");
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_TRUE")
+    @Order(14)
+    @DisplayName("14 - findAllBySingolarePlurale e trova tutte le 'attività singolari'")
+        //--nome singolarePlurale
+        //--esiste
+    void findAllBySingolarePlurale(String singolarePlurale, boolean esiste) {
+        System.out.println("14 - findAllBySingolarePlurale e trova tutte le 'attività singolari'");
+        entityBean = backend.findFirst(singolarePlurale);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("L'attività singolarePlurale '%s' esiste", singolarePlurale));
+            listaBeans = backend.findAllBySingolarePlurale(singolarePlurale);
+            assertNotNull(listaBeans);
+            assertEquals(listaBeans.size() > 0, esiste);
+            printSingolariAttivita(singolarePlurale, listaBeans);
+        }
+        else {
+            System.out.println(String.format("L'attività singolarePlurale '%s' non esiste", singolarePlurale));
+        }
     }
 
     @ParameterizedTest
     @MethodSource(value = "ATTIVITA_SINGOLARE")
-    @Order(11)
-    @DisplayName("11 - countBySingolare")
-    void countBySingolare(String singolare, boolean esiste) {
-        System.out.println("11 - countBySingolare");
-        ottenutoIntero = bioBackend.countAttivita(singolare);
-        System.out.println(String.format("L'attività '%s' contiene %s voci biografiche", singolare, ottenutoIntero));
+    @Order(15)
+    @DisplayName("15 - findAllSingolariBySingolare e trova tutti i 'nomi singolari'")
+        //--nome singolare
+        //--esiste
+    void findAllSingolariBySingolare(String singolare, boolean esiste) {
+        System.out.println("15 - findAllSingolariBySingolare e trova tutti i 'nomi singolari'");
+        entityBean = backend.findFirstBySingolare(singolare);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("L'attività singolare '%s' esiste", singolare));
+            listaStr = backend.findAllSingolariBySingolare(singolare);
+            assertNotNull(listaStr);
+            assertEquals(listaStr.size() > 0, esiste);
+            System.out.println(String.format("Ci sono %d attività singolari collegate a %s", listaStr.size(), singolare));
+            System.out.println(VUOTA);
+            for (String nome : listaStr) {
+                System.out.println(nome);
+            }
+        }
+        else {
+            System.out.println(String.format("L'attività singolare '%s' non esiste", singolare));
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_PLURALI")
+    @Order(16)
+    @DisplayName("16 - findAllSingolariByPlurale e trova tutti i 'nomi singolari'")
+        //--nome plurale
+        //--esiste
+    void findAllSingolariByPlurale(String plurale, boolean esiste) {
+        System.out.println("16 - findAllSingolariByPlurale e trova tutti i 'nomi singolari'");
+        entityBean = backend.findFirstByPluraleLista(plurale);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("L'attività plurale '%s' esiste", plurale));
+            listaStr = backend.findAllSingolariByPlurale(plurale);
+            assertNotNull(listaStr);
+            assertEquals(listaStr.size() > 0, esiste);
+            System.out.println(String.format("Ci sono %d attività singolari collegate a %s", listaStr.size(), plurale));
+            System.out.println(VUOTA);
+            for (String nome : listaStr) {
+                System.out.println(nome);
+            }
+        }
+        else {
+            System.out.println(String.format("L'attività plurale '%s' non esiste", plurale));
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_TRUE")
+    @Order(17)
+    @DisplayName("17 - findAllSingolari e trova tutti i 'nomi singolari'")
+        //--nome singolarePlurale
+        //--esiste
+    void findAllSingolari(String singolarePlurale, boolean esiste) {
+        System.out.println("17 - findAllSingolari e trova tutti i 'nomi singolari'");
+        entityBean = backend.findFirst(singolarePlurale);
+        assertEquals(entityBean != null, esiste);
+
+        if (esiste) {
+            System.out.println(String.format("L'attività plurale '%s' esiste", singolarePlurale));
+            listaStr = backend.findAllSingolari(singolarePlurale);
+            assertNotNull(listaStr);
+            assertEquals(listaStr.size() > 0, esiste);
+            System.out.println(String.format("Ci sono %d attività singolarePlurale collegate a %s", listaStr.size(), singolarePlurale));
+            System.out.println(VUOTA);
+            for (String nome : listaStr) {
+                System.out.println(nome);
+            }
+        }
+        else {
+            System.out.println(String.format("L'attività singolarePlurale '%s' non esiste", singolarePlurale));
+        }
+    }
+
+
+    @Test
+    @Order(41)
+    @DisplayName("41 - findMappaSingolariByPluraleLista")
+    void findMappaSingolariByPluraleLista() {
+        System.out.println("41 - findMappaSingolariByPluraleLista");
+        mappa = backend.findMappaSingolariByPluraleLista();
+        assertNotNull(mappa);
+        printMappa(mappa, "di attività distinte per 'pluraleLista' con le relative attività singolari");
     }
 
     @Test
-    @Order(12)
-    @DisplayName("12 - attivitaNazionalita")
+    @Order(42)
+    @DisplayName("42 - findMappaSingolariByPluraleParagrafo")
+    void findMappaSingolariByPluraleParagrafo() {
+        System.out.println("42 - findMappaSingolariByPluraleParagrafo");
+        mappa = backend.findMappaSingolariByPluraleParagrafo();
+        assertNotNull(mappa);
+        printMappa(mappa, "di attività distinte per 'pluraleParagrafo' con le relative attività singolari");
+    }
+
+
+    @Test
+    @Order(43)
+    @DisplayName("43 - findMappaSingolariByLinkPagina")
+    void findMappaSingolariByLinkPagina() {
+        System.out.println("43 - findMappaSingolariByLinkPagina");
+        mappa = backend.findMappaSingolariByLinkPagina();
+        assertNotNull(mappa);
+        printMappa(mappa, "di attività distinte per 'linkPagina' con le relative attività singolari");
+    }
+
+    @Test
+    @Order(61)
+    @DisplayName("61 - attivitaNazionalita")
     void attivitaNazionalita() {
-        System.out.println("12 - attivitaNazionalita");
+        System.out.println("61 - attivitaNazionalita");
 
         sorgente = "altista";
         sorgente2 = "australiano";
@@ -327,11 +528,12 @@ public class AttivitaBackendTest extends WikiTest {
         printBio(listBio);
     }
 
+
     @Test
-    @Order(13)
-    @DisplayName("13 - attivitaNazionalitaAll")
+    @Order(63)
+    @DisplayName("63 - attivitaNazionalitaAll")
     void attivitaNazionalitaAll() {
-        System.out.println("13 - attivitaNazionalitaAll");
+        System.out.println("53 - attivitaNazionalitaAll");
         int somma = 0;
         String attivitaPlurale;
         String nazionalitaPlurale;
@@ -377,28 +579,45 @@ public class AttivitaBackendTest extends WikiTest {
 
 
     @Test
-    @Order(14)
-    @DisplayName("14 - attivitaNazionalitaAll con sottoSottoPagina")
-    void attivitaNazionalitaAll2() {
-        System.out.println("14 - attivitaNazionalitaAll con sottoSottoPagina");
+    @Order(64)
+    @DisplayName("64 - findAllAttivitaNazionalita con sottoSottoPagina")
+    void findAllAttivitaNazionalita() {
+        System.out.println("64 - findAllAttivitaNazionalita con sottoSottoPagina");
         int somma = 0;
 
-        sorgente = "batteristi";
-        sorgente2 = "statunitensi";
+        sorgente = "nobili";
+        sorgente2 = "Tedeschi";
         sorgente3 = "C";
+        previstoIntero = 61;
+        //        ottenutoIntero = bioBackend.findAllAttivitaNazionalita(sorgente, sorgente2, sorgente3);
+        //        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d voci di %s %s %s", ottenutoIntero, sorgente, sorgente2, sorgente3));
+
+    }
+
+
+    @Test
+    @Order(65)
+    @DisplayName("65 - countAttivitaNazionalitaAll")
+    void countAttivitaNazionalitaAll() {
+        System.out.println("65 - countAttivitaNazionalitaAll");
+        sorgente = "nobili";
+        sorgente2 = "Altre...";
+        sorgente3 = "G";
         previstoIntero = 53;
         ottenutoIntero = bioBackend.countAttivitaNazionalitaAll(sorgente, sorgente2, sorgente3);
-        assertEquals(previstoIntero, ottenutoIntero);
+        //        assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d voci di %s %s %s", ottenutoIntero, sorgente, sorgente2, sorgente3));
     }
 
 
     @Test
-    @Order(15)
-    @DisplayName("15 - pluraleBySingolarePlurale")
+    @Order(66)
+    @DisplayName("66 - pluraleBySingolarePlurale")
     void pluraleBySingolarePlurale() {
-        System.out.println("15 - pluraleBySingolarePlurale");
+        System.out.println("66 - pluraleBySingolarePlurale");
         previsto = "abati e badesse";
 
         sorgente = "abati e badesse";
@@ -412,7 +631,6 @@ public class AttivitaBackendTest extends WikiTest {
         sorgente = "badessa";
         ottenuto = backend.pluraleBySingolarePlurale(sorgente);
         assertEquals(previsto, ottenuto);
-
     }
 
     /**
@@ -441,8 +659,6 @@ public class AttivitaBackendTest extends WikiTest {
 
 
     void printPlurali(List<Attivita> listaAttivita) {
-        System.out.println(String.format("Ci sono %d attività plurali distinte", listaAttivita.size()));
-        System.out.println(VUOTA);
         int k = 0;
 
         for (Attivita attivita : listaAttivita) {
@@ -454,7 +670,6 @@ public class AttivitaBackendTest extends WikiTest {
     }
 
     void printSingolari(List<Attivita> listaAttivita) {
-        System.out.println(VUOTA);
         int k = 0;
 
         for (Attivita attivita : listaAttivita) {

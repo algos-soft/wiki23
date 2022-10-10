@@ -79,7 +79,7 @@ public enum WPref implements AIGenPref {
     sogliaAttNazWiki("sogliaAttNazWiki", AETypePref.integer, 50, "Soglia minima per creare la pagina di una attività o nazionalità sul server wiki"),
     sogliaSottoPagina("sogliaSottoPagina", AETypePref.integer, 50, "Soglia minima per creare una sottopagina di una attività o nazionalità sul server wiki"),
     sogliaDiv("sogliaDiv", AETypePref.integer, 1, "Soglia minima per usare {{Div col}}"),
-    sogliaIncludeAll("sogliaIncludeAll", AETypePref.integer, 200, "Soglia minima per 'includere' la voce"),
+    sogliaIncludeAll("sogliaIncludeAll", AETypePref.integer, 200, "Soglia minima per 'includere' la voce in giorni/anni"),
     sogliaIncludeParagrafo("sogliaIncludeParagrafo", AETypePref.integer, 50, "Soglia minima per usare i paragrafi 'inclusi' di secondo livello"),
 
     usaTreAttivita("usaTreAttivita", AETypePref.bool, false, "Considera tutte le attività (tre) nelle liste di attività"),
@@ -133,6 +133,7 @@ public enum WPref implements AIGenPref {
     elaboraPagineCancella("elaboraPagineCancella", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione delle pagine da cancellare."),
     elaboraPagineCancellaTime("elaboraPagineCancellaTime", AETypePref.integer, 0, "Durata elaborazione delle pagine da cancellare in minuti."),
     usaTaskElabora("usaTaskElabora", AETypePref.bool, false, "Lista pagine da cancellare e lista errori"),
+    maxPageLength("maxPageLength", AETypePref.integer, 200000, "Soglia massima di una pagina in byte"),
     ;
 
 

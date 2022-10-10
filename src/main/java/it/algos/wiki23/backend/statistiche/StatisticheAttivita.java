@@ -71,7 +71,7 @@ public class StatisticheAttivita extends Statistiche {
      */
     @Override
     protected void creaLista() {
-        lista = attivitaBackend.findAttivitaDistinctByPluraliOld();
+        lista = attivitaBackend.findAttivitaDistinctByPluraliSortPagina();
     }
 
     /**
@@ -94,14 +94,14 @@ public class StatisticheAttivita extends Statistiche {
         int cancellande = 0;
 
         for (Attivita attivita : (List<Attivita>) lista) {
-            singolari = attivitaBackend.findSingolariByPlurale(attivita.pluraleLista);
+            singolari = attivitaBackend.findAllSingolariByPlurale(attivita.pluraleLista);
             esistePagina = attivita.esistePaginaLista;
             numAttivitaUno = 0;
             numAttivitaDue = 0;
             numAttivitaTre = 0;
 
             for (String singolare : singolari) {
-                numAttivitaUno += bioBackend.countAttivita(singolare);
+                numAttivitaUno += bioBackend.countAttivitaSingola(singolare);
                 numAttivitaDue += bioBackend.countAttivitaDue(singolare);
                 numAttivitaTre += bioBackend.countAttivitaTre(singolare);
             }

@@ -104,7 +104,7 @@ public class StatisticheBio extends Statistiche {
 
         int giorni = giornoWikiBackend.findAll().size();
         int anni = annoWikiBackend.findAll().size();
-        int attivita = attivitaBackend.findAttivitaDistinctByPluraliOld().size();
+        int attivita = attivitaBackend.findAttivitaDistinctByPluraliSortPagina().size();
         int nazionalita = nazionalitaBackend.findNazionalitaDistinctByPlurali().size();
         int attesa = 2;
 

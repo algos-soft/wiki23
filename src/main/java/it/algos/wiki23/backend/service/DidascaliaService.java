@@ -443,7 +443,7 @@ public class DidascaliaService extends WAbstractService {
         String sottoParagrafo = bio.ordinamento.substring(0, 1);
         String didascalia = this.lista(bio);
 
-        return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
+        return new WrapLista(paragrafo, paragrafoLink, bio.ordinamento, sottoParagrafo, didascalia);
     }
 
     /**
@@ -482,9 +482,8 @@ public class DidascaliaService extends WAbstractService {
         String sottoParagrafo = bio.ordinamento.substring(0, 1);
         String didascalia = this.lista(bio);
 
-        return new WrapLista(paragrafo, paragrafoLink, sottoParagrafo, didascalia);
+        return new WrapLista(paragrafo, paragrafoLink, bio.ordinamento, sottoParagrafo, didascalia);
     }
-
 
 
     /**

@@ -9,6 +9,8 @@ import it.algos.wiki23.backend.packages.bio.*;
 import org.bson.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
@@ -504,6 +506,234 @@ public class BioBackendTest extends WikiTest {
         ottenutoIntero = backend.countAllAnnoMortoMese(sorgente, sorgente2);
         assertTrue(ottenutoIntero > 0);
         System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_SINGOLARE")
+    @Order(51)
+    @DisplayName("51 - countAttivitaSingola")
+    void countAttivitaSingola(String singolare, boolean esiste) {
+        System.out.println("51 - countAttivitaSingola");
+        ottenutoIntero = backend.countAttivitaSingola(singolare);
+        assertEquals(ottenutoIntero > 0, esiste);
+        System.out.println(String.format("L'attività singolare '%s' contiene %s voci biografiche", singolare, ottenutoIntero));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ATTIVITA_TRUE")
+    @Order(52)
+    @DisplayName("52 - countAttivitaPlurale")
+    void countAttivitaPlurale(String plurale, boolean esiste) {
+        System.out.println("52 - countAttivitaPlurale");
+        ottenutoIntero = backend.countAttivitaPlurale(plurale);
+        assertEquals(ottenutoIntero > 0, esiste);
+        System.out.println(String.format("L'attività plurale '%s' contiene %s voci biografiche", plurale, ottenutoIntero));
+    }
+
+
+    @Test
+    @Order(61)
+    @DisplayName("61 - countAttivitaNazionalita")
+    void countAttivitaNazionalita() {
+        System.out.println("61 - countAttivitaNazionalita");
+
+        sorgente = "badessa";
+        sorgente2 = "belga";
+        previstoIntero = 3;
+        ottenutoIntero = backend.countAttivitaNazionalita(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        sorgente = "badessa";
+        sorgente2 = "belgi";
+        previstoIntero = 3;
+        ottenutoIntero = backend.countAttivitaNazionalita(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        sorgente = "abate";
+        previstoIntero = 5;
+        sorgente2 = "belga";
+        ottenutoIntero = backend.countAttivitaNazionalita(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        sorgente = "abate";
+        sorgente2 = "belgi";
+        previstoIntero = 5;
+        ottenutoIntero = backend.countAttivitaNazionalita(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        sorgente = "abate";
+        sorgente2 = "belgi";
+        previstoIntero = 8;
+        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        sorgente = "badessa";
+        sorgente2 = "belgi";
+        previstoIntero = 8;
+        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        sorgente = "abati e badesse";
+        sorgente2 = "belgi";
+        previstoIntero = 8;
+        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+    }
+
+
+    @Test
+    @Order(62)
+    @DisplayName("62 - countAttivitaNazionalitaAll")
+    void countAttivitaNazionalitaAll() {
+        System.out.println("62 - countAttivitaNazionalitaAll");
+
+        sorgente = "accademici";
+        sorgente2 = "francesi";
+        previstoIntero = 15;
+        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+
+        sorgente = "accademici";
+        sorgente2 = "francesi";
+        sorgente3 = "C";
+        previstoIntero = 3;
+        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2, sorgente3);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s che iniziano con %s", sorgente, ottenutoIntero, sorgente2, sorgente3));
+    }
+
+
+    @Test
+    @Order(63)
+    @DisplayName("63 - findAttivitaNazionalita")
+    void findAttivitaNazionalita() {
+        System.out.println("63 - findAttivitaNazionalita");
+
+        sorgente = "badessa";
+        sorgente2 = "belga";
+        previstoIntero = 3;
+        listaBeans = backend.findAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+
+        sorgente = "badessa";
+        sorgente2 = "belgi";
+        previstoIntero = 3;
+        listaBeans = backend.findAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+
+        sorgente = "abate";
+        previstoIntero = 5;
+        sorgente2 = "belga";
+        listaBeans = backend.findAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+
+        sorgente = "abate";
+        sorgente2 = "belgi";
+        previstoIntero = 5;
+        listaBeans = backend.findAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+
+        sorgente = "abate";
+        sorgente2 = "belgi";
+        previstoIntero = 8;
+        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+
+        sorgente = "badessa";
+        sorgente2 = "belgi";
+        previstoIntero = 8;
+        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+
+        sorgente = "abati e badesse";
+        sorgente2 = "belgi";
+        previstoIntero = 8;
+        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+    }
+
+    @Test
+    @Order(64)
+    @DisplayName("64 - findAllAttivitaNazionalita")
+    void findAllAttivitaNazionalita() {
+        System.out.println("64 - findAllAttivitaNazionalita");
+
+        sorgente = "accademici";
+        sorgente2 = "russi";
+        previstoIntero = 8;
+        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+
+        sorgente = "accademici";
+        sorgente2 = "russi";
+        sorgente3 = "G";
+        previstoIntero = 2;
+        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2, sorgente3);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s che iniziano con %s", sorgente, ottenutoIntero, sorgente2, sorgente3));
+        printBio(listaBeans);
     }
 
     void printDieci(List<Bio> lista) {

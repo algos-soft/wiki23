@@ -111,7 +111,8 @@ public class PaginaView extends WikiView {
 
         boxDistinctPlurali = new IndeterminateCheckbox();
         boxDistinctPlurali.setLabel("Cancellare");
-        boxDistinctPlurali.setIndeterminate(true);
+        boxDistinctPlurali.setIndeterminate(false);
+        boxDistinctPlurali.setValue(true);
         boxDistinctPlurali.addValueChangeListener(event -> sincroFiltri());
         HorizontalLayout layout = new HorizontalLayout(boxDistinctPlurali);
         layout.setAlignItems(Alignment.CENTER);
@@ -131,17 +132,7 @@ public class PaginaView extends WikiView {
             String wikiTitle = ((Pagina) entity).pagina;
             Anchor anchor;
             String link = wikiTitle;
-//            if (wikiTitle.startsWith(PATH_ATTIVITA)) {
-//                link = textService.levaTesta(wikiTitle, PATH_ATTIVITA);
-//            }
-//            else {
-//                if (wikiTitle.startsWith(PATH_NAZIONALITA)) {
-//                    link = textService.levaTesta(wikiTitle, PATH_NAZIONALITA);
-//                }
-//                else {
-//                    link = wikiTitle;
-//                }
-//            }
+
             if (((Pagina) entity).cancella) {
                 anchor = new Anchor(PATH_WIKI_EDIT + wikiTitle + TAG_DELETE, link);
                 anchor.getElement().getStyle().set("color", "red");

@@ -85,7 +85,7 @@ public class BioServiceTest extends WikiTest {
         System.out.println("2 - lista attivita singole da plurale");
 
         sorgente = "cantanti";
-        listaStr = attivitaBackend.findSingolariByPlurale(sorgente);
+        listaStr = attivitaBackend.findAllSingolariByPlurale(sorgente);
         listBio = service.fetchAttivita(listaStr);
         assertNotNull(listBio);
         printBio(listBio, sorgente + " ordinate");

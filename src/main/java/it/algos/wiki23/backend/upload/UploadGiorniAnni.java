@@ -78,6 +78,8 @@ public abstract class UploadGiorniAnni extends Upload {
         this.nomeLista = nomeGiornoAnno;
         int numVoci = 0;
         int lengthPagina = 0;
+        int sogliaIncludeAll = WPref.sogliaIncludeAll.getInt();
+        int sogliaMaxPagina = WPref.maxPageLength.getInt();
 
         if (textService.isValid(nomeGiornoAnno)) {
             wikiTitle = switch (typeCrono) {
@@ -111,9 +113,9 @@ public abstract class UploadGiorniAnni extends Upload {
             usaSottoGiorniAnni = false;
             if (WPref.usaSottoGiorniAnni.is()) {
                 numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
-                if (numVoci > 200) {
+                if (numVoci > sogliaIncludeAll) {
                     lengthPagina = queryService.getLength(wikiTitle);
-                    if (lengthPagina > 200000) {
+                    if (lengthPagina > sogliaMaxPagina) {
                         usaSottoGiorniAnni = true;
                     }
                 }

@@ -42,7 +42,7 @@ public class ListaAttivita extends Lista {
 
     public ListaAttivita attivita(final Attivita attivita) {
         this.nomeLista = attivita.pluraleParagrafo;
-        listaNomiSingoli = attivitaBackend.findSingolariByPlurale(attivita.pluraleParagrafo);
+        listaNomiSingoli = attivitaBackend.findAllSingolariByPlurale(attivita.pluraleParagrafo);
         return this;
     }
 

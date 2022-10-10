@@ -334,7 +334,7 @@ public class AttivitaView extends WikiView {
 
         if (boxDistinctPlurali != null) {
             if (boxDistinctPlurali.getValue()) {
-                items = backend.findAttivitaDistinctByPluraliOld();
+                items = backend.findAttivitaDistinctByPluraliSortPagina();
             }
             else {
                 sortOrder = Sort.by(Sort.Direction.ASC, "singolare");

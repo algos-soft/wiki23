@@ -263,10 +263,10 @@ public class BioBackend extends WikiBackend {
      */
     public int countAttivitaPlurale(final String attivitaPlurale) {
         int numBio = 0;
-        List<String> listaNomi = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+        List<String> listaNomi = attivitaBackend.findAllSingolariByPlurale(attivitaPlurale);
 
         for (String singolare : listaNomi) {
-            numBio += countAttivitaAll(singolare);
+            numBio += countAttivitaSingola(singolare);
         }
 
         return numBio;
@@ -297,10 +297,11 @@ public class BioBackend extends WikiBackend {
         return numBio;
     }
 
-    public int countAttivita(final String attivitaSingola) {
-        Long numBio = repository.countBioByAttivita(attivitaSingola);
+    public int countAttivitaSingola(final String attivitaSingola) {
+        Long numBio = textService.isValid(attivitaSingola) ? repository.countBioByAttivita(attivitaSingola) : 0;
         return numBio > 0 ? numBio.intValue() : 0;
     }
+
 
     public int countAttivitaDue(final String attivitaSingola) {
         Long numBio = repository.countBioByAttivita2(attivitaSingola);
@@ -312,9 +313,20 @@ public class BioBackend extends WikiBackend {
         return numBio > 0 ? numBio.intValue() : 0;
     }
 
-    public int countAttivitaNazionalita(final String attivitaSingolare, final String nazionalitaSingolare) {
-        Long numBio = repository.countBioByAttivitaAndNazionalita(attivitaSingolare, nazionalitaSingolare);
+    public int countAttivitaNazionalitaBase(final String attivitaSingola, final String nazionalitaSingola) {
+        Long numBio = repository.countBioByAttivitaAndNazionalita(attivitaSingola, nazionalitaSingola);
         return numBio > 0 ? numBio.intValue() : 0;
+    }
+
+    public int countAttivitaNazionalita(final String attivitaSingola, final String nazionalitaSingolarePlurale) {
+        int numBio = 0;
+        List<String> listaNazionalita = nazionalitaBackend.findAllSingolari(nazionalitaSingolarePlurale);
+
+        for (String nazionalitaSingola : listaNazionalita) {
+            numBio += countAttivitaNazionalitaBase(attivitaSingola, nazionalitaSingola);
+        }
+
+        return numBio;
     }
 
     /**
@@ -349,12 +361,21 @@ public class BioBackend extends WikiBackend {
         String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
         String nazionalitaPlurale = nazionalitaBackend.pluraleBySingolarePlurale(nazionalitaSingolarePlurale);
 
-        listaAttivita = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+        listaAttivita = attivitaBackend.findAllSingolariByPlurale(attivitaPlurale);
         listaNazionalita = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
 
         for (String attivitaSingola : listaAttivita) {
             for (String nazionalitaSingola : listaNazionalita) {
-                numBio += countAttivitaNazionalita(attivitaSingola, nazionalitaSingola);
+                numBio += countAttivitaNazionalitaBase(attivitaSingola, nazionalitaSingola);
+            }
+        }
+
+        if (listaNazionalita.size() == 0 && nazionalitaSingolarePlurale.equals(TAG_LISTA_ALTRE)) {
+            numBio = 0;
+            for (String attivitaSingola : listaAttivita) {
+                numBio += countAttivitaNazionalitaBase(attivitaSingola, null);
+                List listone = bioService.fetchAttivita(attivitaSingola);
+                int a = 87;
             }
         }
 
@@ -405,7 +426,7 @@ public class BioBackend extends WikiBackend {
         String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
 
         listaNazionalita = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
-        listaAttivita = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+        listaAttivita = attivitaBackend.findAllSingolariByPlurale(attivitaPlurale);
 
         for (String nazionalitaSingola : listaNazionalita) {
             for (String attivitaSingola : listaAttivita) {
@@ -498,8 +519,15 @@ public class BioBackend extends WikiBackend {
         return repository.findAllByErrato(true);
     }
 
-    public List<Bio> findAttivitaNazionalita(final String attivitaSingolare, final String nazionalitaSingolare) {
-        return repository.findAllByAttivitaAndNazionalitaOrderByOrdinamento(attivitaSingolare, nazionalitaSingolare);
+    public List<Bio> findAttivitaNazionalita(final String attivitaSingola, final String nazionalitaSingolarePlurale) {
+        List<Bio> lista = new ArrayList<>();
+        List<String> listaNazionalita = nazionalitaBackend.findAllSingolari(nazionalitaSingolarePlurale);
+
+        for (String nazionalitaSingola : listaNazionalita) {
+            lista.addAll(repository.findAllByAttivitaAndNazionalitaOrderByOrdinamento(attivitaSingola, nazionalitaSingola));
+        }
+
+        return lista;
     }
 
     public List<Bio> findNazionalitaAttivita(final String nazionalitaSingolare, final String attivitaSingolare) {
@@ -535,23 +563,18 @@ public class BioBackend extends WikiBackend {
     public List<Bio> findAllAttivitaNazionalita(String attivitaSingolarePlurale, String nazionalitaSingolarePlurale, String letteraIniziale) {
         List<Bio> lista = new ArrayList<>();
         List<String> listaAttivita;
-        List<String> listaNazionalita;
         String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
-        String nazionalitaPlurale = nazionalitaBackend.pluraleBySingolarePlurale(nazionalitaSingolarePlurale);
 
-        listaAttivita = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
-        listaNazionalita = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
+        listaAttivita = attivitaBackend.findAllSingolariByPlurale(attivitaPlurale);
 
         for (String attivitaSingola : listaAttivita) {
-            for (String nazionalitaSingola : listaNazionalita) {
-                lista.addAll(findAttivitaNazionalita(attivitaSingola, nazionalitaSingola));
-            }
+            lista.addAll(findAttivitaNazionalita(attivitaSingola, nazionalitaSingolarePlurale));
         }
 
         if (textService.isValid(letteraIniziale)) {
             lista = lista
                     .stream()
-                    .filter(bio -> (textService.isValid(bio.cognome) && bio.cognome.startsWith(letteraIniziale)))
+                    .filter(bio -> (textService.isValid(bio.ordinamento) && bio.ordinamento.startsWith(letteraIniziale)))
                     .collect(Collectors.toList());
         }
 
@@ -578,7 +601,7 @@ public class BioBackend extends WikiBackend {
         String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
 
         listaNazionalita = nazionalitaBackend.findSingolariByPlurale(nazionalitaPlurale);
-        listaAttivita = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+        listaAttivita = attivitaBackend.findAllSingolariByPlurale(attivitaPlurale);
 
         for (String nazionalitaSingola : listaNazionalita) {
             for (String attivitaSingola : listaAttivita) {
@@ -637,8 +660,6 @@ public class BioBackend extends WikiBackend {
     }
 
 
-
-
     public int countAllGiornoMortoSecolo(String giornoMorto, String nomeSecolo) {
         List<Bio> lista = findAllGiornoMortoSecolo(giornoMorto, nomeSecolo);
         return lista != null ? lista.size() : 0;
@@ -677,8 +698,6 @@ public class BioBackend extends WikiBackend {
 
         return lista;
     }
-
-
 
 
     public int countAllAnnoNatoMese(String annoNato, String nomeMese) {

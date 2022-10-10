@@ -118,11 +118,11 @@ public class PaginaBackend extends WikiBackend {
         long inizio = System.currentTimeMillis();
         mongoService.deleteAll(Pagina.class);
 
-        elaboraGiorni();
-        elaboraAnni();
+        //        elaboraGiorni();
+        //        elaboraAnni();
         elaboraAttivita();
-        elaboraNazionalita();
-        elaboraUtenteBot();
+        //        elaboraNazionalita();
+        //        elaboraUtenteBot();
 
         super.fixElaboraMinuti(inizio, "cancellazioni");
     }
@@ -193,6 +193,7 @@ public class PaginaBackend extends WikiBackend {
         int voci = 0;
         String paginaParentePrimoLivello;
         String secolo;
+        int sogliaMaxPagina = WPref.sogliaSottoPaginaGiorniAnni.getInt();
 
         for (String wikiTitle : pagine) {
             // Quelle di secondo livello che terminano con /
@@ -217,7 +218,7 @@ public class PaginaBackend extends WikiBackend {
             // Quelle di secondo livello che non superano le 50 voci
             secolo = wikiTitle.substring(wikiTitle.indexOf(SLASH) + 1);
             voci = getVociGiorno(paginaParentePrimoLivello, secolo);
-            if (voci > 50) {
+            if (voci > sogliaMaxPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoSotto, voci, false);
             }
             else {
@@ -289,6 +290,7 @@ public class PaginaBackend extends WikiBackend {
         int voci = 0;
         String paginaParentePrimoLivello;
         String mese;
+        int sogliaMaxPagina = WPref.sogliaSottoPaginaGiorniAnni.getInt();
 
         for (String wikiTitle : pagine) {
             // Quelle di secondo livello che terminano con /
@@ -313,7 +315,7 @@ public class PaginaBackend extends WikiBackend {
             // Quelle di secondo livello che non superano le 50 voci
             mese = wikiTitle.substring(wikiTitle.indexOf(SLASH) + 1);
             voci = getVociAnno(paginaParentePrimoLivello, mese);
-            if (voci > 50) {
+            if (voci > sogliaMaxPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.annoSotto, voci, false);
             }
             else {
@@ -331,8 +333,8 @@ public class PaginaBackend extends WikiBackend {
         List<String> pagineAll = queryService.getList(tag, nameSpace);
         List<String> valideBase = attivitaBackend.findAllPlurali();
 
-//        elaboraAttivitaPagine(valideBase, getPagine(pagineAll));
-//        elaboraAttivitaSottoPagine(valideBase, getSottoPagine(pagineAll));
+        elaboraAttivitaPagine(valideBase, getPagine(pagineAll));
+        elaboraAttivitaSottoPagine(valideBase, getSottoPagine(pagineAll));
         elaboraAttivitaSottoSottoPagine(valideBase, getSottoSottoPagine(pagineAll));
     }
 
@@ -348,6 +350,7 @@ public class PaginaBackend extends WikiBackend {
         String tagBase = PATH_ATTIVITA + SLASH;
         String paginaBase;
         int voci = 0;
+        int sogliaAttNazWiki = WPref.sogliaAttNazWiki.getInt();
 
         for (String wikiTitle : pagine) {
             // Quelle di primo livello che terminano con /
@@ -379,14 +382,14 @@ public class PaginaBackend extends WikiBackend {
             Attivita delta = attivitaBackend.findFirstBySingolare(paginaBase);
             Attivita delta2 = attivitaBackend.findFirstByPluraleLista(paginaBase);
             if (paginaBase.equals(gamma)) {
-                voci = bioBackend.countAttivitaPlurale(paginaBase);
-                creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaBase, voci, false);
+                //                voci = bioBackend.countAttivitaPlurale(paginaBase);
+                //                creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaBase, voci, false);
                 continue;
             }
 
             // Quelle di primo livello che non superano le 50 voci
             voci = bioBackend.countAttivitaPlurale(paginaBase);
-            if (voci > 50) {
+            if (voci > sogliaAttNazWiki) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaBase, voci, false);
             }
             else {
@@ -410,6 +413,9 @@ public class PaginaBackend extends WikiBackend {
         String paginaParentePrimoLivello;
         String attivita;
         String nazionalita;
+        int sogliaSottoPagina = WPref.sogliaSottoPagina.getInt();
+        sogliaSottoPagina = (sogliaSottoPagina * 8) / 10;
+        sogliaSottoPagina = 10;
 
         for (String wikiTitle : pagine) {
             // Quelle di secondo livello che terminano con /
@@ -437,7 +443,7 @@ public class PaginaBackend extends WikiBackend {
             nazionalita = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + 1);
             nazionalita = textService.primaMinuscola(nazionalita);
             voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita);
-            if (voci > 50) {
+            if (voci > sogliaSottoPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSotto, voci, false);
             }
             else {
@@ -458,9 +464,11 @@ public class PaginaBackend extends WikiBackend {
         String paginaParentePrimoLivello;
         String paginaParenteSecondoLivello;
         String letteraIniziale;
-        Pagina pagina;
         String attivita;
         String nazionalita;
+        int sogliaSottoPagina = WPref.sogliaSottoPagina.getInt();
+        sogliaSottoPagina = (sogliaSottoPagina * 8) / 10;
+        sogliaSottoPagina = 10;
 
         for (String wikiTitle : pagine) {
             // Quelle di terzo livello che terminano con /
@@ -481,41 +489,16 @@ public class PaginaBackend extends WikiBackend {
             letteraIniziale = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + 1);
             attivita = textService.levaTesta(paginaParentePrimoLivello, tagBase);
             attivita = textService.primaMinuscola(attivita);
-            pagina = findByPagina(paginaParenteSecondoLivello);
-
-
 
             nazionalita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
             nazionalita = textService.primaMinuscola(nazionalita);
             voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita, letteraIniziale);
-            if (voci > 50) {
+            if (voci > sogliaSottoPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, false);
             }
             else {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
             }
-
-
-
-//            if (pagina == null) {
-//                creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
-//            }
-//            else {
-//                if (pagina.cancella) {
-//                    creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
-//                }
-//                else {
-//                    nazionalita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
-//                    nazionalita = textService.primaMinuscola(nazionalita);
-//                    voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita, letteraIniziale);
-//                    if (voci > 50) {
-//                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, false);
-//                    }
-//                    else {
-//                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, true);
-//                    }
-//                }
-//            }
         }
     }
 
@@ -528,9 +511,9 @@ public class PaginaBackend extends WikiBackend {
         List<String> pagineAll = queryService.getList(tag, nameSpace);
         List<String> valideBase = nazionalitaBackend.findAllPlurali();
 
-//        elaboraNazionalitaPagine(valideBase, getPagine(pagineAll));
-//        elaboraNazionalitaSottoPagine(valideBase, getSottoPagine(pagineAll));
-        elaboraNazionalitaSottoSottoPagine(valideBase, getSottoSottoPagine(pagineAll));
+        elaboraNazionalitaPagine(valideBase, getPagine(pagineAll));
+        //                elaboraNazionalitaSottoPagine(valideBase, getSottoPagine(pagineAll));
+        //        elaboraNazionalitaSottoSottoPagine(valideBase, getSottoSottoPagine(pagineAll));
     }
 
 
@@ -546,6 +529,7 @@ public class PaginaBackend extends WikiBackend {
         String tagBase = PATH_NAZIONALITA + SLASH;
         String paginaBase;
         int voci = 0;
+        int sogliaAttNazWiki = WPref.sogliaAttNazWiki.getInt();
 
         for (String wikiTitle : pagine) {
             // Quelle di primo livello che terminano con /
@@ -557,6 +541,12 @@ public class PaginaBackend extends WikiBackend {
             // Quelle di primo livello che terminano con /...
             if (wikiTitle.endsWith(SLASH + TRE_PUNTI)) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, true);
+                continue;
+            }
+
+            // Patch
+            if (wikiTitle.equals(PATH_NAZIONALITA + SLASH + "Riepilogo")) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.progetto, voci, false);
                 continue;
             }
 
@@ -577,14 +567,14 @@ public class PaginaBackend extends WikiBackend {
             Nazionalita delta = nazionalitaBackend.findFirstBySingolare(paginaBase);
             Nazionalita delta2 = nazionalitaBackend.findFirstByPluraleLista(paginaBase);
             if (paginaBase.equals(gamma)) {
-                voci = bioBackend.countNazionalitaPlurale(paginaBase);
-                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, false);
+                //                voci = bioBackend.countNazionalitaPlurale(paginaBase);
+                //                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, false);
                 continue;
             }
 
             // Quelle di primo livello che non superano le 50 voci
             voci = bioBackend.countNazionalitaPlurale(paginaBase);
-            if (voci > 50) {
+            if (voci > sogliaAttNazWiki) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, false);
             }
             else {
@@ -608,6 +598,7 @@ public class PaginaBackend extends WikiBackend {
         String paginaParentePrimoLivello;
         String nazionalita;
         String attivita;
+        int sogliaSottoPagina = WPref.sogliaSottoPagina.getInt();
 
         for (String wikiTitle : pagine) {
             // Quelle di secondo livello che terminano con /
@@ -635,7 +626,7 @@ public class PaginaBackend extends WikiBackend {
             attivita = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + 1);
             attivita = textService.primaMinuscola(attivita);
             voci = bioBackend.countNazionalitaAttivitaAll(nazionalita, attivita);
-            if (voci > 50) {
+            if (voci > sogliaSottoPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSotto, voci, false);
             }
             else {
@@ -656,9 +647,10 @@ public class PaginaBackend extends WikiBackend {
         String paginaParentePrimoLivello;
         String paginaParenteSecondoLivello;
         String letteraIniziale;
-        Pagina pagina;
         String attivita;
         String nazionalita;
+        int sogliaSottoPagina = WPref.sogliaSottoPagina.getInt();
+        sogliaSottoPagina = (sogliaSottoPagina * 8) / 10;
 
         for (String wikiTitle : pagine) {
             // Quelle di terzo livello che terminano con /
@@ -679,25 +671,15 @@ public class PaginaBackend extends WikiBackend {
             letteraIniziale = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + 1);
             nazionalita = textService.levaTesta(paginaParentePrimoLivello, tagBase);
             nazionalita = textService.primaMinuscola(nazionalita);
-            pagina = findByPagina(paginaParenteSecondoLivello);
-            if (pagina == null) {
-                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
+
+            attivita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
+            attivita = textService.primaMinuscola(attivita);
+            voci = bioBackend.countNazionalitaAttivitaAll(nazionalita, attivita, letteraIniziale);
+            if (voci > sogliaSottoPagina) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, false);
             }
             else {
-                if (pagina.cancella) {
-                    creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
-                }
-                else {
-                    attivita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
-                    attivita = textService.primaMinuscola(attivita);
-                    voci = bioBackend.countNazionalitaAttivitaAll(nazionalita, attivita, letteraIniziale);
-                    if (voci > 50) {
-                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, false);
-                    }
-                    else {
-                        creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
-                    }
-                }
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
             }
         }
     }

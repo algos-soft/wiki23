@@ -803,7 +803,7 @@ public class BioService extends WAbstractService {
      * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
      */
     public List<Bio> fetchAttivita(String attivitaPlurale) {
-        List<String> listaNomiSingoli = attivitaBackend.findSingolariByPlurale(attivitaPlurale);
+        List<String> listaNomiSingoli = attivitaBackend.findAllSingolariByPlurale(attivitaPlurale);
         return fetchAttivita(listaNomiSingoli);
     }
 

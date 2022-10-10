@@ -130,10 +130,10 @@ public class AttivitaBackend extends WikiBackend {
     }
 
 
-    public List<Attivita> findAttivitaDistinctByPluraliOld() {
+    private List<Attivita> findAttivitaDistinctByPlurali(String property) {
         List<Attivita> lista = new ArrayList<>();
         Set<String> set = new HashSet();
-        Sort sortOrder = Sort.by(Sort.Direction.ASC, "pagina");
+        Sort sortOrder = Sort.by(Sort.Direction.ASC, property);
         List<Attivita> listaAll = repository.findAll(sortOrder);
 
         for (Attivita attivita : listaAll) {
@@ -145,6 +145,14 @@ public class AttivitaBackend extends WikiBackend {
         return lista;
     }
 
+    public List<Attivita> findAttivitaDistinctByPluraliSortPagina() {
+        return findAttivitaDistinctByPlurali("pagina");
+    }
+
+    public List<Attivita> findAttivitaDistinctByPluraliSortPlurali() {
+        return findAttivitaDistinctByPlurali("pluraleLista");
+    }
+
     /**
      * Pagine che esistono sul server wikipedia e che non superano la soglia prevista per le liste <br>
      * flag esistePagina=true <br>
@@ -154,7 +162,7 @@ public class AttivitaBackend extends WikiBackend {
      */
     public List<Attivita> findPagineDaCancellare() {
         List<Attivita> listaDaCancellare = new ArrayList<>();
-        List<Attivita> listaPlurali = findAttivitaDistinctByPluraliOld();
+        List<Attivita> listaPlurali = findAttivitaDistinctByPluraliSortPagina();
 
         for (Attivita attivita : listaPlurali) {
             if (attivita.esistePaginaLista && !attivita.superaSoglia) {
@@ -168,7 +176,7 @@ public class AttivitaBackend extends WikiBackend {
 
     public List<String> findAllPlurali() {
         List<String> lista = new ArrayList<>();
-        List<Attivita> listaAll = findAttivitaDistinctByPluraliOld();
+        List<Attivita> listaAll = findAttivitaDistinctByPluraliSortPlurali();
 
         for (Attivita attivita : listaAll) {
             lista.add(attivita.pluraleLista);
@@ -187,8 +195,16 @@ public class AttivitaBackend extends WikiBackend {
         return lista;
     }
 
-    public boolean isExist(final String attivitaSingolare) {
+    public boolean isExist(final String attivitaSingolarePlurale) {
+        return findFirstBySingolare(attivitaSingolarePlurale) != null || findFirstByPluraleLista(attivitaSingolarePlurale) != null;
+    }
+
+    public boolean isExistSingolare(final String attivitaSingolare) {
         return findFirstBySingolare(attivitaSingolare) != null;
+    }
+
+    public boolean isExistPlurale(final String attivitaPlurale) {
+        return findFirstByPluraleLista(attivitaPlurale) != null;
     }
 
     /**
@@ -205,7 +221,7 @@ public class AttivitaBackend extends WikiBackend {
     }
 
     /**
-     * Retrieves the first entity by a 'plural' property.
+     * Retrieves the first entity by a 'pluraleLista' property.
      * Cerca una singola entity con una query. <br>
      * Restituisce un valore valido ANCHE se esistono diverse entities <br>
      *
@@ -217,9 +233,43 @@ public class AttivitaBackend extends WikiBackend {
         return repository.findFirstByPluraleLista(attivitaPlurale);
     }
 
+    /**
+     * Retrieves the first entity by a 'singular' or 'pluraleLista' property.
+     * Cerca una singola entity con una query. <br>
+     * Restituisce un valore valido ANCHE se esistono diverse entities <br>
+     *
+     * @param attivitaSingolarePlurale per costruire la query
+     *
+     * @return the FIRST founded entity
+     */
+    public Attivita findFirst(final String attivitaSingolarePlurale) {
+        Attivita attivita;
 
-    public List<Attivita> findAllByPagina(final String pagina) {
-        return repository.findAllByPluraleListaOrderBySingolareAsc(pagina);
+        attivita = repository.findFirstBySingolare(attivitaSingolarePlurale);
+        if (attivita == null) {
+            attivita = repository.findFirstByPluraleLista(attivitaSingolarePlurale);
+        }
+
+        return attivita;
+    }
+
+    public List<Attivita> findAllBySingolarePlurale(final String singolarePlurale) {
+        Attivita attivita = findFirst(singolarePlurale);
+        return attivita != null ? repository.findAllByPluraleListaOrderBySingolareAsc(attivita.pluraleLista) : null;
+    }
+
+    public List<Attivita> findAllBySingolare(final String singolare) {
+        Attivita attivita = findFirstBySingolare(singolare);
+        if (attivita != null) {
+            return repository.findAllByPluraleListaOrderBySingolareAsc(attivita.pluraleLista);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public List<Attivita> findAllByPlurale(final String plurale) {
+        return repository.findAllByPluraleListaOrderBySingolareAsc(plurale);
     }
 
     public List<Attivita> findAllByParagrafo(final String paragrafo) {
@@ -244,9 +294,14 @@ public class AttivitaBackend extends WikiBackend {
         }
     }
 
+    public List<String> findAllSingolari(final String singolarePlurale) {
+        Attivita attivita = findFirst(singolarePlurale);
+        return attivita != null ? findAllSingolariByPlurale(attivita.pluraleLista) : null;
+    }
+
     public List<String> findAllSingolariBySingolare(final String attivitaSingolare) {
         String attivitaPlurale = pluraleBySingolarePlurale(attivitaSingolare);
-        return findSingolariByPlurale(attivitaPlurale);
+        return findAllSingolariByPlurale(attivitaPlurale);
     }
 
     /**
@@ -256,9 +311,9 @@ public class AttivitaBackend extends WikiBackend {
      *
      * @return lista di singolari filtrati
      */
-    public List<String> findSingolariByPlurale(final String attivitaPlurale) {
+    public List<String> findAllSingolariByPlurale(final String attivitaPlurale) {
         List<String> listaNomi = new ArrayList<>();
-        List<Attivita> listaAttivita = findAllByPagina(attivitaPlurale);
+        List<Attivita> listaAttivita = findAllByPlurale(attivitaPlurale);
         Attivita attivitaSingola;
 
         if (listaAttivita.size() == 0) {
@@ -276,7 +331,34 @@ public class AttivitaBackend extends WikiBackend {
     }
 
 
-    public LinkedHashMap<String, List<String>> findMappaSingolariByPlurale() {
+    public LinkedHashMap<String, List<String>> findMappaSingolariByPluraleLista() {
+        LinkedHashMap<String, List<String>> mappa = new LinkedHashMap<>();
+        List<String> lista;
+        List<Attivita> listaAll = repository.findAll();
+        String plurale;
+        String singolare;
+
+        for (Attivita attivita : listaAll) {
+            plurale = attivita.pluraleLista;
+            singolare = attivita.singolare;
+
+            if (mappa.get(plurale) == null) {
+                lista = new ArrayList<>();
+                lista.add(singolare);
+                mappa.put(plurale, lista);
+            }
+            else {
+                lista = mappa.get(plurale);
+                lista.add(singolare);
+                mappa.put(plurale, lista);
+            }
+        }
+
+        return mappa;
+    }
+
+
+    public LinkedHashMap<String, List<String>> findMappaSingolariByPluraleParagrafo() {
         LinkedHashMap<String, List<String>> mappa = new LinkedHashMap<>();
         List<String> lista;
         List<Attivita> listaAll = repository.findAll();
@@ -285,6 +367,33 @@ public class AttivitaBackend extends WikiBackend {
 
         for (Attivita attivita : listaAll) {
             plurale = attivita.pluraleParagrafo;
+            singolare = attivita.singolare;
+
+            if (mappa.get(plurale) == null) {
+                lista = new ArrayList<>();
+                lista.add(singolare);
+                mappa.put(plurale, lista);
+            }
+            else {
+                lista = mappa.get(plurale);
+                lista.add(singolare);
+                mappa.put(plurale, lista);
+            }
+        }
+
+        return mappa;
+    }
+
+
+    public LinkedHashMap<String, List<String>> findMappaSingolariByLinkPagina() {
+        LinkedHashMap<String, List<String>> mappa = new LinkedHashMap<>();
+        List<String> lista;
+        List<Attivita> listaAll = repository.findAll();
+        String plurale;
+        String singolare;
+
+        for (Attivita attivita : listaAll) {
+            plurale = attivita.linkPaginaAttivita;
             singolare = attivita.singolare;
 
             if (mappa.get(plurale) == null) {
@@ -503,7 +612,7 @@ public class AttivitaBackend extends WikiBackend {
 
     public int countAttivitaDaCancellare() {
         int daCancellare = 0;
-        List<Attivita> listaPlurali = findAttivitaDistinctByPluraliOld();
+        List<Attivita> listaPlurali = findAttivitaDistinctByPluraliSortPagina();
 
         for (Attivita attivita : listaPlurali) {
             if (attivita.esistePaginaLista && !attivita.superaSoglia) {
@@ -548,13 +657,13 @@ public class AttivitaBackend extends WikiBackend {
             numBio = 0;
             numSingolari = 0;
 
-            listaSingolari = findSingolariByPlurale(plurale);
+            listaSingolari = findAllSingolariByPlurale(plurale);
             for (String singolare : listaSingolari) {
                 numBio += bioBackend.countAttivitaAll(singolare);
                 numSingolari++;
             }
 
-            for (Attivita attivitaOK : findAllByPagina(plurale)) {
+            for (Attivita attivitaOK : findAllByPlurale(plurale)) {
                 attivitaOK.numBio = numBio;
                 attivitaOK.superaSoglia = numBio >= soglia ? true : false;
                 attivitaOK.esistePaginaLista = esistePagina(attivitaOK.pluraleLista);
