@@ -5,6 +5,7 @@ import com.mongodb.client.model.*;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import org.bson.*;
 import org.junit.jupiter.api.*;
@@ -733,6 +734,23 @@ public class BioBackendTest extends WikiTest {
         assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(VUOTA);
         System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s che iniziano con %s", sorgente, ottenutoIntero, sorgente2, sorgente3));
+        printBio(listaBeans);
+    }
+
+
+    @Test
+    @Order(71)
+    @DisplayName("71 - altre")
+    void altre() {
+        System.out.println("71 - altre");
+
+        sorgente = "nobili";
+        sorgente2 = TAG_LISTA_ALTRE;
+        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di '%s'", sorgente, ottenutoIntero, sorgente2));
         printBio(listaBeans);
     }
 
