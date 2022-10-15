@@ -254,6 +254,12 @@ public class BioBackend extends WikiBackend {
         return null;
     }
 
+
+    public int countCognome(final String cognome) {
+        Long numBio = repository.countBioByCognome(cognome);
+        return numBio > 0 ? numBio.intValue() : 0;
+    }
+
     /**
      * Conta tutte le biografie con una serie di attività plurali. <br>
      *
@@ -790,6 +796,21 @@ public class BioBackend extends WikiBackend {
         return lista;
     }
 
+
+    public List<String> findAllCognomiDistinti() {
+        // Lista di tutti i valori di una property
+        List<String> cognomi = mongoService.projectionString(Bio.class, "cognome");
+
+        // Lista dei valori distinct, non nulli e ordinati di una property
+        cognomi = cognomi.stream()
+                .distinct()
+                .filter(cognome -> textService.isValid(cognome))
+                .sorted()
+                .collect(Collectors.toList());
+
+        return cognomi;
+    }
+
     /**
      * Controlla l'esistenza della property <br>
      * La lista funziona anche se la property del sort è errata <br>
@@ -809,7 +830,7 @@ public class BioBackend extends WikiBackend {
     }
 
     public List<Bio> findSenzaTmpl() {
-        return mongoService.projectionExclude(Bio.class, this, "tmplBio");
+        return mongoService.projectionExclude(Bio.class, this, new Document("ordinamento", 1), "tmplBio");
     }
 
     public List<Bio> findSenzaTmpl(Sort sort) {

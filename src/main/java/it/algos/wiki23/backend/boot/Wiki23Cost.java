@@ -134,6 +134,8 @@ public class Wiki23Cost {
 
     public static final String PATH_ATTIVITA = PATH_PROGETTO + ATT;
 
+    public static final String PATH_COGNOMI = "Persone di cognome" + SPAZIO;
+
     public static final String PATH_NAZIONALITA = PATH_PROGETTO + NAZ;
 
     public static final String PATH_GIORNI = PATH_PROGETTO + GIORNI;

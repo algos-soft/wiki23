@@ -754,6 +754,20 @@ public class BioBackendTest extends WikiTest {
         printBio(listaBeans);
     }
 
+
+    @Test
+    @Order(81)
+    @DisplayName("81 - findAllCognomiDistinti")
+    void findAllCognomiDistinti() {
+        System.out.println("81 - findAllCognomiDistinti");
+
+        inizio = System.currentTimeMillis();
+        listaStr = backend.findAllCognomiDistinti();
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("La ricerca/selezione dei %s cognomi distinti ha richiesto %s", textService.format(listaStr.size()), dateService.deltaTextEsatto(inizio)));
+    }
+
     void printDieci(List<Bio> lista) {
         for (Bio bio : lista.subList(0, 10)) {
             System.out.println(bio.wikiTitle);

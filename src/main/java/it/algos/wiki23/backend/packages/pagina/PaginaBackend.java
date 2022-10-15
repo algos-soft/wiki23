@@ -1,22 +1,13 @@
 package it.algos.wiki23.backend.packages.pagina;
 
-import it.algos.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.logic.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.packages.wiki.*;
-import it.algos.wiki23.wiki.query.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
-
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.*;
 import java.util.stream.*;
@@ -513,7 +504,7 @@ public class PaginaBackend extends WikiBackend {
         int nameSpace = 102;
         String tag = "Biografie/Nazionalità/";
         List<String> pagineAll = queryService.getList(tag, nameSpace);
-        List<String> valideBase = nazionalitaBackend.findAllPlurali();
+        List<String> valideBase = nazionalitaBackend.findAllPluraliDistinti();
 
         elaboraNazionalitaPagine(valideBase, getPagine(pagineAll));
         elaboraNazionalitaSottoPagine(valideBase, getSottoPagine(pagineAll));

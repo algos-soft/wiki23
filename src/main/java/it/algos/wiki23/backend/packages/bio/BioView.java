@@ -260,6 +260,7 @@ public class BioView extends WikiView {
         long inizio = System.currentTimeMillis();
         List<Bio> items = backend.findAll(sortOrder);
         logger.info(new WrapLog().exception(new AlgosException(String.format("Items %s", dateService.deltaText(inizio)))));
+
         final String textWikiTitle = searchFieldWikiTitle != null ? searchFieldWikiTitle.getValue() : VUOTA;
         if (textService.isValidNoSpace(textWikiTitle)) {
             items = items
@@ -393,7 +394,6 @@ public class BioView extends WikiView {
             elementiFiltrati = items.size();
             sicroBottomLayout();
         }
-
     }
 
 

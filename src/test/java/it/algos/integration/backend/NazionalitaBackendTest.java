@@ -171,7 +171,9 @@ public class NazionalitaBackendTest extends WikiTest {
     @DisplayName("4 - findAllPlurali")
     void allPlurali() {
         System.out.println("4 - findAllPlurali (String plurale)");
-        listaStr = backend.findAllPlurali();
+        inizio = System.currentTimeMillis();
+        listaStr = backend.findAllPluraliDistinti();
+        System.out.println(dateService.deltaTextEsatto(inizio));
         assertNotNull(listaStr);
         print(listaStr, "di tutti i plurali distinti");
     }
@@ -182,7 +184,9 @@ public class NazionalitaBackendTest extends WikiTest {
     @DisplayName("5 - findNazionalitaDistinctByPlurali (Nazionalita nazionalità)")
     void allDistinct() {
         System.out.println("5 - findNazionalitaDistinctByPlurali (Nazionalita nazionalità)");
+        inizio = System.currentTimeMillis();
         listaBeans = backend.findNazionalitaDistinctByPlurali();
+        System.out.println(dateService.deltaTextEsatto(inizio));
         assertNotNull(listaBeans);
         printPlurali(listaBeans);
     }

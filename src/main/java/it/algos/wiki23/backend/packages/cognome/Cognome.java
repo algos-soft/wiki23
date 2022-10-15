@@ -46,6 +46,10 @@ public class Cognome extends AEntity {
     @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano questo cognome", widthEM = 6)
     public int numBio;
 
+
+    @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.yesNoReverse, headerIcon = VaadinIcon.HAMMER)
+    public boolean esistePagina;
+
     @Override
     public String toString() {
         return VUOTA;

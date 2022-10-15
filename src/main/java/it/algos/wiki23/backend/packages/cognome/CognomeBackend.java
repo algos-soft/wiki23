@@ -8,6 +8,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.wiki.query.*;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.Service;
@@ -59,8 +60,8 @@ public class CognomeBackend extends WikiBackend {
         this.repository = (CognomeRepository) crudRepository;
     }
 
-    public Cognome creaIfNotExist(final String cognomeTxt, int numBio) {
-        return checkAndSave(newEntity(cognomeTxt, numBio));
+    public Cognome creaIfNotExist(final String cognomeTxt, int numBio, boolean esistePagina) {
+        return checkAndSave(newEntity(cognomeTxt, numBio, esistePagina));
     }
 
     public Cognome checkAndSave(final Cognome cognome) {
@@ -79,7 +80,7 @@ public class CognomeBackend extends WikiBackend {
      * @return la nuova entity appena creata (non salvata)
      */
     public Cognome newEntity() {
-        return newEntity(VUOTA,0);
+        return newEntity(VUOTA, 0, false);
     }
 
     /**
@@ -88,15 +89,17 @@ public class CognomeBackend extends WikiBackend {
      * Eventuali regolazioni iniziali delle property <br>
      * All properties <br>
      *
-     * @param cognomeTxt (obbligatorio, unico)
-     * @param numBio     (obbligatorio, unico)
+     * @param cognomeTxt   (obbligatorio, unico)
+     * @param numBio       (obbligatorio)
+     * @param esistePagina (facoltativo)
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public Cognome newEntity(final String cognomeTxt, int numBio) {
+    public Cognome newEntity(final String cognomeTxt, int numBio, boolean esistePagina) {
         return Cognome.builder()
                 .cognome(textService.isValid(cognomeTxt) ? cognomeTxt : null)
                 .numBio(numBio)
+                .esistePagina(esistePagina)
                 .build();
     }
 
@@ -128,20 +131,23 @@ public class CognomeBackend extends WikiBackend {
         long inizio = System.currentTimeMillis();
         int tot = 0;
         int cont = 0;
+        List<String> cognomi = bioBackend.findAllCognomiDistinti();
+        //--Soglia minima per creare una entity nella collezione Cognomi sul mongoDB
+        int sogliaMongo = WPref.sogliaCognomiMongo.getInt();
+        //--Soglia minima per creare una pagina sul server wiki
+        int sogliaWiki = WPref.sogliaCognomiWiki.getInt();
 
         //--Cancella tutte le entities della collezione
         deleteAll();
 
-        DistinctIterable<String> listaCognomiDistinti = mongoService.mongoOp.getCollection("bio").distinct("cognome", String.class);
-        for (String cognomeTxt : listaCognomiDistinti) {
-            tot++;
-
-            if (saveCognome(cognomeTxt)) {
+        for (String cognomeTxt : cognomi) {
+            if (saveCognome(cognomeTxt, sogliaMongo)) {
                 cont++;
             }
         }
+
         logger.info(new WrapLog().message(String.format("Ci sono %d cognomi distinti", tot)));
-        //        super.setLastElabora(EATempo.minuti, inizio);
+        super.fixElaboraMinuti(inizio, "cognomi");
         //        logger.info("Creazione di " + text.format(cont) + " cognomi su un totale di " + text.format(tot) + " cognomi distinti. Tempo impiegato: " + date.deltaText(inizio));
     }
 
@@ -149,23 +155,24 @@ public class CognomeBackend extends WikiBackend {
     /**
      * Registra il numero di voci biografiche che hanno il cognome indicato <br>
      */
-    public boolean saveCognome(String cognomeTxt) {
+    public boolean saveCognome(String cognomeTxt, int sogliaMongo) {
         Cognome cognome = null;
-        //--Soglia minima per creare una entity nella collezione Cognomi sul mongoDB
-        int sogliaMongo = WPref.sogliaCognomiMongo.getInt();
-        //--Soglia minima per creare una pagina sul server wiki
-        int sogliaWiki = WPref.sogliaCognomiWiki.getInt();
-        long numBio = 0;
-        Query query = new Query();
-
-        query.addCriteria(Criteria.where("cognome").is(cognomeTxt));
-        numBio = mongoService.mongoOp.count(query, Bio.class);
+        long numBio = bioBackend.countCognome(cognomeTxt);
 
         if (numBio >= sogliaMongo) {
-            cognome = creaIfNotExist(cognomeTxt, (int) numBio);
+            cognome = creaIfNotExist(cognomeTxt, (int) numBio, esistePagina(cognomeTxt));
         }
 
         return cognome != null;
+    }
+
+
+    /**
+     * Controlla l'esistenza della pagina wiki relativa a questo cognome <br>
+     */
+    public boolean esistePagina(String cognome) {
+        String wikiTitle = PATH_COGNOMI + textService.primaMaiuscola(cognome);
+        return appContext.getBean(QueryExist.class).isEsiste(wikiTitle);
     }
 
 }// end of crud backend class

@@ -259,7 +259,7 @@ public class UploadAnniTest extends WikiTest {
     }
 
 
-    //    @Test
+//    @Test
     @DisplayName("15 - Upload usaSottoGiorniAnni")
     void usaSottoGiorniAnni() {
         System.out.println("15 - Upload usaSottoGiorniAnni");
@@ -278,7 +278,7 @@ public class UploadAnniTest extends WikiTest {
         WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
     }
 
-//    @Test
+    //    @Test
     @Order(16)
     @DisplayName("16 - Upload test di un anno anno morto con <noinclude>")
     void uploadTestMorto7() {
@@ -286,6 +286,23 @@ public class UploadAnniTest extends WikiTest {
         sorgente = "1982";
         ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
         printRisultato(ottenutoRisultato);
+    }
+
+
+//    @Test
+    @DisplayName("17 - Upload usaSottoGiorniAnni")
+    void usaSottoGiorniAnniReale() {
+        System.out.println("17 - Upload usaSottoGiorniAnni");
+        System.out.println(VUOTA);
+        boolean usaSottoGiorniAnni = WPref.usaSottoGiorniAnni.is();
+        sorgente = "2011";
+
+        // Da usare SOLO una tantum
+        WPref.usaSottoGiorniAnni.setValue(true);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+
+        WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
     }
 
     /**

@@ -40,6 +40,8 @@ public interface BioRepository extends MongoRepository<Bio, String> {
 
     Bio findFirstByWikiTitle(String wikiTitle);
 
+    long countBioByCognome(String cognome);
+
     long countBioByAttivita(String attivita);
 
     long countBioByAttivita2(String attivita);

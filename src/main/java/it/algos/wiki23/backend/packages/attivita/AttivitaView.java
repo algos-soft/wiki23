@@ -89,9 +89,9 @@ public class AttivitaView extends WikiView {
         super.nextUpload = WPref.uploadAttivitaPrevisto;
         super.lastStatistica = WPref.statisticaAttivita;
         super.wikiModuloTitle = PATH_MODULO_ATTIVITA;
+
         super.usaBottoneStatistiche = true;
         super.usaBottoneUploadStatistiche = true;
-        //        super.wikiStatisticheTitle = PATH_STATISTICHE_ATTIVITA;
         super.usaBottoneEdit = true;
         super.usaBottoneCategoria = true;
         super.usaBottoneUploadPagina = true;

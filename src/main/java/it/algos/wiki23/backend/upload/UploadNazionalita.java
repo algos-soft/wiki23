@@ -4,11 +4,8 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
-import static it.algos.wiki23.backend.upload.UploadAttivita.*;
 import it.algos.wiki23.backend.wrapper.*;
-import static it.algos.wiki23.wiki.query.QueryWrite.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -218,7 +215,7 @@ public class UploadNazionalita extends UploadAttivitaNazionalita {
         WResult result = WResult.errato();
         long inizio = System.currentTimeMillis();
 
-        List<String> listaPlurali = nazionalitaBackend.findAllPlurali();
+        List<String> listaPlurali = nazionalitaBackend.findAllPluraliDistinti();
         for (String plurale : listaPlurali) {
             upload(plurale);
         }

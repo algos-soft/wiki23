@@ -17,6 +17,7 @@ import org.springframework.stereotype.*;
 
 import java.time.*;
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project wiki
@@ -110,13 +111,19 @@ public class NazionalitaBackend extends WikiBackend {
         return repository.findAll();
     }
 
-    public List<String> findAllPlurali() {
-        List<String> lista = new ArrayList<>();
-        List<Nazionalita> listaAll = findNazionalitaDistinctByPlurali();
+    public List<String> findAllPluraliDistinti() {
+        // Lista completa di tutte le entities
+        List<Nazionalita> listaAll = repository.findAll();
 
-        for (Nazionalita nazionalita : listaAll) {
-            lista.add(nazionalita.pluraleLista);
-        }
+        // Lista completa della singola property
+        List<String> pluraleLista = listaAll.stream()
+                .map(naz -> naz.pluraleLista)
+                .collect(Collectors.toList());
+
+        // Lista di tutte le distinct di una property
+        List<String> lista = pluraleLista.stream()
+                .distinct()
+                .collect(Collectors.toList());
 
         return lista;
     }
@@ -273,6 +280,7 @@ public class NazionalitaBackend extends WikiBackend {
 
         return listaNomi;
     }
+
     /**
      * Crea una lista di singolari che hanno lo stesso plurale. <br>
      *
@@ -484,7 +492,7 @@ public class NazionalitaBackend extends WikiBackend {
         //--Per ognuna recupera le nazionalità singolari
         //--Per ognuna nazionalità singolare calcola quante biografie la usano
         //--Memorizza e registra il dato nella entityBean
-        listaPlurali = findAllPlurali();
+        listaPlurali = findAllPluraliDistinti();
         for (String plurale : listaPlurali) {
             numBio = 0;
             numSingolari = 0;

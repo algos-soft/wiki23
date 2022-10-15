@@ -172,6 +172,18 @@ public abstract class UploadGiorniAnni extends Upload {
             return WResult.crea();
         }
 
+        switch (typeCrono) {
+            case giornoNascita, giornoMorte -> {
+                giorno = giornoWikiBackend.findByNome(nomeLista);
+                this.ordineGiornoAnno = giorno != null ? giorno.getOrdine() : 0;
+            }
+            case annoNascita, annoMorte -> {
+                anno = annoWikiBackend.findByNome(nomeLista);
+                this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
+            }
+            default -> {}
+        }
+
         buffer.append(avviso());
         buffer.append(CAPO);
         buffer.append(fixToc());
@@ -182,6 +194,7 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(senzaParagrafiNonRaggruppate(lista));
         buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
         buffer.append(portale());
+        buffer.append(categorieSotto());
 
         return registra(wikiTitle, buffer.toString().trim());
     }
@@ -497,6 +510,20 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
         buffer.append(CAPO);
         buffer.append(String.format("*[[Categoria:%s| ]]", title));
+        buffer.append(CAPO);
+
+        return buffer.toString();
+    }
+
+    protected String categorieSotto() {
+        StringBuffer buffer = new StringBuffer();
+
+        if (uploadTest) {
+            return VUOTA;
+        }
+
+        buffer.append(CAPO);
+        buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
         buffer.append(CAPO);
 
         return buffer.toString();

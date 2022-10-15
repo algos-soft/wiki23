@@ -16,7 +16,7 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.component.timepicker.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.data.converter.*;
-import com.vaadin.flow.spring.annotation.*;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -25,10 +25,9 @@ import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
-import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.*;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.vaadin.crudui.crud.*;
 
 import javax.annotation.*;
@@ -39,12 +38,13 @@ import java.util.function.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: sab, 02-apr-2022
- * Time: 07:39
+ * Date: Sat, 15-Oct-2022
+ * Time: 14:44
  */
 @SpringComponent
+@Primary
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class CrudDialog extends Dialog {
+public class CrudDialogBase extends CrudDialog {
 
     protected final H2 titleField = new H2();
 
@@ -120,7 +120,7 @@ public class CrudDialog extends Dialog {
     //--collegamento tra i fields e la entityBean
     protected BeanValidationBinder<AEntity> binder;
 
-    protected AEntity currentItem;
+//    protected AEntity currentItem;
 
     protected CrudOperation operation;
 
@@ -138,7 +138,7 @@ public class CrudDialog extends Dialog {
      * parametri <br>
      * Per evitare il bug (solo visivo), aggiungo un costruttore senza parametri <br>
      */
-    public CrudDialog() {
+    public CrudDialogBase() {
     }// end of second constructor not @Autowired
 
     /**
@@ -151,7 +151,7 @@ public class CrudDialog extends Dialog {
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      * @param fields      da costruire in automatico
      */
-    public CrudDialog(final AEntity entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List<String> fields) {
+    public CrudDialogBase(final AEntity entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List<String> fields) {
         this(entityBean, operation, crudBackend, fields, true);
     }// end of constructor not @Autowired
 
@@ -166,7 +166,7 @@ public class CrudDialog extends Dialog {
      * @param fields            da costruire in automatico
      * @param usaUnaSolaColonna di default=true
      */
-    public CrudDialog(final AEntity entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List<String> fields, final boolean usaUnaSolaColonna) {
+    public CrudDialogBase(final AEntity entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List<String> fields, final boolean usaUnaSolaColonna) {
         this.currentItem = entityBean;
         this.operation = operation;
         this.crudBackend = crudBackend;
