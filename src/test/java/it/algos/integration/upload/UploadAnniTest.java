@@ -299,7 +299,7 @@ public class UploadAnniTest extends WikiTest {
 
         // Da usare SOLO una tantum
         WPref.usaSottoGiorniAnni.setValue(true);
-        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().upload(sorgente);
+        ottenutoRisultato = appContext.getBean(UploadAnni.class).morte().test().upload(sorgente);
         printRisultato(ottenutoRisultato);
 
         WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);

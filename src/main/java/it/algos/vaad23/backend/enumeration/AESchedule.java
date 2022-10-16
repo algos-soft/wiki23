@@ -100,7 +100,6 @@ public enum AESchedule {
      */
     dieciSabato("0 10 * * sat", "alle dieci di ogni sabato."),
 
-
     ;
 
     /**

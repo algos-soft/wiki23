@@ -62,14 +62,14 @@ public class UploadAnni extends UploadGiorniAnni {
         return this;
     }
 
-    public void uploadSottoPagine(String wikiTitle, String parente, String sottoPagina, List<WrapLista> lista) {
+    public void uploadSottoPagine(String wikiTitle, String parente, String sottoPagina, int ordineSottoPagina, List<WrapLista> lista) {
         UploadAnni anno = appContext.getBean(UploadAnni.class).typeCrono(typeCrono);
 
         if (uploadTest) {
             anno = anno.test();
         }
 
-        anno.uploadSottoPagina(wikiTitle, parente, sottoPagina, lista);
+        anno.uploadSottoPagina(wikiTitle, parente, sottoPagina, ordineSottoPagina, lista);
     }
 
     /**

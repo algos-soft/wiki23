@@ -66,7 +66,6 @@ public class DoppionomeView extends WikiView {
         super.usaBottoneUploadStatistiche = false;
         super.usaBottonePaginaWiki = false;
         super.usaBottoneTest = false;
-        super.usaSelectionGrid = false;
     }
 
     /**

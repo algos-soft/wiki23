@@ -80,7 +80,6 @@ public class GenereView extends WikiView {
         super.usaBottonePaginaWiki = false;
         super.usaBottoneTest = false;
         super.usaBottoneUploadPagina = false;
-        super.usaSelectionGrid = false;
 
         super.fixPreferenzeBackend();
     }

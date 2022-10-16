@@ -260,7 +260,7 @@ public abstract class Upload {
 
     protected WResult registra(String wikiTitle, String newText) {
         String newTextSignificativo = VUOTA;
-//        String tag = "</noinclude>";
+        //        String tag = "</noinclude>";
         String tag = "progetto=biografie";
 
         if (newText.contains(tag)) {
@@ -275,6 +275,8 @@ public abstract class Upload {
         }
     }
 
+    public void uploadSottoPagine(String wikiTitle, String parente, String sottoPagina, int ordineSottoPagina, List<WrapLista> lista) {
+    }
     public void uploadSottoPagine(String wikiTitle, String parente, String sottoPagina, List<WrapLista> lista) {
     }
 

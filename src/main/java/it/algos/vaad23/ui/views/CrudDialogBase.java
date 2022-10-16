@@ -6,7 +6,6 @@ import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.datepicker.*;
 import com.vaadin.flow.component.datetimepicker.*;
-import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.formlayout.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
@@ -16,7 +15,7 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.component.timepicker.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.data.converter.*;
-import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -25,9 +24,10 @@ import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.*;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.vaadin.crudui.crud.*;
 
 import javax.annotation.*;
@@ -116,11 +116,6 @@ public class CrudDialogBase extends CrudDialog {
     protected Consumer<AEntity> deleteHandler;
 
     protected Consumer<AEntity> annullaHandler;
-
-    //--collegamento tra i fields e la entityBean
-    protected BeanValidationBinder<AEntity> binder;
-
-//    protected AEntity currentItem;
 
     protected CrudOperation operation;
 

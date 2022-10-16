@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.upload;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.boot.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
@@ -11,6 +12,7 @@ import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.springframework.beans.factory.annotation.*;
 
 import java.time.*;
 import java.util.*;
@@ -26,6 +28,13 @@ import java.util.*;
  */
 public abstract class UploadGiorniAnni extends Upload {
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MeseBackend meseBackend;
 
     protected int ordineGiornoAnno;
 
@@ -77,9 +86,9 @@ public abstract class UploadGiorniAnni extends Upload {
     public WResult upload(final String nomeGiornoAnno) {
         this.nomeLista = nomeGiornoAnno;
         int numVoci = 0;
-        int lengthPagina = 0;
+        int numBio = 0;
         int sogliaIncludeAll = WPref.sogliaIncludeAll.getInt();
-        int sogliaMaxPagina = WPref.maxPageLength.getInt();
+        int sogliaMaxPagina = WPref.maxBioPageAnniGiorni.getInt();
 
         if (textService.isValid(nomeGiornoAnno)) {
             wikiTitle = switch (typeCrono) {
@@ -114,8 +123,8 @@ public abstract class UploadGiorniAnni extends Upload {
             if (WPref.usaSottoGiorniAnni.is()) {
                 numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
                 if (numVoci > sogliaIncludeAll) {
-                    lengthPagina = queryService.getLength(wikiTitle);
-                    if (lengthPagina > sogliaMaxPagina) {
+                    numBio = wikiUtility.getSizeAllWrap(mappaWrap);
+                    if (numBio > sogliaMaxPagina) {
                         usaSottoGiorniAnni = true;
                     }
                 }
@@ -163,7 +172,7 @@ public abstract class UploadGiorniAnni extends Upload {
     }
 
 
-    protected WResult esegueUploadSotto(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, List<WrapLista> lista) {
+    protected WResult esegueUploadSotto(String wikiTitle, String attNazPrincipale, String attNazSottoPagina, int ordineSottoPagina, List<WrapLista> lista) {
         StringBuffer buffer = new StringBuffer();
         int numVoci = lista.size();
 
@@ -179,7 +188,7 @@ public abstract class UploadGiorniAnni extends Upload {
             }
             case annoNascita, annoMorte -> {
                 anno = annoWikiBackend.findByNome(nomeLista);
-                this.ordineGiornoAnno = anno != null ? anno.getOrdine() : 0;
+                this.ordineGiornoAnno = anno != null ? anno.getOrdine() + ordineSottoPagina : 0;
             }
             default -> {}
         }
@@ -368,6 +377,7 @@ public abstract class UploadGiorniAnni extends Upload {
         String titoloParagrafoLink;
         String vedi;
         String sottoPagina;
+        int ordineSottoPagina = 0;
 
         for (String keyParagrafo : mappa.keySet()) {
             lista = mappa.get(keyParagrafo);
@@ -376,11 +386,12 @@ public abstract class UploadGiorniAnni extends Upload {
             buffer.append(fixTitolo(titoloParagrafoLink, numVoci, false));
 
             if (numVoci > sogliaSottoPaginaGiorniAnni) {
+                ordineSottoPagina = fixOrdineSottoPagina(keyParagrafo);
                 sottoPagina = String.format("%s%s%s", wikiTitle, SLASH, keyParagrafo);
 
                 vedi = String.format("{{Vedi anche|%s}}", sottoPagina);
                 buffer.append(vedi + CAPO);
-                uploadSottoPagine(sottoPagina, nomeLista, keyParagrafo, lista);
+                uploadSottoPagine(sottoPagina, nomeLista, keyParagrafo, ordineSottoPagina, lista);
             }
             else {
                 buffer.append(usaDiv ? "{{Div col}}" + CAPO : VUOTA);
@@ -451,6 +462,15 @@ public abstract class UploadGiorniAnni extends Upload {
         return titolo;
     }
 
+    protected int fixOrdineSottoPagina(String titoloParagrafoLink) {
+        int ordine = meseBackend.getOrdine(titoloParagrafoLink);
+
+        if (ordine == 0 && titoloParagrafoLink.equals(TAG_LISTA_NO_GIORNO)) {
+            ordine = 13;
+        }
+
+        return ordine;
+    }
 
     protected LinkedHashMap<String, List<WrapLista>> creaSubMappa(List<WrapLista> listaWrapSub) {
         LinkedHashMap<String, List<WrapLista>> mappaWrapSub = new LinkedHashMap<>();
@@ -479,13 +499,13 @@ public abstract class UploadGiorniAnni extends Upload {
     /**
      * Esegue la scrittura della sottopagina <br>
      */
-    public WResult uploadSottoPagina(final String wikiTitle, String parente, String sottoPagina, List<WrapLista> lista) {
+    public WResult uploadSottoPagina(final String wikiTitle, String parente, String sottoPagina, int ordineSottoPagina, List<WrapLista> lista) {
         this.wikiTitle = wikiTitle;
         this.nomeLista = parente;
         this.nomeSottoPagina = sottoPagina;
 
         if (textService.isValid(this.wikiTitle) && lista != null) {
-            this.esegueUploadSotto(this.wikiTitle, parente, nomeSottoPagina, lista);
+            this.esegueUploadSotto(this.wikiTitle, parente, nomeSottoPagina, ordineSottoPagina, lista);
         }
 
         return WResult.crea();

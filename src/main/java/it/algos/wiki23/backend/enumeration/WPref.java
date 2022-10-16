@@ -137,6 +137,7 @@ public enum WPref implements AIGenPref {
     elaboraPagineCancellaTime("elaboraPagineCancellaTime", AETypePref.integer, 0, "Durata elaborazione delle pagine da cancellare in minuti."),
     usaTaskElabora("usaTaskElabora", AETypePref.bool, false, "Lista pagine da cancellare e lista errori"),
     maxPageLength("maxPageLength", AETypePref.integer, 200000, "Soglia massima di una pagina in byte"),
+    maxBioPageAnniGiorni("maxBioPageAnniGiorni", AETypePref.integer, 1700, "Soglia massima di bio per usare le sottopagine  giorni/anni"),
     ;
 
 

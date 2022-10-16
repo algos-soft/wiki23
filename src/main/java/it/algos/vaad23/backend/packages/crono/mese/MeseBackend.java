@@ -45,8 +45,8 @@ public class MeseBackend extends CrudBackend {
         this.repository = (MeseRepository) crudRepository;
     }
 
-    public boolean crea(final int giorni, final String breve, final String nome) {
-        Mese mese = newEntity(giorni, breve, nome);
+    public boolean crea(final int ordine, final String breve, final String nome, final int giorni) {
+        Mese mese = newEntity(ordine, breve, nome, giorni);
         return crudRepository.insert(mese) != null;
     }
 
@@ -58,11 +58,11 @@ public class MeseBackend extends CrudBackend {
      * @return la nuova entity appena creata (non salvata)
      */
     public Mese newEntity() {
-        return newEntity(0, VUOTA, VUOTA);
+        return newEntity(0, VUOTA, VUOTA, 0);
     }
 
     public Mese newEntity(Document doc) {
-        return newEntity(27, doc.getString("breve"), doc.getString("nome"));
+        return newEntity(27, doc.getString("breve"), doc.getString("nome"), 0);
     }
 
     /**
@@ -71,22 +71,29 @@ public class MeseBackend extends CrudBackend {
      * Eventuali regolazioni iniziali delle property <br>
      * All properties <br>
      *
-     * @param giorni (obbligatorio)
+     * @param ordine (obbligatorio, unico)
      * @param breve  (obbligatorio, unico)
      * @param nome   (obbligatorio, unico)
+     * @param giorni (obbligatorio)
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public Mese newEntity(final int giorni, final String breve, final String nome) {
+    public Mese newEntity(int ordine, String breve, String nome, int giorni) {
         return Mese.builder()
-                .giorni(giorni)
+                .ordine(ordine)
                 .breve(textService.isValid(breve) ? breve : null)
                 .nome(textService.isValid(nome) ? nome : null)
+                .giorni(giorni)
                 .build();
     }
 
     public Mese findByNome(final String nome) {
         return repository.findFirstByNome(nome);
+    }
+
+    public int getOrdine(final String nomeMaiuscoloMinuscolo) {
+        Mese mese = findByNome(textService.primaMinuscola(nomeMaiuscoloMinuscolo));
+        return mese != null ? mese.ordine : 0;
     }
 
     /**
@@ -104,12 +111,14 @@ public class MeseBackend extends CrudBackend {
         int giorni;
         String breve;
         String nome;
+        int ordine = 0;
 
         if (super.reset()) {
             mappa = resourceService.leggeMappaServer(nomeFile);
             if (mappa != null) {
                 for (String key : mappa.keySet()) {
                     riga = mappa.get(key);
+                    ordine++;
                     if (riga.size() == 3) {
                         try {
                             giorni = Integer.decode(riga.get(0));
@@ -124,7 +133,7 @@ public class MeseBackend extends CrudBackend {
                         logger.error(new WrapLog().exception(new AlgosException("I dati non sono congruenti")).usaDb());
                         return false;
                     }
-                    if (!crea(giorni, breve, nome)) {
+                    if (!crea(ordine, breve, nome, giorni)) {
                         logger.error(new WrapLog().exception(new AlgosException(String.format("La entity %s non è stata salvata", nome))).usaDb());
                     }
                 }

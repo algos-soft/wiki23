@@ -23,13 +23,16 @@ import lombok.*;
 public class Mese extends AEntity {
 
     @AIField(type = AETypeField.integer, widthEM = 6)
-    public int giorni;
+    public int ordine;
 
     @AIField(type = AETypeField.text)
     public String breve;
 
     @AIField(type = AETypeField.text)
     public String nome;
+
+    @AIField(type = AETypeField.integer, widthEM = 6)
+    public int giorni;
 
     @Override
     public String toString() {

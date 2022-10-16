@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.*;
 import org.vaadin.crudui.crud.*;
 
 import javax.annotation.*;

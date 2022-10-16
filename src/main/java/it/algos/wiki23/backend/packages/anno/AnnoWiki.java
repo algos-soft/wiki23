@@ -40,7 +40,7 @@ import com.vaadin.flow.component.textfield.TextField;
 public class AnnoWiki extends AEntity {
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
-    @AIField(type = AETypeField.integer, header = "#", widthEM = 5, caption = "Ordine a partire dal 1.000 a.C.")
+    @AIField(type = AETypeField.integer, header = "#", widthEM = 6, caption = "Ordine a partire dal 1.000 a.C.")
     public int ordine;
 
     @AIField(type = AETypeField.text, widthEM = 7, caption = "Nome corrente")

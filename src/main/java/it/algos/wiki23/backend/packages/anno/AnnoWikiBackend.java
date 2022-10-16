@@ -60,8 +60,8 @@ public class AnnoWikiBackend extends WikiBackend {
         this.repository = (AnnoWikiRepository) crudRepository;
     }
 
-    public AnnoWiki creaIfNotExist(final Anno annoBase) {
-        return checkAndSave(newEntity(annoBase));
+    public AnnoWiki creaIfNotExist(final Anno annoBase, int ordine) {
+        return checkAndSave(newEntity(annoBase, ordine));
     }
 
     public AnnoWiki checkAndSave(final AnnoWiki annoWiki) {
@@ -76,7 +76,7 @@ public class AnnoWikiBackend extends WikiBackend {
      * @return la nuova entity appena creata (non salvata)
      */
     public AnnoWiki newEntity() {
-        return newEntity((Anno) null);
+        return newEntity((Anno) null, 0);
     }
 
     /**
@@ -86,12 +86,13 @@ public class AnnoWikiBackend extends WikiBackend {
      * All properties <br>
      *
      * @param annoBase proveniente da vaadin23
+     * @param ordine   progressivo partendo da -1000 e moltiplicando per 100 per categorizzare in ordine anche le sottopagine
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public AnnoWiki newEntity(final Anno annoBase) {
+    public AnnoWiki newEntity(final Anno annoBase, int ordine) {
         AnnoWiki annoWiki = AnnoWiki.annoWikiBuilder()
-                .ordine(annoBase.ordine)
+                .ordine(ordine)
                 .nome(annoBase.nome)
                 .build();
 
@@ -101,6 +102,7 @@ public class AnnoWikiBackend extends WikiBackend {
     public AnnoWiki fixProperties(AnnoWiki annoWiki) {
         annoWiki.pageNati = wikiUtility.wikiTitleNatiAnno(annoWiki.nome);
         annoWiki.pageMorti = wikiUtility.wikiTitleMortiAnno(annoWiki.nome);
+
         return annoWiki;
     }
 
@@ -130,8 +132,6 @@ public class AnnoWikiBackend extends WikiBackend {
     }
 
 
-
-
     /**
      * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>
@@ -142,6 +142,8 @@ public class AnnoWikiBackend extends WikiBackend {
     @Override
     public boolean reset() {
         List<Anno> anniBase = null;
+        int delta = 100;
+        int ordine = 0;
 
         if (mongoService.isCollectionNullOrEmpty(Anno.class)) {
             logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Anno'")));
@@ -151,8 +153,10 @@ public class AnnoWikiBackend extends WikiBackend {
         if (super.reset()) {
             Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
             anniBase = annoBackend.findAll(sort);
+
             for (Anno anno : anniBase) {
-                creaIfNotExist(anno);
+                ordine += delta;
+                creaIfNotExist(anno, ordine);
             }
         }
 
