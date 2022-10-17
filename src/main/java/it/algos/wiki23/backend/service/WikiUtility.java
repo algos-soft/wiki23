@@ -241,6 +241,17 @@ public class WikiUtility extends WAbstractService {
         return natiMortiAnno("Morti", anno);
     }
 
+    public String wikiTitle(AETypeLista typeCrono, String giornoAnno) {
+        return switch (typeCrono) {
+            case giornoNascita -> this.wikiTitleNatiGiorno(giornoAnno);
+            case giornoMorte -> this.wikiTitleMortiGiorno(giornoAnno);
+            case annoNascita -> this.wikiTitleNatiAnno(giornoAnno);
+            case annoMorte -> this.wikiTitleMortiAnno(giornoAnno);
+            default -> VUOTA;
+        };
+    }
+
+
     public String wikiTitleAttivita(String attivitaPlurale) {
         return PATH_ATTIVITA + SLASH + textService.primaMaiuscola(attivitaPlurale);
     }
@@ -275,7 +286,7 @@ public class WikiUtility extends WAbstractService {
      * 8
      * 11
      *
-     * @param tag    nati/morti
+     * @param tag         nati/morti
      * @param textMatcher di riferimento
      *
      * @return titolo della pagina wiki
@@ -304,7 +315,7 @@ public class WikiUtility extends WAbstractService {
      * 11
      * tutti quelli che iniziano con 8
      *
-     * @param tag  nati/morti
+     * @param tag         nati/morti
      * @param textMatcher di riferimento
      *
      * @return titolo della pagina wiki

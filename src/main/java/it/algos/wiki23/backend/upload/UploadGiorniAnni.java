@@ -196,7 +196,7 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(avviso());
         buffer.append(CAPO);
         buffer.append(fixToc());
-        buffer.append(torna());
+        buffer.append(tornaSotto());
         buffer.append(tmpListaBio(numVoci));
         buffer.append(CAPO);
         buffer.append(tmpListaPersoneIni(numVoci));
@@ -211,6 +211,11 @@ public abstract class UploadGiorniAnni extends Upload {
 
     protected String torna() {
         return textService.isValid(nomeLista) ? String.format("{{Torna a|%s}}", nomeLista) : VUOTA;
+    }
+
+    protected String tornaSotto() {
+        String torna = wikiUtility.wikiTitle(typeCrono, nomeLista) ;
+        return textService.isValid(torna) ? String.format("{{Torna a|%s}}", torna) : VUOTA;
     }
 
     protected String tmpListaPersoneIni(int numVoci) {
@@ -518,18 +523,18 @@ public abstract class UploadGiorniAnni extends Upload {
             return VUOTA;
         }
 
-        String title = switch (typeCrono) {
-            case giornoNascita -> wikiUtility.wikiTitleNatiGiorno(nomeLista);
-            case giornoMorte -> wikiUtility.wikiTitleMortiGiorno(nomeLista);
-            case annoNascita -> wikiUtility.wikiTitleNatiAnno(nomeLista);
-            case annoMorte -> wikiUtility.wikiTitleMortiAnno(nomeLista);
-            default -> VUOTA;
-        };
+        //        String title = switch (typeCrono) {
+        //            case giornoNascita -> wikiUtility.wikiTitleNatiGiorno(nomeLista);
+        //            case giornoMorte -> wikiUtility.wikiTitleMortiGiorno(nomeLista);
+        //            case annoNascita -> wikiUtility.wikiTitleNatiAnno(nomeLista);
+        //            case annoMorte -> wikiUtility.wikiTitleMortiAnno(nomeLista);
+        //            default -> VUOTA;
+        //        };
 
         buffer.append(CAPO);
         buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
         buffer.append(CAPO);
-        buffer.append(String.format("*[[Categoria:%s| ]]", title));
+        buffer.append(String.format("*[[Categoria:%s| ]]", wikiUtility.wikiTitle(typeCrono, nomeLista)));
         buffer.append(CAPO);
 
         return buffer.toString();
