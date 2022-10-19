@@ -33,6 +33,10 @@ import org.springframework.data.domain.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class NazionalitaBackendTest extends WikiTest {
 
+    /**
+     * Classe principale di riferimento <br>
+     */
+    private NazionalitaBackend backend;
 
     @Autowired
     private NazionalitaRepository repository;
@@ -76,9 +80,7 @@ public class NazionalitaBackendTest extends WikiTest {
     protected void setUpAll() {
         super.setUpAll();
 
-        MockitoAnnotations.initMocks(this);
-        MockitoAnnotations.initMocks(backend);
-        Assertions.assertNotNull(backend);
+        backend = nazionalitaBackend;
 
         backend.repository = repository;
         backend.crudRepository = repository;

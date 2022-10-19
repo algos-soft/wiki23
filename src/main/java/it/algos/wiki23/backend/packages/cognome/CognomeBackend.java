@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.core.query.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project wiki23
@@ -103,20 +104,44 @@ public class CognomeBackend extends WikiBackend {
                 .build();
     }
 
+
+    public Cognome findByCognome(final String cognome) {
+        return repository.findFirstByCognome(cognome);
+    }
+
+    @Override
+    public List<Cognome> findAll() {
+        List<Cognome> lista = super.findAll();
+
+        return lista.stream().sorted(Comparator.comparing(c -> c.cognome)).collect(Collectors.toList());
+    }
+
+    public List<Cognome> findAllSortNumBio() {
+        List<Cognome> lista = findAll();
+
+        lista = lista.stream().sorted(Comparator.comparingInt(c -> c.numBio)).collect(Collectors.toList());
+        Collections.reverse(lista);
+
+        return lista;
+    }
+
     /**
-     * Fetches all code of Prenome <br>
+     * Fetches all code of cognome <br>
      *
      * @return all selected property
      */
-    public List<String> fetchCognome() {
-        List<String> lista = new ArrayList<>();
-        List<Cognome> listaEntities = repository.findAll();
+    public List<String> findCognomi() {
+        return findAll()
+                .stream()
+                .map(cognome -> cognome.cognome)
+                .collect(Collectors.toList());
+    }
 
-        for (Cognome cognome : listaEntities) {
-            lista.add(cognome.cognome);
-        }
-
-        return lista;
+    public List<String> findCognomiSortNumBio() {
+        return findAllSortNumBio()
+                .stream()
+                .map(cognome -> cognome.cognome)
+                .collect(Collectors.toList());
     }
 
 

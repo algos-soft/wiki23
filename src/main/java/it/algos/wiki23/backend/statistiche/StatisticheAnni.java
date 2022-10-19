@@ -130,8 +130,6 @@ public class StatisticheAnni extends Statistiche {
 
     protected String riga(MappaStatistiche mappa) {
         StringBuffer buffer = new StringBuffer();
-        String tagSin = "style=\"text-align: left;\" |";
-        String tagDex = "style=\"text-align: right;\" |";
         String iniTag = "|-";
         String doppioTag = " || ";
         String pipe = "|";
@@ -144,16 +142,13 @@ public class StatisticheAnni extends Statistiche {
         buffer.append(mappa.getPos());
 
         buffer.append(doppioTag);
-        buffer.append(tagSin);
         buffer.append(textService.setDoppieQuadre(mappa.getNome()));
 
         buffer.append(doppioTag);
-        buffer.append(tagDex);
         nato = wikiUtility.wikiTitleNatiAnno(mappa.getNome()) + PIPE + mappa.getNati();
         buffer.append(textService.setDoppieQuadre(nato));
 
         buffer.append(doppioTag);
-        buffer.append(tagDex);
         morto = wikiUtility.wikiTitleMortiAnno(mappa.getNome()) + PIPE + mappa.getMorti();
         buffer.append(textService.setDoppieQuadre(morto));
 

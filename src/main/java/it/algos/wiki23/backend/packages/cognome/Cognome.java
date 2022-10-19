@@ -37,10 +37,13 @@ import com.vaadin.flow.component.textfield.TextField;
 @EqualsAndHashCode(callSuper = false)
 public class Cognome extends AEntity {
 
+    private static final transient int WIDTHEM = 20;
+
     @NotBlank()
     @Indexed(unique = true, direction = IndexDirection.ASCENDING)
     @AIField(type = AETypeField.text, search = true)
     public String cognome;
+
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.integer, header = "bio", caption = "Numero di biografie che utilizzano questo cognome", widthEM = 6)

@@ -350,6 +350,7 @@ public class WikiUtility extends WAbstractService {
                 giornoNato = this.wikiTitleNatiGiorno(giornoNato) + PIPE + giornoNato;
                 yield textService.setDoppieQuadre(giornoNato);
             }
+            case pagina -> giornoNato;
             case nessuno -> giornoNato;
         };
     }
@@ -380,6 +381,7 @@ public class WikiUtility extends WAbstractService {
                 giornoMorto = this.wikiTitleMortiGiorno(giornoMorto) + PIPE + giornoMorto;
                 yield textService.setDoppieQuadre(giornoMorto);
             }
+            case pagina -> giornoMorto;
             case nessuno -> giornoMorto;
         };
     }
@@ -414,6 +416,7 @@ public class WikiUtility extends WAbstractService {
                 annoNato = this.wikiTitleNatiAnno(annoNato) + PIPE + annoNato;
                 yield textService.setDoppieQuadre(annoNato);
             }
+            case pagina -> annoNato;
             case nessuno -> annoNato;
         };
     }
@@ -448,6 +451,7 @@ public class WikiUtility extends WAbstractService {
                 annoMorto = this.wikiTitleMortiAnno(annoMorto) + PIPE + annoMorto;
                 yield textService.setDoppieQuadre(annoMorto);
             }
+            case pagina -> annoMorto;
             case nessuno -> annoMorto;
         };
     }

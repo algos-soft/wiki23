@@ -9,6 +9,7 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.cognome.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -92,7 +93,7 @@ public abstract class WikiTest extends AlgosTest {
     public AnnoBackend annoBackend;
 
     @Autowired
-    public NazionalitaBackend backend;
+    public CognomeBackend cognomeBackend;
 
     protected final static long BIO_SALVINI_PAGEID = 132555;
 
@@ -563,7 +564,7 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("britannici", true),
                 Arguments.of("tedesco", true),
                 Arguments.of("tedeschi", true)
-                );
+        );
     }
 
     //--nome singolare
@@ -662,7 +663,7 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(annoBackend);
         assertNotNull(attivitaBackend);
         assertNotNull(nazionalitaBackend);
-
+        assertNotNull(cognomeBackend);
     }
 
     /**
@@ -681,6 +682,7 @@ public abstract class WikiTest extends AlgosTest {
         nazionalitaBackend.logger = logService;
         bioBackend.giornoBackend = giornoBackend;
         bioBackend.meseBackend = meseBackend;
+        cognomeBackend.bioBackend = bioBackend;
     }
 
     /**
@@ -1055,10 +1057,11 @@ public abstract class WikiTest extends AlgosTest {
         if (listWrapLista != null) {
             message = String.format("Faccio vedere una lista delle prime %d didascalie", max);
             System.out.println(message);
-            message = "Paragrafo, paragrafoLink, sottoParagrafo, didascaliaBreve";
+            message = "Paragrafo, paragrafoLink, ordinamento, sottoParagrafo, didascaliaBreve";
             System.out.println(message);
             System.out.println(VUOTA);
             printSub(listWrapLista.subList(0, Math.min(max, listWrapLista.size())));
+            System.out.println();
         }
     }
 

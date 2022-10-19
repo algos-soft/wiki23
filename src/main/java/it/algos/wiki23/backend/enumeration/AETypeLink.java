@@ -13,7 +13,7 @@ import java.util.*;
  * Time: 07:57
  */
 public enum AETypeLink implements AITypePref {
-    voce, lista, nessuno;
+    voce, lista, pagina, nessuno;
 
     public static List<AETypeLink> getAllEnums() {
         return Arrays.stream(values()).toList();

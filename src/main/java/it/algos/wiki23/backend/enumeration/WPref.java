@@ -39,6 +39,12 @@ public enum WPref implements AIGenPref {
     uploadNazionalitaTime("uploadNazionalitaTime", AETypePref.integer, 0, "Durata upload delle nazionalità in minuti."),
     uploadNazionalitaPrevisto("uploadNazionalitaPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per le nazionalità."),
 
+
+    uploadCognomi("uploadCognomi", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutti i cognomi oltre la soglia di 50 biografie."),
+    uploadCognomiTime("uploadCognomiTime", AETypePref.integer, 0, "Durata upload dei cognomi in minuti."),
+    uploadCognomiPrevisto("uploadCognomiPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per i cognomi."),
+
+
     resetBio("resetBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download completo delle voci biografiche."),
     resetBioTime("resetBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata download completo delle biografie in minuti."),
     downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download delle voci biografiche."),
@@ -119,6 +125,9 @@ public enum WPref implements AIGenPref {
             AETypeLink.nessuno
     ),
     linkGiorniAnni("linkGiorniAnni", AETypePref.enumerationType, AETypeLink.nessuno, "Type di link nei titoli dei paragrafi in giorni/anni",
+            AETypeLink.nessuno
+    ),
+    linkCognomi("linkCognomi", AETypePref.enumerationType, AETypeLink.pagina, "Type di link nei titoli dei paragrafi in persone di cognome",
             AETypeLink.nessuno
     ),
 

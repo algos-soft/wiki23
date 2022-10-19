@@ -6,6 +6,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.packages.cognome.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
@@ -428,6 +429,7 @@ public class DidascaliaService extends WAbstractService {
                 paragrafoLink = switch ((AETypeLink) WPref.linkAttNaz.getEnumCurrentObj()) {
                     case voce -> textService.setDoppieQuadre(paragrafo);
                     case lista -> textService.setDoppieQuadre(PATH_NAZIONALITA + SLASH + paragrafo + PIPE + paragrafo);
+                    case pagina -> paragrafo;
                     case nessuno -> paragrafo;
                 };
             }
@@ -467,6 +469,7 @@ public class DidascaliaService extends WAbstractService {
                 paragrafoLink = switch ((AETypeLink) WPref.linkAttNaz.getEnumCurrentObj()) {
                     case voce -> textService.setDoppieQuadre(paragrafo);
                     case lista -> textService.setDoppieQuadre(PATH_ATTIVITA + SLASH + paragrafo + PIPE + paragrafo);
+                    case pagina -> paragrafo;
                     case nessuno -> paragrafo;
                 };
             }
@@ -487,6 +490,53 @@ public class DidascaliaService extends WAbstractService {
 
 
     /**
+     * Costruisce una wrapLista specializzata per le righe delle pagine 'Persone di cognome' <br>
+     * Contiene il paragrafo 'attivita'
+     * Contiene il sotto-paragrafo 'primoCarattere'
+     * Contiene la didascalia con 'wikiTitle', 'attività/nazionalità', 'luogo e anno di nascita', 'luogo e anno di morte'
+     *
+     * @param bio completa
+     *
+     * @return wrapLista
+     */
+    public WrapLista getWrapCognomi(final Bio bio) {
+        Cognome cognome = cognomeBackend.findByCognome(bio.cognome);
+        String ordinamento = textService.isValid(bio.nome) ? bio.nome : bio.ordinamento;
+        String sottoParagrafo = ordinamento.substring(0, 1);
+        String didascalia = this.lista(bio);
+        Attivita attivita = attivitaBackend.findFirstBySingolare(bio.attivita);
+
+        if (attivita == null) {
+            return new WrapLista(TAG_LISTA_NO_ATTIVITA, TAG_LISTA_NO_ATTIVITA, ordinamento, sottoParagrafo, didascalia);
+        }
+
+        String paragrafo;
+        String paragrafoLink;
+
+        if (cognome != null) {
+            paragrafo = textService.primaMaiuscola(attivita.pluraleLista);
+            if (attivita.esistePaginaLista) {
+                paragrafoLink = switch ((AETypeLink) WPref.linkCognomi.getEnumCurrentObj()) {
+                    case voce -> textService.setDoppieQuadre(paragrafo);
+                    case lista -> textService.setDoppieQuadre(PATH_ATTIVITA + SLASH + paragrafo + PIPE + paragrafo);
+                    case pagina -> textService.setDoppieQuadre(attivita.linkPaginaAttivita + PIPE + paragrafo);
+                    case nessuno -> paragrafo;
+                };
+            }
+            else {
+                paragrafoLink = paragrafo;
+            }
+        }
+        else {
+            paragrafo = TAG_LISTA_ALTRE;
+            paragrafoLink = TAG_LISTA_ALTRE;
+        }
+
+        return new WrapLista(paragrafo, paragrafoLink, ordinamento, sottoParagrafo, didascalia);
+    }
+
+
+    /**
      * Costruisce una wrapLista <br>
      *
      * @param bio completa
@@ -501,6 +551,7 @@ public class DidascaliaService extends WAbstractService {
             case annoMorte -> this.getWrapAnnoMorto(bio);
             case nazionalitaSingolare, nazionalitaPlurale -> this.getWrapNazionalita(bio);
             case attivitaSingolare, attivitaPlurale -> this.getWrapAttivita(bio);
+            case cognomi -> this.getWrapCognomi(bio);
             case listaBreve -> null;
             case listaEstesa -> null;
             default -> null;

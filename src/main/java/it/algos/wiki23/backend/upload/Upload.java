@@ -43,6 +43,8 @@ public abstract class Upload {
 
     protected static final String INFO_PAGINA_NAZIONALITA = "Questa pagina di una singola '''nazionalità''' è stata creata perché le relative voci biografiche superano le '''" + WPref.sogliaAttNazWiki.getInt() + "''' unità.";
 
+    protected static final String INFO_PAGINA_COGNOMI = "Questa pagina di un singolo '''cognome''' è stata creata perché le relative voci biografiche superano le '''" + WPref.sogliaCognomiWiki.getInt() + "''' unità.";
+
     protected static final String INFO_PARAGRAFI_ATTIVITA = "La lista è suddivisa in paragrafi per ogni '''attività''' individuata. Se il numero di voci biografiche nel" +
             " paragrafo supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità, viene creata una '''sottopagina'''.";
 

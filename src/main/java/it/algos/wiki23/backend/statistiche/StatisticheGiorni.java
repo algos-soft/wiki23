@@ -152,8 +152,6 @@ public class StatisticheGiorni extends Statistiche {
 
     protected String riga(MappaStatistiche mappa) {
         StringBuffer buffer = new StringBuffer();
-        String tagSin = "style=\"text-align: left;\" |";
-        String tagDex = "style=\"text-align: right;\" |";
         String iniTag = "|-";
         String doppioTag = " || ";
         String pipe = "|";
@@ -166,25 +164,20 @@ public class StatisticheGiorni extends Statistiche {
         buffer.append(mappa.getPos());
 
         buffer.append(doppioTag);
-        buffer.append(tagSin);
         buffer.append(textService.setDoppieQuadre(mappa.getNome()));
 
         buffer.append(doppioTag);
-        buffer.append(tagDex);
         nato = wikiUtility.wikiTitleNatiGiorno(mappa.getNome()) + PIPE + mappa.getNati();
         buffer.append(textService.setDoppieQuadre(nato));
 
         buffer.append(doppioTag);
-        buffer.append(tagDex);
         morto = wikiUtility.wikiTitleMortiGiorno(mappa.getNome()) + PIPE + mappa.getMorti();
         buffer.append(textService.setDoppieQuadre(morto));
 
         buffer.append(doppioTag);
-        buffer.append(tagDex);
         buffer.append(mappa.getPercNati());
 
         buffer.append(doppioTag);
-        buffer.append(tagDex);
         buffer.append(mappa.getPercMorti());
 
         buffer.append(CAPO);

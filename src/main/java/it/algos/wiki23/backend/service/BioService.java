@@ -187,7 +187,7 @@ public class BioService extends WAbstractService {
         //        }
 
         if (mappa != null && mappa.size() < 9) {
-            message = String.format("Parametri insufficienti (%d) nella bio %s", mappa.size(),bio.wikiTitle);
+            message = String.format("Parametri insufficienti (%d) nella bio %s", mappa.size(), bio.wikiTitle);
             if (mappa.size() < 7) {
                 logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
             }
@@ -822,6 +822,21 @@ public class BioService extends WAbstractService {
         return fetchNazionalita(listaNomiSingoli);
     }
 
+
+    /**
+     * Cerca tutte le entities di una collection filtrate con una serie di attività. <br>
+     * Selects documents in a collection or view and returns a list of the selected documents. <br>
+     *
+     * @param cognome per costruire la query
+     *
+     * @return lista di entityBeans ordinata per cognome
+     *
+     * @see(https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find/)
+     */
+    public List<Bio> fetchCognomi(String cognome) {
+        return repository.findAllByCognomeOrderByOrdinamento(cognome);
+    }
+
     public List<Bio> fetchListe(AETypeLista typeLista, String nomeLista) {
         try {
             return switch (typeLista) {
@@ -833,6 +848,7 @@ public class BioService extends WAbstractService {
                 case nazionalitaPlurale -> bioService.fetchNazionalita(nomeLista);
                 case attivitaSingolare -> bioService.fetchAttivita(nomeLista);
                 case attivitaPlurale -> bioService.fetchAttivita(nomeLista);
+                case cognomi -> bioService.fetchCognomi(nomeLista);
                 default -> null;
             };
         } catch (Exception unErrore) {

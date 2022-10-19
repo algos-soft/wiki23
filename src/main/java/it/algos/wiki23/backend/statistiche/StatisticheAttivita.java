@@ -235,6 +235,16 @@ public class StatisticheAttivita extends Statistiche {
         return buffer.toString();
     }
 
+    protected String inizioTabella() {
+        String testo = VUOTA;
+
+        testo += CAPO;
+        testo += "{|class=\"wikitable sortable\" style=\"background-color:#EFEFEF; text-align: left;\"";
+        testo += CAPO;
+
+        return testo;
+    }
+
     protected String colonneUsate() {
         StringBuffer buffer = new StringBuffer();
         String color = "! style=\"background-color:#CCC;\" |";
@@ -323,7 +333,7 @@ public class StatisticheAttivita extends Statistiche {
 
     protected String rigaUsate(MappaStatistiche mappaSingola, boolean treAttivita, int cont, int soglia, boolean linkLista) {
         StringBuffer buffer = new StringBuffer();
-        String tagSin = "style=\"text-align: left;\" |";
+        String tagDex = "style=\"text-align: right;\" |";
         String nome = textService.primaMinuscola(mappaSingola.getChiave());
         String categoriaTag = "[[:Categoria:";
         String iniTag = "|-";
@@ -339,23 +349,25 @@ public class StatisticheAttivita extends Statistiche {
         buffer.append(cont);
 
         buffer.append(doppioTag);
-        buffer.append(tagSin);
         buffer.append(fixNomeUsate(mappaSingola, soglia, linkLista));
 
         buffer.append(doppioTag);
-        buffer.append(tagSin);
         buffer.append(categoria);
         buffer.append(doppioTag);
+        buffer.append(tagDex);
         buffer.append(mappaSingola.getNumAttivitaUno());
 
         if (treAttivita) {
             buffer.append(doppioTag);
+            buffer.append(tagDex);
             buffer.append(mappaSingola.getNumAttivitaDue());
 
             buffer.append(doppioTag);
+            buffer.append(tagDex);
             buffer.append(mappaSingola.getNumAttivitaTre());
 
             buffer.append(doppioTag);
+            buffer.append(tagDex);
             buffer.append(mappaSingola.getNumAttivitaTotali());
         }
         buffer.append(CAPO);
@@ -384,7 +396,6 @@ public class StatisticheAttivita extends Statistiche {
 
         return nomeVisibile;
     }
-
 
 
     /**

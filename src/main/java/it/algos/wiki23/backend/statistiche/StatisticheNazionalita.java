@@ -117,6 +117,16 @@ public class StatisticheNazionalita extends Statistiche {
         return buffer.toString();
     }
 
+    protected String inizioTabella() {
+        String testo = VUOTA;
+
+        testo += CAPO;
+        testo += "{|class=\"wikitable sortable\" style=\"background-color:#EFEFEF; text-align: left;\"";
+        testo += CAPO;
+
+        return testo;
+    }
+
     protected String colonneUsate() {
         StringBuffer buffer = new StringBuffer();
         String color = "! style=\"background-color:#CCC;\" |";
@@ -185,7 +195,7 @@ public class StatisticheNazionalita extends Statistiche {
 
     protected String rigaUsate(String plurale, MappaStatistiche mappaSingola, int cont, int soglia, boolean linkLista) {
         StringBuffer buffer = new StringBuffer();
-        String tagSin = "style=\"text-align: left;\" |";
+        String tagDex = "style=\"text-align: right;\" |";
         String nome = plurale.toLowerCase();
         String categoriaTag = "[[:Categoria:";
         String iniTag = "|-";
@@ -202,13 +212,12 @@ public class StatisticheNazionalita extends Statistiche {
         buffer.append(cont);
 
         buffer.append(doppioTag);
-        buffer.append(tagSin);
         buffer.append(fixNomeUsate(plurale, soglia, linkLista));
 
         buffer.append(doppioTag);
-        buffer.append(tagSin);
         buffer.append(categoria);
         buffer.append(doppioTag);
+        buffer.append(tagDex);
         buffer.append(mappaSingola.getNumNazionalita());
         buffer.append(CAPO);
 
