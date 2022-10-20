@@ -15,6 +15,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.PATH_WIKI;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.upload.*;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
@@ -69,12 +70,15 @@ public class CognomeView extends WikiView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList( "numBio");
+        super.gridPropertyNamesList = Arrays.asList("numBio");
         super.formPropertyNamesList = Arrays.asList("cognome", "numBio");
         super.sortOrder = Sort.by(Sort.Direction.DESC, "numBio");
 
         super.lastElaborazione = WPref.elaboraCognomi;
         super.durataElaborazione = WPref.elaboraCognomiTime;
+        super.lastUpload = WPref.uploadCognomi;
+        super.durataUpload= WPref.uploadCognomiTime;
+        super.nextUpload= WPref.uploadCognomiPrevisto;
 
         super.usaBottoneDownload = false;
         super.usaBottoneUploadStatistiche = false;
@@ -138,25 +142,24 @@ public class CognomeView extends WikiView {
             return new Span(anchor);
         })).setHeader("pagina").setKey("pagina").setFlexGrow(0).setWidth("18em");
 
-
-//        Grid.Column daCancellare = grid.addColumn(new ComponentRenderer<>(entity -> {
-//            String link = "https://it.wikipedia.org/w/index.php?title=Progetto:Biografie/Attivit%C3%A0/";
-//            link += textService.primaMaiuscola(((Attivita) entity).pluraleLista);
-//            link += TAG_DELETE;
-//            Label label = new Label("no");
-//            label.getElement().getStyle().set("color", "green");
-//            Anchor anchor = new Anchor(link, "del");
-//            anchor.getElement().getStyle().set("color", "red");
-//            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-//            Span span = new Span(anchor);
-//
-//            if (((Attivita) entity).esistePaginaLista && !((Attivita) entity).superaSoglia) {
-//                return span;
-//            }
-//            else {
-//                return label;
-//            }
-//        })).setHeader("X").setKey("cancella").setFlexGrow(0).setWidth("8em");
+        //        Grid.Column daCancellare = grid.addColumn(new ComponentRenderer<>(entity -> {
+        //            String link = "https://it.wikipedia.org/w/index.php?title=Progetto:Biografie/Attivit%C3%A0/";
+        //            link += textService.primaMaiuscola(((Attivita) entity).pluraleLista);
+        //            link += TAG_DELETE;
+        //            Label label = new Label("no");
+        //            label.getElement().getStyle().set("color", "green");
+        //            Anchor anchor = new Anchor(link, "del");
+        //            anchor.getElement().getStyle().set("color", "red");
+        //            anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
+        //            Span span = new Span(anchor);
+        //
+        //            if (((Attivita) entity).esistePaginaLista && !((Attivita) entity).superaSoglia) {
+        //                return span;
+        //            }
+        //            else {
+        //                return label;
+        //            }
+        //        })).setHeader("X").setKey("cancella").setFlexGrow(0).setWidth("8em");
 
         Grid.Column ordine = grid.getColumnByKey(FIELD_KEY_ORDER);
         Grid.Column numBio = grid.getColumnByKey("numBio");
@@ -194,6 +197,38 @@ public class CognomeView extends WikiView {
             elementiFiltrati = items.size();
             sicroBottomLayout();
         }
+    }
+
+    /**
+     * Scrive una pagina definitiva sul server wiki <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void uploadPagina() {
+        Cognome cognome = getCognomeCorrente();
+
+        if (cognome != null) {
+            backend.uploadPagina(cognome.cognome);
+            reload();
+        }
+    }
+
+    /**
+     * Esegue un azione di upload, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void upload() {
+        appContext.getBean(UploadCognomi.class).uploadAll();
+    }
+
+    public Cognome getCognomeCorrente() {
+        Cognome cognome = null;
+
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            cognome = (Cognome) entityBean.get();
+        }
+
+        return cognome;
     }
 
 }// end of crud @Route view class

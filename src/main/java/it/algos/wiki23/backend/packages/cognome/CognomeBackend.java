@@ -8,6 +8,8 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.upload.*;
+import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.*;
@@ -198,6 +200,13 @@ public class CognomeBackend extends WikiBackend {
     public boolean esistePagina(String cognome) {
         String wikiTitle = PATH_COGNOMI + textService.primaMaiuscola(cognome);
         return appContext.getBean(QueryExist.class).isEsiste(wikiTitle);
+    }
+
+    /**
+     * Scrive una pagina definitiva sul server wiki <br>
+     */
+    public WResult uploadPagina(String cognomeTxt) {
+        return appContext.getBean(UploadCognomi.class).upload(cognomeTxt);
     }
 
 }// end of crud backend class

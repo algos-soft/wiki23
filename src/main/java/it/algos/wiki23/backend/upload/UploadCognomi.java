@@ -6,7 +6,9 @@ import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.liste.*;
+import it.algos.wiki23.backend.packages.cognome.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
@@ -27,6 +29,13 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UploadCognomi extends Upload {
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public CognomeBackend cognomeBackend;
 
     /**
      * Costruttore base con parametri <br>
@@ -61,12 +70,12 @@ public class UploadCognomi extends Upload {
         this.nomeLista = textService.primaMaiuscola(cognomeTxt);
 
         if (textService.isValid(nomeLista)) {
-            wikiTitle = nomeLista;
+            wikiTitle = PATH_COGNOMI + nomeLista;
 
             mappaWrap = appContext.getBean(ListaCognomi.class, nomeLista).mappaWrap();
 
             if (uploadTest) {
-                this.wikiTitle = UPLOAD_TITLE_DEBUG + PATH_COGNOMI + wikiTitle;
+                this.wikiTitle = UPLOAD_TITLE_DEBUG + wikiTitle;
             }
 
             if (textService.isValid(wikiTitle) && mappaWrap != null && mappaWrap.size() > 0) {
@@ -83,7 +92,7 @@ public class UploadCognomi extends Upload {
         int numVoci = wikiUtility.getSizeAllWrap(mappa);
 
         if (numVoci < 1) {
-            logger.info(new WrapLog().message(String.format("Non creata la pagina %s perché non ci sono voci", wikiTitle, numVoci)));
+            logger.info(new WrapLog().message(String.format("Non creata la pagina %s perché non ci sono abbastanza voci", wikiTitle, numVoci)));
             return WResult.crea();
         }
 
@@ -91,14 +100,14 @@ public class UploadCognomi extends Upload {
         buffer.append(CAPO);
         buffer.append(includeIni());
         buffer.append(fixToc());
-//        buffer.append(torna(wikiTitle));
+        //        buffer.append(torna(wikiTitle));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
         buffer.append(CAPO);
         buffer.append(incipit());
         buffer.append(testoBody(mappa));
-        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
-//                buffer.append(note());
+//        buffer.append(uploadTest ? VUOTA : DOPPIE_GRAFFE_END);
+        //                buffer.append(note());
         buffer.append(CAPO);
         buffer.append(portale());
         buffer.append(categorie());
@@ -154,7 +163,7 @@ public class UploadCognomi extends Upload {
             titoloParagrafoLink = lista.get(0).titoloParagrafoLink;
             buffer.append(wikiUtility.fixTitolo(VUOTA, titoloParagrafoLink, numVoci));
 
-            if (numVoci > max) {
+            if (WPref.usaSottoCognomi.is() && numVoci > max) {
                 parente = String.format("%s%s%s%s%s", titoloLinkVediAnche, SLASH, textService.primaMaiuscola(nomeLista), SLASH, keyParagrafo);
                 vedi = String.format("{{Vedi anche|%s}}", parente);
                 buffer.append(vedi + CAPO);
@@ -191,6 +200,22 @@ public class UploadCognomi extends Upload {
         buffer.append(String.format("*[[Categoria:Liste di persone per cognome|%s]]", cat));
 
         return buffer.toString();
+    }
+
+    /**
+     * Esegue la scrittura di tutte le pagine di nazionalità <br>
+     */
+    public WResult uploadAll() {
+        WResult result = WResult.errato();
+        long inizio = System.currentTimeMillis();
+
+        List<String> listaPlurali = cognomeBackend.findCognomiSortNumBio();
+        for (String plurale : listaPlurali) {
+            upload(plurale);
+        }
+
+        fixUploadMinuti(inizio);
+        return result;
     }
 
 }

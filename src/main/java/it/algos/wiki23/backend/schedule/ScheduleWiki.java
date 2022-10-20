@@ -51,7 +51,7 @@ public class ScheduleWiki extends Scheduler {
             schedule(appContext.getBean(TaskGiorni.class));         // AESchedule.dueNoLunedi
             schedule(appContext.getBean(TaskAnni.class));           // AESchedule.quattroNoLunedi
             schedule(appContext.getBean(TaskAttivita.class));       // AESchedule.dieciMartedi
-//            schedule(appContext.getBean(TaskCognomi.class));       // AESchedule.dieciMercoledi
+            schedule(appContext.getBean(TaskCognomi.class));       // AESchedule.dieciMercoledi
             schedule(appContext.getBean(TaskNazionalita.class));    // AESchedule.dieciGiovedi
             //            schedule(appContext.getBean(TaskNomi.class));       // AESchedule.dieciVenerdi
             schedule(appContext.getBean(TaskElaborazione.class));   // AESchedule.dieciSabato
