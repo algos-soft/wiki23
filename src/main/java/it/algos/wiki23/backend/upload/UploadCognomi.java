@@ -234,7 +234,6 @@ public class UploadCognomi extends Upload {
         String paragrafo;
         LinkedHashMap<String, List<WrapLista>> mappaWrapSotto = new LinkedHashMap<>();
         List<WrapLista> listaTmp;
-        List<WrapLista> listaSotto;
 
         for (WrapLista wrap : listaWrap) {
             paragrafo = wrap.titoloSottoParagrafo;
@@ -250,7 +249,6 @@ public class UploadCognomi extends Upload {
         }
 
         for (String keyParagrafoSotto : mappaWrapSotto.keySet()) {
-            listaSotto = mappaWrapSotto.get(keyParagrafoSotto);
             buffer.append(wikiUtility.fixTitolo(keyParagrafoSotto, mappaWrapSotto.get(keyParagrafoSotto).size()));
             for (WrapLista wrap : mappaWrapSotto.get(keyParagrafoSotto)) {
                 buffer.append(ASTERISCO);
