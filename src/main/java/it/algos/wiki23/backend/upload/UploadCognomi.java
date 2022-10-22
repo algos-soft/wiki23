@@ -45,7 +45,7 @@ public class UploadCognomi extends Upload {
      * La superclasse usa poi il metodo @PostConstruct inizia() per proseguire dopo l'init del costruttore <br>
      */
     public UploadCognomi() {
-        super.summary = "[[Utente:Biobot/attivitàBio|attivitàBio]]";
+        super.summary = "[[Utente:Biobot/cognomiBio|cognomiBio]]";
         super.titoloLinkParagrafo = TITOLO_LINK_PARAGRAFO_NAZIONALITA;
         super.titoloLinkVediAnche = PATH_COGNOMI;
         super.typeToc = AETypeToc.forceToc;
