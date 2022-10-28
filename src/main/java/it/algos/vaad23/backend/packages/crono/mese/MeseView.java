@@ -51,8 +51,8 @@ public class MeseView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("giorni", "breve", "nome");
-        super.formPropertyNamesList = Arrays.asList("giorni", "breve", "nome");
+        super.gridPropertyNamesList = Arrays.asList("giorni", "breve", "nome", "primo", "ultimo");
+        super.formPropertyNamesList = Arrays.asList("giorni", "breve", "nome", "primo", "ultimo");
 
         super.usaBottoneDeleteReset = true;
         super.usaReset = true;

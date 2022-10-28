@@ -133,6 +133,8 @@ public class VaadCost {
 
     public static final String SLASH = "/";
 
+    public static final String SLASH_SPACE = SPAZIO + SLASH + SPAZIO;
+
     public static final String PIPE = "|";
 
     public static final String REGEX_PIPE = "\\|";
@@ -458,5 +460,35 @@ public class VaadCost {
 
     public static final List<String> TRANS = Arrays.asList("", "trans", "incerto", "non si sa", "dubbio", "?", "*", "ǝ");
 
+    /**
+     * UNICODEU+000BA
+     * HEX CODE&#xba;
+     * HTML CODE&#186;
+     * HTML ENTITY&ordm;
+     * CSS CODE\00BA
+     */
+    public static final String MASCULINE_ORDINAL_INDICATOR = "º"; //-70
+
+    public static final char CHAR_MASCULINE_ORDINAL_INDICATOR = (char) 186;
+
+    /**
+     * UNICODEU+000AA
+     * HEX CODE&#xaa;
+     * HTML CODE&#170;
+     * HTML ENTITY&ordf;
+     * CSS CODE\00AA
+     */
+    public static final String FEMININE_ORDINAL_INDICATOR = "º"; //-70
+
+
+    /**
+     * UNICODEU+000B0
+     * HEX CODE&#xb0;
+     * HTML CODE&#176;
+     * HTML ENTITY&deg;
+     * CSS CODE\00B0
+     */
+    public static final String DEGREE_SIGN = "°"; //-80
+    public static final char CHAR_DEGREE_SIGN = (char) 176;
 
 }

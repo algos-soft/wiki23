@@ -28,7 +28,7 @@ import java.util.*;
 @Service
 public class MeseBackend extends CrudBackend {
 
-    private MeseRepository repository;
+    public MeseRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -45,9 +45,9 @@ public class MeseBackend extends CrudBackend {
         this.repository = (MeseRepository) crudRepository;
     }
 
-    public boolean crea(final int ordine, final String breve, final String nome, final int giorni) {
-        Mese mese = newEntity(ordine, breve, nome, giorni);
-        return crudRepository.insert(mese) != null;
+    public Mese crea(final int ordine, final String breve, final String nome, final int giorni, int primo, int ultimo) {
+        Mese mese = newEntity(ordine, breve, nome, giorni, primo, ultimo);
+        return repository.insert(mese);
     }
 
     /**
@@ -58,11 +58,11 @@ public class MeseBackend extends CrudBackend {
      * @return la nuova entity appena creata (non salvata)
      */
     public Mese newEntity() {
-        return newEntity(0, VUOTA, VUOTA, 0);
+        return newEntity(0, VUOTA, VUOTA, 0, 0, 0);
     }
 
     public Mese newEntity(Document doc) {
-        return newEntity(27, doc.getString("breve"), doc.getString("nome"), 0);
+        return newEntity(27, doc.getString("breve"), doc.getString("nome"), 0, 0, 0);
     }
 
     /**
@@ -75,15 +75,19 @@ public class MeseBackend extends CrudBackend {
      * @param breve  (obbligatorio, unico)
      * @param nome   (obbligatorio, unico)
      * @param giorni (obbligatorio)
+     * @param primo  giorno dell'anno
+     * @param ultimo giorno dell'anno
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public Mese newEntity(int ordine, String breve, String nome, int giorni) {
+    public Mese newEntity(int ordine, String breve, String nome, int giorni, int primo, int ultimo) {
         return Mese.builder()
                 .ordine(ordine)
                 .breve(textService.isValid(breve) ? breve : null)
                 .nome(textService.isValid(nome) ? nome : null)
                 .giorni(giorni)
+                .primo(primo)
+                .ultimo(ultimo)
                 .build();
     }
 
@@ -106,45 +110,82 @@ public class MeseBackend extends CrudBackend {
     @Override
     public boolean reset() {
         String nomeFile = "mesi";
-        Map<String, List<String>> mappa;
+        return super.reset() ? resetServer(nomeFile) != null : false;
+    }
+
+    public List<Mese> resetConfig(String nomeFile) {
+        Map<String, List<String>> mappa = resourceService.leggeMappaConfig(nomeFile);
+        return reset(mappa);
+    }
+
+    public List<Mese> resetServer(String nomeFile) {
+        Map<String, List<String>> mappa = resourceService.leggeMappaServer(nomeFile);
+        return reset(mappa);
+    }
+
+    /**
+     * Creazione di alcuni dati iniziali <br>
+     * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
+     */
+    public List<Mese> reset(Map<String, List<String>> mappa) {
+        List<Mese> mesi = new ArrayList<>();
+        Mese mese;
         List<String> riga;
         int giorni;
         String breve;
         String nome;
+        String message;
         int ordine = 0;
+        int primo = 0;
+        int ultimo = 0;
 
-        if (super.reset()) {
-            mappa = resourceService.leggeMappaServer(nomeFile);
-            if (mappa != null) {
-                for (String key : mappa.keySet()) {
-                    riga = mappa.get(key);
-                    ordine++;
-                    if (riga.size() == 3) {
-                        try {
-                            giorni = Integer.decode(riga.get(0));
-                        } catch (Exception unErrore) {
-                            logger.error(new WrapLog().exception(unErrore).usaDb());
-                            giorni = 0;
-                        }
-                        breve = riga.get(1);
-                        nome = riga.get(2);
+        if (mappa != null) {
+            for (String key : mappa.keySet()) {
+                riga = mappa.get(key);
+                if (riga.size() >= 3) {
+                    try {
+                        giorni = Integer.decode(riga.get(0));
+                    } catch (Exception unErrore) {
+                        logger.error(new WrapLog().exception(unErrore).usaDb());
+                        giorni = 0;
                     }
-                    else {
-                        logger.error(new WrapLog().exception(new AlgosException("I dati non sono congruenti")).usaDb());
-                        return false;
-                    }
-                    if (!crea(ordine, breve, nome, giorni)) {
-                        logger.error(new WrapLog().exception(new AlgosException(String.format("La entity %s non è stata salvata", nome))).usaDb());
+                    breve = riga.get(1);
+                    nome = riga.get(2);
+                }
+                else {
+                    logger.error(new WrapLog().exception(new AlgosException("I dati non sono congruenti")).usaDb());
+                    return null;
+                }
+                if (riga.size() >= 4) {
+                    primo = Integer.decode(riga.get(3));
+                }
+                if (riga.size() >= 5) {
+                    ultimo = Integer.decode(riga.get(4));
+                }
+
+                if (giorni > 0 && primo > 0 && ultimo > 0) {
+                    if (giorni != (ultimo - primo + 1)) {
+                        message = String.format("Il numero di 'giorni' da 'primo' a 'ultimo' non coincidono per il mese di %s", nome);
+                        logger.error(new WrapLog().exception(new AlgosException(message)));
+                        return null;
                     }
                 }
-            }
-            else {
-                logger.error(new WrapLog().exception(new AlgosException("Non ho trovato il file sul server")).usaDb());
-                return false;
+
+                mese = crea(ordine, breve, nome, giorni, primo, ultimo);
+                if (mese != null) {
+                    mesi.add(mese);
+                }
+                else {
+                    logger.error(new WrapLog().exception(new AlgosException(String.format("La entity %s non è stata salvata", nome))).usaDb());
+                }
             }
         }
+        else {
+            logger.error(new WrapLog().exception(new AlgosException("Non ho trovato il file sul server")).usaDb());
+            return null;
+        }
 
-        return true;
+        return mesi;
     }
 
 }// end of crud backend class

@@ -2,6 +2,7 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.cognome.*;
 import org.junit.jupiter.api.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -112,11 +113,54 @@ public class CognomeBackendTest extends WikiTest {
         System.out.println("2 - findAll");
         String message;
         int totBio = bioBackend.count();
-
-        listaBeans = backend.findAll();
-        assertNotNull(listaBeans);
-        message = String.format("Nelle %s biografie ci sono %s cognomi distinti ordinati alfabeticamente", textService.format(totBio), textService.format(listaBeans.size()));
+        message = String.format("Ci sono %s biografie", textService.format(totBio));
+        System.out.println(VUOTA);
         System.out.println(message);
+
+        listaStr = bioBackend.findAllCognomiDistinti();
+        message = String.format("Nelle %s biografie ci sono %s cognomi distinti ordinati alfabeticamente", textService.format(totBio), textService.format(listaStr.size()));
+        System.out.println(VUOTA);
+        System.out.println(message);
+
+        ottenutoIntero = backend.count();
+        assertTrue(ottenutoIntero > 0);
+        message = String.format("Ci sono in totale %s entities nel database mongoDB", ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(message);
+
+        listaBeans = backend.findAllStampabileSortNumBio();
+        assertNotNull(listaBeans);
+        message = String.format("Nel database mongoDB ci sono %s cognomi superiori o uguali a %s voci (vanno sul server) - metodo senza parametro", textService.format(listaBeans.size()), WPref.sogliaCognomiWiki.getInt());
+        System.out.println(VUOTA);
+        System.out.println(message);
+
+        sorgenteIntero = WPref.sogliaCognomiWiki.getInt();
+        listaBeans = backend.findAllStampabileSortNumBio(sorgenteIntero);
+        assertNotNull(listaBeans);
+        message = String.format("Nel database mongoDB ci sono %s cognomi superiori o uguali a %s voci (vanno sul server) - valore della preferenza", textService.format(listaBeans.size()), WPref.sogliaCognomiWiki.getInt());
+        System.out.println(VUOTA);
+        System.out.println(message);
+
+        sorgenteIntero = 40;
+        listaBeans = backend.findAllStampabileSortNumBio(sorgenteIntero);
+        assertNotNull(listaBeans);
+        message = String.format("Nel database mongoDB ci sono %s cognomi superiori o uguali a %s voci - valore ad hoc", textService.format(listaBeans.size()), sorgenteIntero);
+        System.out.println(VUOTA);
+        System.out.println(message);
+
+        sorgenteIntero = WPref.sogliaCognomiMongo.getInt();
+        listaBeans = backend.findAllStampabileSortNumBio(sorgenteIntero);
+        assertNotNull(listaBeans);
+        message = String.format("Nel database mongoDB ci sono %s cognomi superiori o uguali a %s voci - valore minimo (dovrebbe essere uguale a %s)", textService.format(listaBeans.size()), sorgenteIntero, backend.count());
+        System.out.println(VUOTA);
+        System.out.println(message);
+
+        listaBeans = backend.findAllEccessiviMongo();
+        assertNotNull(listaBeans);
+        message = String.format("%s cognomi minori di %s biografie che non dovrebbero esserci", textService.format(listaBeans.size()), WPref.sogliaCognomiMongo.getInt());
+        System.out.println(VUOTA);
+        System.out.println(message);
+        System.out.println(VUOTA);
         printNumBio(listaBeans);
     }
 
@@ -168,11 +212,49 @@ public class CognomeBackendTest extends WikiTest {
         print(listaStr);
     }
 
-//    @Test
+    @Test
     @Order(6)
-    @DisplayName("6 - elabora")
+    @DisplayName("6 - findAllStampabile")
+    void findAllStampabile() {
+        System.out.println("6 - findAllStampabile");
+        String message;
+
+        listaBeans = backend.findAllStampabili();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono %s cognomi validi ordinati alfabeticamente (mostro solo i primi 10)", textService.format(listaBeans.size()));
+        System.out.println(VUOTA);
+        System.out.println(message);
+        printNumBio(listaBeans.subList(0, 10));
+
+        listaStr = backend.findCognomiStampabili();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono %s cognomi.cognome validi ordinati alfabeticamente (mostro solo i primi 10)", textService.format(listaStr.size()));
+        System.out.println(VUOTA);
+        System.out.println(message);
+        print(listaStr.subList(0, 10));
+    }
+
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - findAllEccessiviServer")
+    void findAllEccessiviServer() {
+        System.out.println("5 - findAllEccessiviServer");
+        String message;
+
+        listaBeans = backend.findAllEccessiviServer();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono %s cognomi da cancellare dal server (se ci sono)", textService.format(listaBeans.size()));
+        System.out.println(message);
+        System.out.println(VUOTA);
+        printNumBio(listaBeans);
+    }
+
+//    @Test
+    @Order(21)
+    @DisplayName("21 - elabora")
     void elabora() {
-        System.out.println("6 - elabora");
+        System.out.println("21 - elabora");
         String message;
         int totCognomi = backend.count();
 

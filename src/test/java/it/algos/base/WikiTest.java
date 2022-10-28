@@ -7,10 +7,13 @@ import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
+import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.cognome.*;
+import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
+import it.algos.wiki23.backend.packages.pagina.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.wrapper.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -94,6 +97,15 @@ public abstract class WikiTest extends AlgosTest {
 
     @Autowired
     public CognomeBackend cognomeBackend;
+
+    @Autowired
+    public PaginaBackend paginaBackend;
+
+    @Autowired
+    public GiornoWikiBackend giornoWikiBackend;
+
+    @Autowired
+    public AnnoWikiBackend annoWikiBackend;
 
     protected final static long BIO_SALVINI_PAGEID = 132555;
 
@@ -664,6 +676,8 @@ public abstract class WikiTest extends AlgosTest {
         assertNotNull(attivitaBackend);
         assertNotNull(nazionalitaBackend);
         assertNotNull(cognomeBackend);
+        assertNotNull(giornoWikiBackend);
+        assertNotNull(annoWikiBackend);
     }
 
     /**

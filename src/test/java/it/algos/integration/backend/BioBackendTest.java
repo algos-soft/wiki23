@@ -1,31 +1,24 @@
 package it.algos.integration.backend;
 
 import com.mongodb.client.*;
-import com.mongodb.client.model.*;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
+import it.algos.wiki23.backend.wrapper.*;
 import org.bson.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
-import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.data.domain.*;
-
-import javax.persistence.*;
 
 /**
  * Project wiki23
@@ -164,16 +157,33 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-    //    @Test
+    @Test
     @Order(2)
-    @DisplayName("2 - findAll")
-    void findAll() {
-        System.out.println("2 - findAll");
+    @DisplayName("2 - findAllAll (repository)")
+    void findAllAll() {
+        System.out.println("2 - findAllAll (repository)");
+        String message;
+
+        listaBeans = backend.findAllAll();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s caricate dalla repository", textService.format(listaBeans.size()), "Bio");
+        System.out.println(message);
+        System.out.println(VUOTA);
+        message = String.format("Le %s entities sono stata caricate in %s", textService.format(listaBeans.size()), dateService.deltaTextEsatto(inizio));
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - findAll (mongoOp)")
+    void findQuery() {
+        System.out.println("3 - findAll (mongoOp)");
         String message;
 
         listaBeans = mongoService.query(Bio.class);
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Bio");
+        message = String.format("Ci sono in totale %s entities di %s caricate da mongoService.mongoOp", textService.format(listaBeans.size()), "Bio");
         System.out.println(message);
         System.out.println(VUOTA);
         message = String.format("Le %s entities sono stata caricate in %s", textService.format(listaBeans.size()), dateService.deltaTextEsatto(inizio));
@@ -181,27 +191,128 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-    //    @Test
-    @Order(3)
-    @DisplayName("3 - findAll ridotto")
-    void findAllRidotto() {
-        System.out.println("3 - findAll ridotto");
+    @Test
+    @Order(4)
+    @DisplayName("4 - findSenzaTmpl ridotto senza tmplBio")
+    void findSenzaTmpl() {
+        System.out.println("4 - findSenzaTmpl ridotto senza tmplBio");
         String message;
 
         listaBeans = backend.findSenzaTmpl();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Bio");
+        message = String.format("Ci sono in totale %s entities di %s senza tmplBio", textService.format(listaBeans.size()), "Bio");
         System.out.println(message);
         System.out.println(VUOTA);
         message = String.format("Le %s entities sono stata caricate in %s", textService.format(listaBeans.size()), dateService.deltaTextEsatto(inizio));
         System.out.println(message);
     }
 
-    //    @Test
-    @Order(4)
-    @DisplayName("4 - find inesistente")
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - findAll minimale wikiTitle (stringa)")
+    void projectionString() {
+        System.out.println("5 - findAll minimale wikiTitle (stringa)");
+        String message;
+
+        listaBeans = mongoService.projectionString(Bio.class, "wikiTitle");
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s con solo wikiTitle", textService.format(listaBeans.size()), "Bio");
+        System.out.println(message);
+        System.out.println(VUOTA);
+        message = String.format("Le %s entities sono stata caricate in %s", textService.format(listaBeans.size()), dateService.deltaTextEsatto(inizio));
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - findAllWikiTitle (stringa)")
+    void findAllWikiTitle() {
+        System.out.println("6 - findAllWikiTitle (stringa)");
+        String message;
+
+        listaStr = backend.findAllWikiTitle();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s string di wikiTitle", textService.format(listaStr.size()));
+        System.out.println(message);
+        System.out.println(VUOTA);
+        message = String.format("Le %s string sono stata caricate in %s", textService.format(listaStr.size()), dateService.deltaTextEsatto(inizio));
+        System.out.println(message);
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - findAll minimale pageId (long)")
+    void projectionLong() {
+        System.out.println("7 - findAll minimale pageId (long)");
+        String message;
+
+        listaBeans = mongoService.projectionLong(Bio.class, "pageId");
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s con solo pageId", textService.format(listaBeans.size()), "Bio");
+        System.out.println(message);
+        System.out.println(VUOTA);
+        message = String.format("Le %s entities sono stata caricate in %s", textService.format(listaBeans.size()), dateService.deltaTextEsatto(inizio));
+        System.out.println(message);
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - findAllPageId (long)")
+    void findAllPageId() {
+        System.out.println("8 - findAllPageId (long)");
+        String message;
+
+        listaLong = backend.findAllPageId();
+        assertNotNull(listaLong);
+        message = String.format("Ci sono in totale %s long di pageId", textService.format(listaLong.size()));
+        System.out.println(message);
+        System.out.println(VUOTA);
+        message = String.format("I %s long sono stati caricati in %s", textService.format(listaLong.size()), dateService.deltaTextEsatto(inizio));
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(9)
+    @DisplayName("9 - find wikiTitle + pageId")
+    void findAllWikiTitlePageId() {
+        System.out.println("9 - find wikiTitle + pageId");
+        String message;
+
+        listaBeans = backend.findAllWikiTitlePageId();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s bio con wikiTitle e pageId", textService.format(listaBeans.size()));
+        System.out.println(message);
+        System.out.println(VUOTA);
+        message = String.format("Le %s entities sono stata caricate in %s", textService.format(listaBeans.size()), dateService.deltaTextEsatto(inizio));
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(10)
+    @DisplayName("10 - findAllWrapTime")
+    void findAllWrapTime() {
+        System.out.println("10 - findAllWrapTime");
+        String message;
+
+        List<WrapTime> listaWrap = backend.findAllWrapTime();
+        assertNotNull(listaWrap);
+        message = String.format("Ci sono in totale %s wrapTime con wikiTitle e pageId e lastModifica", textService.format(listaWrap.size()));
+        System.out.println(message);
+        System.out.println(VUOTA);
+        message = String.format("Le %s wrapTime sono stata caricate in %s", textService.format(listaWrap.size()), dateService.deltaTextEsatto(inizio));
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(31)
+    @DisplayName("31 - find inesistente")
     void find() {
-        System.out.println("4 - find inesistente");
+        System.out.println("31 - find inesistente");
         String message;
 
         sorgente = "inesistente";
@@ -210,11 +321,11 @@ public class BioBackendTest extends WikiTest {
         System.out.println(String.format("La biografia '%s' non esiste su mongoDB", sorgente));
     }
 
-    //    @Test
-    @Order(5)
-    @DisplayName("5 - find esistente")
+    @Test
+    @Order(32)
+    @DisplayName("32 - find esistente")
     void find2() {
-        System.out.println("5 - find esistente");
+        System.out.println("32 - find esistente");
 
         sorgente = "Elisabeth Kopp";
         entityBean = backend.findByTitle(sorgente);
@@ -223,10 +334,10 @@ public class BioBackendTest extends WikiTest {
     }
 
     //    @Test
-    @Order(6)
-    @DisplayName("6 - controllo due biografie")
+    @Order(33)
+    @DisplayName("33 - controllo due biografie")
     void find3() {
-        System.out.println("6 - controllo due biografie");
+        System.out.println("33 - controllo due biografie");
 
         entityBean = backend.findByTitle(BIO_SALVINI);
         assertNotNull(entityBean);
@@ -239,15 +350,14 @@ public class BioBackendTest extends WikiTest {
         bioRenzi = backend.findByKey(BIO_RENZI_PAGEID);
         assertNotNull(bioRenzi);
         System.out.println(String.format("La biografia '%s' esiste su mongoDB", bioRenzi.getWikiTitle()));
-
     }
 
 
     //    @Test
-    @Order(7)
-    @DisplayName("7 - insert")
+    @Order(34)
+    @DisplayName("34 - insert")
     void insert() {
-        System.out.println("7 - insert");
+        System.out.println("34 - insert");
         System.out.println(String.format("Inizialmente nel mongoDB ci sono %s biografie", textService.format(backend.count())));
         pageId = PAGE_UNO;
         sorgente = TITLE_UNO;
@@ -273,10 +383,10 @@ public class BioBackendTest extends WikiTest {
     }
 
     //    @Test
-    @Order(8)
-    @DisplayName("8 - save")
+    @Order(35)
+    @DisplayName("35 - save")
     void save() {
-        System.out.println("8 - save");
+        System.out.println("35 - save");
         System.out.println(String.format("Inizialmente nel mongoDB ci sono %s biografie", textService.format(backend.count())));
         Bio bioModificato;
         pageId = PAGE_UNO;
@@ -313,10 +423,10 @@ public class BioBackendTest extends WikiTest {
     }
 
     //    @Test
-    @Order(9)
-    @DisplayName("9 - sort")
+    @Order(36)
+    @DisplayName("36 - sort")
     void find8() {
-        System.out.println("9 - Sort");
+        System.out.println("36 - Sort");
         MongoCollection<Document> collection;
         int numVoci;
 
@@ -385,10 +495,10 @@ public class BioBackendTest extends WikiTest {
     }
 
     //    @Test
-    @Order(10)
-    @DisplayName("10 - Index")
+    @Order(37)
+    @DisplayName("37 - Index")
     void find9() {
-        System.out.println("10 - Index");
+        System.out.println("37 - Index");
         MongoCollection<Document> collection;
 
         clazz = Bio.class;
@@ -424,334 +534,6 @@ public class BioBackendTest extends WikiTest {
 
         //        listaBeans = backend.findOnlyPageId();
         int a = 87;
-    }
-
-
-    //    @Test
-    @Order(11)
-    @DisplayName("11 - count")
-    void countSex() {
-        System.out.println("11 - count");
-        String message;
-
-        backend.fixErroriSesso();
-    }
-
-    @Test
-    @Order(12)
-    @DisplayName("12 - findAllAnnoNatoMese")
-    void findAllAnnoNatoMese() {
-        System.out.println("12 - findAllAnnoNatoMese");
-        sorgente = "1645";
-
-        sorgente2 = VUOTA;
-        listaBeans = backend.findAllAnnoNatoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-
-        sorgente2 = "marzo";
-        listaBeans = backend.findAllAnnoNatoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        printBio(listaBeans);
-    }
-
-    @Test
-    @Order(13)
-    @DisplayName("13 - countAllAnnoNatoMese")
-    void countAllAnnoNatoMese() {
-        System.out.println("13 - countAllAnnoNatoMese");
-        sorgente = "1645";
-
-        sorgente2 = VUOTA;
-        ottenutoIntero = backend.countAllAnnoNatoMese(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s", ottenutoIntero, sorgente));
-
-        sorgente2 = "marzo";
-        ottenutoIntero = backend.countAllAnnoNatoMese(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-    }
-
-
-    @Test
-    @Order(14)
-    @DisplayName("14 - findAllAnnoMortoMese")
-    void findAllAnnoMortoMese() {
-        System.out.println("14 - findAllAnnoMortoMese");
-        sorgente = "1645";
-
-        sorgente2 = VUOTA;
-        listaBeans = backend.findAllAnnoMortoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-
-        sorgente2 = "marzo";
-        listaBeans = backend.findAllAnnoMortoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        printBio(listaBeans);
-    }
-
-
-    @Test
-    @Order(15)
-    @DisplayName("15 - countAllAnnoMortoMese")
-    void countAllAnnoMortoMese() {
-        System.out.println("15 - countAllAnnoMortoMese");
-        sorgente = "1645";
-
-        sorgente2 = VUOTA;
-        ottenutoIntero = backend.countAllAnnoMortoMese(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s", ottenutoIntero, sorgente));
-
-        sorgente2 = "marzo";
-        ottenutoIntero = backend.countAllAnnoMortoMese(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-    }
-
-
-    @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_SINGOLARE")
-    @Order(51)
-    @DisplayName("51 - countAttivitaSingola")
-    void countAttivitaSingola(String singolare, boolean esiste) {
-        System.out.println("51 - countAttivitaSingola");
-        ottenutoIntero = backend.countAttivitaSingola(singolare);
-        assertEquals(ottenutoIntero > 0, esiste);
-        System.out.println(String.format("L'attività singolare '%s' contiene %s voci biografiche", singolare, ottenutoIntero));
-    }
-
-
-    @ParameterizedTest
-    @MethodSource(value = "ATTIVITA_TRUE")
-    @Order(52)
-    @DisplayName("52 - countAttivitaPlurale")
-    void countAttivitaPlurale(String plurale, boolean esiste) {
-        System.out.println("52 - countAttivitaPlurale");
-        ottenutoIntero = backend.countAttivitaPlurale(plurale);
-        assertEquals(ottenutoIntero > 0, esiste);
-        System.out.println(String.format("L'attività plurale '%s' contiene %s voci biografiche", plurale, ottenutoIntero));
-    }
-
-
-    @Test
-    @Order(61)
-    @DisplayName("61 - countAttivitaNazionalita")
-    void countAttivitaNazionalita() {
-        System.out.println("61 - countAttivitaNazionalita");
-
-        sorgente = "badessa";
-        sorgente2 = "belga";
-        previstoIntero = 3;
-        ottenutoIntero = backend.countAttivitaNazionalita(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-
-        sorgente = "badessa";
-        sorgente2 = "belgi";
-        previstoIntero = 3;
-        ottenutoIntero = backend.countAttivitaNazionalita(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-
-        sorgente = "abate";
-        previstoIntero = 5;
-        sorgente2 = "belga";
-        ottenutoIntero = backend.countAttivitaNazionalita(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-
-        sorgente = "abate";
-        sorgente2 = "belgi";
-        previstoIntero = 5;
-        ottenutoIntero = backend.countAttivitaNazionalita(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-
-        sorgente = "abate";
-        sorgente2 = "belgi";
-        previstoIntero = 8;
-        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-
-        sorgente = "badessa";
-        sorgente2 = "belgi";
-        previstoIntero = 8;
-        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-
-        sorgente = "abati e badesse";
-        sorgente2 = "belgi";
-        previstoIntero = 8;
-        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-    }
-
-
-    @Test
-    @Order(62)
-    @DisplayName("62 - countAttivitaNazionalitaAll")
-    void countAttivitaNazionalitaAll() {
-        System.out.println("62 - countAttivitaNazionalitaAll");
-
-        sorgente = "accademici";
-        sorgente2 = "francesi";
-        previstoIntero = 15;
-        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-
-        sorgente = "accademici";
-        sorgente2 = "francesi";
-        sorgente3 = "C";
-        previstoIntero = 3;
-        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2, sorgente3);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s che iniziano con %s", sorgente, ottenutoIntero, sorgente2, sorgente3));
-    }
-
-
-    @Test
-    @Order(63)
-    @DisplayName("63 - findAttivitaNazionalita")
-    void findAttivitaNazionalita() {
-        System.out.println("63 - findAttivitaNazionalita");
-
-        sorgente = "badessa";
-        sorgente2 = "belga";
-        previstoIntero = 3;
-        listaBeans = backend.findAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
-
-        sorgente = "badessa";
-        sorgente2 = "belgi";
-        previstoIntero = 3;
-        listaBeans = backend.findAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
-
-        sorgente = "abate";
-        previstoIntero = 5;
-        sorgente2 = "belga";
-        listaBeans = backend.findAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
-
-        sorgente = "abate";
-        sorgente2 = "belgi";
-        previstoIntero = 5;
-        listaBeans = backend.findAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
-
-        sorgente = "abate";
-        sorgente2 = "belgi";
-        previstoIntero = 8;
-        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
-
-        sorgente = "badessa";
-        sorgente2 = "belgi";
-        previstoIntero = 8;
-        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
-
-        sorgente = "abati e badesse";
-        sorgente2 = "belgi";
-        previstoIntero = 8;
-        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
-    }
-
-    @Test
-    @Order(64)
-    @DisplayName("64 - findAllAttivitaNazionalita")
-    void findAllAttivitaNazionalita() {
-        System.out.println("64 - findAllAttivitaNazionalita");
-
-        sorgente = "accademici";
-        sorgente2 = "russi";
-        previstoIntero = 8;
-        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
-
-        sorgente = "accademici";
-        sorgente2 = "russi";
-        sorgente3 = "G";
-        previstoIntero = 2;
-        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2, sorgente3);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s che iniziano con %s", sorgente, ottenutoIntero, sorgente2, sorgente3));
-        printBio(listaBeans);
-    }
-
-
-    @Test
-    @Order(71)
-    @DisplayName("71 - altre")
-    void altre() {
-        System.out.println("71 - altre");
-
-        sorgente = "nobili";
-        sorgente2 = TAG_LISTA_ALTRE;
-        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
-        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di '%s'", sorgente, ottenutoIntero, sorgente2));
-        printBio(listaBeans);
     }
 
 

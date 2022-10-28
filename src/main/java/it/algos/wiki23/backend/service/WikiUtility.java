@@ -494,4 +494,20 @@ public class WikiUtility extends WAbstractService {
         return mappaOrdinata;
     }
 
+    /**
+     * Primo giorno del mese col carattere ° corretto <br>
+     *
+     * @param primoGiorno in ingresso
+     *
+     * @return primo giorno con carattere corretto
+     */
+    public String fixPrimoMese(final String primoGiorno) {
+        if (primoGiorno.startsWith("1" + SPAZIO)) {
+            return primoGiorno.replace("1", "1" + CHAR_MASCULINE_ORDINAL_INDICATOR);
+        }
+        else {
+            return primoGiorno.replace(CHAR_DEGREE_SIGN, CHAR_MASCULINE_ORDINAL_INDICATOR);
+        }
+    }
+
 }

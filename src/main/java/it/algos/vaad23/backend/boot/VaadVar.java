@@ -115,6 +115,13 @@ public class VaadVar {
     public static String projectDate;
 
     /**
+     * Eventuali note di rilascio della versione <br>
+     * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static String projectNote;
+
+    /**
      * Controlla se l' applicazione è multi-company oppure no <br>
      * Di default uguale a false <br>
      * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>

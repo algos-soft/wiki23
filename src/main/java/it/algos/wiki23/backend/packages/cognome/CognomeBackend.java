@@ -115,13 +115,63 @@ public class CognomeBackend extends WikiBackend {
     public List<Cognome> findAll() {
         List<Cognome> lista = super.findAll();
 
-        return lista.stream().sorted(Comparator.comparing(c -> c.cognome)).collect(Collectors.toList());
+        return lista.stream()
+                .sorted(Comparator.comparing(c -> c.cognome))
+                .collect(Collectors.toList());
     }
 
     public List<Cognome> findAllSortNumBio() {
-        List<Cognome> lista = findAll();
+        List<Cognome> lista = super.findAll();
 
-        lista = lista.stream().sorted(Comparator.comparingInt(c -> c.numBio)).collect(Collectors.toList());
+        lista = lista.stream()
+                .sorted(Comparator.comparingInt(c -> c.numBio))
+                .collect(Collectors.toList());
+        Collections.reverse(lista);
+
+        return lista;
+    }
+
+    public List<Cognome> findAllStampabili() {
+        List<Cognome> lista = super.findAll();
+        int max = WPref.sogliaCognomiWiki.getInt();
+
+        lista = lista.stream()
+                .sorted(Comparator.comparing(c -> c.cognome))
+                .filter(c -> c.numBio >= max)
+                .collect(Collectors.toList());
+
+        return lista;
+    }
+
+    public List<Cognome> findAllStampabileSortNumBio() {
+        return findAllStampabileSortNumBio(WPref.sogliaCognomiWiki.getInt());
+    }
+
+    public List<Cognome> findAllStampabileSortNumBio(int numBio) {
+        List<Cognome> lista = findAllSortNumBio();
+
+        lista = lista.stream()
+                .filter(c -> c.numBio >= numBio)
+                .collect(Collectors.toList());
+        Collections.reverse(lista);
+
+        return lista;
+    }
+
+    public List<Cognome> findAllEccessiviMongo() {
+        return findAllEccessivi(WPref.sogliaCognomiMongo.getInt());
+    }
+
+    public List<Cognome> findAllEccessiviServer() {
+        return findAllEccessivi(WPref.sogliaCognomiWiki.getInt());
+    }
+
+    public List<Cognome> findAllEccessivi(int max) {
+        List<Cognome> lista = findAllSortNumBio();
+
+        lista = lista.stream()
+                .filter(c -> c.numBio < max)
+                .collect(Collectors.toList());
         Collections.reverse(lista);
 
         return lista;
@@ -146,6 +196,19 @@ public class CognomeBackend extends WikiBackend {
                 .collect(Collectors.toList());
     }
 
+    public List<String> findCognomiStampabiliSortNumBio() {
+        return findAllStampabileSortNumBio()
+                .stream()
+                .map(cognome -> cognome.cognome)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> findCognomiStampabili() {
+        return findAllStampabili()
+                .stream()
+                .map(cognome -> cognome.cognome)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Cancella i cognomi esistenti <br>

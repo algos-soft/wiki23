@@ -57,6 +57,7 @@ public class Wiki23Cost {
     public static final String TAG_LISTA_NO_GIORNO = "Senza giorno specificato";
 
     public static final String TAG_LISTA_NO_ANNO = "Senza anno specificato";
+
     public static final String TAG_LISTA_NO_ATTIVITA = "Senza attività specificata";
 
     public static final String STATISTICHE = "Statistiche";
@@ -132,6 +133,7 @@ public class Wiki23Cost {
 
     //    public static final String API_HISTORY = "https://it.wikipedia.org/w/index.php?action=history&title=";
 
+    public static final String MESI_REGEX = "(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)$";
 
     public static final String PATH_ATTIVITA = PATH_PROGETTO + ATT;
 

@@ -45,6 +45,16 @@ public class ArrayService extends AbstractService {
         return textService.isValid(singoloValore) ? List.of(singoloValore) : List.of();
     }
 
+    /**
+     * Crea un array di stringhe <br>
+     *
+     * @param valori da inserire
+     *
+     * @return array di ritorno
+     */
+    public List<String> crea(String... valori) {
+        return List.of(valori);
+    }
 
     /**
      * Crea una mappa con una singola coppia chiave-valore <br>

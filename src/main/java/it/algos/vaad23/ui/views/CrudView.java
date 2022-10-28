@@ -622,9 +622,10 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
                 double doppio = VaadVar.projectVersion;
                 String nome = VaadVar.projectNameUpper;
                 String data = VaadVar.projectDate;
+                String note = textService.isValid(VaadVar.projectNote) ? SLASH_SPACE + VaadVar.projectNote : VUOTA;
 
                 //--Locale.US per forzare la visualizzazione grafica di un punto anziché una virgola
-                message = String.format(Locale.US, "Algos® - %s %2.1f di %s", nome, doppio, data);
+                message = String.format(Locale.US, "Algos® - %s %2.1f di %s%s", nome, doppio, data, note);
                 bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blu).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
             }
         }

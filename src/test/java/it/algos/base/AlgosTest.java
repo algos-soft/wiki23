@@ -77,6 +77,7 @@ public abstract class AlgosTest {
     protected String ottenuto;
 
     protected String ottenuto2;
+
     protected String ottenuto3;
 
     protected int sorgenteIntero;
@@ -136,6 +137,8 @@ public abstract class AlgosTest {
     protected List<Field> listaFields;
 
     protected List<String> listaStr;
+
+    protected List<Long> listaLong;
 
     protected List<AEntity> listaBean;
 
@@ -440,7 +443,7 @@ public abstract class AlgosTest {
     protected void print(List<String> lista, String message) {
         int k = 0;
         if (lista != null && lista.size() > 0) {
-            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size() , message));
+            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size(), message));
         }
         else {
             System.out.println("La lista è vuota");
@@ -455,6 +458,7 @@ public abstract class AlgosTest {
             }
         }
     }
+
     protected void print(List<String> lista) {
         int k = 1;
         if (arrayService.isAllValid(lista)) {
@@ -536,12 +540,15 @@ public abstract class AlgosTest {
     protected String getSimpleName(final Class clazz) {
         return clazz != null ? clazz.getSimpleName() : "(manca la classe)";
     }
+
     protected void startTime() {
         inizio = System.currentTimeMillis();
     }
+
     protected void printTime() {
         System.out.println(dateService.deltaText(inizio));
     }
+
     protected void printTimeEsatto() {
         System.out.println(dateService.deltaTextEsatto(inizio));
     }

@@ -325,4 +325,20 @@ public class DateService extends AbstractService {
         return dividendo % divisore == 0;
     }
 
+
+    /**
+     * Convert java.util.Date to java.time.LocalDateTime
+     * Date HA ore, minuti e secondi
+     * LocalDateTime HA ore, minuti e secondi
+     * Non si perde nulla
+     *
+     * @param data da convertire
+     *
+     * @return data e ora locale
+     */
+    public LocalDateTime dateToLocalDateTime(Date data) {
+        Instant instant = Instant.ofEpochMilli(data.getTime());
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+    }
+
 }

@@ -295,8 +295,8 @@ public class WikiUtilityTest extends WikiTest {
 
     @ParameterizedTest
     @MethodSource(value = "TITOLO_ANNI")
-    @Order(9)
-    @DisplayName("9 - Titolo anni")
+    @Order(10)
+    @DisplayName("10 - Titolo anni")
     void titoloAnni(String nomeAnno, final AETypeLista type, String titolo) {
         sorgente = nomeAnno;
         previsto = titolo;
@@ -313,8 +313,8 @@ public class WikiUtilityTest extends WikiTest {
 
     @ParameterizedTest
     @MethodSource(value = "TITOLO_GIORNI")
-    @Order(10)
-    @DisplayName("10 - Titolo giorni")
+    @Order(11)
+    @DisplayName("11 - Titolo giorni")
     void titoloGiorni(String nomeGiorno, final AETypeLista type, String titolo) {
         sorgente = nomeGiorno;
         previsto = titolo;
@@ -327,6 +327,62 @@ public class WikiUtilityTest extends WikiTest {
         assertEquals(previsto, ottenuto);
         System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
     }
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - primo del mese")
+    void fixPrimoMese() {
+        System.out.println("12 - primo del mese");
+        System.out.println(VUOTA);
+        char charSorgente;
+        char charOttenuto;
+        char charPrevisto = (char) 186;
+        previsto = "1" + charPrevisto + SPAZIO + "gennaio";
+
+        sorgente = "1 gennaio";
+        ottenuto = service.fixPrimoMese(sorgente);
+        charOttenuto = ottenuto.charAt(1);
+        assertEquals(previsto, ottenuto);
+        assertEquals(charPrevisto, charOttenuto);
+
+        charSorgente = (char) 186;
+        sorgente = "1" + charSorgente + SPAZIO + "gennaio";
+        ottenuto = service.fixPrimoMese(sorgente);
+        charOttenuto = ottenuto.charAt(1);
+        assertEquals(previsto, ottenuto);
+        assertEquals(charPrevisto, charOttenuto);
+
+        charSorgente = (char) 176;
+        sorgente = "1" + charSorgente + SPAZIO + "gennaio";
+        ottenuto = service.fixPrimoMese(sorgente);
+        charOttenuto = ottenuto.charAt(1);
+        assertEquals(previsto, ottenuto);
+        assertEquals(charPrevisto, charOttenuto);
+
+        charSorgente = (char) 176;
+        sorgente = "1" + charSorgente + SPAZIO + "dicembre";
+        previsto = "1" + charPrevisto + SPAZIO + "dicembre";
+        ottenuto = service.fixPrimoMese(sorgente);
+        charOttenuto = ottenuto.charAt(1);
+        assertEquals(previsto, ottenuto);
+        assertEquals(charPrevisto, charOttenuto);
+
+        sorgente = "11 agosto";
+        previsto = "11 agosto";
+        ottenuto = service.fixPrimoMese(sorgente);
+        assertEquals(previsto, ottenuto);
+
+        sorgente = "18 marzo";
+        previsto = "18 marzo";
+        ottenuto = service.fixPrimoMese(sorgente);
+        assertEquals(previsto, ottenuto);
+
+        sorgente = "24 giugno";
+        previsto = "24 giugno";
+        ottenuto = service.fixPrimoMese(sorgente);
+        assertEquals(previsto, ottenuto);
+    }
+
 
     /**
      * Qui passa al termine di ogni singolo test <br>

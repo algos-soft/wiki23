@@ -1,5 +1,7 @@
 package it.algos.wiki23.backend.packages.bio;
 
+import com.mongodb.client.*;
+import com.mongodb.client.model.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -10,11 +12,10 @@ import it.algos.vaad23.backend.packages.crono.secolo.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.bson.*;
-import org.checkerframework.checker.units.qual.*;
+import org.bson.conversions.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.query.*;
@@ -478,28 +479,6 @@ public class BioBackend extends WikiBackend {
         return nazLong.intValue();
     }
 
-    public int countGiornoNato(final String giornoNato) {
-        Long giornoLong = repository.countBioByGiornoNato(giornoNato);
-        return giornoLong.intValue();
-    }
-
-
-    public int countGiornoMorto(final String giornoNato) {
-        Long giornoLong = repository.countBioByGiornoMorto(giornoNato);
-        return giornoLong.intValue();
-    }
-
-
-    public int countAnnoNato(final String annoNato) {
-        Long annoLong = repository.countBioByAnnoNato(annoNato);
-        return annoLong.intValue();
-    }
-
-
-    public int countAnnoMorto(final String annoMorto) {
-        Long annoLong = repository.countBioByAnnoMorto(annoMorto);
-        return annoLong.intValue();
-    }
 
     public Bio findByKey(final long pageId) {
         return repository.findFirstByPageId(pageId);
@@ -636,166 +615,227 @@ public class BioBackend extends WikiBackend {
         return bioService.sortByForzaOrdinamento(lista);
     }
 
-
-    public int countAllGiornoNatoSecolo(String giornoNato, String nomeSecolo) {
-        List<Bio> lista = findAllGiornoNatoSecolo(giornoNato, nomeSecolo);
-        return lista != null ? lista.size() : 0;
+    public int countGiornoNato(final String giornoNato) {
+        Long giornoLong = textService.isValid(giornoNato) ? repository.countBioByGiornoNato(giornoNato) : 0;
+        return giornoLong.intValue();
     }
 
-    public List<Bio> findAllGiornoNatoSecolo(String giornoNato, String nomeSecolo) {
-        List<Bio> lista = new ArrayList<>();
-        List<Bio> listaAllGiorno = new ArrayList<>();
-        Secolo secolo = null;
-        Anno anno;
+    public List<Bio> findGiornoNato(String giornoNato) {
+        Query query = getQueryGiornoNato(giornoNato);
+        return query != null ? mongoService.mongoOp.find(query, Bio.class) : new ArrayList<>();
+    }
 
-        if (textService.isValid(nomeSecolo)) {
-            nomeSecolo = textService.primaMinuscola(nomeSecolo);
-            secolo = secoloBackend.findByNome(nomeSecolo);
+    public int countGiornoMorto(final String giornoNato) {
+        Long giornoLong = textService.isValid(giornoNato) ? repository.countBioByGiornoMorto(giornoNato) : 0;
+        return giornoLong.intValue();
+    }
+
+    public int countAnnoNato(final String annoNato) {
+        Long annoLong = textService.isValid(annoNato) ? repository.countBioByAnnoNato(annoNato) : 0;
+        return annoLong.intValue();
+    }
+
+    public int countAnnoMorto(final String annoMorto) {
+        Long annoLong = textService.isValid(annoMorto) ? repository.countBioByAnnoMorto(annoMorto) : 0;
+        return annoLong.intValue();
+    }
+
+
+    public int countGiornoNatoSecolo(String giornoNato, String nomeSecolo) {
+        Query query = getQueryGiornoNato(giornoNato, nomeSecolo);
+        return ((Long) mongoService.mongoOp.count(query, Bio.class)).intValue();
+    }
+
+    public List<Bio> findGiornoNatoSecolo(String giornoNato, String nomeSecolo) {
+        Query query = getQueryGiornoNato(giornoNato, nomeSecolo);
+        return mongoService.mongoOp.find(query, Bio.class);
+    }
+
+    public Query getQueryGiornoNato(String giornoNato) {
+        return getQueryGiornoNato(giornoNato, VUOTA);
+    }
+
+    public Query getQueryGiornoNato(String giornoNato, String nomeSecolo) {
+        Query query = new Query();
+        Sort sort;
+        Secolo secolo;
+        int deltaAnni = 2000;
+        int inizio = deltaAnni;
+        int fine = deltaAnni;
+
+        if (textService.isEmpty(giornoNato)) {
+            return null;
         }
 
-        if (textService.isValid(giornoNato)) {
-            listaAllGiorno = repository.findAllByGiornoNatoOrderByAnnoNatoOrdAscOrdinamentoAsc(giornoNato);
-        }
-
-        if (listaAllGiorno != null && textService.isValid(nomeSecolo)) {
-            for (Bio bio : listaAllGiorno) {
-                if (textService.isValid(bio.annoNato)) {
-                    anno = annoBackend.findByNome(bio.annoNato);
-                    if (anno != null) {
-                        if (anno.secolo.equals(secolo)) {
-                            lista.add(bio);
-                        }
-                    }
-                }
-            }
+        giornoNato = wikiUtility.fixPrimoMese(giornoNato);
+        query.addCriteria(Criteria.where("giornoNato").is(giornoNato));
+        if (textService.isEmpty(nomeSecolo) || nomeSecolo.equals(TAG_LISTA_NO_ANNO)) {
+            query.addCriteria(Criteria.where("annoNatoOrd").is(0));
         }
         else {
-            lista = listaAllGiorno;
+            secolo = secoloBackend.findByNome(nomeSecolo);
+            if (secolo != null) {
+                inizio += secolo.inizio;
+                fine += secolo.fine;
+                query.addCriteria(Criteria.where("annoNatoOrd").gte(inizio).lte(fine));
+            }
         }
 
-        return lista;
+        sort = Sort.by(Sort.Direction.ASC, "annoNatoOrd", "ordinamento");
+        query.with(sort);
+
+        return query;
     }
 
 
-    public int countAllGiornoMortoSecolo(String giornoMorto, String nomeSecolo) {
-        List<Bio> lista = findAllGiornoMortoSecolo(giornoMorto, nomeSecolo);
-        return lista != null ? lista.size() : 0;
+    public int countGiornoMortoSecolo(String giornoMorto, String nomeSecolo) {
+        Query query = getQueryGiornoMorto(giornoMorto, nomeSecolo);
+        return ((Long) mongoService.mongoOp.count(query, Bio.class)).intValue();
     }
 
     public List<Bio> findAllGiornoMortoSecolo(String giornoMorto, String nomeSecolo) {
-        List<Bio> lista = new ArrayList<>();
-        List<Bio> listaAllGiorno = new ArrayList<>();
-        Secolo secolo = null;
-        Anno anno;
+        //        List<Bio> lista = new ArrayList<>();
+        //        List<Bio> listaAllGiorno = new ArrayList<>();
+        //        Secolo secolo = null;
+        //        Anno anno;
+        //
+        //        if (textService.isValid(nomeSecolo)) {
+        //            nomeSecolo = textService.primaMinuscola(nomeSecolo);
+        //            secolo = secoloBackend.findByNome(nomeSecolo);
+        //        }
+        //
+        //        if (textService.isValid(giornoMorto)) {
+        //            listaAllGiorno = repository.findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(giornoMorto);
+        //        }
+        //
+        //        if (listaAllGiorno != null && textService.isValid(nomeSecolo)) {
+        //            for (Bio bio : listaAllGiorno) {
+        //                if (textService.isValid(bio.annoMorto)) {
+        //                    anno = annoBackend.findByNome(bio.annoMorto);
+        //                    if (anno != null) {
+        //                        if (anno.secolo.equals(secolo)) {
+        //                            lista.add(bio);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else {
+        //            lista = listaAllGiorno;
+        //        }
+        //
+        //        return lista;
+        return null;
+    }
 
-        if (textService.isValid(nomeSecolo)) {
-            nomeSecolo = textService.primaMinuscola(nomeSecolo);
+    public Query getQueryGiornoMorto(String giornoMorto, String nomeSecolo) {
+        Query query = new Query();
+        Sort sort;
+        Secolo secolo;
+        int deltaAnni = 2000;
+        int inizio = deltaAnni;
+        int fine = deltaAnni;
+
+        if (textService.isEmpty(giornoMorto)) {
+            return query;
+        }
+
+        giornoMorto = wikiUtility.fixPrimoMese(giornoMorto);
+        query.addCriteria(Criteria.where("giornoMorto").is(giornoMorto));
+        if (textService.isEmpty(nomeSecolo) || nomeSecolo.equals(TAG_LISTA_NO_ANNO)) {
+            query.addCriteria(Criteria.where("annoMortoOrd").is(0));
+        }
+        else {
             secolo = secoloBackend.findByNome(nomeSecolo);
-        }
-
-        if (textService.isValid(giornoMorto)) {
-            listaAllGiorno = repository.findAllByGiornoMortoOrderByAnnoMortoOrdAscOrdinamentoAsc(giornoMorto);
-        }
-
-        if (listaAllGiorno != null && textService.isValid(nomeSecolo)) {
-            for (Bio bio : listaAllGiorno) {
-                if (textService.isValid(bio.annoMorto)) {
-                    anno = annoBackend.findByNome(bio.annoMorto);
-                    if (anno != null) {
-                        if (anno.secolo.equals(secolo)) {
-                            lista.add(bio);
-                        }
-                    }
-                }
+            if (secolo != null) {
+                inizio += secolo.inizio;
+                fine += secolo.fine;
+                query.addCriteria(Criteria.where("annoMortoOrd").gte(inizio).lte(fine));
             }
         }
-        else {
-            lista = listaAllGiorno;
+
+        sort = Sort.by(Sort.Direction.ASC, "annoMortoOrd", "ordinamento");
+        query.with(sort);
+
+        return query;
+    }
+
+
+    public int countAnnoNatoMese(String annoNato, String nomeMese) {
+        Query query = getQueryAnnoNato(annoNato, nomeMese);
+        return ((Long) mongoService.mongoOp.count(query, Bio.class)).intValue();
+    }
+
+    public List<Bio> findAnnoNatoMese(String annoNato, String nomeMese) {
+        Query query = getQueryAnnoNato(annoNato, nomeMese);
+        return mongoService.mongoOp.find(query, Bio.class);
+    }
+
+    public Query getQueryAnnoNato(String annoNato, String nomeMese) {
+        Query query = new Query();
+        Sort sort;
+
+        if (textService.isEmpty(annoNato)) {
+            return query;
         }
 
-        return lista;
-    }
-
-
-    public int countAllAnnoNatoMese(String annoNato, String nomeMese) {
-        List<Bio> lista = findAllAnnoNatoMese(annoNato, nomeMese);
-        return lista != null ? lista.size() : 0;
-    }
-
-    public List<Bio> findAllAnnoNatoMese(String annoNato, String nomeMese) {
-        List<Bio> lista = new ArrayList<>();
-        List<Bio> listaAllAnno = new ArrayList<>();
-        Mese mese = null;
-        Giorno giorno;
-
-        if (textService.isValid(nomeMese)) {
+        query.addCriteria(Criteria.where("annoNato").is(annoNato));
+        if (textService.isEmpty(nomeMese) || nomeMese.equals(TAG_LISTA_NO_GIORNO)) {
+            query.addCriteria(Criteria.where("giornoNatoOrd").is(0));
+        }
+        else {
             nomeMese = textService.primaMinuscola(nomeMese);
-            mese = meseBackend.findByNome(nomeMese);
+            query.addCriteria(Criteria.where("giornoNato").regex(nomeMese + "$"));
         }
 
-        if (textService.isValid(annoNato)) {
-            listaAllAnno = repository.findAllByAnnoNatoOrderByGiornoNatoOrdAscOrdinamentoAsc(annoNato);
+        sort = Sort.by(Sort.Direction.ASC, "giornoNatoOrd", "ordinamento");
+        query.with(sort);
+
+        return query;
+    }
+
+
+    public int countAnnoMortoMese(String annoMorto, String nomeMese) {
+        Query query = getQueryAnnoMorto(annoMorto, nomeMese);
+        return ((Long) mongoService.mongoOp.count(query, Bio.class)).intValue();
+    }
+
+    public List<Bio> findAnnoMortoMese(String annoMorto, String nomeMese) {
+        Query query = getQueryAnnoMorto(annoMorto, nomeMese);
+        return mongoService.mongoOp.find(query, Bio.class);
+    }
+
+    public Query getQueryAnnoMorto(String annoMorto, String nomeMese) {
+        Query query = new Query();
+        Sort sort;
+
+        if (textService.isEmpty(annoMorto)) {
+            return query;
         }
 
-        if (listaAllAnno != null && textService.isValid(nomeMese)) {
-            for (Bio bio : listaAllAnno) {
-                if (textService.isValid(bio.giornoNato)) {
-                    giorno = giornoBackend.findByNome(bio.giornoNato);
-                    if (giorno != null) {
-                        if (giorno.mese.equals(mese)) {
-                            lista.add(bio);
-                        }
-                    }
-                }
-            }
+        query.addCriteria(Criteria.where("annoMorto").is(annoMorto));
+        if (textService.isEmpty(nomeMese) || nomeMese.equals(TAG_LISTA_NO_GIORNO)) {
+            query.addCriteria(Criteria.where("giornoMortoOrd").is(0));
         }
         else {
-            lista = listaAllAnno;
-        }
-
-        return lista;
-    }
-
-
-    public int countAllAnnoMortoMese(String annoMorto, String nomeMese) {
-        List<Bio> lista = findAllAnnoMortoMese(annoMorto, nomeMese);
-        return lista != null ? lista.size() : 0;
-    }
-
-    public List<Bio> findAllAnnoMortoMese(String annoMorto, String nomeMese) {
-        List<Bio> lista = new ArrayList<>();
-        List<Bio> listaAllAnno = new ArrayList<>();
-        Mese mese = null;
-        Giorno giorno;
-
-        if (textService.isValid(nomeMese)) {
             nomeMese = textService.primaMinuscola(nomeMese);
-            mese = meseBackend.findByNome(nomeMese);
+            query.addCriteria(Criteria.where("giornoMorto").regex(nomeMese + "$"));
         }
 
-        if (textService.isValid(annoMorto)) {
-            listaAllAnno = repository.findAllByAnnoMortoOrderByGiornoMortoOrdAscOrdinamentoAsc(annoMorto);
-        }
+        sort = Sort.by(Sort.Direction.ASC, "giornoMortoOrd", "ordinamento");
+        query.with(sort);
 
-        if (listaAllAnno != null && textService.isValid(nomeMese)) {
-            for (Bio bio : listaAllAnno) {
-                if (textService.isValid(bio.giornoMorto)) {
-                    giorno = giornoBackend.findByNome(bio.giornoMorto);
-                    if (giorno != null) {
-                        if (giorno.mese.equals(mese)) {
-                            lista.add(bio);
-                        }
-                    }
-                }
-            }
-        }
-        else {
-            lista = listaAllAnno;
-        }
-
-        return lista;
+        return query;
     }
 
+    public List<String> findAllWikiTitle() {
+        return mongoService.projectionString(Bio.class, "wikiTitle");
+    }
+
+
+    public List<Long> findAllPageId() {
+        return mongoService.projectionLong(Bio.class, "pageId");
+    }
 
     public List<String> findAllCognomiDistinti() {
         // Lista di tutti i valori di una property
@@ -1004,6 +1044,70 @@ public class BioBackend extends WikiBackend {
             bio.errore = AETypeBioError.mancaOrdinamento;
             save(bio);
         }
+    }
+
+
+    public List<Bio> findAllWikiTitlePageId() {
+        List<Bio> listaBio = new ArrayList();
+        Bio bio;
+        String wikiTitle = "wikiTitle";
+        String pageId = "pageId";
+        String message;
+        MongoCollection collection = mongoService.getCollection("bio");
+
+        if (collection == null) {
+            message = String.format("Non esiste la collection", entityClazz.getSimpleName());
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return null;
+        }
+
+        Bson bsonSort = Sorts.ascending(wikiTitle);
+        Bson projection = Projections.fields(Projections.include(wikiTitle, pageId), Projections.excludeId());
+        var documents = collection.find().sort(bsonSort).projection(projection);
+
+        for (var doc : documents) {
+            bio = new Bio();
+            bio.wikiTitle = ((Document) doc).get(wikiTitle, String.class);
+            bio.pageId = ((Document) doc).get(pageId, Long.class);
+            listaBio.add(bio);
+        }
+        return listaBio;
+    }
+
+
+    public List<WrapTime> findAllWrapTime() {
+        List<WrapTime> listaWrap = new ArrayList();
+        WrapTime wrap;
+        String pageIdField = "pageId";
+        String wikiTitleField = "wikiTitle";
+        String lastServerField = "lastServer";
+        long pageId;
+        String wikiTitle;
+        LocalDateTime lastServer = null;
+        Date timeStamp;
+        String message;
+        MongoCollection collection = mongoService.getCollection("bio");
+
+        if (collection == null) {
+            message = String.format("Non esiste la collection", entityClazz.getSimpleName());
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return null;
+        }
+
+        Bson bsonSort = Sorts.ascending(wikiTitleField);
+        Bson projection = Projections.fields(Projections.include(pageIdField, wikiTitleField, lastServerField), Projections.excludeId());
+        var documents = collection.find().sort(bsonSort).projection(projection);
+
+        for (var doc : documents) {
+            pageId = ((Document) doc).get(pageIdField, Long.class);
+            wikiTitle = ((Document) doc).get(wikiTitleField, String.class);
+            timeStamp = ((Document) doc).get(lastServerField, Date.class);
+            lastServer = dateService.dateToLocalDateTime(timeStamp);
+
+            wrap = new WrapTime(pageId, wikiTitle, lastServer);
+            listaWrap.add(wrap);
+        }
+        return listaWrap;
     }
 
 }// end of crud backend class
