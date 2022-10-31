@@ -59,6 +59,8 @@ public class AResult {
 
     private long longValue = 0;
 
+    private String txtValue = VUOTA;
+
     private List lista = null;
 
     private Map mappa = null;
@@ -221,7 +223,6 @@ public class AResult {
         return validMessage;
     }
 
-
     //    public String getWebTitle() {
     //        return webTitle;
     //    }
@@ -260,6 +261,14 @@ public class AResult {
 
     public void setLongValue(long longValue) {
         this.longValue = longValue;
+    }
+
+    public String getTxtValue() {
+        return txtValue;
+    }
+
+    public void setTxtValue(String txtValue) {
+        this.txtValue = txtValue;
     }
 
     public List getLista() {

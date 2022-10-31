@@ -58,6 +58,10 @@ public class Wiki23Cost {
 
     public static final String TAG_LISTA_NO_ANNO = "Senza anno specificato";
 
+    public static final String TAG_NO_SECOLO = "Secolo inesistente";
+
+    public static final String TAG_NO_MESE = "Mese inesistente";
+
     public static final String TAG_LISTA_NO_ATTIVITA = "Senza attività specificata";
 
     public static final String STATISTICHE = "Statistiche";

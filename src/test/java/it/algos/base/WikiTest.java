@@ -455,6 +455,7 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
+
     //--wikiTitle
     //--numero parametri
     protected static Stream<Arguments> BIOGRAFIE() {
@@ -486,7 +487,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("Mario Tosi (fotografo)", 13),
                 Arguments.of("Giuseppe Trombone de Mier", 12),
                 Arguments.of("Herlindis di Maaseik", 17),
-                Arguments.of("Rinaldo II di Bar", 14)
+                Arguments.of("Rinaldo II di Bar", 14),
+                Arguments.of("Harald II di Norvegia", 17)
         );
     }
 
@@ -628,16 +630,38 @@ public abstract class WikiTest extends AlgosTest {
         );
     }
 
-    //    //--direzione
-    //    //--property
-    //    protected static Stream<Arguments> SORT() {
-    //        return Stream.of(
-    //                Arguments.of(Sort.Direction.ASC, SINGOLARE),
-    //                Arguments.of(Sort.Direction.DESC, SINGOLARE),
-    //                Arguments.of(Sort.Direction.ASC, PLURALE),
-    //                Arguments.of(Sort.Direction.DESC, PLURALE)
-    //        );
-    //    }
+    //--cognome
+    //--flag diacritico
+    protected static Stream<Arguments> DIACRITICI() {
+        return Stream.of(
+                Arguments.of(null, false),
+                Arguments.of(VUOTA, false),
+                Arguments.of("Díaz", true),
+                Arguments.of("Diaz", false),
+                Arguments.of("Fernández", true),
+                Arguments.of("Fernandez", false),
+                Arguments.of("García", true),
+                Arguments.of("Garcia", false),
+                Arguments.of("González", true),
+                Arguments.of("Gonzalez", false),
+                Arguments.of("Gómez", true),
+                Arguments.of("Gomez", false),
+                Arguments.of("Hernández", true),
+                Arguments.of("Hernandez", false),
+                Arguments.of("Itō", true),
+                Arguments.of("Ito", false),
+                Arguments.of("López", true),
+                Arguments.of("Lopez", false),
+                Arguments.of("Martínez", true),
+                Arguments.of("Martinez", false),
+                Arguments.of("Müller", true),
+                Arguments.of("Muller", false),
+                Arguments.of("Rodríguez", true),
+                Arguments.of("Rodriguez", false),
+                Arguments.of("Sánchez", true),
+                Arguments.of("Sanchez", false)
+        );
+    }
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -759,6 +783,7 @@ public abstract class WikiTest extends AlgosTest {
         System.out.println(String.format("NewTimeStamp: %s", result.getNewtimestamp()));
         System.out.println(String.format("Numeric value: %s", textService.format(result.getIntValue())));
         System.out.println(String.format("Cicli: %d", result.getCicli())); ;
+        System.out.println(String.format("Text value: %s", result.getTxtValue()));
         System.out.println(String.format("List value: %s", lista));
         System.out.println(String.format("Map value: %s", result.getMappa()));
         System.out.println(String.format("Content value: %s", content));

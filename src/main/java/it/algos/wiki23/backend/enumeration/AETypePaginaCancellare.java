@@ -12,6 +12,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * Time: 19:02
  */
 public enum AETypePaginaCancellare {
-    giornoBase, giornoSotto, annoBase, annoSotto, attivitaBase, attivitaSotto, attivitaSottoSotto, nazionalitaBase, nazionalitaSotto, nazionalitaSottoSotto, bioBotProgetto, bioBotNati, bioBotMorti, progetto
+    giornoBase, giornoSotto, annoBase, annoSotto, attivitaBase, attivitaSotto, attivitaSottoSotto, nazionalitaBase, nazionalitaSotto, nazionalitaSottoSotto, cognomi,bioBotProgetto, bioBotNati, bioBotMorti, progetto
 
 }

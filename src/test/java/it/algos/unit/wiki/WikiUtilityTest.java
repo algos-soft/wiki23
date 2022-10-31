@@ -290,7 +290,6 @@ public class WikiUtilityTest extends WikiTest {
         System.out.println("Con icona e parentesi (usato in coda alle didascalie)");
         System.out.println(String.format("%s (morto nel %s)%s%s", bio.getWikiTitle(), bio.annoMorto, FORWARD, ottenuto));
         System.out.println(VUOTA);
-
     }
 
     @ParameterizedTest
@@ -383,6 +382,26 @@ public class WikiUtilityTest extends WikiTest {
         assertEquals(previsto, ottenuto);
     }
 
+    @ParameterizedTest
+    @MethodSource(value = "DIACRITICI")
+    @Order(13)
+    @DisplayName("13 - Diacritici")
+        //--cognome
+        //--flag diacritico
+    void diacritici(String cognome, final boolean diacritico) {
+        sorgente = cognome;
+        previstoBooleano = diacritico;
+
+        ottenutoBooleano = service.isDiacritica(sorgente);
+        assertEquals(previstoBooleano, ottenutoBooleano);
+        if (ottenutoBooleano) {
+            ottenuto = service.fixDiacritica(sorgente);
+            System.out.println(String.format("La parola '%s' contiene diacritici e diventa %s%s", sorgente, FORWARD,ottenuto));
+        }
+        else {
+            System.out.println(String.format("La parola '%s' NON contiene diacritici", sorgente));
+        }
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

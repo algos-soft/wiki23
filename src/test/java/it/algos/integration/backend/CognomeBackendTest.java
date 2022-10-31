@@ -3,15 +3,19 @@ package it.algos.integration.backend;
 import it.algos.*;
 import it.algos.base.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.cognome.*;
 import org.junit.jupiter.api.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.context.annotation.Scope;
@@ -46,6 +50,34 @@ public class CognomeBackendTest extends WikiTest {
 
 
     private List<Cognome> listaBeans;
+
+    //--cognome
+    //--voci bio
+    protected static Stream<Arguments> LISTE_COGNOMI() {
+        return Stream.of(
+                Arguments.of(VUOTA, 0),
+                Arguments.of("Abe", 47),
+                Arguments.of("Elliot", 17),
+                Arguments.of("Elliott", 57),
+                Arguments.of("Borbone", 29),
+                Arguments.of("Da Silva", 9),
+                Arguments.of("Di Borbone", 49),
+                Arguments.of("Di Savoia", 49),
+                Arguments.of("Dos Santos", 49),
+                Arguments.of("Diaz", 49),
+                Arguments.of("Fernandez", 49),
+                Arguments.of("Gomez", 49),
+                Arguments.of("Gonzales", 49),
+                Arguments.of("Hernandez", 49),
+                Arguments.of("Ito", 49),
+                Arguments.of("Muller", 49),
+                Arguments.of("Sanchez", 49),
+                Arguments.of("Muller", 49),
+                Arguments.of("da Silva", 49),
+                Arguments.of("di Borbone", 49),
+                Arguments.of("dos Santos", 49)
+        );
+    }
 
     /**
      * Qui passa una volta sola <br>
@@ -239,7 +271,7 @@ public class CognomeBackendTest extends WikiTest {
     @Order(7)
     @DisplayName("7 - findAllEccessiviServer")
     void findAllEccessiviServer() {
-        System.out.println("5 - findAllEccessiviServer");
+        System.out.println("7 - findAllEccessiviServer");
         String message;
 
         listaBeans = backend.findAllEccessiviServer();
@@ -250,11 +282,59 @@ public class CognomeBackendTest extends WikiTest {
         printNumBio(listaBeans);
     }
 
-//    @Test
+
+    @ParameterizedTest
+    @MethodSource(value = "LISTE_COGNOMI")
+    @Order(20)
+    @DisplayName("20 - countCognome")
+        //--cognome
+        //--voci bio
+    void countCognome(String cognome, int numVoci) {
+        System.out.println("20 - countCognome");
+        String message;
+        sorgente = cognome;
+        previstoIntero = numVoci;
+
+        ottenutoIntero = bioBackend.countCognome(sorgente);
+        if (ottenutoIntero == previstoIntero) {
+            message = String.format("Nel cognome %s ci sono le %s biografie previste", sorgente, previstoIntero);
+        }
+        else {
+            message = String.format("Nel cognome %s NON ci sono le %s biografie previste, ma ce ne sono %s", sorgente, previstoIntero, ottenutoIntero);
+        }
+        System.out.println(VUOTA);
+        System.out.println(message);
+        assertEquals(previstoIntero, ottenutoIntero);
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "LISTE_COGNOMI")
     @Order(21)
-    @DisplayName("21 - elabora")
+    @DisplayName("21 - findCognome")
+        //--cognome
+        //--voci bio
+    void findCognome(String cognome, int numVoci) {
+        System.out.println("21 - findCognome");
+        List<Bio> listaBio;
+        String message;
+        sorgente = cognome;
+        previstoIntero = numVoci;
+
+        listaBio = bioBackend.findCognome(sorgente);
+        assertNotNull(listaBio);
+        ottenutoIntero = listaBio.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(String.format("Ci sono %d voci biografiche di cognome %s", ottenutoIntero, sorgente));
+        printBio(listaBio);
+    }
+
+
+    //    @Test
+    @Order(31)
+    @DisplayName("31 - elabora")
     void elabora() {
-        System.out.println("21 - elabora");
+        System.out.println("31 - elabora");
         String message;
         int totCognomi = backend.count();
 

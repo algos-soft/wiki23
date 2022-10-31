@@ -10,6 +10,7 @@ import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.wrapper.*;
+import org.apache.commons.lang3.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -508,6 +509,14 @@ public class WikiUtility extends WAbstractService {
         else {
             return primoGiorno.replace(CHAR_DEGREE_SIGN, CHAR_MASCULINE_ORDINAL_INDICATOR);
         }
+    }
+
+
+    public boolean isDiacritica(final String parola) {
+        return textService.isValid(parola) ? !StringUtils.stripAccents(parola).equals(parola) : false;
+    }
+    public String fixDiacritica(final String parola) {
+        return StringUtils.stripAccents(parola);
     }
 
 }

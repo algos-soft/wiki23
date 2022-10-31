@@ -189,6 +189,7 @@ public class CognomeBackend extends WikiBackend {
                 .collect(Collectors.toList());
     }
 
+
     public List<String> findCognomiSortNumBio() {
         return findAllSortNumBio()
                 .stream()

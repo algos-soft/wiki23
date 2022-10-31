@@ -385,6 +385,7 @@ public abstract class AQuery {
     protected WResult requestGet(WResult result, String urlDomain) {
         URLConnection urlConn;
         String urlResponse;
+
         switch (queryType) {
             case getSenzaLoginSenzaCookies -> {
                 urlDomain = fixAssert(urlDomain);
@@ -405,7 +406,8 @@ public abstract class AQuery {
         try {
             urlConn = this.creaGetConnection(urlDomain);
             uploadCookies(urlConn, result.getCookies());
-            urlResponse = sendRequest(urlConn);result = elaboraResponse(result, urlResponse);
+            urlResponse = sendRequest(urlConn);
+            result = elaboraResponse(result, urlResponse);
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
         }
@@ -796,6 +798,7 @@ public abstract class AQuery {
                     if (jsonRevZero.get(KEY_JSON_CONTENT) instanceof String contentTxt) {
                         mappaUrlResponse.put(KEY_JSON_CONTENT, contentTxt);
                         result.setContent(contentTxt);
+                        result.setTypePage(AETypePage.pagina);
                     }
                 }
             }
@@ -806,6 +809,8 @@ public abstract class AQuery {
 
 
     protected WResult fixQueryDisambiguaRedirect(WResult result) {
+        String wikiLink = VUOTA;
+
         if (mappaUrlResponse.get(KEY_JSON_CONTENT) instanceof String content) {
             //--contenuto inizia col tag della disambigua
             if (content.startsWith(TAG_DISAMBIGUA_UNO) || content.startsWith(TAG_DISAMBIGUA_DUE)) {
@@ -826,6 +831,9 @@ public abstract class AQuery {
                 //                wrap = result.getWrap().valida(false).type(AETypePage.redirect);
                 //                result.setWrap(wrap);
                 mappaUrlResponse.put(KEY_JSON_REDIRECT, true);
+                wikiLink = content.substring(content.indexOf(SPAZIO)).trim();
+                wikiLink = textService.setNoQuadre(wikiLink);
+                result.setTxtValue(wikiLink);
                 return result.typePage(AETypePage.redirect);
             }
         }

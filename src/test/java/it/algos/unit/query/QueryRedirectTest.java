@@ -1,43 +1,45 @@
 package it.algos.unit.query;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.wiki.query.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.boot.test.context.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
+
+import java.util.*;
 
 /**
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Sun, 03-Jul-2022
- * Time: 08:17
+ * Date: Mon, 31-Oct-2022
+ * Time: 09:46
  * Unit test di una classe service o backend o query <br>
- * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
- * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
- * Nella superclasse AlgosTest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
+ * Estende la classe astratta WikiTest che contiene le regolazioni essenziali <br>
+ * Nella superclasse WikiTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
+ * Nella superclasse WikiTest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("query")
-@DisplayName("Test QueryRead")
+@DisplayName("Test QueryRedirect")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class QueryReadTest extends WikiTest {
+@SpringComponent
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+public class QueryRedirectTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private QueryRead istanza;
+    private QueryRedirect istanza;
 
 
     /**
@@ -66,14 +68,15 @@ public class QueryReadTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1 - Costruttore base senza parametri")
+    @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new QueryRead();
+        istanza = new QueryRedirect();
         assertNotNull(istanza);
-        System.out.println(("1 - Costruttore base senza parametri"));
+        System.out.println(("1- Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
+
 
     @Test
     @Order(2)
@@ -82,7 +85,7 @@ public class QueryReadTest extends WikiTest {
         System.out.println(("2 - Request errata. Manca il wikiTitle"));
         System.out.println(VUOTA);
 
-        ottenutoRisultato = appContext.getBean(QueryRead.class).urlRequest(sorgente);
+        ottenutoRisultato = appContext.getBean(QueryRedirect.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
         System.out.println(VUOTA);
@@ -97,7 +100,7 @@ public class QueryReadTest extends WikiTest {
         System.out.println(VUOTA);
 
         sorgente = "Pippoz Belloz";
-        ottenutoRisultato = appContext.getBean(QueryRead.class).urlRequest(sorgente);
+        ottenutoRisultato = appContext.getBean(QueryRedirect.class).urlRequest(sorgente);
         assertNotNull(ottenutoRisultato);
         assertFalse(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
@@ -105,47 +108,60 @@ public class QueryReadTest extends WikiTest {
 
     @Test
     @Order(4)
-    @DisplayName("4 - Request valida")
-    void valida() {
-        System.out.println(("4 - Request valida"));
-        System.out.println(VUOTA);
-
-        sorgente = "Utente:Biobot/2";
-        ottenutoRisultato = appContext.getBean(QueryRead.class).urlRequest(sorgente);
-        assertNotNull(ottenutoRisultato);
-        assertTrue(ottenutoRisultato.isValido());
-        printRisultato(ottenutoRisultato);
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("5 - Altra request valida")
-    void valida2() {
-        System.out.println(("5 - Altra request valida"));
+    @DisplayName("4 - Request corretta. Non è un redirect")
+    void paginaNormaleNonRedirect() {
+        System.out.println(("4 - Request corretta. Non è un redirect"));
         System.out.println(VUOTA);
 
         sorgente = "Piozzano";
-        ottenuto = appContext.getBean(QueryRead.class).getText(sorgente);
-        assertTrue(textService.isValid(ottenuto));
-
-        ottenuto = ottenuto.length() < MAX ? ottenuto : ottenuto.substring(0, Math.min(MAX, ottenuto.length()));
-        System.out.println((ottenuto));
+        ottenutoRisultato = appContext.getBean(QueryRedirect.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertFalse(ottenutoRisultato.isValido());
+        assertEquals(AETypePage.pagina, ottenutoRisultato.getTypePage());
+        printRisultato(ottenutoRisultato);
     }
+
+
     @Test
-    @Order(6)
-    @DisplayName("6 - Titolo 'strano'")
-    void valida6() {
-        System.out.println(("6 - Titolo 'strano'"));
+    @Order(5)
+    @DisplayName("5 - Request corretta. È un redirect")
+    void paginaRedirect() {
+        System.out.println(("5 - Request corretta. È un redirect"));
         System.out.println(VUOTA);
 
-        sorgente = "Othon & Tomasini";
-        ottenuto = appContext.getBean(QueryRead.class).getText(sorgente);
-        assertTrue(textService.isValid(ottenuto));
+        sorgente = "Edson Arantes do Nascimento";
+        ottenutoRisultato = appContext.getBean(QueryRedirect.class).urlRequest(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        assertEquals(AETypePage.redirect, ottenutoRisultato.getTypePage());
 
-        ottenuto = ottenuto.length() < MAX ? ottenuto : ottenuto.substring(0, Math.min(MAX, ottenuto.length()));
-        System.out.println((ottenuto));
+        message = String.format("La pagina '%s' è un redirect a '%s'", sorgente, ottenutoRisultato.getTxtValue());
+        System.out.println((message));
+        System.out.println((VUOTA));
+
+        printRisultato(ottenutoRisultato);
     }
 
+
+    @Test
+    @Order(6)
+    @DisplayName("5 - Risultato booleano e txtValue del wikiLink")
+    void linkValue() {
+        System.out.println(("5 - Risultato booleano e txtValue del wikiLink"));
+        System.out.println(VUOTA);
+
+        sorgente = "Earvin Johnson";
+        ottenutoBooleano = appContext.getBean(QueryRedirect.class).isRedirect(sorgente);
+        assertTrue(ottenutoBooleano);
+
+        previsto = "Magic Johnson";
+        ottenuto = appContext.getBean(QueryRedirect.class).getWikiLink(sorgente);
+        assertTrue(textService.isValid(ottenuto));
+        assertEquals(previsto, ottenuto);
+        message = String.format("La pagina '%s' è un redirect a '%s'", sorgente, ottenuto);
+        System.out.println((message));
+        System.out.println((VUOTA));
+    }
 
 
     /**

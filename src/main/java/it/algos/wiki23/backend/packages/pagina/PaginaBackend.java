@@ -5,10 +5,12 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import org.apache.commons.lang3.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
+import java.text.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -109,12 +111,12 @@ public class PaginaBackend extends WikiBackend {
         long inizio = System.currentTimeMillis();
         mongoService.deleteAll(Pagina.class);
 
-        elaboraGiorni();
-        elaboraAnni();
+        //        elaboraGiorni();
+        //        elaboraAnni();
         //        elaboraAttivita();
         //        elaboraNazionalita();
-        //        elaboraCognomi();
-        //        elaboraUtenteBot();
+        elaboraCognomi();
+        elaboraUtenteBot();
 
         super.fixElaboraMinuti(inizio, "cancellazioni");
     }
@@ -208,7 +210,7 @@ public class PaginaBackend extends WikiBackend {
             // Quelle di secondo livello che non superano le 50 voci
             secolo = wikiTitle.substring(wikiTitle.indexOf(SLASH) + 1);
             voci = getVociGiorno(paginaParentePrimoLivello, secolo);
-            if (voci > sogliaMaxPagina) {
+            if (voci >= sogliaMaxPagina) {
                 pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoSotto, voci, false));
             }
             else {
@@ -309,7 +311,7 @@ public class PaginaBackend extends WikiBackend {
             // Quelle di secondo livello che non superano le 50 voci
             mese = wikiTitle.substring(wikiTitle.indexOf(SLASH) + 1);
             voci = getVociAnno(paginaParentePrimoLivello, mese);
-            if (voci > sogliaMaxPagina) {
+            if (voci >= sogliaMaxPagina) {
                 pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.annoSotto, voci, false));
             }
             else {
@@ -383,7 +385,7 @@ public class PaginaBackend extends WikiBackend {
 
             // Quelle di primo livello che non superano le 50 voci
             voci = bioBackend.countAttivitaPlurale(paginaBase);
-            if (voci > sogliaAttNazWiki) {
+            if (voci >= sogliaAttNazWiki) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaBase, voci, false);
             }
             else {
@@ -437,7 +439,7 @@ public class PaginaBackend extends WikiBackend {
             nazionalita = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + 1);
             nazionalita = textService.primaMinuscola(nazionalita);
             voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita);
-            if (voci > sogliaSottoPagina) {
+            if (voci >= sogliaSottoPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSotto, voci, false);
             }
             else {
@@ -487,7 +489,7 @@ public class PaginaBackend extends WikiBackend {
             nazionalita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
             nazionalita = nazionalita.equals(TAG_LISTA_ALTRE) ? nazionalita : textService.primaMinuscola(nazionalita);
             voci = bioBackend.countAttivitaNazionalitaAll(attivita, nazionalita, letteraIniziale);
-            if (voci > sogliaSottoPagina) {
+            if (voci >= sogliaSottoPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.attivitaSottoSotto, voci, false);
             }
             else {
@@ -568,7 +570,7 @@ public class PaginaBackend extends WikiBackend {
 
             // Quelle di primo livello che non superano le 50 voci
             voci = bioBackend.countNazionalitaPlurale(paginaBase);
-            if (voci > sogliaAttNazWiki) {
+            if (voci >= sogliaAttNazWiki) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaBase, voci, false);
             }
             else {
@@ -622,7 +624,7 @@ public class PaginaBackend extends WikiBackend {
             attivita = wikiTitle.substring(wikiTitle.lastIndexOf(SLASH) + 1);
             attivita = textService.primaMinuscola(attivita);
             voci = bioBackend.countNazionalitaAttivitaAll(nazionalita, attivita);
-            if (voci > sogliaSottoPagina) {
+            if (voci >= sogliaSottoPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSotto, voci, false);
             }
             else {
@@ -672,11 +674,115 @@ public class PaginaBackend extends WikiBackend {
             attivita = paginaParenteSecondoLivello.substring(paginaParenteSecondoLivello.lastIndexOf(SLASH) + 1);
             attivita = textService.primaMinuscola(attivita);
             voci = bioBackend.countNazionalitaAttivitaAll(nazionalita, attivita, letteraIniziale);
-            if (voci > sogliaSottoPagina) {
+            if (voci >= sogliaSottoPagina) {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, false);
             }
             else {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.nazionalitaSottoSotto, voci, true);
+            }
+        }
+    }
+
+    public void elaboraCognomi() {
+        String tag = "Persone di cognome";
+        List<String> pagineAll = queryService.getList(tag);
+        List<String> valideBase = cognomeBackend.findCognomi();
+
+        //        pagineAll = elaboraCognomiRedirect(pagineAll);
+        elaboraCognomiPagine(valideBase, getCognomi(pagineAll));
+    }
+
+    /**
+     * Identifico quelli uguali con accenti differenti
+     */
+    public List<String> fixCognomiDiacritici(List<String> pagineGrezzeIndifferenziate) {
+        List<String> pagineSporche = new ArrayList<>();
+
+        for (String grezza : pagineGrezzeIndifferenziate) {
+            if (wikiUtility.isDiacritica(grezza)) {
+                pagineSporche.add(grezza);
+            }
+        }
+
+        return pagineSporche;
+    }
+
+    /**
+     * Identifico quelli uguali con accenti differenti
+     * Identifico i redirect
+     */
+    public List<String> fixRedirect(List<String> pagineGrezzeIndifferenziate) {
+        List<String> pagineSenzaRedirect = new ArrayList<>();
+        List<String> pagineSporche = new ArrayList<>();
+        String pulita;
+
+        for (String grezza : pagineGrezzeIndifferenziate) {
+            if (wikiUtility.isDiacritica(grezza)) {
+
+            }
+
+            pulita = StringUtils.stripAccents(grezza);
+            if (pagineSenzaRedirect.contains(pulita)) {
+                pagineSporche.add(grezza);
+            }
+            else {
+                pagineSenzaRedirect.add(pulita);
+            }
+        }
+
+        //        final Collator instance = Collator.getInstance();
+        //
+        //        // This strategy mean it'll ignore the accents
+        //        instance.setStrength(Collator.NO_DECOMPOSITION);
+        //
+        //        // Will print 0 because its EQUAL
+        //
+        //        System.out.println(instance.compare(a, b));
+        Object alfa = pagineSporche;
+        return pagineSenzaRedirect;
+    }
+
+    public void elaboraCognomiPagine(List<String> valideBase, List<String> pagine) {
+        String tag = "Persone di cognome";
+        String paginaBase;
+        int voci = 0;
+        int sogliaCognomi = WPref.sogliaCognomiWiki.getInt();
+        sogliaCognomi = (sogliaCognomi * 8) / 10;
+
+        for (String wikiTitle : pagine) {
+            // Quelle di primo livello che terminano con /
+            if (wikiTitle.endsWith(SLASH)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.cognomi, voci, true);
+                continue;
+            }
+
+            // Quelle di primo livello che terminano con /...
+            if (wikiTitle.endsWith(SLASH + TRE_PUNTI)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.cognomi, voci, true);
+                continue;
+            }
+
+            paginaBase = textService.levaTesta(wikiTitle, tag).trim();
+            paginaBase = textService.primaMaiuscola(paginaBase);
+
+            // Identifico quelli uguali con accenti differenti
+            // Controllo i redirect e li elimino
+            if (wikiUtility.isDiacritica(paginaBase)) {
+            }
+
+            // Quelle di primo livello che non esistono in Attivita
+            if (!valideBase.contains(paginaBase)) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.cognomi, voci, true);
+                continue;
+            }
+
+            // Quelle di primo livello che non superano le 50 voci
+            voci = bioBackend.countCognome(paginaBase);
+            if (voci >= sogliaCognomi) {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.cognomi, voci, false);
+            }
+            else {
+                creaIfNotExist(wikiTitle, AETypePaginaCancellare.cognomi, voci, true);
             }
         }
     }
@@ -720,6 +826,10 @@ public class PaginaBackend extends WikiBackend {
 
     public List<String> getGiorniAnniSotto(List<String> pagine) {
         return getLivello(pagine, 1);
+    }
+
+    public List<String> getCognomi(List<String> pagine) {
+        return getLivello(pagine, 0);
     }
 
     public List<String> getLivello(List<String> pagine, int occorrenze) {

@@ -26,7 +26,8 @@ public enum ParBio {
     nome("Nome", "nome", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-            bio.nome = textService.isValid(value) ? elaboraService.fixNome(value) : null;
+            String valore = elaboraService.fixNome(value);
+            bio.nome = textService.isValid(valore) ? valore : null;
         }
 
         @Override
@@ -38,7 +39,8 @@ public enum ParBio {
     cognome("Cognome", "cognome", true, true, true, true, false) {
         @Override
         public void setValue(Bio bio, String value) throws AlgosException {
-            bio.cognome = textService.isValid(value) ? elaboraService.fixCognome(value) : null;
+            String valore = elaboraService.fixCognome(value);
+            bio.cognome = textService.isValid(valore) ? valore : null;
         }
 
         @Override
