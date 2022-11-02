@@ -1,9 +1,7 @@
 package it.algos.wiki23.backend.packages.genere;
 
-import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.boot.*;

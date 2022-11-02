@@ -121,6 +121,12 @@ public class QueryService extends WAbstractService {
     public LocalDateTime getLast(final String wikiTitleGrezzo) {
         return appContext.getBean(QueryInfo.class).getLast(wikiTitleGrezzo);
     }
+    public boolean isRedirect(final String wikiTitleGrezzo) {
+        return appContext.getBean(QueryRedirect.class).isRedirect(wikiTitleGrezzo);
+    }
+    public String getWikiLink(final String wikiTitleGrezzo) {
+        return appContext.getBean(QueryRedirect.class).getWikiLink(wikiTitleGrezzo);
+    }
 
 
 }

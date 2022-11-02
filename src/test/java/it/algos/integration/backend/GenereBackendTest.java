@@ -2,6 +2,7 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
+import it.algos.wiki23.backend.didascalia.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import org.junit.jupiter.api.*;
@@ -15,11 +16,6 @@ import org.springframework.boot.test.context.*;
 
 import java.util.*;
 import java.util.stream.*;
-
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 
 /**
  * Project wiki23

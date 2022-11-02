@@ -1,6 +1,5 @@
 package it.algos.wiki23.backend.schedule;
 
-import com.vaadin.collaborationengine.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;

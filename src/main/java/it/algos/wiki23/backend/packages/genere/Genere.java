@@ -1,6 +1,5 @@
 package it.algos.wiki23.backend.packages.genere;
 
-import com.vaadin.flow.component.icon.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;

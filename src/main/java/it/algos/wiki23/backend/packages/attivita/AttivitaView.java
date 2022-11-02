@@ -1,13 +1,11 @@
 package it.algos.wiki23.backend.packages.attivita;
 
 import ch.carnet.kasparscherrer.*;
-import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
-import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;

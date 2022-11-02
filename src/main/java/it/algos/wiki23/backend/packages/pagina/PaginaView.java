@@ -18,10 +18,6 @@ import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.data.domain.*;
 
 /**

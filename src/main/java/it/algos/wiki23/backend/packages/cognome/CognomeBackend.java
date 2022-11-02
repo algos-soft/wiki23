@@ -1,21 +1,17 @@
 package it.algos.wiki23.backend.packages.cognome;
 
-import com.mongodb.client.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.upload.*;
 import it.algos.wiki23.backend.wrapper.*;
 import it.algos.wiki23.wiki.query.*;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.data.mongodb.core.query.*;
 
 import java.util.*;
 import java.util.stream.*;

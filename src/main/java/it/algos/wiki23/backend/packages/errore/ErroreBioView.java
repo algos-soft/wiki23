@@ -17,7 +17,6 @@ import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.data.mongodb.core.query.*;
 import org.vaadin.crudui.crud.*;
 
 import java.net.*;

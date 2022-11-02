@@ -1,16 +1,11 @@
 package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.wiki23.backend.boot.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.liste.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.wrapper.*;
-import it.algos.wiki23.wiki.query.*;
-import static it.algos.wiki23.wiki.query.QueryWrite.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

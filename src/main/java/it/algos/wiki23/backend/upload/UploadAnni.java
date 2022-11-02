@@ -2,8 +2,6 @@ package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.liste.*;
-import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

@@ -5,12 +5,11 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.packages.wiki.*;
-import org.apache.commons.lang3.*;
+import org.apache.commons.collections4.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
-import java.text.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -688,15 +687,54 @@ public class PaginaBackend extends WikiBackend {
         List<String> pagineAll = queryService.getList(tag);
         List<String> valideBase = cognomeBackend.findCognomi();
 
-        //        pagineAll = elaboraCognomiRedirect(pagineAll);
         elaboraCognomiPagine(valideBase, getCognomi(pagineAll));
     }
 
+
     /**
-     * Identifico quelli uguali con accenti differenti
+     * Tutti i cognomi acritici
      */
-    public List<String> fixCognomiDiacritici(List<String> pagineGrezzeIndifferenziate) {
-        List<String> pagineSporche = new ArrayList<>();
+    public ArrayList<String> getCognomiAcriticiAll(List<String> pagineGrezzeIndifferenziate) {
+        ArrayList<String> pagineSporche = getCognomiDiacriticiAll(pagineGrezzeIndifferenziate);
+        return new ArrayList<>((CollectionUtils.removeAll(pagineGrezzeIndifferenziate, pagineSporche)));
+    }
+
+    /**
+     * Cognomi acritici senza corrispettivo diacritico
+     */
+    public ArrayList<String> getCognomiAcriticiSingoli(List<String> pagineGrezzeIndifferenziate) {
+        ArrayList<String> pagineAcriticheAll = getCognomiAcriticiAll(pagineGrezzeIndifferenziate);
+        ArrayList<String> pagineAcriticheDoppi = getCognomiAcriticiDoppi(pagineGrezzeIndifferenziate);
+        return new ArrayList<>((CollectionUtils.removeAll(pagineAcriticheAll, pagineAcriticheDoppi)));
+    }
+
+    /**
+     * Cognomi acritici col corrispettivo diacritico
+     */
+    public ArrayList<String> getCognomiAcriticiDoppi(List<String> pagineGrezzeIndifferenziate) {
+        ArrayList<String> pagineDoppie = new ArrayList<>();
+        ArrayList<String> pagineSporche = getCognomiDiacriticiAll(pagineGrezzeIndifferenziate);
+        String paginaPulita;
+
+        for (String paginaSporca : pagineSporche) {
+            paginaPulita = wikiUtility.fixDiacritica(paginaSporca);
+
+            if (pagineGrezzeIndifferenziate.contains(paginaPulita)) {
+                pagineDoppie.add(paginaPulita);
+            }
+        }
+
+        return pagineDoppie;
+    }
+
+
+
+
+    /**
+     * Tutti i cognomi diacritici
+     */
+    public ArrayList<String> getCognomiDiacriticiAll(List<String> pagineGrezzeIndifferenziate) {
+        ArrayList<String> pagineSporche = new ArrayList<>();
 
         for (String grezza : pagineGrezzeIndifferenziate) {
             if (wikiUtility.isDiacritica(grezza)) {
@@ -707,39 +745,44 @@ public class PaginaBackend extends WikiBackend {
         return pagineSporche;
     }
 
+
     /**
-     * Identifico quelli uguali con accenti differenti
-     * Identifico i redirect
+     * Cognomi diacritici senza corrispettivo acritico
      */
-    public List<String> fixRedirect(List<String> pagineGrezzeIndifferenziate) {
-        List<String> pagineSenzaRedirect = new ArrayList<>();
-        List<String> pagineSporche = new ArrayList<>();
-        String pulita;
+    public ArrayList<String> getCognomiDiacriticiSingoli(List<String> pagineGrezzeIndifferenziate) {
+        ArrayList<String> pagineSingole = new ArrayList<>();
 
-        for (String grezza : pagineGrezzeIndifferenziate) {
-            if (wikiUtility.isDiacritica(grezza)) {
+        ArrayList<String> pagineSporche = getCognomiDiacriticiAll(pagineGrezzeIndifferenziate);
+        String paginaPulita;
 
-            }
+        for (String paginaSporca : pagineSporche) {
+            paginaPulita = wikiUtility.fixDiacritica(paginaSporca);
 
-            pulita = StringUtils.stripAccents(grezza);
-            if (pagineSenzaRedirect.contains(pulita)) {
-                pagineSporche.add(grezza);
-            }
-            else {
-                pagineSenzaRedirect.add(pulita);
+            if (!pagineGrezzeIndifferenziate.contains(paginaPulita)) {
+                pagineSingole.add(paginaSporca);
             }
         }
 
-        //        final Collator instance = Collator.getInstance();
-        //
-        //        // This strategy mean it'll ignore the accents
-        //        instance.setStrength(Collator.NO_DECOMPOSITION);
-        //
-        //        // Will print 0 because its EQUAL
-        //
-        //        System.out.println(instance.compare(a, b));
-        Object alfa = pagineSporche;
-        return pagineSenzaRedirect;
+        return pagineSingole;
+    }
+
+    /**
+     * Cognomi diacritici col corrispettivo acritico
+     */
+    public ArrayList<String> getCognomiDiacriticiDoppi(List<String> pagineGrezzeIndifferenziate) {
+        ArrayList<String> pagineDoppie = new ArrayList<>();
+        ArrayList<String> pagineSporche = getCognomiDiacriticiAll(pagineGrezzeIndifferenziate);
+        String paginaPulita;
+
+        for (String paginaSporca : pagineSporche) {
+            paginaPulita = wikiUtility.fixDiacritica(paginaSporca);
+
+            if (pagineGrezzeIndifferenziate.contains(paginaPulita)) {
+                pagineDoppie.add(paginaPulita);
+            }
+        }
+
+        return pagineDoppie;
     }
 
     public void elaboraCognomiPagine(List<String> valideBase, List<String> pagine) {
@@ -748,6 +791,11 @@ public class PaginaBackend extends WikiBackend {
         int voci = 0;
         int sogliaCognomi = WPref.sogliaCognomiWiki.getInt();
         sogliaCognomi = (sogliaCognomi * 8) / 10;
+        List<String> cognomiAcriticiSingoli = this.getCognomiAcriticiSingoli(pagine);
+        List<String> cognomiAcriticiDoppi = this.getCognomiAcriticiDoppi(pagine);
+        List<String> cognomiDiacriticiSingoli = this.getCognomiDiacriticiSingoli(pagine);
+        List<String> cognomiDiacriticiDoppi = this.getCognomiDiacriticiDoppi(pagine);
+//        AETypeCognome type;
 
         for (String wikiTitle : pagine) {
             // Quelle di primo livello che terminano con /
@@ -767,7 +815,35 @@ public class PaginaBackend extends WikiBackend {
 
             // Identifico quelli uguali con accenti differenti
             // Controllo i redirect e li elimino
-            if (wikiUtility.isDiacritica(paginaBase)) {
+//            type = fixTypeCognome(cognomiAcritici, cognomiDiacritici, wikiTitle);
+//            switch (type) {
+//                case acriticoSingolo -> {
+//                    //nulla da fare
+//                }
+//                case acriticoDoppio -> {
+//                    //nulla da fare
+//                }
+//                case diacriticoSingolo -> {
+//                }
+//                case diacriticoDoppio -> {
+//                    //--c'è questo diacritico ed anche l'acritico (che può passare prima o dopo)
+//                }
+//                case nonSpecificato -> {
+//                    //nulla da fare
+//                }
+//                default -> {
+//                }
+//            } ;
+
+            if (cognomiAcriticiSingoli.contains(wikiTitle)) {
+                int a=87;//non faccio nulla e proseguo
+            }
+
+            if (cognomiAcriticiDoppi.contains(wikiTitle)) {
+                if (queryService.isRedirect(wikiTitle)) {
+                    creaIfNotExist(wikiTitle, AETypePaginaCancellare.redirect, 0, true);
+                    continue;
+                }
             }
 
             // Quelle di primo livello che non esistono in Attivita
@@ -785,6 +861,33 @@ public class PaginaBackend extends WikiBackend {
                 creaIfNotExist(wikiTitle, AETypePaginaCancellare.cognomi, voci, true);
             }
         }
+    }
+
+    public AETypeCognome fixTypeCognome(List<String> cognomiAcritici, List<String> cognomiDiacritici, String cognomeBase) {
+        AETypeCognome type = AETypeCognome.nonSpecificato;
+        String cognomeAcriticizzato;
+
+        //--cognome normale
+        if (cognomiAcritici.contains(cognomeBase)) {
+            if (cognomiDiacritici.contains(cognomeBase)) {
+                return AETypeCognome.acriticoDoppio;
+            }
+            else {
+                return AETypeCognome.acriticoSingolo;
+            }
+        }
+
+        if (cognomiDiacritici.contains(cognomeBase)) {
+            cognomeAcriticizzato = wikiUtility.fixDiacritica(cognomeBase);
+            if (cognomiAcritici.contains(cognomeAcriticizzato)) {
+                return AETypeCognome.diacriticoDoppio;
+            }
+            else {
+                return AETypeCognome.diacriticoSingolo;
+            }
+        }
+
+        return type;
     }
 
     public void elaboraUtenteBot() {

@@ -1,6 +1,5 @@
 package it.algos.wiki23.backend.packages.bio;
 
-import com.querydsl.core.annotations.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -11,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.io.*;
 import java.time.*;
 
 /**

@@ -11,7 +11,6 @@ import it.algos.wiki23.backend.login.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
 import static it.algos.wiki23.backend.service.WikiApiService.*;
-import static it.algos.wiki23.backend.service.WikiBotService.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;

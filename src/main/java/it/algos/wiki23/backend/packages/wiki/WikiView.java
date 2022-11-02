@@ -18,7 +18,6 @@ import it.algos.vaad23.ui.views.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.data.domain.*;
 
 import java.time.*;
 import java.time.format.*;

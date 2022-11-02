@@ -2,12 +2,10 @@ package it.algos.wiki23.backend.liste;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
-import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
@@ -19,7 +17,6 @@ import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.*;
 
 /**
  * Project wiki23

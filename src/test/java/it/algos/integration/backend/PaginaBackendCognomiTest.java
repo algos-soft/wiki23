@@ -117,22 +117,164 @@ public class PaginaBackendCognomiTest extends WikiTest {
 
     @Test
     @Order(3)
-    @DisplayName("3 - fixCognomiDiacritici")
-    void fixCognomiDiacritici() {
-        System.out.println("3 - fixCognomiDiacritici");
+    @DisplayName("3 - listaAllPagine")
+    void listaAllPagine() {
+        System.out.println("3 - listaAllPagine");
         String message;
         String tag = "Persone di cognome";
 
-        List<String> listaStr = queryService.getList(tag);
-        message = String.format("Ci sono in totale %s cognomi indifferenziati con o senza accento", textService.format(listaStr.size()));
+        listaStr = queryService.getList(tag);
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        message = String.format("Sul server ci sono in totale %d liste di cognomi indifferenziati con o senza accento", listaStr.size());
+        System.out.println(message);
+        print(listaStr);
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("11 - getCognomiAcriticiAll")
+    void getCognomiAcriticiAll() {
+        System.out.println("11 - getCognomiAcriticiAll");
+        String message;
+        String tag = "Persone di cognome";
+
+        listaStr = queryService.getList(tag);
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        message = String.format("Sul server ci sono in totale %d liste di cognomi indifferenziati con o senza accento", listaStr.size());
         System.out.println(message);
 
-        listaStr = backend.fixCognomiDiacritici(listaStr);
+        listaStr = backend.getCognomiAcriticiAll(listaStr);
         assertNotNull(listaStr);
-        message = String.format("Ci sono in totale %s cognomi con accenti diacritici", textService.format(listaStr.size()));
-        System.out.println(message);
+        message = String.format("Sul server ci sono %d liste di cognomi senza accenti diacritici con o senza un corrispondente acritico", listaStr.size());
         System.out.println(VUOTA);
+        System.out.println(message);
         print(listaStr);
+    }
+
+
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - getCognomiAcriticiSingoli")
+    void getCognomiAcriticiSingoli() {
+        System.out.println("12 - getCognomiAcriticiSingoli");
+        String message;
+        String tag = "Persone di cognome";
+
+        listaStr = queryService.getList(tag);
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        message = String.format("Sul server ci sono in totale %d liste di cognomi indifferenziati con o senza accento", listaStr.size());
+        System.out.println(message);
+
+        listaStr = backend.getCognomiAcriticiSingoli(listaStr);
+        assertNotNull(listaStr);
+        message = String.format("Sul server ci sono %d liste di cognomi senza accenti diacritici che non hanno un corrispondente diacritico", listaStr.size());
+        System.out.println(VUOTA);
+        System.out.println(message);
+        print(listaStr);
+    }
+
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - getCognomiAcriticiDoppi")
+    void getCognomiAcriticiDoppi() {
+        System.out.println("13 - getCognomiAcriticiDoppi");
+        String message;
+        String tag = "Persone di cognome";
+
+        listaStr = queryService.getList(tag);
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        message = String.format("Sul server ci sono in totale %d liste di cognomi indifferenziati con o senza accento", listaStr.size());
+        System.out.println(message);
+
+        listaStr = backend.getCognomiAcriticiDoppi(listaStr);
+        assertNotNull(listaStr);
+        message = String.format("Sul server ci sono %d liste di cognomi senza accenti diacritici che però hanno il corrispondente diacritico", listaStr.size());
+        System.out.println(VUOTA);
+        System.out.println(message);
+        print(listaStr);
+    }
+
+
+    @Test
+    @Order(21)
+    @DisplayName("21 - getCognomiDiacriticiAll")
+    void getCognomiDiacriticiAll() {
+        System.out.println("21 - getCognomiDiacriticiAll");
+        String message;
+        String tag = "Persone di cognome";
+
+        listaStr = queryService.getList(tag);
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        message = String.format("Sul server ci sono in totale %d liste di cognomi indifferenziati con o senza accento", listaStr.size());
+        System.out.println(message);
+
+        listaStr = backend.getCognomiDiacriticiAll(listaStr);
+        assertNotNull(listaStr);
+        message = String.format("Sul server ci sono %d liste di cognomi con accenti diacritici con o senza corrispondente acritico", listaStr.size());
+        System.out.println(VUOTA);
+        System.out.println(message);
+        print(listaStr);
+    }
+
+    @Test
+    @Order(22)
+    @DisplayName("22 - getCognomiDiacriticiSingoli")
+    void getCognomiDiacriticiSingoli() {
+        System.out.println("22 - getCognomiDiacriticiSingoli");
+        String message;
+        String tag = "Persone di cognome";
+
+        listaStr = queryService.getList(tag);
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        message = String.format("Sul server ci sono in totale %d liste di cognomi indifferenziati con o senza accento", listaStr.size());
+        System.out.println(message);
+
+        listaStr = backend.getCognomiDiacriticiSingoli(listaStr);
+        assertNotNull(listaStr);
+        message = String.format("Sul server ci sono %d liste di cognomi con accenti diacritici che non hanno il corrispondente acritico", listaStr.size());
+        System.out.println(VUOTA);
+        System.out.println(message);
+        print(listaStr);
+    }
+
+
+    @Test
+    @Order(23)
+    @DisplayName("23 - getCognomiDiacriticiDoppi")
+    void getCognomiDiacriticiDoppi() {
+        System.out.println("23 - getCognomiDiacriticiDoppi");
+        String message;
+        String tag = "Persone di cognome";
+
+        listaStr = queryService.getList(tag);
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        message = String.format("Sul server ci sono in totale %d liste di cognomi indifferenziati con o senza accento", listaStr.size());
+        System.out.println(message);
+
+        listaStr = backend.getCognomiDiacriticiDoppi(listaStr);
+        assertNotNull(listaStr);
+        message = String.format("Sul server ci sono %d liste di cognomi con accenti diacritici che hanno anche il corrispondente acritico", listaStr.size());
+        System.out.println(VUOTA);
+        System.out.println(message);
+        print(listaStr);
+    }
+
+
+    //    @Test
+    @Order(8)
+    @DisplayName("8 - elaboraCognomi")
+    void elaboraCognomi() {
+        System.out.println("8 - elaboraCognomi");
+        backend.elaboraCognomi();
     }
 
     /**

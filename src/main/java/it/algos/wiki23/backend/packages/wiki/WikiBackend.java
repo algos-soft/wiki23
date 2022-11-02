@@ -1,12 +1,9 @@
 package it.algos.wiki23.backend.packages.wiki;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.anno.*;
