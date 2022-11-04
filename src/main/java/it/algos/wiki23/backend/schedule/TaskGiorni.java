@@ -21,22 +21,23 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskGiorni extends AlgosTask {
+public class TaskGiorni extends WikiTask {
 
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        long inizio;
-
         if (WPref.usaTaskGiorni.is()) {
             fixNext();
 
             //--Le statistiche comprendono anche l'elaborazione
+            //--L'elaborazione comprende le info per la view
+            //--Le statistiche comprendono le info per la view
             appContext.getBean(StatisticheGiorni.class).upload();
 
+            //--L'upload comprende anche le info per la view
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadGiorni.class).uploadAll();
-            loggerUpload(inizio);
+            super.loggerTask("upload liste dei giorni");
         }
     }
 
@@ -55,16 +56,6 @@ public class TaskGiorni extends AlgosTask {
         LocalDateTime adesso = LocalDateTime.now();
         LocalDateTime prossimo = adesso.plusDays(1);
         WPref.uploadGiorniPrevisto.setValue(prossimo);
-    }
-
-    public void loggerUpload(long inizio) {
-        long fine = System.currentTimeMillis();
-        String message;
-        long delta = fine - inizio;
-        delta = delta / 1000 / 60;
-
-        message = String.format("Task per l'upload delle liste di giorni in %s minuti", delta);
-        logger.info(new WrapLog().type(AETypeLog.upload).message(message).usaDb());
     }
 
 }

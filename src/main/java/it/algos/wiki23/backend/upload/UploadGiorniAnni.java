@@ -152,6 +152,7 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(CAPO);
         buffer.append(includeIni());
         buffer.append(fixToc());
+        buffer.append(fixUnconnected());
         buffer.append(torna());
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
@@ -192,6 +193,7 @@ public abstract class UploadGiorniAnni extends Upload {
         buffer.append(avviso());
         buffer.append(CAPO);
         buffer.append(fixToc());
+        buffer.append(fixUnconnected());
         buffer.append(tornaSotto());
         buffer.append(tmpListaBio(numVoci));
         buffer.append(CAPO);

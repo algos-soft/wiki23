@@ -2,6 +2,9 @@ package it.algos.wiki23.backend.statistiche;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.giorno.*;
@@ -9,6 +12,7 @@ import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
+import java.time.*;
 import java.util.*;
 
 /**
@@ -41,6 +45,7 @@ public class StatisticheGiorni extends Statistiche {
     protected void fixPreferenze() {
         super.fixPreferenze();
         super.typeToc = AETypeToc.noToc;
+        super.lastStatistica = WPref.statisticaGiorni;
     }
 
     @Override

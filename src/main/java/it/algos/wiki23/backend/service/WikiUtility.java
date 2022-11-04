@@ -513,6 +513,7 @@ public class WikiUtility extends WAbstractService {
     public boolean isDiacritica(final String parola) {
         return textService.isValid(parola) ? !StringUtils.stripAccents(parola).equals(parola) : false;
     }
+
     public String fixDiacritica(final String parola) {
         return StringUtils.stripAccents(parola);
     }

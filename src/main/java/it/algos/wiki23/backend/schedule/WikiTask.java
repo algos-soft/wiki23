@@ -1,15 +1,12 @@
 package it.algos.wiki23.backend.schedule;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.sauronsoftware.cron4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-
-import java.time.*;
 
 /**
  * Project wiki23
@@ -18,7 +15,9 @@ import java.time.*;
  * Date: Tue, 05-Jul-2022
  * Time: 14:06
  */
-public abstract class AlgosTask extends Task {
+public abstract class WikiTask extends Task {
+
+    protected long inizio;
 
     /**
      * Istanza di una interfaccia <br>
@@ -38,6 +37,16 @@ public abstract class AlgosTask extends Task {
 
     public String getPattern() {
         return VUOTA;
+    }
+
+    public void loggerTask(String dettaglio) {
+        long fine = System.currentTimeMillis();
+        String message;
+        long delta = fine - inizio;
+        delta = delta / 1000 / 60;
+
+        message = String.format("Task per %s in %s minuti", dettaglio, delta);
+        logger.info(new WrapLog().type(AETypeLog.task).message(message).usaDb());
     }
 
 }

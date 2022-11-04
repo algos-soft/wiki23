@@ -114,17 +114,17 @@ public class WrapLog {
      * Per il database registra entrambi i messaggi, se esistono <br>
      */
     public String getMessageDB() {
-        String messageDB;
+        StringBuffer buffer = new StringBuffer();
         String messageErrore = exception != null ? exception.getMessage() : VUOTA;
         String messageSpecifico = (message != null && message.length() > 0) ? message : VUOTA;
 
-        messageDB = messageErrore;
-        if (messageSpecifico != null && messageSpecifico.length() > 0) {
-            messageDB += SEP;
-            messageDB += messageSpecifico;
+        buffer.append(messageErrore);
+        if (messageErrore != null && messageErrore.length() > 0 &&  messageSpecifico.length() > 0) {
+            buffer.append(SEP);
         }
+        buffer.append(messageSpecifico);
 
-        return messageDB;
+        return buffer.toString();
     }
 
     public AlgosException getException() {

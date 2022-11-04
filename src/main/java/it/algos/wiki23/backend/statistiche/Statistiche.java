@@ -1,7 +1,10 @@
 package it.algos.wiki23.backend.statistiche;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
@@ -26,6 +29,8 @@ import java.util.*;
  * Time: 10:34
  */
 public abstract class Statistiche {
+
+    protected WPref lastStatistica;
 
     /**
      * Istanza di una interfaccia <br>
@@ -172,6 +177,7 @@ public abstract class Statistiche {
     }
 
     protected WResult upload(String wikiTitle) {
+        WResult result;
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(avviso());
@@ -185,7 +191,10 @@ public abstract class Statistiche {
         buffer.append(note());
         buffer.append(correlate());
         buffer.append(categorie());
-        return registra(wikiTitle, buffer.toString());
+        result = registra(wikiTitle, buffer.toString());
+
+        fixInfo();
+        return result;
     }
 
     protected String avviso() {
@@ -307,6 +316,17 @@ public abstract class Statistiche {
 
     protected WResult registra(String wikiTitle, String newText) {
         return appContext.getBean(QueryWrite.class).urlRequest(wikiTitle, newText);
+    }
+
+
+    public void fixInfo() {
+        if (lastStatistica != null) {
+            lastStatistica.setValue(LocalDateTime.now());
+            logger.info(new WrapLog().message("Upload statistica giorni").type(AETypeLog.statistiche).usaDb());
+        }
+        else {
+            logger.warn(new WrapLog().exception(new AlgosException("lastStatistica è nullo")));
+        }
     }
 
 }

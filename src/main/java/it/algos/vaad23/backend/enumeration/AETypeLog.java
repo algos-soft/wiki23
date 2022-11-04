@@ -41,6 +41,8 @@ public enum AETypeLog implements AIType {
     upload("upload"),
     update("update"),
     elabora("elabora"),
+    statistiche("statistiche"),
+    task("task"),
     reset("reset"),
     utente("utente"),
     password("password"),

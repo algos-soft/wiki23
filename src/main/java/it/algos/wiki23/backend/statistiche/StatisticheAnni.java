@@ -42,6 +42,7 @@ public class StatisticheAnni extends Statistiche {
     protected void fixPreferenze() {
         super.fixPreferenze();
         super.typeToc = AETypeToc.noToc;
+        super.lastStatistica = WPref.statisticaAnni;
     }
 
 

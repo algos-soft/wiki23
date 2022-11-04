@@ -23,7 +23,7 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskBio extends AlgosTask {
+public class TaskBio extends WikiTask {
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>

@@ -204,6 +204,10 @@ public abstract class Upload {
         return typeToc.get();
     }
 
+    protected String fixUnconnected() {
+        return UNCONNECTED;
+    }
+
     protected String torna(String wikiTitle) {
         wikiTitle = textService.levaCodaDaUltimo(wikiTitle, SLASH);
         return textService.isValid(wikiTitle) ? String.format("{{Torna a|%s}}", wikiTitle) : VUOTA;
@@ -269,7 +273,7 @@ public abstract class Upload {
             newTextSignificativo = newText.substring(newText.indexOf(tag));
         }
 
-        if (textService.isValid(newTextSignificativo)) {
+        if (!WPref.scriveComunque.is() && textService.isValid(newTextSignificativo)) {
             return appContext.getBean(QueryWrite.class).urlRequestCheck(wikiTitle, newText, newTextSignificativo, summary);
         }
         else {

@@ -154,9 +154,7 @@ public class GiornoWikiView extends WikiView {
      */
     @Override
     public void uploadStatistiche() {
-        long inizio = System.currentTimeMillis();
         appContext.getBean(StatisticheGiorni.class).upload();
-        super.fixStatisticheMinuti(inizio);
         super.uploadStatistiche();
     }
 

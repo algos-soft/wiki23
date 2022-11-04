@@ -21,22 +21,23 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskAnni extends AlgosTask{
+public class TaskAnni extends WikiTask {
 
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        long inizio;
-
         if (WPref.usaTaskAnni.is()) {
             fixNext();
 
             //--Le statistiche comprendono anche l'elaborazione
+            //--L'elaborazione comprende le info per la view
+            //--Le statistiche comprendono le info per la view
             appContext.getBean(StatisticheAnni.class).upload();
 
+            //--L'upload comprende anche le info per la view
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadAnni.class).uploadAll();
-            loggerUpload(inizio);
+            super.loggerTask("upload liste degli anni");
         }
     }
 
@@ -56,16 +57,6 @@ public class TaskAnni extends AlgosTask{
         LocalDateTime adesso = LocalDateTime.now();
         LocalDateTime prossimo = adesso.plusDays(1);
         WPref.uploadGiorniPrevisto.setValue(prossimo);
-    }
-
-    public void loggerUpload(long inizio) {
-        long fine = System.currentTimeMillis();
-        String message;
-        long delta = fine - inizio;
-        delta = delta / 1000 / 60;
-
-        message = String.format("Task per l'upload delle liste di anni in %s minuti", delta);
-        logger.info(new WrapLog().type(AETypeLog.upload).message(message).usaDb());
     }
 
 }

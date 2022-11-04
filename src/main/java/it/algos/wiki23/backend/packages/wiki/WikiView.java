@@ -358,7 +358,7 @@ public abstract class WikiView extends CrudView {
                     message = "Statistiche non ancora registrate sul server";
                 }
                 else {
-                    message = String.format("Ultime statistiche registrate il %s", dateService.get(statistica));
+                    message = String.format("Ultime statistiche registrate il %s", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(statistica));
                 }
                 addSpanVerdeSmall(message);
             }

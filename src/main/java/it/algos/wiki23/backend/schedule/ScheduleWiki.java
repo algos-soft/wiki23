@@ -1,16 +1,12 @@
 package it.algos.wiki23.backend.schedule;
 
-import com.google.common.util.concurrent.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
-import it.algos.vaad23.backend.wrapper.*;
 import it.sauronsoftware.cron4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.data.mongodb.core.messaging.Task;
 
 import javax.annotation.*;
 
@@ -58,7 +54,7 @@ public class ScheduleWiki extends Scheduler {
         }
     }
 
-    public void schedule(AlgosTask task) {
+    public void schedule(WikiTask task) {
         if (task != null) {
             schedule(task.getPattern(), task);
         }

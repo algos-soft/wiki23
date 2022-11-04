@@ -15,6 +15,7 @@ import static it.algos.wiki23.backend.boot.Wiki23Cost.PATH_WIKI;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.upload.*;
+import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
@@ -71,8 +72,8 @@ public class CognomeView extends WikiView {
         super.lastElaborazione = WPref.elaboraCognomi;
         super.durataElaborazione = WPref.elaboraCognomiTime;
         super.lastUpload = WPref.uploadCognomi;
-        super.durataUpload= WPref.uploadCognomiTime;
-        super.nextUpload= WPref.uploadCognomiPrevisto;
+        super.durataUpload = WPref.uploadCognomiTime;
+        super.nextUpload = WPref.uploadCognomiPrevisto;
 
         super.usaBottoneDownload = false;
         super.usaBottoneUploadStatistiche = false;
@@ -198,10 +199,11 @@ public class CognomeView extends WikiView {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void uploadPagina() {
+        WResult result;
         Cognome cognome = getCognomeCorrente();
 
         if (cognome != null) {
-            backend.uploadPagina(cognome.cognome);
+            result = backend.uploadPagina(cognome.cognome);
             reload();
         }
     }

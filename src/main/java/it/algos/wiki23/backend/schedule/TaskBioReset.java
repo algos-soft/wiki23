@@ -23,7 +23,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 
-public class TaskBioReset extends AlgosTask {
+public class TaskBioReset extends WikiTask {
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>

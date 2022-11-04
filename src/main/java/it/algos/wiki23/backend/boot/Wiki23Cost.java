@@ -24,6 +24,8 @@ public class Wiki23Cost {
 
     public static final String PATH_LINK = "Link ";
 
+    public static final String UNCONNECTED = "__EXPECTED_UNCONNECTED_PAGE__";
+
     public static final String PATH_PLURALE = "Plurale ";
 
     public static final String PATH_EX = "Ex ";

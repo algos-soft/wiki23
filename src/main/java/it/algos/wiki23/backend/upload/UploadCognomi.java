@@ -79,7 +79,7 @@ public class UploadCognomi extends Upload {
             }
 
             if (textService.isValid(wikiTitle) && mappaWrap != null && mappaWrap.size() > 0) {
-                this.esegueUpload(wikiTitle, mappaWrap);
+               return esegueUpload(wikiTitle, mappaWrap);
             }
         }
 
@@ -119,6 +119,7 @@ public class UploadCognomi extends Upload {
         buffer.append(CAPO);
         buffer.append(includeIni());
         buffer.append(fixToc());
+        buffer.append(fixUnconnected());
         //        buffer.append(torna(wikiTitle));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
@@ -143,6 +144,7 @@ public class UploadCognomi extends Upload {
         buffer.append(CAPO);
         buffer.append(includeIni());
         buffer.append(AETypeToc.noToc.get());
+        buffer.append(fixUnconnected());
         buffer.append(torna(wikiTitle));
         buffer.append(tmpListaBio(numVoci));
         buffer.append(includeEnd());
@@ -294,7 +296,7 @@ public class UploadCognomi extends Upload {
         WResult result = WResult.errato();
         long inizio = System.currentTimeMillis();
 
-        List<String> listaPlurali = cognomeBackend.findCognomiSortNumBio();
+        List<String> listaPlurali = cognomeBackend.findCognomiStampabiliSortNumBio();
         for (String plurale : listaPlurali) {
             upload(plurale);
         }

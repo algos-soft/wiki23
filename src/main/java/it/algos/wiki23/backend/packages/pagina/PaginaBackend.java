@@ -115,7 +115,7 @@ public class PaginaBackend extends WikiBackend {
         //        elaboraAttivita();
         //        elaboraNazionalita();
         elaboraCognomi();
-        elaboraUtenteBot();
+//        elaboraUtenteBot();
 
         super.fixElaboraMinuti(inizio, "cancellazioni");
     }
@@ -841,7 +841,7 @@ public class PaginaBackend extends WikiBackend {
 
             if (cognomiAcriticiDoppi.contains(wikiTitle)) {
                 if (queryService.isRedirect(wikiTitle)) {
-                    creaIfNotExist(wikiTitle, AETypePaginaCancellare.redirect, 0, true);
+                    creaIfNotExist(wikiTitle, AETypePaginaCancellare.redirect, 0, false);
                     continue;
                 }
             }

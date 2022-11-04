@@ -21,7 +21,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskNazionalita extends AlgosTask {
+public class TaskNazionalita extends WikiTask {
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
