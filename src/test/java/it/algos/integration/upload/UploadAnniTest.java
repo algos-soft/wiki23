@@ -111,7 +111,7 @@ public class UploadAnniTest extends WikiTest {
     }
 
 
-    //        @Test
+    @Test
     @Order(6)
     @DisplayName("6 - Upload all")
     void uploadAll() {
@@ -298,7 +298,7 @@ public class UploadAnniTest extends WikiTest {
         WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
     }
 
-    @Test
+    //    @Test
     @DisplayName("18 - Upload usaSottoGiorniAnni")
     void usaSottoGiorniAnniReale2() {
         System.out.println("18 - Upload usaSottoGiorniAnni");

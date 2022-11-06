@@ -79,24 +79,24 @@ public class UploadGiorni extends UploadGiorniAnni {
      */
     public WResult uploadAll() {
         WResult result = WResult.errato();
+        logger.info(new WrapLog().type(AETypeLog.upload).message("Inizio upload liste nati e morti dei giorni"));
         long inizio = System.currentTimeMillis();
         List<String> giorni;
         String message;
         int modificatiNati = 0;
         int modificatiMorti = 0;
-        logInizio();
 
         List<String> mesi = meseBackend.findNomi();
         for (String mese : mesi) {
             giorni = giornoBackend.findNomiByMese(mese);
 
             for (String nomeGiorno : giorni) {
-//                result = nascita().upload(nomeGiorno);
+                result = nascita().upload(nomeGiorno);
                 if (result.isValido() && result.isModificata()) {
                     modificatiNati++;
                 }
 
-//                result = morte().upload(nomeGiorno);
+                result = morte().upload(nomeGiorno);
                 if (result.isValido() && result.isModificata()) {
                     modificatiMorti++;
                 }
@@ -107,10 +107,6 @@ public class UploadGiorni extends UploadGiorniAnni {
 
         fixUploadMinuti(inizio);
         return result;
-    }
-
-    public void logInizio() {
-        logger.info(new WrapLog().type(AETypeLog.upload).message("Inizio upload liste nati e morti dei giorni"));
     }
 
 }

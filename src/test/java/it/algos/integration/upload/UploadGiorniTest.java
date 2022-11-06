@@ -113,7 +113,7 @@ public class UploadGiorniTest extends WikiTest {
     }
 
 
-        @Test
+//    @Test
     @Order(5)
     @DisplayName("5 - Upload all")
     void uploadAll() {
@@ -121,7 +121,7 @@ public class UploadGiorniTest extends WikiTest {
         appContext.getBean(UploadGiorni.class).uploadAll();
     }
 
-//    @Test
+    //    @Test
     @Order(6)
     @DisplayName("6 - Upload test con result")
     void uploadTestResult() {

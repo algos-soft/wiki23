@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.upload;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
+import it.algos.vaad23.backend.packages.crono.secolo.*;
 import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -31,6 +32,13 @@ public abstract class UploadGiorniAnni extends Upload {
      */
     @Autowired
     public MeseBackend meseBackend;
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public SecoloBackend secoloBackend;
 
     protected int ordineGiornoAnno;
 

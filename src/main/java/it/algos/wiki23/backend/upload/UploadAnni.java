@@ -1,6 +1,8 @@
 package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
@@ -77,12 +79,30 @@ public class UploadAnni extends UploadGiorniAnni {
      */
     public WResult uploadAll() {
         WResult result = WResult.errato();
+        logger.info(new WrapLog().type(AETypeLog.upload).message("Inizio upload liste nati e morti degli anni"));
         long inizio = System.currentTimeMillis();
+        List<String> anni;
+        String message;
+        int modificatiNati = 0;
+        int modificatiMorti = 0;
 
-        List<String> anni = annoWikiBackend.findAllNomi();
-        for (String nomeAnno : anni) {
-            nascita().upload(nomeAnno);
-            morte().upload(nomeAnno);
+        List<String> secoli = secoloBackend.findNomi();
+        for (String secolo : secoli) {
+            anni = annoBackend.findNomiBySecolo(secolo);
+
+            for (String nomeAnno : anni) {
+                result = nascita().upload(nomeAnno);
+                if (result.isValido() && result.isModificata()) {
+                    modificatiNati++;
+                }
+
+                result = morte().upload(nomeAnno);
+                if (result.isValido() && result.isModificata()) {
+                    modificatiMorti++;
+                }
+            }
+            message = String.format("Modificate sul server %d pagine di 'nati' e %d di 'morti' per il secolo %s", modificatiNati, modificatiMorti, secolo);
+            logger.info(new WrapLog().type(AETypeLog.upload).message(message));
         }
 
         fixUploadMinuti(inizio);
