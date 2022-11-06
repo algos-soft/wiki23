@@ -5,10 +5,12 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
@@ -27,7 +29,7 @@ import java.util.*;
 @Service
 public class SecoloBackend extends CrudBackend {
 
-    private SecoloRepository repository;
+    public SecoloRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -93,6 +95,17 @@ public class SecoloBackend extends CrudBackend {
      */
     public Secolo findByNome(final String nome) {
         return repository.findFirstByNome(nome);
+    }
+
+    @Override
+    public List<Secolo> findAll() {
+        return repository.findAll(Sort.by(Sort.Direction.DESC, "ordine"));
+    }
+
+    public List<String> findNomi() {
+        return findAll().stream()
+                .map(secolo -> secolo.nome)
+                .collect(Collectors.toList());
     }
 
     /**

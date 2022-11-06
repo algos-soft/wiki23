@@ -5,13 +5,10 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.wrapper.*;
-import org.bson.types.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
-import org.springframework.data.mongodb.core.query.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -105,7 +102,7 @@ public class GiornoBackend extends CrudBackend {
 
     @Override
     public List<Giorno> findAll() {
-        return super.findAll();
+        return repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));
     }
 
     public List<String> findNomi() {

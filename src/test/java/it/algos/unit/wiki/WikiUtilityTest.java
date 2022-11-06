@@ -123,7 +123,7 @@ public class WikiUtilityTest extends WikiTest {
     void wikiTitleAnno() {
         System.out.println("2 - WikiTitle di tutte le 3030 (circa) pagine anni di nascita e morte");
         System.out.println(VUOTA);
-        listaStr = annoBackend.findAllNomi();
+        listaStr = annoBackend.findNomi();
         int contNati = 0;
         int contMorti = 0;
         StringBuffer buffer = new StringBuffer();

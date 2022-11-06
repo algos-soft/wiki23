@@ -91,12 +91,12 @@ public class UploadGiorni extends UploadGiorniAnni {
             giorni = giornoBackend.findNomiByMese(mese);
 
             for (String nomeGiorno : giorni) {
-                result = nascita().upload(nomeGiorno);
+//                result = nascita().upload(nomeGiorno);
                 if (result.isValido() && result.isModificata()) {
                     modificatiNati++;
                 }
 
-                result = morte().upload(nomeGiorno);
+//                result = morte().upload(nomeGiorno);
                 if (result.isValido() && result.isModificata()) {
                     modificatiMorti++;
                 }

@@ -30,7 +30,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.*;
 import org.vaadin.crudui.crud.*;
 
-import javax.annotation.*;
 import java.util.*;
 import java.util.function.*;
 

@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.bson.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -98,11 +99,12 @@ public class MeseBackend extends CrudBackend {
 
     @Override
     public List<Mese> findAll() {
-        return super.findAll();
+        return repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));
     }
+
     public List<String> findNomi() {
         return findAll().stream()
-                .map(giorno->giorno.nome)
+                .map(giorno -> giorno.nome)
                 .collect(Collectors.toList());
     }
 
@@ -182,7 +184,7 @@ public class MeseBackend extends CrudBackend {
                     }
                 }
 
-                mese = crea(ordine, breve, nome, giorni, primo, ultimo);
+                mese = crea(++ordine, breve, nome, giorni, primo, ultimo);
                 if (mese != null) {
                     mesi.add(mese);
                 }

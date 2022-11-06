@@ -112,7 +112,7 @@ public class AnnoWikiBackend extends WikiBackend {
     }
 
     public List<String> findAllNomi() {
-        return annoBackend.findAllNomi();
+        return annoBackend.findNomi();
     }
 
     public AnnoWiki findByNome(final String nome) {

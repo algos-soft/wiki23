@@ -4,6 +4,7 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
+import it.algos.vaad23.backend.packages.crono.secolo.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
@@ -122,24 +123,40 @@ public class AnnoBackendTest extends AlgosTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - findAll")
+    @DisplayName("2 - findAll (entity)")
     void findAll() {
-        System.out.println("2 - findAll");
+        System.out.println("2 - findAll (entity)");
         String message;
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
         message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Anno");
         System.out.println(message);
-        printBeans(listaBeans);
+        printAnni(listaBeans);
     }
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - findNomi (nome)")
+    void findNomi() {
+        System.out.println("3 - findNomi (nome)");
+        String message;
+
+        listaStr = backend.findNomi();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s anni", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiAnni(listaStr);
+    }
+
+
 
     @ParameterizedTest
     @MethodSource(value = "ANNI")
-    @Order(3)
-    @DisplayName("3 - findByNome")
+    @Order(21)
+    @DisplayName("21 - findByNome")
     void findByNome(final String nome, final boolean esiste) {
-        System.out.println("3 - findByNome");
+        System.out.println("21 - findByNome");
         entityBean = backend.findByNome(nome);
         assertEquals(esiste, entityBean!=null);
         if (entityBean!=null) {
@@ -165,15 +182,28 @@ public class AnnoBackendTest extends AlgosTest {
     void tearDownAll() {
     }
 
-    void printBeans(List<Anno> listaBeans) {
+    void printAnni(List<Anno> listaAnni) {
         System.out.println(VUOTA);
         int k = 0;
 
-        for (Anno bean : listaBeans) {
+        for (Anno anno : listaAnni) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(bean);
+            System.out.print(anno.nome);
+            System.out.print(SPAZIO);
+            System.out.println(anno.secolo);
+        }
+    }
+
+    void printNomiAnni(List<String> listaAnni) {
+        int k = 0;
+
+        for (String anno : listaAnni) {
+            System.out.print(++k);
+            System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+            System.out.println(anno);
         }
     }
 

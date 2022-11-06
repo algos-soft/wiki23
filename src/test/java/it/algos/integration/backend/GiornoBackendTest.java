@@ -41,7 +41,7 @@ public class GiornoBackendTest extends AlgosTest {
     @Autowired
     private MeseRepository meseRepository;
 
-    protected List<Giorno> listaGiorni;
+    private List<Giorno> listaBeans;
 
     @Autowired
     private MeseBackend meseBackend;
@@ -114,11 +114,11 @@ public class GiornoBackendTest extends AlgosTest {
         System.out.println("2 - findAll (entity)");
         String message;
 
-        listaGiorni = backend.findAll();
-        assertNotNull(listaGiorni);
-        message = String.format("Ci sono in totale %s giorni", textService.format(listaGiorni.size()));
+        listaBeans = backend.findAll();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Giorno");
         System.out.println(message);
-        printGiorni(listaGiorni);
+        printGiorni(listaBeans);
     }
 
     @Test
@@ -142,14 +142,15 @@ public class GiornoBackendTest extends AlgosTest {
         System.out.println("4 - findAllByMese (entity)");
 
         for (Mese sorgente : meseBackend.findAll()) {
-            listaGiorni = backend.findAllByMese(sorgente);
-            assertNotNull(listaGiorni);
-            message = String.format("Nel mese di %s ci sono %s giorni", sorgente, textService.format(listaGiorni.size()));
+            listaBeans = backend.findAllByMese(sorgente);
+            assertNotNull(listaBeans);
+            message = String.format("Nel mese di %s ci sono %s giorni", sorgente, textService.format(listaBeans.size()));
             System.out.println(VUOTA);
             System.out.println(message);
-            printGiorni(listaGiorni);
+            printGiorni(listaBeans);
         }
     }
+
     @Test
     @Order(5)
     @DisplayName("5 - findNomiByMese (nome)")

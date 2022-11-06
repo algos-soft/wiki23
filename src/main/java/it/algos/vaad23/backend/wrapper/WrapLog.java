@@ -119,7 +119,7 @@ public class WrapLog {
         String messageSpecifico = (message != null && message.length() > 0) ? message : VUOTA;
 
         buffer.append(messageErrore);
-        if (messageErrore != null && messageErrore.length() > 0 &&  messageSpecifico.length() > 0) {
+        if (messageErrore != null && messageErrore.length() > 0 && messageSpecifico.length() > 0) {
             buffer.append(SEP);
         }
         buffer.append(messageSpecifico);

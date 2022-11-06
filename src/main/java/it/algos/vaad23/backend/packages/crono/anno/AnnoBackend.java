@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
@@ -100,18 +101,27 @@ public class AnnoBackend extends CrudBackend {
 
     @Override
     public List<Anno> findAll() {
-        return super.findAll();
+        return repository.findAll(Sort.by(Sort.Direction.DESC, "ordine"));
     }
 
-    public List<String> findAllNomi() {
-        List<String> listaNomi = new ArrayList<>();
-        List<Anno> listaAnni = repository.findAll(Sort.by(Sort.Direction.DESC, "ordine"));
+    public List<String> findNomi() {
+        return findAll().stream()
+                .map(anno -> anno.nome)
+                .collect(Collectors.toList());
+    }
 
-        for (Anno anno : listaAnni) {
-            listaNomi.add(anno.nome);
-        }
+    public List<Anno> findAllBySecolo(Secolo secolo) {
+        return findAll().stream()
+                .filter(anno -> anno.secolo.nome.equals(secolo.nome))
+                .collect(Collectors.toList());
+    }
 
-        return listaNomi;
+
+    public List<String> findNomiBySecolo(String secolo) {
+        return findAll().stream()
+                .filter(anno -> anno.secolo.nome.equals(secolo))
+                .map(anno -> anno.nome)
+                .collect(Collectors.toList());
     }
 
     /**
