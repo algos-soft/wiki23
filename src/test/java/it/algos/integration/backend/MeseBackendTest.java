@@ -3,64 +3,49 @@ package it.algos.integration.backend;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import it.algos.vaad23.backend.packages.crono.secolo.*;
+import it.algos.vaad23.backend.packages.crono.mese.*;
+import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.params.*;
-import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: dom, 08-mag-2022
- * Time: 14:44
+ * Date: Mon, 24-Oct-2022
+ * Time: 06:43
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
-@Tag("production")
 @Tag("backend")
-@DisplayName("Anno Backend")
+@DisplayName("Mese Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AnnoBackendTest extends AlgosTest {
+public class MeseBackendTest extends AlgosTest {
 
     /**
      * The Service.
      */
     @InjectMocks
-    private AnnoBackend backend;
+    private MeseBackend backend;
 
     @Autowired
-    private AnnoRepository repository;
-
-
-    private Anno entityBean;
+    private MeseRepository repository;
 
     @Autowired
-    private SecoloBackend secoloBackend;
+    public LogService logger;
 
-    private List<Anno> listaBeans;
+    private Mese entityBean;
 
 
-    //--nome
-    //--esiste
-    protected static Stream<Arguments> ANNI() {
-        return Stream.of(
-                Arguments.of(VUOTA, false),
-                Arguments.of("0", false),
-                Arguments.of("24", true),
-                Arguments.of("24 a.C.", true),
-                Arguments.of("3208", false)
-        );
-    }
+    private List<Mese> listaBeans;
+
+    private String nomeFile;
 
     /**
      * Qui passa una volta sola <br>
@@ -69,14 +54,17 @@ public class AnnoBackendTest extends AlgosTest {
     protected void setUpAll() {
         super.setUpAll();
 
-        MockitoAnnotations.initMocks(this);
-        MockitoAnnotations.initMocks(backend);
         Assertions.assertNotNull(backend);
 
         backend.repository = repository;
         backend.crudRepository = repository;
         backend.arrayService = arrayService;
         backend.reflectionService = reflectionService;
+        backend.resourceService = resourceService;
+        backend.textService = textService;
+        backend.logger = logger;
+
+        this.nomeFile = "mesi";
     }
 
 
@@ -132,10 +120,11 @@ public class AnnoBackendTest extends AlgosTest {
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Anno");
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
         System.out.println(message);
-        printAnni(listaBeans);
+        printBeans(listaBeans);
     }
+
 
     @Test
     @Order(3)
@@ -146,59 +135,55 @@ public class AnnoBackendTest extends AlgosTest {
 
         listaStr = backend.findNomi();
         assertNotNull(listaStr);
-        message = String.format("Ci sono in totale %s anni", textService.format(listaStr.size()));
+        message = String.format("Ci sono in totale %s mesi", textService.format(listaStr.size()));
         System.out.println(message);
-        printNomiAnni(listaStr);
+        printNomiMesi(listaStr);
     }
-
 
     @Test
     @Order(4)
-    @DisplayName("4 - findAllBySecolo (entity)")
-    void findAllBySecolo() {
-        System.out.println("4 - findAllBySecolo (entity)");
+    @DisplayName("4 - resetServer")
+    void resetServer() {
+        System.out.println("4 - resetServer");
+        String message;
+        backend.deleteAll();
 
-        for (Secolo sorgente : secoloBackend.findAll()) {
-            listaBeans = backend.findAllBySecolo(sorgente);
-            assertNotNull(listaBeans);
-            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaBeans.size()));
-            System.out.println(VUOTA);
-            System.out.println(message);
-            printAnni(listaBeans);
-        }
+        listaBeans = backend.resetServer(nomeFile);
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
+        System.out.println(message);
+        printBeans(listaBeans);
     }
-
 
     @Test
     @Order(5)
-    @DisplayName("5 - findNomiBySecolo (nome)")
-    void findNomiBySecolo() {
-        System.out.println("5 - findNomiBySecolo (nome)");
+    @DisplayName("5 - resetConfig")
+    void resetConfig() {
+        System.out.println("5 - resetConfig");
+        String message;
+        backend.deleteAll();
 
-        for (String sorgente : secoloBackend.findNomi()) {
-            listaStr = backend.findNomiBySecolo(sorgente);
-            assertNotNull(listaStr);
-            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaStr.size()));
-            System.out.println(VUOTA);
-            System.out.println(message);
-            printNomiAnni(listaStr);
-        }
+        listaBeans = backend.resetConfig(nomeFile);
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
+        System.out.println(message);
+        printBeans(listaBeans);
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "ANNI")
-    @Order(21)
-    @DisplayName("21 - findByNome")
-    void findByNome(final String nome, final boolean esiste) {
-        System.out.println("21 - findByNome");
-        entityBean = backend.findByNome(nome);
-        assertEquals(esiste, entityBean != null);
-        if (entityBean != null) {
-            System.out.println(String.format("L'anno '%s' esiste", nome));
-        }
-        else {
-            System.out.println(String.format("L'anno '%s' non esiste", nome));
-        }
+    @Test
+    @Order(6)
+    @DisplayName("6 - reset")
+    void reset() {
+        System.out.println("6 - reset");
+        String message;
+
+        ottenutoBooleano = backend.reset();
+        assertTrue(ottenutoBooleano);
+        listaBeans = backend.findAll();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
+        System.out.println(message);
+        printBeans(listaBeans);
     }
 
     /**
@@ -216,28 +201,37 @@ public class AnnoBackendTest extends AlgosTest {
     void tearDownAll() {
     }
 
-    void printAnni(List<Anno> listaAnni) {
+    void printBeans(List<Mese> listaBeans) {
         System.out.println(VUOTA);
         int k = 0;
 
-        for (Anno anno : listaAnni) {
+        System.out.println("Nome, breve, giorni, primo, ultimo");
+        System.out.println(VUOTA);
+
+        for (Mese bean : listaBeans) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.print(anno.nome);
+            System.out.print(bean.nome);
             System.out.print(SPAZIO);
-            System.out.println(anno.secolo);
+            System.out.print(bean.breve);
+            System.out.print(SPAZIO);
+            System.out.print(bean.giorni);
+            System.out.print(SPAZIO);
+            System.out.print(bean.primo);
+            System.out.print(SPAZIO);
+            System.out.println(bean.ultimo);
         }
     }
 
-    void printNomiAnni(List<String> listaAnni) {
+    void printNomiMesi(List<String> listaMesi) {
         int k = 0;
 
-        for (String anno : listaAnni) {
+        for (String mese : listaMesi) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(anno);
+            System.out.println(mese);
         }
     }
 

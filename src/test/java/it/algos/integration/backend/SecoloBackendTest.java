@@ -3,64 +3,44 @@ package it.algos.integration.backend;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.secolo.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.params.*;
-import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: dom, 08-mag-2022
- * Time: 14:44
+ * Date: Sun, 06-Nov-2022
+ * Time: 20:10
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
-@Tag("production")
 @Tag("backend")
-@DisplayName("Anno Backend")
+@DisplayName("Secolo Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AnnoBackendTest extends AlgosTest {
+public class SecoloBackendTest extends AlgosTest {
 
     /**
      * The Service.
      */
     @InjectMocks
-    private AnnoBackend backend;
+    private SecoloBackend backend;
 
     @Autowired
-    private AnnoRepository repository;
+    private SecoloRepository repository;
 
 
-    private Anno entityBean;
-
-    @Autowired
-    private SecoloBackend secoloBackend;
-
-    private List<Anno> listaBeans;
+    private Secolo entityBean;
 
 
-    //--nome
-    //--esiste
-    protected static Stream<Arguments> ANNI() {
-        return Stream.of(
-                Arguments.of(VUOTA, false),
-                Arguments.of("0", false),
-                Arguments.of("24", true),
-                Arguments.of("24 a.C.", true),
-                Arguments.of("3208", false)
-        );
-    }
+    private List<Secolo> listaBeans;
 
     /**
      * Qui passa una volta sola <br>
@@ -69,8 +49,6 @@ public class AnnoBackendTest extends AlgosTest {
     protected void setUpAll() {
         super.setUpAll();
 
-        MockitoAnnotations.initMocks(this);
-        MockitoAnnotations.initMocks(backend);
         Assertions.assertNotNull(backend);
 
         backend.repository = repository;
@@ -132,9 +110,9 @@ public class AnnoBackendTest extends AlgosTest {
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Anno");
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Secolo");
         System.out.println(message);
-        printAnni(listaBeans);
+        printBeans(listaBeans);
     }
 
     @Test
@@ -146,59 +124,9 @@ public class AnnoBackendTest extends AlgosTest {
 
         listaStr = backend.findNomi();
         assertNotNull(listaStr);
-        message = String.format("Ci sono in totale %s anni", textService.format(listaStr.size()));
+        message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
         System.out.println(message);
-        printNomiAnni(listaStr);
-    }
-
-
-    @Test
-    @Order(4)
-    @DisplayName("4 - findAllBySecolo (entity)")
-    void findAllBySecolo() {
-        System.out.println("4 - findAllBySecolo (entity)");
-
-        for (Secolo sorgente : secoloBackend.findAll()) {
-            listaBeans = backend.findAllBySecolo(sorgente);
-            assertNotNull(listaBeans);
-            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaBeans.size()));
-            System.out.println(VUOTA);
-            System.out.println(message);
-            printAnni(listaBeans);
-        }
-    }
-
-
-    @Test
-    @Order(5)
-    @DisplayName("5 - findNomiBySecolo (nome)")
-    void findNomiBySecolo() {
-        System.out.println("5 - findNomiBySecolo (nome)");
-
-        for (String sorgente : secoloBackend.findNomi()) {
-            listaStr = backend.findNomiBySecolo(sorgente);
-            assertNotNull(listaStr);
-            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaStr.size()));
-            System.out.println(VUOTA);
-            System.out.println(message);
-            printNomiAnni(listaStr);
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "ANNI")
-    @Order(21)
-    @DisplayName("21 - findByNome")
-    void findByNome(final String nome, final boolean esiste) {
-        System.out.println("21 - findByNome");
-        entityBean = backend.findByNome(nome);
-        assertEquals(esiste, entityBean != null);
-        if (entityBean != null) {
-            System.out.println(String.format("L'anno '%s' esiste", nome));
-        }
-        else {
-            System.out.println(String.format("L'anno '%s' non esiste", nome));
-        }
+        printNomiSecoli(listaStr);
     }
 
     /**
@@ -216,28 +144,30 @@ public class AnnoBackendTest extends AlgosTest {
     void tearDownAll() {
     }
 
-    void printAnni(List<Anno> listaAnni) {
+    void printBeans(List<Secolo> listaBeans) {
         System.out.println(VUOTA);
         int k = 0;
 
-        for (Anno anno : listaAnni) {
+        for (Secolo bean : listaBeans) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.print(anno.nome);
+            System.out.print(bean.nome);
             System.out.print(SPAZIO);
-            System.out.println(anno.secolo);
+            System.out.print(bean.inizio);
+            System.out.print(SPAZIO);
+            System.out.println(bean.fine);
         }
     }
 
-    void printNomiAnni(List<String> listaAnni) {
+    void printNomiSecoli(List<String> listaSecoli) {
         int k = 0;
 
-        for (String anno : listaAnni) {
+        for (String secolo : listaSecoli) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(anno);
+            System.out.println(secolo);
         }
     }
 
