@@ -3,9 +3,9 @@ package it.algos.integration.upload;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.wiki23.backend.didascalia.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.upload.*;
+import it.algos.wiki23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,7 +76,7 @@ public class UploadGiorniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-//    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - Upload test di un giorno morto con e senza paragrafi")
     void uploadTestNato() {
@@ -86,7 +86,7 @@ public class UploadGiorniTest extends WikiTest {
         appContext.getBean(UploadGiorni.class).conParagrafi().morte().test().upload(sorgente);
     }
 
-//    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - Upload con e senza usaSottoGiorniAnni")
     void usaSottoGiorniAnni() {
@@ -113,7 +113,7 @@ public class UploadGiorniTest extends WikiTest {
     }
 
 
-//    @Test
+    //    @Test
     @Order(5)
     @DisplayName("5 - Upload all")
     void uploadAll() {
@@ -121,6 +121,15 @@ public class UploadGiorniTest extends WikiTest {
         appContext.getBean(UploadGiorni.class).uploadAll();
     }
 
+    @Test
+    @Order(6)
+    @DisplayName("6 - Upload test con result")
+    void uploadTestResult() {
+        System.out.println("6 - Upload test con result");
+        sorgente = "25 settembre";
+        ottenutoRisultato = appContext.getBean(UploadGiorni.class).nascita().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

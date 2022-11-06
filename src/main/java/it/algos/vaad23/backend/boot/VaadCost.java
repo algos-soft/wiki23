@@ -489,6 +489,7 @@ public class VaadCost {
      * CSS CODE\00B0
      */
     public static final String DEGREE_SIGN = "°"; //-80
+
     public static final char CHAR_DEGREE_SIGN = (char) 176;
 
 }

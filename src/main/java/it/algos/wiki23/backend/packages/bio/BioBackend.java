@@ -573,7 +573,8 @@ public class BioBackend extends WikiBackend {
             return null;
         }
 
-        giornoNato = wikiUtility.fixPrimoMese(giornoNato); query.addCriteria(Criteria.where("giornoNato").is(giornoNato));
+        giornoNato = wikiUtility.fixPrimoMese(giornoNato);
+        query.addCriteria(Criteria.where("giornoNato").is(giornoNato));
         sort = Sort.by(Sort.Direction.ASC, "annoNatoOrd", "ordinamento"); query.with(sort);
 
         return query;

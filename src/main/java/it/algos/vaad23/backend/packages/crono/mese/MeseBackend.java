@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
@@ -93,6 +94,16 @@ public class MeseBackend extends CrudBackend {
 
     public Mese findByNome(final String nome) {
         return repository.findFirstByNome(nome);
+    }
+
+    @Override
+    public List<Mese> findAll() {
+        return super.findAll();
+    }
+    public List<String> findNomi() {
+        return findAll().stream()
+                .map(giorno->giorno.nome)
+                .collect(Collectors.toList());
     }
 
     public int getOrdine(final String nomeMaiuscoloMinuscolo) {

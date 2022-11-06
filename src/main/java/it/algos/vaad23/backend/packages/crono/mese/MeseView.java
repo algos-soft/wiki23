@@ -70,7 +70,7 @@ public class MeseView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpan("Usati solo in background. File originale (CSV) sul server Algos");
+        addSpan("Usati solo in background. File originale (CSV) sul server /www.algos.it/vaadin23/config");
         addSpanRosso("Solo hard coded. Non creabili e non modificabili");
     }
 

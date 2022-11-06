@@ -45,7 +45,7 @@ public abstract class WikiTask extends Task {
         long delta = fine - inizio;
         delta = delta / 1000 / 60;
 
-        message = String.format("Task per %s in %s minuti", dettaglio, delta);
+        message = String.format("Task per %s eseguito in %s minuti", dettaglio, delta);
         logger.info(new WrapLog().type(AETypeLog.task).message(message).usaDb());
     }
 

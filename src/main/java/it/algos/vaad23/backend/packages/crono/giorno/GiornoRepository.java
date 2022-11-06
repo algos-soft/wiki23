@@ -2,6 +2,8 @@ package it.algos.vaad23.backend.packages.crono.giorno;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.packages.crono.mese.*;
+import org.bson.types.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
@@ -36,4 +38,5 @@ public interface GiornoRepository extends MongoRepository<Giorno, String> {
     void delete(Giorno entity);
 
     Giorno findFirstByNome(String nome);
+
 }// end of crud repository class

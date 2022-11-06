@@ -4,7 +4,6 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.interfaces.*;
-import it.algos.wiki23.backend.didascalia.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.wiki.query.*;

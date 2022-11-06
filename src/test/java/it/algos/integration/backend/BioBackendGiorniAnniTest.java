@@ -121,7 +121,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
         System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s in totale", ottenutoIntero, sorgente));
 
         sorgente = "18 settembre";
-        previstoIntero = 1060;
+        previstoIntero = 1062;
         ottenutoIntero = backend.countGiornoNato(sorgente);
         assertTrue(ottenutoIntero > 0);
         assertEquals(previstoIntero, ottenutoIntero);
@@ -175,7 +175,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
         System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s in totale", ottenutoIntero, sorgente));
 
         sorgente = "18 settembre";
-        previstoIntero = 1060;
+        previstoIntero = 1062;
         listaBeans = backend.findGiornoNato(sorgente);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
@@ -260,7 +260,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
         sorgente = "1" + giusto + SPAZIO + "gennaio"; // MASCULINE_ORDINAL_INDICATOR - giusto
         sorgente2 = "XX secolo";
-        previstoIntero = 1519;
+        previstoIntero = 1442;
         ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
         assertTrue(ottenutoIntero > 0);
         assertEquals(previstoIntero, ottenutoIntero);
@@ -268,7 +268,15 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
         sorgente = "1" + sbagliato + SPAZIO + "gennaio"; // DEGREE_SIGN - sbagliato
         sorgente2 = "XVIII secolo";
-        previstoIntero = 58;
+        previstoIntero = 54;
+        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
+        assertTrue(ottenutoIntero > 0);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
+
+        sorgente = "10 gennaio";
+        sorgente2 = "XVI secolo";
+        previstoIntero = 3;
         ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
         assertTrue(ottenutoIntero > 0);
         assertEquals(previstoIntero, ottenutoIntero);
@@ -339,7 +347,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
         sorgente = "1" + giusto + SPAZIO + "gennaio"; // MASCULINE_ORDINAL_INDICATOR - giusto
         sorgente2 = "XX secolo";
-        previstoIntero = 1519;
+        previstoIntero = 1442;
         listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
@@ -348,12 +356,22 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
         sorgente = "1" + sbagliato + SPAZIO + "gennaio"; // DEGREE_SIGN - sbagliato
         sorgente2 = "XVIII secolo";
-        previstoIntero = 58;
+        previstoIntero = 54;
         listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
         assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
+
+        sorgente = "10 gennaio";
+        sorgente2 = "XVI secolo";
+        previstoIntero = 3;
+        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
+        printBeans(listaBeans);
     }
 
     @Test
@@ -395,7 +413,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
         System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
 
         sorgente = "29 febbraio";
-        previstoIntero = 118;
+        previstoIntero = 119;
         ottenutoIntero = backend.countGiornoMorto(sorgente);
         assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
@@ -449,7 +467,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
         System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
 
         sorgente = "29 febbraio";
-        previstoIntero = 118;
+        previstoIntero = 119;
         listaBeans = backend.findGiornoMorto(sorgente);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
@@ -502,21 +520,21 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
         sorgente = "18 settembre";
         sorgente2 = "XVI secolo";
-        previstoIntero = 11;
+        previstoIntero = 10;
         ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
         assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
 
         sorgente = "1" + giusto + SPAZIO + "gennaio"; // MASCULINE_ORDINAL_INDICATOR - giusto
         sorgente2 = "XX secolo";
-        previstoIntero = 269;
+        previstoIntero = 256;
         ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
         assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
 
         sorgente = "1" + sbagliato + SPAZIO + "gennaio"; // DEGREE_SIGN - sbagliato
         sorgente2 = "XVIII secolo";
-        previstoIntero = 31;
+        previstoIntero = 30;
         ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
         assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
@@ -577,7 +595,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
         sorgente = "18 settembre";
         sorgente2 = "XVI secolo";
-        previstoIntero = 11;
+        previstoIntero = 10;
         listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
@@ -586,7 +604,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
         sorgente = "1" + giusto + SPAZIO + "gennaio"; // MASCULINE_ORDINAL_INDICATOR - giusto
         sorgente2 = "XX secolo";
-        previstoIntero = 269;
+        previstoIntero = 256;
         listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
@@ -595,7 +613,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
         sorgente = "1" + sbagliato + SPAZIO + "gennaio"; // DEGREE_SIGN - sbagliato
         sorgente2 = "XVIII secolo";
-        previstoIntero = 31;
+        previstoIntero = 30;
         listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
@@ -755,7 +773,7 @@ public class BioBackendGiorniAnniTest extends WikiTest {
         System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
 
         sorgente = "1912";
-        previstoIntero = 1832;
+        previstoIntero = 1835;
         ottenutoIntero = backend.countAnnoNato(sorgente);
         assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));

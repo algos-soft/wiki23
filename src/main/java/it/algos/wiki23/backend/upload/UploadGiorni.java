@@ -1,6 +1,8 @@
 package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
@@ -67,7 +69,7 @@ public class UploadGiorni extends UploadGiorniAnni {
             giorno = giorno.test();
         }
 
-        giorno.uploadSottoPagina(wikiTitle, parente, sottoPagina,  ordineSottoPagina,lista);
+        giorno.uploadSottoPagina(wikiTitle, parente, sottoPagina, ordineSottoPagina, lista);
     }
 
     /**
@@ -78,15 +80,37 @@ public class UploadGiorni extends UploadGiorniAnni {
     public WResult uploadAll() {
         WResult result = WResult.errato();
         long inizio = System.currentTimeMillis();
+        List<String> giorni;
+        String message;
+        int modificatiNati = 0;
+        int modificatiMorti = 0;
+        logInizio();
 
-        List<String> giorni = giornoWikiBackend.findAllNomi();
-        for (String nomeGiorno : giorni) {
-            nascita().upload(nomeGiorno);
-            morte().upload(nomeGiorno);
+        List<String> mesi = meseBackend.findNomi();
+        for (String mese : mesi) {
+            giorni = giornoBackend.findNomiByMese(mese);
+
+            for (String nomeGiorno : giorni) {
+                result = nascita().upload(nomeGiorno);
+                if (result.isValido() && result.isModificata()) {
+                    modificatiNati++;
+                }
+
+                result = morte().upload(nomeGiorno);
+                if (result.isValido() && result.isModificata()) {
+                    modificatiMorti++;
+                }
+            }
+            message = String.format("Modificate sul server %d pagine di 'nati' e %d di 'morti' per il mese di %s", modificatiNati, modificatiMorti, mese);
+            logger.info(new WrapLog().type(AETypeLog.upload).message(message));
         }
 
         fixUploadMinuti(inizio);
         return result;
+    }
+
+    public void logInizio() {
+        logger.info(new WrapLog().type(AETypeLog.upload).message("Inizio upload liste nati e morti dei giorni"));
     }
 
 }

@@ -223,6 +223,7 @@ public class AResult {
         return validMessage;
     }
 
+
     //    public String getWebTitle() {
     //        return webTitle;
     //    }

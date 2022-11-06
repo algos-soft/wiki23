@@ -3,7 +3,6 @@ package it.algos.unit.wiki;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.wiki23.backend.didascalia.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
 import org.junit.jupiter.api.*;
@@ -88,7 +87,7 @@ public class WikiUtilityTest extends WikiTest {
     void wikiTitleGiorno() {
         System.out.println("1 - WikiTitle di tutte le 366 pagine giorni di nascita e morte");
         System.out.println(VUOTA);
-        listaStr = giornoBackend.findAllNomi();
+        listaStr = giornoBackend.findNomi();
         int contNati = 0;
         int contMorti = 0;
         StringBuffer buffer = new StringBuffer();

@@ -111,8 +111,8 @@ public class GiornoWikiBackend extends WikiBackend {
         return repository.findAll();
     }
 
-    public List<String> findAllNomi() {
-        return giornoBackend.findAllNomi();
+    public List<String> findNomi() {
+        return giornoBackend.findNomi();
     }
 
     public GiornoWiki findByNome(final String nome) {

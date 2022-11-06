@@ -431,12 +431,11 @@ public class MongoService<capture> extends AbstractService {
             return null;
         }
 
-        Bson bsonSort = Sorts.ascending(property);
         Bson projection = Projections.fields(Projections.include(property), Projections.excludeId());
-        var documents = collection.find().sort(bsonSort).projection(projection);
+        FindIterable<Document> documents = collection.find().projection(projection);
 
-        for (var doc : documents) {
-            listaProperty.add(((Document) doc).get(property, String.class));
+        for (var singolo : documents) {
+            listaProperty.add(singolo.get(property, String.class));
         }
         return listaProperty;
     }
@@ -452,12 +451,11 @@ public class MongoService<capture> extends AbstractService {
             return null;
         }
 
-        Bson bsonSort = Sorts.ascending(property);
         Bson projection = Projections.fields(Projections.include(property), Projections.excludeId());
-        var documents = collection.find().sort(bsonSort).projection(projection);
+        FindIterable<Document> documents = collection.find().projection(projection);
 
-        for (var doc : documents) {
-            listaProperty.add(((Document) doc).get(property, Long.class));
+        for (var singolo : documents) {
+            listaProperty.add(singolo.get(property, Long.class));
         }
         return listaProperty;
     }
@@ -470,6 +468,7 @@ public class MongoService<capture> extends AbstractService {
     public List<AEntity> projectionExclude(Class<? extends AEntity> entityClazz, CrudBackend backend, Bson sort, String property) {
         List<AEntity> listaExcluded = new ArrayList();
         Bson projection;
+        FindIterable<Document> documents;
         String message;
         collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
         AEntity entityBean;
@@ -481,10 +480,10 @@ public class MongoService<capture> extends AbstractService {
         }
 
         projection = Projections.fields(Projections.exclude(property), Projections.excludeId());
-        var documents = collection.find().sort(sort).projection(projection);
+        documents = collection.find().sort(sort).projection(projection);
 
-        for (var doc : documents) {
-            entityBean = backend.newEntity(((Document) doc));
+        for (var singolo : documents) {
+            entityBean = backend.newEntity(singolo);
             if (entityBean != null) {
                 listaExcluded.add(entityBean);
             }
@@ -492,6 +491,5 @@ public class MongoService<capture> extends AbstractService {
 
         return listaExcluded;
     }
-
 
 }

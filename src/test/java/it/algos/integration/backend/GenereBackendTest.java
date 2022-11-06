@@ -2,7 +2,6 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import it.algos.wiki23.backend.didascalia.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.genere.*;
 import org.junit.jupiter.api.*;

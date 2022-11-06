@@ -34,6 +34,8 @@ public class WebService extends AbstractService {
 
     public static final String URL_BASE_VAADIN23 = URL_BASE_ALGOS + "vaadin23/";
 
+    public static final String URL_BASE_VAADIN23_CONFIG = URL_BASE_VAADIN23 + "config/";
+
 
     /**
      * Crea la connessione di tipo GET

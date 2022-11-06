@@ -5,7 +5,6 @@ import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.service.*;
-import it.algos.wiki23.backend.didascalia.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.login.*;
 import it.algos.wiki23.backend.packages.anno.*;

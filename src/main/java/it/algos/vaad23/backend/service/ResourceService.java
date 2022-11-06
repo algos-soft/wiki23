@@ -103,7 +103,7 @@ public class ResourceService extends AbstractService {
      * @return testo grezzo del file
      */
     public String leggeServer(final String nameFileToBeRead) {
-        return webService.leggeWebTxt(WebService.URL_BASE_VAADIN23 + nameFileToBeRead);
+        return webService.leggeWebTxt(WebService.URL_BASE_VAADIN23_CONFIG + nameFileToBeRead);
     }
 
     /**

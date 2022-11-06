@@ -4,7 +4,10 @@ import com.vaadin.flow.component.icon.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import lombok.*;
+
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -35,11 +38,12 @@ public class Mese extends AEntity {
     @AIField(type = AETypeField.integer, widthEM = 6)
     public int giorni;
 
-    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_BACKWARD, caption = "Primo giorno dell'anno")
+    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_BACKWARD, caption = "Primo giorno (annuo) del mese")
     public int primo;
 
-    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_FORWARD, caption = "Ultimo giorno dell'anno")
+    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_FORWARD, caption = "Ultimo giorno (annuo) del mese")
     public int ultimo;
+
 
     @Override
     public String toString() {
