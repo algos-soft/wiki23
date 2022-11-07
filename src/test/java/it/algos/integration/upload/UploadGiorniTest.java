@@ -76,7 +76,7 @@ public class UploadGiorniTest extends WikiTest {
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    //    @Test
+    //        @Test
     @Order(2)
     @DisplayName("2 - Upload test di un giorno morto con e senza paragrafi")
     void uploadTestNato() {
@@ -103,17 +103,17 @@ public class UploadGiorniTest extends WikiTest {
         WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
     }
 
-    //            @Test
+    @Test
     @Order(4)
-    @DisplayName("4 - Upload reale di un giorno nato standard")
+    @DisplayName("4 - Upload test di un giorno nato standard")
     void uploadReale() {
-        System.out.println("4 - Upload reale di un giorno nato standard");
-        sorgente = "25 settembre";
-        appContext.getBean(UploadGiorni.class).nascita().upload(sorgente);
+        System.out.println("4 - Upload test di un giorno nato standard");
+        sorgente = "26 dicembre";
+        appContext.getBean(UploadGiorni.class).nascita().test().upload(sorgente);
     }
 
 
-//    @Test
+    //    @Test
     @Order(5)
     @DisplayName("5 - Upload all")
     void uploadAll() {

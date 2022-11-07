@@ -32,6 +32,7 @@ public abstract class UploadGiorniAnni extends Upload {
      */
     @Autowired
     public MeseBackend meseBackend;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -220,7 +221,7 @@ public abstract class UploadGiorniAnni extends Upload {
     }
 
     protected String tornaSotto() {
-        String torna = wikiUtility.wikiTitle(typeCrono, nomeLista) ;
+        String torna = wikiUtility.wikiTitle(typeCrono, nomeLista);
         return textService.isValid(torna) ? String.format("{{Torna a|%s}}", torna) : VUOTA;
     }
 
@@ -524,24 +525,20 @@ public abstract class UploadGiorniAnni extends Upload {
 
     protected String categorie() {
         StringBuffer buffer = new StringBuffer();
+        String message;
+        String title = wikiUtility.wikiTitle(typeCrono, nomeLista);
 
         if (uploadTest) {
-            return VUOTA;
+            buffer.append(CAPO);
+            message = String.format("{{Categorie bozza|[[Categoria:Liste di %s per %s| %s]][[Categoria:%s| ]]}}", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno, title);
+            buffer.append(message);
         }
-
-        //        String title = switch (typeCrono) {
-        //            case giornoNascita -> wikiUtility.wikiTitleNatiGiorno(nomeLista);
-        //            case giornoMorte -> wikiUtility.wikiTitleMortiGiorno(nomeLista);
-        //            case annoNascita -> wikiUtility.wikiTitleNatiAnno(nomeLista);
-        //            case annoMorte -> wikiUtility.wikiTitleMortiAnno(nomeLista);
-        //            default -> VUOTA;
-        //        };
-
-        buffer.append(CAPO);
-        buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
-        buffer.append(CAPO);
-        buffer.append(String.format("*[[Categoria:%s| ]]", wikiUtility.wikiTitle(typeCrono, nomeLista)));
-        buffer.append(CAPO);
+        else {
+            buffer.append(CAPO);
+            buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
+            buffer.append(CAPO);
+            buffer.append(String.format("*[[Categoria:%s| ]]", title));
+        }
 
         return buffer.toString();
     }
