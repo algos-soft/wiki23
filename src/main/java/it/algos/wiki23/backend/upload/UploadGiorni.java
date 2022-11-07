@@ -83,13 +83,14 @@ public class UploadGiorni extends UploadGiorniAnni {
         long inizio = System.currentTimeMillis();
         List<String> giorni;
         String message;
-        int modificatiNati = 0;
-        int modificatiMorti = 0;
+        int modificatiNati;
+        int modificatiMorti;
 
         List<String> mesi = meseBackend.findNomi();
         for (String mese : mesi) {
             giorni = giornoBackend.findNomiByMese(mese);
-
+            modificatiNati = 0;
+            modificatiMorti = 0;
             for (String nomeGiorno : giorni) {
                 result = nascita().upload(nomeGiorno);
                 if (result.isValido() && result.isModificata()) {
