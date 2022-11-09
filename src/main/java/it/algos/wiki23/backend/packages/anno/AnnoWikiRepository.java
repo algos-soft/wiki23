@@ -36,6 +36,7 @@ public interface AnnoWikiRepository extends MongoRepository<AnnoWiki, String> {
     @Override
     List<AnnoWiki> findAll();
     List<AnnoWiki> findAllByOrderByOrdineDesc();
+    List<AnnoWiki> findAllByOrderByOrdineAsc();
 
     <AnnoWiki extends AEntity> AnnoWiki insert(AnnoWiki entity);
 

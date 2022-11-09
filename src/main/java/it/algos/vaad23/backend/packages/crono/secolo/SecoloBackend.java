@@ -132,6 +132,9 @@ public class SecoloBackend extends CrudBackend {
     public Secolo getSecoloDC(int anno) {
         return repository.findFirstByInizioLessThanEqualAndFineGreaterThanEqualAndAnteCristo(anno, anno, false);
     }
+    public Secolo getSecolo(int ordine) {
+        return repository.findFirstByOrdine(ordine);
+    }
 
 
     /**

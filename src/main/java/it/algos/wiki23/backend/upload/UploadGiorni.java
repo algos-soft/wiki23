@@ -1,6 +1,7 @@
 package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -108,6 +109,42 @@ public class UploadGiorni extends UploadGiorniAnni {
 
         fixUploadMinuti(inizio);
         return result;
+    }
+
+    @Override
+    protected String categorie() {
+        StringBuffer buffer = new StringBuffer();
+        String message;
+        String title = wikiUtility.wikiTitle(typeCrono, nomeLista);
+
+        if (uploadTest) {
+            buffer.append(CAPO);
+            message = String.format("{{Categorie bozza|[[Categoria:Liste di %s per %s| %s]][[Categoria:%s| ]]}}", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno, title);
+            buffer.append(message);
+        }
+        else {
+            buffer.append(CAPO);
+            buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
+            buffer.append(CAPO);
+            buffer.append(String.format("*[[Categoria:%s| ]]", title));
+        }
+
+        return buffer.toString();
+    }
+
+    @Override
+    protected String categorieSotto() {
+        StringBuffer buffer = new StringBuffer();
+
+        if (uploadTest) {
+            return VUOTA;
+        }
+
+        buffer.append(CAPO);
+        buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
+        buffer.append(CAPO);
+
+        return buffer.toString();
     }
 
 }

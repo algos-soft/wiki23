@@ -152,6 +152,7 @@ public enum WPref implements AIGenPref {
     maxPageLength("maxPageLength", AETypePref.integer, 200000, "Soglia massima di una pagina in byte"),
     maxBioPageAnniGiorni("maxBioPageAnniGiorni", AETypePref.integer, 1700, "Soglia massima di bio per usare le sottopagine  giorni/anni"),
     scriveComunque("scriveComunque", AETypePref.bool, false, "Forza comunque la registrazione della pagina anche se le modifiche sono sulla data"),
+    sottoCategorieNatiPerAnno("sottoCategorieNatiPerAnno", AETypePref.bool, false, "Categorizzazione per secoli delle liste di 'Nati per anno'"),
     ;
 
 

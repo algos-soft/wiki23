@@ -72,6 +72,9 @@ public class AnnoWiki extends AEntity {
     @AIField(type = AETypeField.booleano, typeBool = AETypeBoolCol.thumb, header = "m")
     public boolean mortiOk;
 
+    @AIField(type = AETypeField.integer)
+    public int secolo;
+
     @Override
     public String toString() {
         return VUOTA;

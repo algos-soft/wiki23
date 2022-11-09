@@ -69,8 +69,6 @@ public class AnnoBackendTest extends AlgosTest {
     protected void setUpAll() {
         super.setUpAll();
 
-        MockitoAnnotations.initMocks(this);
-        MockitoAnnotations.initMocks(backend);
         Assertions.assertNotNull(backend);
 
         backend.repository = repository;

@@ -1,7 +1,9 @@
 package it.algos.wiki23.backend.upload;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.packages.crono.secolo.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.wrapper.*;
@@ -62,6 +64,17 @@ public class UploadAnni extends UploadGiorniAnni {
         return this;
     }
 
+    /**
+     * Esegue la scrittura della pagina <br>
+     *
+     * @param nomeGiornoAnno
+     */
+    @Override
+    public WResult upload(String nomeAnno) {
+        anno = annoWikiBackend.findByNome(nomeAnno);
+        return super.upload(nomeAnno);
+    }
+
     public void uploadSottoPagine(String wikiTitle, String parente, String sottoPagina, int ordineSottoPagina, List<WrapLista> lista) {
         UploadAnni anno = appContext.getBean(UploadAnni.class).typeCrono(typeCrono);
 
@@ -83,12 +96,14 @@ public class UploadAnni extends UploadGiorniAnni {
         long inizio = System.currentTimeMillis();
         List<String> anni;
         String message;
-        int modificatiNati = 0;
-        int modificatiMorti = 0;
+        int modificatiNati;
+        int modificatiMorti;
 
         List<String> secoli = secoloBackend.findNomi();
         for (String secolo : secoli) {
             anni = annoBackend.findNomiBySecolo(secolo);
+            modificatiNati = 0;
+            modificatiMorti = 0;
 
             for (String nomeAnno : anni) {
                 result = nascita().upload(nomeAnno);
@@ -109,5 +124,64 @@ public class UploadAnni extends UploadGiorniAnni {
         return result;
     }
 
+    @Override
+    protected String categorie() {
+        StringBuffer buffer = new StringBuffer();
+        String message;
+        String title = wikiUtility.wikiTitle(typeCrono, nomeLista);
+        Secolo secolo = secoloBackend.getSecolo(anno.secolo);
+        String secoloTxt = secolo != null ? secolo.nome : VUOTA;
+
+        if (uploadTest) {
+            buffer.append(CAPO);
+            if (WPref.sottoCategorieNatiPerAnno.is()) {
+                message = String.format("{{Categorie bozza|[[Categoria:Liste di %s nel %s| %s]][[Categoria:%s| ]]}}", typeCrono.getTagLower(), secoloTxt, ordineGiornoAnno, title);
+            }
+            else {
+                message = String.format("{{Categorie bozza|[[Categoria:Liste di %s per %s| %s]][[Categoria:%s| ]]}}", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno, title);
+            }
+            buffer.append(message);
+        }
+        else {
+            if (WPref.sottoCategorieNatiPerAnno.is()) {
+                buffer.append(CAPO);
+                buffer.append(String.format("*[[Categoria:Liste di %s nel %s| %s]]", typeCrono.getTagLower(), secoloTxt, ordineGiornoAnno));
+                buffer.append(CAPO);
+                buffer.append(String.format("*[[Categoria:%s| ]]", title));
+            }
+            else {
+                buffer.append(CAPO);
+                buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
+                buffer.append(CAPO);
+                buffer.append(String.format("*[[Categoria:%s| ]]", title));
+            }
+        }
+
+        return buffer.toString();
+    }
+
+    @Override
+    protected String categorieSotto() {
+        StringBuffer buffer = new StringBuffer();
+        Secolo secolo = secoloBackend.getSecolo(anno.secolo);
+        String secoloTxt = secolo != null ? secolo.nome : VUOTA;
+
+        if (uploadTest) {
+            return VUOTA;
+        }
+
+        if (WPref.sottoCategorieNatiPerAnno.is()) {
+            buffer.append(CAPO);
+            buffer.append(String.format("*[[Categoria:Liste di %s nel %s| %s]]", typeCrono.getTagLower(), secoloTxt, ordineGiornoAnno));
+            buffer.append(CAPO);
+        }
+        else {
+            buffer.append(CAPO);
+            buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
+            buffer.append(CAPO);
+        }
+
+        return buffer.toString();
+    }
 
 }

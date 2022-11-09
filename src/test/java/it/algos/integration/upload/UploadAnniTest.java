@@ -76,7 +76,7 @@ public class UploadAnniTest extends WikiTest {
     @DisplayName("2 - Upload test di un anno nato senza indicare con/senza paragrafi ma li mette di default")
     void uploadMortiTest() {
         System.out.println("2 - Upload test di un anno nato senza indicare con/senza paragrafi ma li mette di default");
-        sorgente = "1629";
+        sorgente = "704";
         appContext.getBean(UploadAnni.class).nascita().test().upload(sorgente);
     }
 

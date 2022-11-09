@@ -43,9 +43,9 @@ public abstract class UploadGiorniAnni extends Upload {
 
     protected int ordineGiornoAnno;
 
-    private GiornoWiki giorno;
+    protected GiornoWiki giorno;
 
-    private AnnoWiki anno;
+    protected AnnoWiki anno;
 
     protected boolean usaSottoGiorniAnni;
 
@@ -524,37 +524,11 @@ public abstract class UploadGiorniAnni extends Upload {
     }
 
     protected String categorie() {
-        StringBuffer buffer = new StringBuffer();
-        String message;
-        String title = wikiUtility.wikiTitle(typeCrono, nomeLista);
-
-        if (uploadTest) {
-            buffer.append(CAPO);
-            message = String.format("{{Categorie bozza|[[Categoria:Liste di %s per %s| %s]][[Categoria:%s| ]]}}", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno, title);
-            buffer.append(message);
-        }
-        else {
-            buffer.append(CAPO);
-            buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
-            buffer.append(CAPO);
-            buffer.append(String.format("*[[Categoria:%s| ]]", title));
-        }
-
-        return buffer.toString();
+        return VUOTA;
     }
 
     protected String categorieSotto() {
-        StringBuffer buffer = new StringBuffer();
-
-        if (uploadTest) {
-            return VUOTA;
-        }
-
-        buffer.append(CAPO);
-        buffer.append(String.format("*[[Categoria:Liste di %s per %s| %s]]", typeCrono.getTagLower(), typeCrono.getGiornoAnno(), ordineGiornoAnno));
-        buffer.append(CAPO);
-
-        return buffer.toString();
+        return VUOTA;
     }
 
 

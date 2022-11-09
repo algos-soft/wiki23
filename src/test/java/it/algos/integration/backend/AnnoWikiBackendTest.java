@@ -2,10 +2,9 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.crono.secolo.*;
-import it.algos.vaad23.backend.service.*;
+import it.algos.wiki23.backend.packages.anno.*;
 import org.junit.jupiter.api.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
@@ -13,35 +12,40 @@ import org.springframework.boot.test.context.*;
 
 import java.util.*;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import com.vaadin.flow.component.textfield.TextField;
+
 /**
- * Project vaadin23
+ * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Sun, 06-Nov-2022
- * Time: 20:10
+ * Date: Tue, 08-Nov-2022
+ * Time: 11:51
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("backend")
-@DisplayName("Secolo Backend")
+@DisplayName("AnnoWiki Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SecoloBackendTest extends WikiTest {
+public class AnnoWikiBackendTest extends WikiTest {
 
     /**
      * The Service.
      */
     @InjectMocks
-    private SecoloBackend backend;
+    private AnnoWikiBackend backend;
 
     @Autowired
-    private SecoloRepository repository;
+    private AnnoWikiRepository repository;
 
 
-    private Secolo entityBean;
+    private AnnoWiki entityBean;
 
 
-    private List<Secolo> listaBeans;
+    private List<AnnoWiki> listaBeans;
 
     /**
      * Qui passa una volta sola <br>
@@ -56,8 +60,9 @@ public class SecoloBackendTest extends WikiTest {
         backend.crudRepository = repository;
         backend.arrayService = arrayService;
         backend.reflectionService = reflectionService;
-        backend.textService = textService;
-        backend.resourceService = resourceService;
+        backend.mongoService = mongoService;
+        backend.annoBackend = annoBackend;
+        backend.wikiUtility = wikiUtility;
     }
 
 
@@ -106,30 +111,15 @@ public class SecoloBackendTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - findAll (entity)")
+    @DisplayName("2 - findAll")
     void findAll() {
-        System.out.println("2 - findAll (entity)");
+        System.out.println("2 - findAll");
         String message;
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Secolo");
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "AnnoWiki");
         System.out.println(message);
-        printBeans(listaBeans);
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("3 - findNomi (nome)")
-    void findNomi() {
-        System.out.println("3 - findNomi (nome)");
-        String message;
-
-        listaStr = backend.findNomi();
-        assertNotNull(listaStr);
-        message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
-        System.out.println(message);
-        printNomiSecoli(listaStr);
     }
 
 //    @Test
@@ -143,7 +133,7 @@ public class SecoloBackendTest extends WikiTest {
         assertTrue(ottenutoBooleano);
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Secolo");
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "AnnoWiki");
         System.out.println(message);
         printBeans(listaBeans);
     }
@@ -163,31 +153,19 @@ public class SecoloBackendTest extends WikiTest {
     void tearDownAll() {
     }
 
-    void printBeans(List<Secolo> listaBeans) {
+    void printBeans(List<AnnoWiki> listaBeans) {
         System.out.println(VUOTA);
         int k = 0;
 
-        for (Secolo bean : listaBeans) {
+        for (AnnoWiki anno : listaBeans) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.print(bean.nome);
+            System.out.print(anno.nome);
             System.out.print(SPAZIO);
-            System.out.print(bean.inizio);
+            System.out.print(anno.ordine);
             System.out.print(SPAZIO);
-            System.out.println(bean.fine);
+            System.out.println(anno.secolo);
         }
     }
-
-    void printNomiSecoli(List<String> listaSecoli) {
-        int k = 0;
-
-        for (String secolo : listaSecoli) {
-            System.out.print(++k);
-            System.out.print(PARENTESI_TONDA_END);
-            System.out.print(SPAZIO);
-            System.out.println(secolo);
-        }
-    }
-
 }

@@ -94,6 +94,7 @@ public class AnnoWikiBackend extends WikiBackend {
         AnnoWiki annoWiki = AnnoWiki.annoWikiBuilder()
                 .ordine(ordine)
                 .nome(annoBase.nome)
+                .secolo(annoBase.secolo.ordine)
                 .build();
 
         return fixProperties(annoWiki);
@@ -108,7 +109,7 @@ public class AnnoWikiBackend extends WikiBackend {
 
     @Override
     public List<AnnoWiki> findAll() {
-        return repository.findAllByOrderByOrdineDesc();
+        return repository.findAllByOrderByOrdineAsc();
     }
 
     public List<String> findAllNomi() {
