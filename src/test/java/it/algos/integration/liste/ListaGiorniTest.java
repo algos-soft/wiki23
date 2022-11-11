@@ -160,11 +160,39 @@ public class ListaGiorniTest extends WikiTest {
     @ParameterizedTest
     @MethodSource(value = "GIORNI_LISTA")
     @Order(4)
-    @DisplayName("4 - Mappa wrapLista di vari giorni")
+    @DisplayName("4 - Key della mappa wrapLista di vari giorni")
         //--nome giorno
         //--typeLista
     void mappaWrap(final String nomeGiorno, final AETypeLista type) {
-        System.out.println("4 - Mappa wrapLista di vari giorni");
+        System.out.println("4 - Key della mappa wrapLista di vari giorni");
+        sorgente = nomeGiorno;
+        int numVoci;
+
+        mappaWrap = switch (type) {
+            case giornoNascita -> appContext.getBean(ListaGiorni.class).nascita(sorgente).mappaWrap();
+            case giornoMorte -> appContext.getBean(ListaGiorni.class).morte(sorgente).mappaWrap();
+            default -> null;
+        };
+
+        if (mappaWrap != null && mappaWrap.size() > 0) {
+            numVoci = wikiUtility.getSizeAllWrap(mappaWrap);
+            message = String.format("Ci sono %d wrapLista che implementano il giorno di %s %s", numVoci, type, sorgente);
+            System.out.println(message);
+            printMappaWrapKeyOrder(mappaWrap);
+        }
+        else {
+            message = "La mappa è nulla";
+            System.out.println(message);
+        }
+    }
+    @ParameterizedTest
+    @MethodSource(value = "GIORNI_LISTA")
+    @Order(5)
+    @DisplayName("5 - Mappa wrapLista di vari giorni")
+        //--nome giorno
+        //--typeLista
+    void mappaWrap2(final String nomeGiorno, final AETypeLista type) {
+        System.out.println("5 - Mappa wrapLista di vari giorni");
         sorgente = nomeGiorno;
         int numVoci;
 

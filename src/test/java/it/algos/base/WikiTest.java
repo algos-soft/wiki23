@@ -1173,4 +1173,22 @@ public abstract class WikiTest extends AlgosTest {
         }
     }
 
+    protected void printMappaWrapKeyOrder(LinkedHashMap<String, List<WrapLista>> mappaWrap) {
+        List<WrapLista> lista;
+        int pos = 0;
+
+        if (mappaWrap != null) {
+            System.out.println(VUOTA);
+            message = String.format("Faccio vedere le %d chiavi ordinate di una mappa",mappaWrap.keySet().size());
+            System.out.println(message);
+            for (String key : mappaWrap.keySet()) {
+                pos++;
+                System.out.print(pos);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+                System.out.println(key);
+            }
+        }
+    }
+
 }

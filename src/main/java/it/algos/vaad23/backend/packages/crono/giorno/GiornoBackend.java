@@ -5,7 +5,6 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.wrapper.*;
-import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
@@ -125,7 +124,6 @@ public class GiornoBackend extends CrudBackend {
                 .map(giorno -> giorno.nome)
                 .collect(Collectors.toList());
     }
-
 
     /**
      * Creazione di alcuni dati iniziali <br>
