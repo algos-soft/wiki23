@@ -2,6 +2,7 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.pagina.*;
 import org.junit.jupiter.api.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -87,9 +88,9 @@ public class PaginaBackendGiorniTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1 - count")
+    @DisplayName("1 - count (mongoDB)")
     void count() {
-        System.out.println("1 - count");
+        System.out.println("1 - count (mongoDB)");
         String message;
 
         ottenutoIntero = backend.count();
@@ -100,23 +101,24 @@ public class PaginaBackendGiorniTest extends WikiTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - findAll")
+    @DisplayName("2 - findAll (mongoDB)")
     void findAll() {
-        System.out.println("2 - findAll");
+        System.out.println("2 - findAll (mongoDB)");
         String message;
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
         message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Pagina");
         System.out.println(message);
+        printBeans(listaBeans);
     }
 
 
     @Test
-    @Order(3)
-    @DisplayName("3 - getListaPagine singola")
-    void getListaPagine() {
-        System.out.println("3 - getListaPagine singola");
+    @Order(11)
+    @DisplayName("11 - pagine di giorni (nati) sul server")
+    void getListaPagineNati() {
+        System.out.println("11 - pagine di giorni (nati) sul server");
         String message;
 
         ottenutoArray = backend.getListaPagine(null);
@@ -129,17 +131,86 @@ public class PaginaBackendGiorniTest extends WikiTest {
         assertNotNull(ottenutoArray);
         assertTrue(ottenutoArray.size() > 0);
         System.out.println(VUOTA);
-        message = String.format("Ci sono %s pagine che iniziano con %s", textService.format(ottenutoArray.size()), sorgenteArray);
+        message = String.format("Ci sono %s pagine sul server che iniziano con %s", textService.format(ottenutoArray.size()), sorgenteArray);
         System.out.println(message);
         System.out.println(VUOTA);
         print(ottenutoArray);
     }
 
     @Test
-    @Order(4)
-    @DisplayName("4 - getTagGiorni")
+    @Order(12)
+    @DisplayName("12 - pagine di giorni (nati) sul server")
+    void getListaPagineNati2() {
+        System.out.println("12 - pagine di giorni (nati) sul server");
+        String message;
+
+        ottenutoArray = backend.getListaPagine(null);
+        assertNotNull(ottenutoArray);
+        assertTrue(ottenutoArray.size() == 0);
+
+        sorgente = "Nati l'";
+        sorgenteArray = arrayService.creaArraySingolo(sorgente);
+        ottenutoArray = backend.getListaPagine(sorgenteArray);
+        assertNotNull(ottenutoArray);
+        assertTrue(ottenutoArray.size() > 0);
+        System.out.println(VUOTA);
+        message = String.format("Ci sono %s pagine sul server che iniziano con %s", textService.format(ottenutoArray.size()), sorgenteArray);
+        System.out.println(message);
+        System.out.println(VUOTA);
+        print(ottenutoArray);
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - pagine di giorni (morti) sul server")
+    void getListaPagineMorti() {
+        System.out.println("13 - pagine di giorni (morti) sul server");
+        String message;
+
+        ottenutoArray = backend.getListaPagine(null);
+        assertNotNull(ottenutoArray);
+        assertTrue(ottenutoArray.size() == 0);
+
+        sorgente = "Morti il";
+        sorgenteArray = arrayService.creaArraySingolo(sorgente);
+        ottenutoArray = backend.getListaPagine(sorgenteArray);
+        assertNotNull(ottenutoArray);
+        assertTrue(ottenutoArray.size() > 0);
+        System.out.println(VUOTA);
+        message = String.format("Ci sono %s pagine sul server che iniziano con %s", textService.format(ottenutoArray.size()), sorgenteArray);
+        System.out.println(message);
+        System.out.println(VUOTA);
+        print(ottenutoArray);
+    }
+
+    @Test
+    @Order(14)
+    @DisplayName("14 - pagine di giorni (morti) sul server")
+    void getListaPagineMorti2() {
+        System.out.println("14 - pagine di giorni (morti) sul server");
+        String message;
+
+        ottenutoArray = backend.getListaPagine(null);
+        assertNotNull(ottenutoArray);
+        assertTrue(ottenutoArray.size() == 0);
+
+        sorgente = "Morti l'";
+        sorgenteArray = arrayService.creaArraySingolo(sorgente);
+        ottenutoArray = backend.getListaPagine(sorgenteArray);
+        assertNotNull(ottenutoArray);
+        assertTrue(ottenutoArray.size() > 0);
+        System.out.println(VUOTA);
+        message = String.format("Ci sono %s pagine sul server che iniziano con %s", textService.format(ottenutoArray.size()), sorgenteArray);
+        System.out.println(message);
+        System.out.println(VUOTA);
+        print(ottenutoArray);
+    }
+
+    @Test
+    @Order(21)
+    @DisplayName("21 - getTagGiorni")
     void getTagGiorni() {
-        System.out.println("4 - getTagGiorni");
+        System.out.println("21 - getTagGiorni");
         System.out.println(VUOTA);
         String message;
         previstoIntero = 4;
@@ -147,17 +218,17 @@ public class PaginaBackendGiorniTest extends WikiTest {
         listaStr = backend.getTagGiorni();
         assertNotNull(listaStr);
         assertEquals(previstoIntero, listaStr.size());
-        message = String.format("Ci sono %s tag per i giorni", listaStr);
+        message = String.format("Tag per i giorni%s%s", FORWARD, listaStr);
         System.out.println(message);
         System.out.println(VUOTA);
         print(listaStr);
     }
 
     @Test
-    @Order(5)
-    @DisplayName("5 - getListaPagine array tag")
-    void getListaPagine2() {
-        System.out.println("5 - getListaPagine array tag");
+    @Order(31)
+    @DisplayName("31 - pagine di giorni sul server via backend.getTagGiorni()")
+    void getListaPagine() {
+        System.out.println("31 - pagine di giorni sul server via backend.getTagGiorni()");
         String message;
 
         ottenutoArray = backend.getListaPagine(null);
@@ -169,55 +240,166 @@ public class PaginaBackendGiorniTest extends WikiTest {
         assertNotNull(ottenutoArray);
         assertTrue(ottenutoArray.size() > 0);
         System.out.println(VUOTA);
-        message = String.format("Ci sono %s pagine che iniziano con %s", textService.format(ottenutoArray.size()), sorgenteArray);
+        message = String.format("Ci sono %s pagine sul server che iniziano con %s", textService.format(ottenutoArray.size()), sorgenteArray);
         System.out.println(message);
         System.out.println(VUOTA);
         print(ottenutoArray);
     }
 
     @Test
-    @Order(6)
-    @DisplayName("6 - getPagineGiorni")
-    void getPagineGiorni() {
-        System.out.println("6 - getPagineGiorni");
+    @Order(32)
+    @DisplayName("32 - pagine di giorni sul server via backend.getPagineGiorni()")
+    void getListaPagine2() {
+        System.out.println("32 - pagine di giorni sul server via backend.getPagineGiorni()");
         String message;
         previstoIntero = 735;
 
         listaStr = backend.getPagineGiorni();
         assertNotNull(listaStr);
         assertEquals(previstoIntero, listaStr.size());
-        message = String.format("Ci sono %s pagine per i giorni", textService.format(listaStr.size()));
+        message = String.format("Ci sono %s pagine sul server per i giorni", textService.format(listaStr.size()));
         System.out.println(message);
         System.out.println(VUOTA);
         print(listaStr);
     }
 
 
-//    @Test
-    @Order(11)
-    @DisplayName("11 - elaboraGiorniPagine")
-    void elaboraGiorniPagine() {
-        System.out.println("11 - elaboraGiorniPagine");
-        mongoService.deleteAll(Pagina.class);
+    @Test
+    @Order(41)
+    @DisplayName("41 - pagine di giorni di primo livello sul server")
+    void getGiorniPrimoLivello() {
+        System.out.println("41 - pagine di giorni di primo livello sul server");
         String message;
-        List<String> valideBase = giornoWikiBackend.findAllPagine();
-        List<String> pagineAllGiorni = backend.getPagineGiorni();
-        List<String> pagine = backend.getGiorniAnni(pagineAllGiorni);
+        previstoIntero = 732;
 
-        inizio = System.currentTimeMillis();
-        listaBeans = backend.elaboraGiorniPagine(valideBase, pagine);
+        listaStr = backend.getGiorniPrimoLivello();
+        assertNotNull(listaStr);
+        assertEquals(previstoIntero, listaStr.size());
+        message = String.format("Ci sono %s pagine di primo livello sul server per i giorni", textService.format(listaStr.size()));
+        System.out.println(message);
+        System.out.println(VUOTA);
+        print(listaStr);
+    }
+
+
+    @Test
+    @Order(42)
+    @DisplayName("42 - pagine di giorni di secondo livello sul server")
+    void getGiorniSecondoLivello() {
+        System.out.println("42 - pagine di giorni di secondo livello sul server");
+        String message;
+        previstoIntero = 3;
+
+        listaStr = backend.getGiorniSecondoLivello();
+        assertNotNull(listaStr);
+        assertEquals(previstoIntero, listaStr.size());
+        message = String.format("Ci sono %s pagine di secondo livello sul server per i giorni", textService.format(listaStr.size()));
+        System.out.println(message);
+        System.out.println(VUOTA);
+        print(listaStr);
+    }
+
+
+    @Test
+    @Order(51)
+    @DisplayName("51 - count cancellare primo livello (mongoDB)")
+    void countGiorniPrimoLivelloErrati() {
+        System.out.println("51 - count cancellare primo livello (mongoDB)");
+        String message;
+
+        ottenutoIntero = backend.countGiorniPrimoLivelloErrati();
+        message = String.format("Ci sono %d pagine di primo livello da cancellare su mongoDB per i giorni", ottenutoIntero);
+        System.out.println(message);
+    }
+
+    @Test
+    @Order(52)
+    @DisplayName("52 - count cancellare secondo livello (mongoDB)")
+    void countGiorniSecondoLivelloErrati() {
+        System.out.println("52 - count cancellare secondo livello (mongoDB)");
+        String message;
+
+        ottenutoIntero = backend.countGiorniSecondoLivelloErrati();
+        message = String.format("Ci sono %d pagine di secondo livello da cancellare su mongoDB per i giorni", ottenutoIntero);
+        System.out.println(message);
+    }
+
+    @Test
+    @Order(53)
+    @DisplayName("53 - count cancellare pagine giorni (mongoDB)")
+    void countGiorniErrati() {
+        System.out.println("53 - count cancellare pagine giorni (mongoDB)");
+        String message;
+
+        ottenutoIntero = backend.countGiorniErrati();
+        message = String.format("Ci sono %d pagine da cancellare su mongoDB per i giorni", ottenutoIntero);
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(61)
+    @DisplayName("61 - countCancellareByType (entity)")
+    void countCancellareByType() {
+        System.out.println("61 - countCancellareByType (entity)");
+        String message;
+
+        AETypePaginaCancellare type = AETypePaginaCancellare.giornoSotto;
+        previstoIntero = 1;
+        ottenutoIntero = backend.countCancellareByType(type);
+        assertEquals(previstoIntero, ottenutoIntero);
+        message = String.format("Ci sono in totale %d entities di %s", ottenutoIntero, "pagine di giorni sotto");
+        System.out.println(message);
+    }
+
+    @Test
+    @Order(62)
+    @DisplayName("62 - findAllCancellareByType (entity)")
+    void findAllCancellareByType() {
+        System.out.println("62 - findAllCancellareByType (entity)");
+        String message;
+
+        AETypePaginaCancellare type = AETypePaginaCancellare.giornoSotto;
+        listaBeans = backend.findAllCancellareByType(type);
         assertNotNull(listaBeans);
-        message = String.format("Ci sono %s pagine per i giorni, elaborate in %s", textService.format(listaBeans.size()),dateService.deltaText(inizio));
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "pagine di giorni sotto");
         System.out.println(message);
         printBeans(listaBeans);
     }
 
 
-    @Test
-    @Order(12)
-    @DisplayName("12 - elaboraGiorniSottoPagine")
+
+    //    @Test
+    @Order(77)
+    @DisplayName("77 - elaboraGiorniPagine")
+    void elaboraGiorniPagine() {
+        System.out.println("77 - elaboraGiorniPagine");
+        mongoService.deleteAll(Pagina.class);
+        String message;
+
+        List<String> valideBase = giornoWikiBackend.findAllPagine();
+        System.out.println(String.format("Tempo %s", dateService.deltaTextEsatto(inizio)));
+
+        inizio = System.currentTimeMillis();
+        List<String> pagineAllGiorni = backend.getPagineGiorni();
+        System.out.println(String.format("Tempo %s", dateService.deltaTextEsatto(inizio)));
+
+        List<String> pagine = backend.getGiorniAnniPrimoLivello(pagineAllGiorni);
+
+        inizio = System.currentTimeMillis();
+        listaBeans = backend.elaboraGiorniPagine(valideBase, pagine);
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono %s pagine per i giorni, elaborate in %s", textService.format(listaBeans.size()), dateService.deltaText(inizio));
+        System.out.println(message);
+        printBeans(listaBeans);
+    }
+
+
+    //    @Test
+    @Order(42)
+    @DisplayName("42 - elaboraGiorniSottoPagine")
     void elaboraGiorniSottoPagine() {
-        System.out.println("12 - elaboraGiorniSottoPagine");
+        System.out.println("42 - elaboraGiorniSottoPagine");
         mongoService.deleteAll(Pagina.class);
         String message;
         List<String> valideBase = giornoWikiBackend.findAllPagine();
@@ -227,13 +409,13 @@ public class PaginaBackendGiorniTest extends WikiTest {
         inizio = System.currentTimeMillis();
         listaBeans = backend.elaboraGiorniSottoPagine(valideBase, pagineSotto);
         assertNotNull(listaBeans);
-        message = String.format("Ci sono %s sotto-pagine per i giorni, elaborate in %s", textService.format(listaBeans.size()),dateService.deltaText(inizio));
+        message = String.format("Ci sono %s sotto-pagine per i giorni, elaborate in %s", textService.format(listaBeans.size()), dateService.deltaText(inizio));
         System.out.println(message);
         printBeans(listaBeans);
     }
 
 
-//    @Test
+    //    @Test
     @Order(13)
     @DisplayName("13 - elaboraGiorni")
     void elaboraGiorni() {
@@ -244,7 +426,7 @@ public class PaginaBackendGiorniTest extends WikiTest {
         inizio = System.currentTimeMillis();
         listaBeans = backend.elaboraGiorni();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono %s pagine e sotto-pagine per i giorni, elaborate in %s", textService.format(listaBeans.size()),dateService.deltaText(inizio));
+        message = String.format("Ci sono %s pagine e sotto-pagine per i giorni, elaborate in %s", textService.format(listaBeans.size()), dateService.deltaText(inizio));
         System.out.println(message);
         printBeans(listaBeans);
     }

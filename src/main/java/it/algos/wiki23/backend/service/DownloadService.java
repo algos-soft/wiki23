@@ -90,6 +90,10 @@ public class DownloadService extends WAbstractService {
         List<Long> listaPageIdsDaLeggere;
         List<WrapBio> listaWrapBio;
 
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+        logger.info(new WrapLog().message("Inizio ciclo di download").type(AETypeLog.bio));
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.bio));
+
         //--Controlla quante pagine ci sono nella categoria
         checkCategoria(categoryTitle);
 

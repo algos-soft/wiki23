@@ -438,8 +438,8 @@ public class DidascaliaService extends WAbstractService {
             }
         }
         else {
-            paragrafo = TAG_LISTA_ALTRE;
-            paragrafoLink = TAG_LISTA_ALTRE;
+            paragrafo = TAG_LISTA_NO_NAZIONALITA;
+            paragrafoLink = TAG_LISTA_NO_NAZIONALITA;
         }
 
         String sottoParagrafo = bio.ordinamento.substring(0, 1);

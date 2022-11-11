@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.packages.pagina;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.giorno.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.apache.commons.collections4.*;
@@ -101,6 +102,23 @@ public class PaginaBackend extends WikiBackend {
         return repository.findFirstByPagina(pagina);
     }
 
+    @Override
+    public List<Pagina> findAll() {
+        return repository.findAll();
+    }
+
+    public int countCancellareByType(AETypePaginaCancellare type) {
+        Long pagineLong = type != null ? repository.countByTypeAndCancella(type, true) : 0;
+        return pagineLong.intValue();
+    }
+
+    public List<Pagina> findAllCancellareByType(AETypePaginaCancellare type) {
+        return findAll().stream()
+                .filter(pagina -> pagina.type == type)
+                .filter(pagina -> pagina.cancella == true)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
@@ -110,23 +128,23 @@ public class PaginaBackend extends WikiBackend {
         long inizio = System.currentTimeMillis();
         mongoService.deleteAll(Pagina.class);
 
-        //        elaboraGiorni();
+        elaboraGiorni();
         //        elaboraAnni();
         //        elaboraAttivita();
         //        elaboraNazionalita();
-        elaboraCognomi();
-//        elaboraUtenteBot();
+        //        elaboraCognomi();
+        //        elaboraUtenteBot();
 
         super.fixElaboraMinuti(inizio, "cancellazioni");
     }
 
     public List<Pagina> elaboraGiorni() {
         List<Pagina> pagineMongo = new ArrayList<>();
-        List<String> valideBase = giornoWikiBackend.findAllPagine();
-        List<String> pagineAll = getPagineGiorni();
+        List<String> valideMongoBase = giornoWikiBackend.findAllPagine();
+        List<String> pagineServer = getPagineGiorni();
 
-        pagineMongo.addAll(elaboraGiorniPagine(valideBase, getGiorniAnni(pagineAll)));
-        pagineMongo.addAll(elaboraGiorniSottoPagine(valideBase, getGiorniAnniSotto(pagineAll)));
+        pagineMongo.addAll(elaboraGiorniPagine(valideMongoBase, pagineServer));
+        pagineMongo.addAll(elaboraGiorniSottoPagine(valideMongoBase, pagineServer));
 
         return pagineMongo;
     }
@@ -136,11 +154,12 @@ public class PaginaBackend extends WikiBackend {
      * Quelle di primo livello che terminano con /...
      * Quelle di primo livello che non esistono in Giorno
      */
-    public List<Pagina> elaboraGiorniPagine(List<String> valideBase, List<String> pagine) {
+    public List<Pagina> elaboraGiorniPagine(List<String> valideMongoBase, List<String> pagineServer) {
         List<Pagina> pagineMongo = new ArrayList<>();
+        List<String> paginePrimoLivello = this.getGiorniAnniPrimoLivello(pagineServer);
         int voci;
 
-        for (String wikiTitle : pagine) {
+        for (String wikiTitle : paginePrimoLivello) {
             // Quelle di primo livello che terminano con /
             if (wikiTitle.endsWith(SLASH)) {
                 pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoBase, 0, true));
@@ -154,7 +173,7 @@ public class PaginaBackend extends WikiBackend {
             }
 
             // Quelle di primo livello che non esistono in Giorno
-            if (!valideBase.contains(wikiTitle)) {
+            if (!valideMongoBase.contains(wikiTitle)) {
                 pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoBase, 0, true));
                 continue;
             }
@@ -179,14 +198,15 @@ public class PaginaBackend extends WikiBackend {
      * Quelle di secondo livello che non hanno un corrispondente primo livello
      * Quelle di secondo livello che non superano le 50 voci
      */
-    public List<Pagina> elaboraGiorniSottoPagine(List<String> valideBase, List<String> pagineServer) {
+    public List<Pagina> elaboraGiorniSottoPagine(List<String> valideMongoBase, List<String> pagineServer) {
         List<Pagina> pagineMongo = new ArrayList<>();
+        List<String> pagineSecondoLivello = this.getGiorniAnniSotto(pagineServer);
         int voci = 0;
         String paginaParentePrimoLivello;
         String secolo;
         int sogliaMaxPagina = WPref.sogliaSottoPaginaGiorniAnni.getInt();
 
-        for (String wikiTitle : pagineServer) {
+        for (String wikiTitle : pagineSecondoLivello) {
             // Quelle di secondo livello che terminano con /
             if (wikiTitle.endsWith(SLASH)) {
                 pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoSotto, voci, true));
@@ -201,7 +221,7 @@ public class PaginaBackend extends WikiBackend {
 
             // Quelle di secondo livello che non hanno un corrispondente primo livello
             paginaParentePrimoLivello = textService.levaCodaDaUltimo(wikiTitle, SLASH);
-            if (!valideBase.contains(paginaParentePrimoLivello)) {
+            if (!valideMongoBase.contains(paginaParentePrimoLivello)) {
                 pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoSotto, voci, true));
                 continue;
             }
@@ -226,7 +246,7 @@ public class PaginaBackend extends WikiBackend {
         List<String> valideBase = annoWikiBackend.findAllPagine();
         List<String> pagineAll = getPagineAnni();
 
-        pagineMongo.addAll(elaboraAnniPagine(valideBase, getGiorniAnni(pagineAll)));
+        pagineMongo.addAll(elaboraAnniPagine(valideBase, getGiorniAnniPrimoLivello(pagineAll)));
         pagineMongo.addAll(elaboraAnniSottoPagine(valideBase, getGiorniAnniSotto(pagineAll)));
 
         return pagineMongo;
@@ -410,7 +430,6 @@ public class PaginaBackend extends WikiBackend {
         String nazionalita;
         int sogliaSottoPagina = WPref.sogliaSottoPagina.getInt();
         sogliaSottoPagina = (sogliaSottoPagina * 8) / 10;
-        sogliaSottoPagina = 30;
 
         for (String wikiTitle : pagine) {
             // Quelle di secondo livello che terminano con /
@@ -463,7 +482,6 @@ public class PaginaBackend extends WikiBackend {
         String nazionalita;
         int sogliaSottoPagina = WPref.sogliaSottoPagina.getInt();
         sogliaSottoPagina = (sogliaSottoPagina * 8) / 10;
-        sogliaSottoPagina = 30;
 
         for (String wikiTitle : pagine) {
             // Quelle di terzo livello che terminano con /
@@ -728,8 +746,6 @@ public class PaginaBackend extends WikiBackend {
     }
 
 
-
-
     /**
      * Tutti i cognomi diacritici
      */
@@ -795,7 +811,7 @@ public class PaginaBackend extends WikiBackend {
         List<String> cognomiAcriticiDoppi = this.getCognomiAcriticiDoppi(pagine);
         List<String> cognomiDiacriticiSingoli = this.getCognomiDiacriticiSingoli(pagine);
         List<String> cognomiDiacriticiDoppi = this.getCognomiDiacriticiDoppi(pagine);
-//        AETypeCognome type;
+        //        AETypeCognome type;
 
         for (String wikiTitle : pagine) {
             // Quelle di primo livello che terminano con /
@@ -815,28 +831,28 @@ public class PaginaBackend extends WikiBackend {
 
             // Identifico quelli uguali con accenti differenti
             // Controllo i redirect e li elimino
-//            type = fixTypeCognome(cognomiAcritici, cognomiDiacritici, wikiTitle);
-//            switch (type) {
-//                case acriticoSingolo -> {
-//                    //nulla da fare
-//                }
-//                case acriticoDoppio -> {
-//                    //nulla da fare
-//                }
-//                case diacriticoSingolo -> {
-//                }
-//                case diacriticoDoppio -> {
-//                    //--c'è questo diacritico ed anche l'acritico (che può passare prima o dopo)
-//                }
-//                case nonSpecificato -> {
-//                    //nulla da fare
-//                }
-//                default -> {
-//                }
-//            } ;
+            //            type = fixTypeCognome(cognomiAcritici, cognomiDiacritici, wikiTitle);
+            //            switch (type) {
+            //                case acriticoSingolo -> {
+            //                    //nulla da fare
+            //                }
+            //                case acriticoDoppio -> {
+            //                    //nulla da fare
+            //                }
+            //                case diacriticoSingolo -> {
+            //                }
+            //                case diacriticoDoppio -> {
+            //                    //--c'è questo diacritico ed anche l'acritico (che può passare prima o dopo)
+            //                }
+            //                case nonSpecificato -> {
+            //                    //nulla da fare
+            //                }
+            //                default -> {
+            //                }
+            //            } ;
 
             if (cognomiAcriticiSingoli.contains(wikiTitle)) {
-                int a=87;//non faccio nulla e proseguo
+                int a = 87;//non faccio nulla e proseguo
             }
 
             if (cognomiAcriticiDoppi.contains(wikiTitle)) {
@@ -911,6 +927,30 @@ public class PaginaBackend extends WikiBackend {
         }
     }
 
+    public int countGiorniPrimoLivelloErrati() {
+        return countCancellareByType(AETypePaginaCancellare.giornoBase);
+    }
+
+    public int countGiorniSecondoLivelloErrati() {
+        return countCancellareByType(AETypePaginaCancellare.giornoSotto);
+    }
+
+    public int countGiorniErrati() {
+        return countGiorniPrimoLivelloErrati() + countGiorniSecondoLivelloErrati();
+    }
+
+    public List<String> getGiorniPrimoLivello() {
+        List<String> pagineServer = this.getPagineGiorni();
+        List<String> paginePrimoLivello = this.getGiorniAnniPrimoLivello(pagineServer);
+        return paginePrimoLivello;
+    }
+
+    public List<String> getGiorniSecondoLivello() {
+        List<String> pagineServer = this.getPagineGiorni();
+        List<String> pagineSecondoLivello = this.getGiorniAnniSotto(pagineServer);
+        return pagineSecondoLivello;
+    }
+
     public List<String> getPagine(List<String> pagine) {
         return getLivello(pagine, 2);
     }
@@ -923,7 +963,7 @@ public class PaginaBackend extends WikiBackend {
         return getLivello(pagine, 4);
     }
 
-    public List<String> getGiorniAnni(List<String> pagine) {
+    public List<String> getGiorniAnniPrimoLivello(List<String> pagine) {
         return getLivello(pagine, 0);
     }
 

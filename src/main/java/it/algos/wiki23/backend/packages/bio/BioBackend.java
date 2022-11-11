@@ -309,7 +309,9 @@ public class BioBackend extends WikiBackend {
      * @return conteggio di biografie che usano l'attività e la nazionalità
      */
     public int countAttivitaNazionalitaAll(String attivitaSingolarePlurale, String nazionalitaSingolarePlurale, String letteraIniziale) {
-        int numBio = 0; List<String> listaAttivita; List<String> listaNazionalita;
+        int numBio = 0;
+        List<String> listaAttivita;
+        List<String> listaNazionalita;
         String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
         String nazionalitaPlurale = nazionalitaBackend.pluraleBySingolarePlurale(nazionalitaSingolarePlurale);
 
@@ -322,9 +324,10 @@ public class BioBackend extends WikiBackend {
             }
         }
 
-        if (listaNazionalita.size() == 0 && nazionalitaSingolarePlurale.equals(TAG_LISTA_ALTRE)) {
+        if (listaNazionalita.size() == 0 && nazionalitaSingolarePlurale.equalsIgnoreCase(TAG_LISTA_NO_NAZIONALITA)) {
             numBio = 0; for (String attivitaSingola : listaAttivita) {
-                numBio += countAttivitaNazionalitaBase(attivitaSingola, null); List listone = bioService.fetchAttivita(attivitaSingola); int a = 87;
+                numBio += countAttivitaNazionalitaBase(attivitaSingola, null);
+                List listone = bioService.fetchAttivita(attivitaSingola);
             }
         }
 
@@ -450,7 +453,7 @@ public class BioBackend extends WikiBackend {
             }
         }
         else {
-            if (nazionalitaSingolarePlurale.equals(TAG_LISTA_ALTRE)) {
+            if (nazionalitaSingolarePlurale.equals(TAG_LISTA_NO_NAZIONALITA)) {
                 lista = repository.findAllByAttivitaOrderByOrdinamento(attivitaSingola);
                 lista = lista.stream().filter(bio -> (textService.isEmpty(bio.nazionalita))).collect(Collectors.toList());
             }
@@ -490,7 +493,8 @@ public class BioBackend extends WikiBackend {
      * @return Lista di biografie che usano l'attività e la nazionalità
      */
     public List<Bio> findAllAttivitaNazionalita(String attivitaSingolarePlurale, String nazionalitaSingolarePlurale, String letteraIniziale) {
-        List<Bio> lista = new ArrayList<>(); List<String> listaAttivita;
+        List<Bio> lista = new ArrayList<>();
+        List<String> listaAttivita;
         String attivitaPlurale = attivitaBackend.pluraleBySingolarePlurale(attivitaSingolarePlurale);
 
         listaAttivita = attivitaBackend.findAllSingolariByPlurale(attivitaPlurale);

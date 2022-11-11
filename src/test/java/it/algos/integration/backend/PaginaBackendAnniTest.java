@@ -117,9 +117,9 @@ public class PaginaBackendAnniTest extends WikiTest {
 
     @Test
     @Order(3)
-    @DisplayName("3 - getListaPagine singola")
+    @DisplayName("3 - getListaPagine singole")
     void getListaPagine() {
-        System.out.println("3 - getListaPagine singola");
+        System.out.println("3 - getListaPagine singole");
         String message;
 
         ottenutoArray = backend.getListaPagine(null);
@@ -205,7 +205,7 @@ public class PaginaBackendAnniTest extends WikiTest {
         String message;
         List<String> valideBase = annoWikiBackend.findAllPagine();
         List<String> pagineAllAnni = backend.getPagineAnni().subList(50, 100);
-        List<String> pagine = backend.getGiorniAnni(pagineAllAnni);
+        List<String> pagine = backend.getGiorniAnniPrimoLivello(pagineAllAnni);
 
         inizio = System.currentTimeMillis();
         listaBeans = backend.elaboraAnniPagine(valideBase, pagine);

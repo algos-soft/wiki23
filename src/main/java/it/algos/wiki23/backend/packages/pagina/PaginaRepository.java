@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.packages.pagina;
 
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -43,5 +44,8 @@ public interface PaginaRepository extends MongoRepository<Pagina, String> {
     void delete(Pagina entity);
 
     Pagina findFirstByPagina(String pagina);
+
+    long countByTypeAndCancella(AETypePaginaCancellare type, boolean cancella);
+
 
 }// end of crud repository class

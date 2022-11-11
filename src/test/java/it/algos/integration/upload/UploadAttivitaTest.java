@@ -99,7 +99,7 @@ public class UploadAttivitaTest extends WikiTest {
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
-//    @Test
+    //    @Test
     @Order(4)
     @DisplayName("4- Upload test di una attività")
     void upload4() {
@@ -126,12 +126,12 @@ public class UploadAttivitaTest extends WikiTest {
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 
-//        @Test
+//    @Test
     @Order(7)
-    @DisplayName("7 - Upload di una attività plurale")
+    @DisplayName("7 - Upload di una attività con sottoPagina")
     void upload7() {
-        System.out.println("3 - Upload di una attività plurale");
-        sorgente = "accademici";
+        System.out.println("3 - Upload di una attività con sottoPagina");
+        sorgente = "dogi";
         appContext.getBean(UploadAttivita.class).test().upload(sorgente);
     }
 

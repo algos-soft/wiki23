@@ -539,7 +539,8 @@ public abstract class WikiTest extends AlgosTest {
                 Arguments.of("diplomatici", AETypeLista.attivitaPlurale),
                 Arguments.of("soprano", AETypeLista.attivitaSingolare),
                 Arguments.of("romanziere", AETypeLista.attivitaSingolare),
-                Arguments.of("accademici", AETypeLista.attivitaPlurale)
+                Arguments.of("accademici", AETypeLista.attivitaPlurale),
+                Arguments.of("dogi", AETypeLista.attivitaPlurale)
         );
     }
 

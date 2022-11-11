@@ -56,6 +56,10 @@ public class Wiki23Cost {
 
     public static final String TAG_LISTA_ALTRE = "Altre...";
 
+    public static final String TAG_LISTA_NO_ATTIVITA = "Senza attività specificata";
+
+    public static final String TAG_LISTA_NO_NAZIONALITA = "Senza nazionalità specificata";
+
     public static final String TAG_LISTA_NO_GIORNO = "Senza giorno specificato";
 
     public static final String TAG_LISTA_NO_ANNO = "Senza anno specificato";
@@ -63,8 +67,6 @@ public class Wiki23Cost {
     public static final String TAG_NO_SECOLO = "Secolo inesistente";
 
     public static final String TAG_NO_MESE = "Mese inesistente";
-
-    public static final String TAG_LISTA_NO_ATTIVITA = "Senza attività specificata";
 
     public static final String STATISTICHE = "Statistiche";
 
@@ -339,8 +341,8 @@ public class Wiki23Cost {
     public static final String INFO_ALTRE_ATTIVITA = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
             "parametro ''attività'' oppure che usano una attività di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
 
-    public static final String INFO_ALTRE_NAZIONALITA = "Nel paragrafo Altre... (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
-            "parametro ''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''";
+    public static final String INFO_ALTRE_NAZIONALITA = String.format("Nel paragrafo '%s' (eventuale) vengono raggruppate quelle voci biografiche che '''non''' usano il " +
+            "parametro ''nazionalità'' oppure che usano una nazionalità di difficile elaborazione da parte del '''[[Utente:Biobot|<span style=\"color:green;\">bot</span>]]'''",TAG_LISTA_NO_NAZIONALITA);
 
     //    protected static final String INFO_SOTTOPAGINA_DI_ATTIVITA = "La sottopagina (attività/nazionalità) viene creata solo se il numero di voci biografiche del singolo paragrafo per ''nazionalità'' supera le '''" + WPref.sogliaSottoPagina.getInt() + "''' unità.";
     public static final String INFO_SOTTOPAGINA_DI_ATTIVITA = "Questa sottopagina ''(%s/%s)'' è stata creata perché ci sono %d voci biografiche nel paragrafo ''%s'' dell'attività ''%s''";

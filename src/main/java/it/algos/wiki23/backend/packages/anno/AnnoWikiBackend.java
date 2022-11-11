@@ -147,7 +147,7 @@ public class AnnoWikiBackend extends WikiBackend {
         int ordine = 0;
 
         if (mongoService.isCollectionNullOrEmpty(Anno.class)) {
-            logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Anno'")));
+            logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Anno'")).usaDb());
             return false;
         }
 
@@ -157,8 +157,16 @@ public class AnnoWikiBackend extends WikiBackend {
 
             for (Anno anno : anniBase) {
                 ordine += delta;
-                creaIfNotExist(anno, ordine);
+                try {
+                    creaIfNotExist(anno, ordine);
+                } catch (Exception unErrore) {
+                    logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+                }
             }
+        }
+        else {
+            logger.error(new WrapLog().exception(new AlgosException("Non sono riuscito a cancellare la collezione 'AnnoWiki'")).usaDb());
+            return false;
         }
 
         return true;

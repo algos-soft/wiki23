@@ -109,7 +109,9 @@ public class GiornoWikiView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        addSpanRossoSmall(String.format("%s: %s", "Pagine da cancellare", "0"));
+
+        int errati = paginaBackend.countGiorniErrati();
+        addSpanRossoSmall(String.format("%s: %s", "Pagine dei giorni da cancellare", errati));
     }
 
 
@@ -123,7 +125,7 @@ public class GiornoWikiView extends WikiView {
         super.addColumnsOneByOne();
 
         grid.addColumn(new ComponentRenderer<>(entity -> {
-            String wikiTitle =((GiornoWiki) entity).pageNati;
+            String wikiTitle = ((GiornoWiki) entity).pageNati;
             Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
             anchor.getElement().getStyle().set("color", "green");
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
@@ -131,7 +133,7 @@ public class GiornoWikiView extends WikiView {
         })).setHeader("Nati").setKey("pageNati").setFlexGrow(0).setWidth("14em");
 
         grid.addColumn(new ComponentRenderer<>(entity -> {
-            String wikiTitle =((GiornoWiki) entity).pageMorti;
+            String wikiTitle = ((GiornoWiki) entity).pageMorti;
             Anchor anchor = new Anchor(PATH_WIKI + wikiTitle, wikiTitle);
             anchor.getElement().getStyle().set("color", "green");
             anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
@@ -151,6 +153,7 @@ public class GiornoWikiView extends WikiView {
     /**
      * Esegue un azione di upload delle statistiche, specifica del programma/package in corso <br>
      * Deve essere sovrascritto, invocando DOPO il metodo della superclasse <br>
+     * Prima esegue una Elaborazione <br>
      */
     @Override
     public void uploadStatistiche() {

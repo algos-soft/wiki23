@@ -379,8 +379,23 @@ public class BioBackendAttNazTest extends WikiTest {
     void altre() {
         System.out.println("71 - altre");
 
-        sorgente = "nobili";
+        sorgente = "dogi";
         sorgente2 = TAG_LISTA_ALTRE;
+        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+        listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di '%s'", sorgente, ottenutoIntero, sorgente2));
+        printBio(listaBeans);
+    }
+    @Test
+    @Order(72)
+    @DisplayName("72 - Senza nazionalità specificata")
+    void senzaNazionalitàSpecificata() {
+        System.out.println("72 - Senza nazionalità specificata");
+
+        sorgente = "dogi";
+        sorgente2 = TAG_LISTA_NO_NAZIONALITA;
         ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
         listaBeans = backend.findAllAttivitaNazionalita(sorgente, sorgente2);
         assertNotNull(listaBeans);

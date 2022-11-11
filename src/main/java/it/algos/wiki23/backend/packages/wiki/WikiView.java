@@ -16,6 +16,7 @@ import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.views.*;
 import it.algos.wiki23.backend.enumeration.*;
+import it.algos.wiki23.backend.packages.pagina.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -55,6 +56,14 @@ public abstract class WikiView extends CrudView {
      */
     @Autowired
     public WikiUtility wikiUtility;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public PaginaBackend paginaBackend;
 
     protected boolean usaBottoneDownload;
 

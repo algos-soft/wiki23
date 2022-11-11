@@ -85,7 +85,7 @@ public class UploadAttivita extends UploadAttivitaNazionalita {
         buffer.append(textService.setRef(INFO_PARAGRAFI_NAZIONALITA));
         buffer.append(" per nazionalità.");
         buffer.append(textService.setRef(INFO_NAZIONALITA_PREVISTE));
-        if (mappaWrap.containsKey(TAG_LISTA_ALTRE)) {
+        if (mappaWrap.containsKey(TAG_LISTA_NO_NAZIONALITA)) {
             buffer.append(textService.setRef(INFO_ALTRE_NAZIONALITA));
         }
 

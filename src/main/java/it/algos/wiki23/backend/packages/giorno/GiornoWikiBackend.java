@@ -7,6 +7,7 @@ import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.wrapper.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.bson.*;
@@ -119,6 +120,7 @@ public class GiornoWikiBackend extends WikiBackend {
         return repository.findFirstByNome(nome);
     }
 
+
     public boolean isEsiste(final String nome) {
         return repository.findFirstByNome(nome) != null;
     }
@@ -184,7 +186,8 @@ public class GiornoWikiBackend extends WikiBackend {
             update(giornoWiki);
         }
 
-        super.fixElaboraMinuti(inizio, "giorni");
+        super.fixElaboraMinuti(inizio, "pagine di giorni");
+
     }
 
 
