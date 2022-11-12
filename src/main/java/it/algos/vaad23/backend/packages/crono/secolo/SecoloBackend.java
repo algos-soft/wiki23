@@ -138,10 +138,10 @@ public class SecoloBackend extends CrudBackend {
     public Secolo getSecoloDC(int anno) {
         return repository.findFirstByInizioLessThanEqualAndFineGreaterThanEqualAndAnteCristo(anno, anno, false);
     }
+
     public Secolo getSecolo(int ordine) {
         return repository.findFirstByOrdine(ordine);
     }
-
 
     /**
      * Creazione di alcuni dati iniziali <br>
@@ -163,7 +163,7 @@ public class SecoloBackend extends CrudBackend {
         String anteCristoText;
 
         if (super.reset()) {
-            mappa = resourceService.leggeMappaConfig(nomeFile);
+            mappa = resourceService.leggeMappaServer(nomeFile);
             if (mappa != null) {
                 for (String key : mappa.keySet()) {
                     riga = mappa.get(key);

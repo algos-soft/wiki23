@@ -75,6 +75,9 @@ public class AnnoBackendTest extends AlgosTest {
         backend.crudRepository = repository;
         backend.arrayService = arrayService;
         backend.reflectionService = reflectionService;
+        backend.secoloBackend = secoloBackend;
+        backend.textService = textService;
+        backend.dateService = dateService;
     }
 
 
@@ -122,39 +125,96 @@ public class AnnoBackendTest extends AlgosTest {
 
 
     @Test
-    @Order(2)
-    @DisplayName("2 - findAll (entity)")
+    @Order(11)
+    @DisplayName("11 - findAll (entity)")
     void findAll() {
-        System.out.println("2 - findAll (entity)");
+        System.out.println("11 - findAll (entity)");
         String message;
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Anno");
+        message = String.format("Ci sono in totale %s entities di %s in ordine di default", textService.format(listaBeans.size()), "Anno");
+        System.out.println(message);
+        printAnni(listaBeans);
+    }
+
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - findAllAscendente (entity)")
+    void findAllAscendente() {
+        System.out.println("12 - findAllAscendente (entity)");
+        String message;
+
+        listaBeans = backend.findAllAscendente();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s in ordine ascendente", textService.format(listaBeans.size()), "Anno");
         System.out.println(message);
         printAnni(listaBeans);
     }
 
     @Test
-    @Order(3)
-    @DisplayName("3 - findNomi (nome)")
+    @Order(13)
+    @DisplayName("13 - findAllDiscendente (entity)")
+    void findAllDiscendente() {
+        System.out.println("13 - findAllDiscendente (entity)");
+        String message;
+
+        listaBeans = backend.findAllDiscendente();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s in ordine discendente", textService.format(listaBeans.size()), "Anno");
+        System.out.println(message);
+        printAnni(listaBeans);
+    }
+
+    @Test
+    @Order(21)
+    @DisplayName("21 - findNomi (nome)")
     void findNomi() {
-        System.out.println("3 - findNomi (nome)");
+        System.out.println("21 - findNomi (nome)");
         String message;
 
         listaStr = backend.findNomi();
         assertNotNull(listaStr);
-        message = String.format("Ci sono in totale %s anni", textService.format(listaStr.size()));
+        message = String.format("Ci sono in totale %s anni ordine di default", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiAnni(listaStr);
+    }
+
+    @Test
+    @Order(22)
+    @DisplayName("22 - findNomiAscendente (nome)")
+    void findNomiAscendente() {
+        System.out.println("22 - findNomiAscendente (nome)");
+        String message;
+
+        listaStr = backend.findNomiAscendente();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s anni in ordine ascendente", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiAnni(listaStr);
+    }
+
+    @Test
+    @Order(23)
+    @DisplayName("23 - findNomiDiscendente (nome)")
+    void findNomiDiscendente() {
+        System.out.println("23 - findNomiDiscendente (nome)");
+        String message;
+
+        listaStr = backend.findNomiDiscendente();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s anni in ordine discendente", textService.format(listaStr.size()));
         System.out.println(message);
         printNomiAnni(listaStr);
     }
 
 
     @Test
-    @Order(4)
-    @DisplayName("4 - findAllBySecolo (entity)")
+    @Order(31)
+    @DisplayName("31 - findAllBySecolo (entity)")
     void findAllBySecolo() {
-        System.out.println("4 - findAllBySecolo (entity)");
+        System.out.println("31 - findAllBySecolo (entity)");
 
         for (Secolo sorgente : secoloBackend.findAll()) {
             listaBeans = backend.findAllBySecolo(sorgente);
@@ -168,12 +228,12 @@ public class AnnoBackendTest extends AlgosTest {
 
 
     @Test
-    @Order(5)
-    @DisplayName("5 - findNomiBySecolo (nome)")
+    @Order(32)
+    @DisplayName("32 - findNomiBySecolo (nome)")
     void findNomiBySecolo() {
-        System.out.println("5 - findNomiBySecolo (nome)");
+        System.out.println("32 - findNomiBySecolo (nome)");
 
-        for (String sorgente : secoloBackend.findNomi()) {
+        for (String sorgente : secoloBackend.findNomiAscendenti()) {
             listaStr = backend.findNomiBySecolo(sorgente);
             assertNotNull(listaStr);
             message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaStr.size()));
@@ -183,12 +243,28 @@ public class AnnoBackendTest extends AlgosTest {
         }
     }
 
+    @Test
+    @Order(40)
+    @DisplayName("40 - reset")
+    void reset() {
+        System.out.println("40 - reset");
+        String message;
+
+        ottenutoBooleano = backend.reset();
+        assertTrue(ottenutoBooleano);
+        listaBeans = backend.findAll();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Anno");
+        System.out.println(message);
+        printAnni(listaBeans);
+    }
+
     @ParameterizedTest
     @MethodSource(value = "ANNI")
-    @Order(21)
-    @DisplayName("21 - findByNome")
+    @Order(61)
+    @DisplayName("61 - findByNome")
     void findByNome(final String nome, final boolean esiste) {
-        System.out.println("21 - findByNome");
+        System.out.println("61 - findByNome");
         entityBean = backend.findByNome(nome);
         assertEquals(esiste, entityBean != null);
         if (entityBean != null) {
@@ -221,6 +297,8 @@ public class AnnoBackendTest extends AlgosTest {
         for (Anno anno : listaAnni) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+            System.out.print(anno.ordine);
             System.out.print(SPAZIO);
             System.out.print(anno.nome);
             System.out.print(SPAZIO);

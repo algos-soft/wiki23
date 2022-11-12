@@ -133,7 +133,31 @@ public class BioBackend extends WikiBackend {
     }
 
     public Bio newEntity(final Document doc) {
-        return Bio.builder().pageId(doc.getLong("pageId")).wikiTitle(doc.getString("wikiTitle")).elaborato(doc.getBoolean("elaborato")).nome(doc.getString("nome")).cognome(doc.getString("cognome")).ordinamento(doc.getString("ordinamento")).sesso(doc.getString("sesso")).giornoNato(doc.getString("giornoNato")).giornoNatoOrd(doc.getInteger("giornoNatoOrd")).annoNato(doc.getString("annoNato")).annoNatoOrd(doc.getInteger("annoNatoOrd")).luogoNato(doc.getString("luogoNato")).luogoNatoLink(doc.getString("luogoNatoLink")).giornoMorto(doc.getString("giornoMorto")).giornoMortoOrd(doc.getInteger("giornoMortoOrd")).annoMorto(doc.getString("annoMorto")).annoMortoOrd(doc.getInteger("annoMortoOrd")).luogoMorto(doc.getString("luogoMorto")).luogoMortoLink(doc.getString("luogoMortoLink")).attivita(doc.getString("attivita")).attivita2(doc.getString("attivita2")).attivita3(doc.getString("attivita3")).nazionalita(doc.getString("nazionalita")).build();
+        return Bio.builder()
+                .pageId(doc.getLong("pageId"))
+                .wikiTitle(doc.getString("wikiTitle"))
+                .elaborato(doc.getBoolean("elaborato"))
+                .nome(doc.getString("nome"))
+                .cognome(doc.getString("cognome"))
+                .ordinamento(doc.getString("ordinamento"))
+                .sesso(doc.getString("sesso"))
+                .giornoNato(doc.getString("giornoNato"))
+                .giornoNatoOrd(doc.getInteger("giornoNatoOrd"))
+                .annoNato(doc.getString("annoNato"))
+                .annoNatoOrd(doc.getInteger("annoNatoOrd"))
+                .luogoNato(doc.getString("luogoNato"))
+                .luogoNatoLink(doc.getString("luogoNatoLink"))
+                .giornoMorto(doc.getString("giornoMorto"))
+                .giornoMortoOrd(doc.getInteger("giornoMortoOrd"))
+                .annoMorto(doc.getString("annoMorto"))
+                .annoMortoOrd(doc.getInteger("annoMortoOrd"))
+                .luogoMorto(doc.getString("luogoMorto"))
+                .luogoMortoLink(doc.getString("luogoMortoLink"))
+                .attivita(doc.getString("attivita"))
+                .attivita2(doc.getString("attivita2"))
+                .attivita3(doc.getString("attivita3"))
+                .nazionalita(doc.getString("nazionalita"))
+                .build();
     }
 
     /**
@@ -151,7 +175,15 @@ public class BioBackend extends WikiBackend {
      */
     public Bio newEntity(final long pageId, final String wikiTitle, final String tmplBio, final LocalDateTime lastServer) {
         LocalDateTime now = LocalDateTime.now();
-        return Bio.builder().pageId(pageId).wikiTitle(textService.isValid(wikiTitle) ? wikiTitle : null).tmplBio(textService.isValid(tmplBio) ? tmplBio : null).elaborato(false).lastServer(lastServer != null ? lastServer : now).lastMongo(now).valido(true).build();
+        return Bio.builder()
+                .pageId(pageId)
+                .wikiTitle(textService.isValid(wikiTitle) ? wikiTitle : null)
+                .tmplBio(textService.isValid(tmplBio) ? tmplBio : null)
+                .elaborato(false)
+                .lastServer(lastServer != null ? lastServer : now)
+                .lastMongo(now)
+                .valido(true)
+                .build();
     }
 
     public Bio insert(final Bio bio) {
@@ -554,12 +586,23 @@ public class BioBackend extends WikiBackend {
         return giornoLong.intValue();
     }
 
+    public int countGiornoNato(final int giornoNatoOrd) {
+        Long giornoLong = giornoNatoOrd > 0 ? repository.countBioByGiornoNatoOrd(giornoNatoOrd) : 0;
+        return giornoLong.intValue();
+    }
+
     public List<Bio> findGiornoNato(String giornoNato) {
         Query query = queryGiornoNato(giornoNato);
         return query != null ? mongoService.mongoOp.find(query, Bio.class) : new ArrayList<>();
     }
 
-
+    /**
+     * Se il secolo è valido ->query base <br>
+     * Se il secolo è null -> 0 <br>
+     * Se il secolo è vuoto ->0 <br>
+     * Se il secolo non corrisponde ad un Secolo ->0 <br>
+     * Se il secolo è uguale a 'Senza anno specificato' -> query diversa <br>
+     */
     public int countGiornoNatoSecolo(String giornoNato, String nomeSecolo) {
         Query query = queryGiornoNatoSecolo(giornoNato, nomeSecolo);
         return query != null ? ((Long) mongoService.mongoOp.count(query, Bio.class)).intValue() : 0;
@@ -579,29 +622,51 @@ public class BioBackend extends WikiBackend {
 
         giornoNato = wikiUtility.fixPrimoMese(giornoNato);
         query.addCriteria(Criteria.where("giornoNato").is(giornoNato));
-        sort = Sort.by(Sort.Direction.ASC, "annoNatoOrd", "ordinamento"); query.with(sort);
+        sort = Sort.by(Sort.Direction.ASC, "annoNatoOrd", "ordinamento");
+        query.with(sort);
 
         return query;
     }
 
+    /**
+     * Se il giorno è null -> query null <br>
+     * Se il giorno è vuoto -> query null <br>
+     * Se il secolo è valido ->query base <br>
+     * Se il secolo è null -> query null <br>
+     * Se il secolo è vuoto -> query null <br>
+     * Se il secolo non corrisponde ad un Secolo -> query null <br>
+     * Se il secolo è uguale a 'Senza anno specificato' -> query diversa <br>
+     */
     public Query queryGiornoNatoSecolo(String giornoNato, String nomeSecolo) {
-        Query query; Sort sort; Secolo secolo; int deltaAnni = 2000; int inizio = deltaAnni; int fine = deltaAnni;
+        Query query;
+        Secolo secolo;
+        int annoIniziale = DELTA_ANNI;
+        annoIniziale=1000;
+        int delta = DELTA_ORDINE_ANNI;
+        int inizio = annoIniziale;
+        int fine = annoIniziale;
 
         if (textService.isEmpty(giornoNato)) {
             return null;
         }
+        if (textService.isEmpty(nomeSecolo)) {
+            return null;
+        }
+        secolo = secoloBackend.findByNome(nomeSecolo);
+        if (secolo == null && !nomeSecolo.equalsIgnoreCase(TAG_LISTA_NO_ANNO)) {
+            return null;
+        }
 
         query = queryGiornoNato(giornoNato);
-        if (textService.isEmpty(nomeSecolo)) {
-            query.addCriteria(Criteria.where("annoNatoOrd").is(0));
+        if (secolo != null) {
+            inizio += secolo.inizio;
+            inizio *= delta;
+            fine += secolo.fine;
+            fine *= delta;
+            query.addCriteria(Criteria.where("annoNatoOrd").gte(inizio).lte(fine));
         }
         else {
-            secolo = secoloBackend.findByNome(nomeSecolo); if (secolo != null) {
-                inizio += secolo.inizio; fine += secolo.fine; query.addCriteria(Criteria.where("annoNatoOrd").gte(inizio).lte(fine));
-            }
-            else {
-                query.addCriteria(Criteria.where("annoNatoOrd").is(0));
-            }
+            query.addCriteria(Criteria.where("annoNatoOrd").is(0));
         }
 
         return query;

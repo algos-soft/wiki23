@@ -101,24 +101,42 @@ public class AnnoBackend extends CrudBackend {
 
     @Override
     public List<Anno> findAll() {
+        return findAllDiscendente();
+    }
+
+    public List<Anno> findAllDiscendente() {
         return repository.findAll(Sort.by(Sort.Direction.DESC, "ordine"));
     }
 
+    public List<Anno> findAllAscendente() {
+        return repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));
+    }
+
     public List<String> findNomi() {
-        return findAll().stream()
+        return findNomiDiscendente();
+    }
+
+    public List<String> findNomiDiscendente() {
+        return findAllDiscendente().stream()
+                .map(anno -> anno.nome)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> findNomiAscendente() {
+        return findAllAscendente().stream()
                 .map(anno -> anno.nome)
                 .collect(Collectors.toList());
     }
 
     public List<Anno> findAllBySecolo(Secolo secolo) {
-        return findAll().stream()
+        return findAllAscendente().stream()
                 .filter(anno -> anno.secolo.nome.equals(secolo.nome))
                 .collect(Collectors.toList());
     }
 
 
     public List<String> findNomiBySecolo(String secolo) {
-        return findAll().stream()
+        return findAllAscendente().stream()
                 .filter(anno -> anno.secolo.nome.equals(secolo))
                 .map(anno -> anno.nome)
                 .collect(Collectors.toList());
@@ -139,14 +157,12 @@ public class AnnoBackend extends CrudBackend {
         }
 
         if (super.reset()) {
-            //--costruisce gli anni prima di cristo dal 1000
-            //--ordine da 1000 a 1999
-            for (int k = 0; k < ANTE_CRISTO_MAX; k++) {
+            //--costruisce gli anni prima di cristo partendo da ANTE_CRISTO_MAX che coincide con DELTA_ANNI
+            for (int k = 1; k <= ANTE_CRISTO_MAX; k++) {
                 creaPrima(k);
             }
 
-            //--costruisce gli anni dopo cristo fino al 2030
-            //--ordine da 2001 a 4030
+            //--costruisce gli anni dopo cristo fino all'anno DOPO_CRISTO_MAX
             for (int k = 1; k <= DOPO_CRISTO_MAX; k++) {
                 creaDopo(k);
             }
@@ -156,10 +172,10 @@ public class AnnoBackend extends CrudBackend {
     }
 
     public void creaPrima(int numeroProgressivo) {
-        int delta = 1000;
+        int delta = DELTA_ANNI;
+        int numeroAnno = delta - numeroProgressivo + 1;
+        int ordine = numeroProgressivo;
         String tagPrima = " a.C.";
-        int numeroAnno = delta - numeroProgressivo;
-        int ordine = numeroProgressivo + delta;
         String nomeVisibile = numeroAnno + tagPrima;
         Secolo secolo = secoloBackend.getSecoloAC(numeroAnno);
 
@@ -167,13 +183,12 @@ public class AnnoBackend extends CrudBackend {
     }
 
     public void creaDopo(int numeroProgressivo) {
-        int delta = 2000;
+        int delta = DELTA_ANNI;
+        int numeroAnno = numeroProgressivo;
         int ordine = numeroProgressivo + delta;
-        String nome;
-        Secolo secolo;
-        boolean bisestile = dateService.isBisestile(numeroProgressivo);
         String nomeVisibile = numeroProgressivo + VUOTA;
-        secolo = secoloBackend.getSecoloDC(numeroProgressivo);
+        Secolo secolo = secoloBackend.getSecoloDC(numeroAnno);
+        boolean bisestile = dateService.isBisestile(numeroAnno);
 
         crea(ordine, nomeVisibile, secolo, true, bisestile);
     }

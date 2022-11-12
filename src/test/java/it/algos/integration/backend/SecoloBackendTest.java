@@ -4,7 +4,6 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.secolo.*;
-import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
@@ -26,7 +25,7 @@ import java.util.*;
 @Tag("backend")
 @DisplayName("Secolo Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SecoloBackendTest extends WikiTest {
+public class SecoloBackendTest extends AlgosTest {
 
     /**
      * The Service.
@@ -56,8 +55,8 @@ public class SecoloBackendTest extends WikiTest {
         backend.crudRepository = repository;
         backend.arrayService = arrayService;
         backend.reflectionService = reflectionService;
-        backend.textService = textService;
         backend.resourceService = resourceService;
+        backend.textService = textService;
     }
 
 
@@ -132,11 +131,40 @@ public class SecoloBackendTest extends WikiTest {
         printNomiSecoli(listaStr);
     }
 
-//    @Test
-    @Order(6)
-    @DisplayName("6 - reset")
+    @Test
+    @Order(3)
+    @DisplayName("3 - findNomi (nome)")
+    void findNomi2() {
+        System.out.println("3 - findNomi (nome)");
+        String message;
+
+        listaStr = backend.findNomi();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiSecoli(listaStr);
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - findNomiAscendenti (nome)")
+    void findNomiAscendenti() {
+        System.out.println("4 - findNomiAscendenti (nome)");
+        String message;
+
+        listaStr = backend.findNomiAscendenti();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiSecoli(listaStr);
+    }
+
+    @Test
+    @Order(40)
+    @DisplayName("40 - reset")
     void reset() {
-        System.out.println("6 - reset");
+        System.out.println("40 - reset");
         String message;
 
         ottenutoBooleano = backend.reset();

@@ -514,16 +514,16 @@ public class ElaboraService extends WAbstractService {
 
     public int fixAnnoOrd(String testoGrezzo) {
         int annoOrdine = 0;
-        AnnoWiki anno;
+        AnnoWiki annoWiki;
         String testoAnno = fixAnno(testoGrezzo);
 
         if (textService.isEmpty(testoAnno)) {
             return annoOrdine;
         }
 
-        anno = annoWikiBackend.findByNome(testoAnno);
-        if (anno != null) {
-            annoOrdine = anno.ordine;
+        annoWiki = annoWikiBackend.findByNome(testoAnno);
+        if (annoWiki != null) {
+            annoOrdine = annoWiki.ordine;
         }
 
         return annoOrdine;

@@ -447,7 +447,8 @@ public class VaadCost {
 
     public static final String KEY_MAPPA_GIORNI_MESE_MESE = "meseMese";
 
-    public static final int ANNO_INIZIALE = 2000;
+//    public static final int DELTA_ANNI = 1000;
+    public static final int DELTA_ANNI = 1000;
 
     public static final int ANTE_CRISTO_MAX = 1000;
 

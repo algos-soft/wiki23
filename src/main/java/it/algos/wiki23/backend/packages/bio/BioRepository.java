@@ -55,6 +55,7 @@ public interface BioRepository extends MongoRepository<Bio, String> {
     long countBioByNazionalitaAndAttivita(String nazionalita, String attivita);
 
     long countBioByGiornoNato(String giornoNato);
+    long countBioByGiornoNatoOrd(int giornoNatoOrd);
 
     long countBioByGiornoMorto(String giornoMorto);
 

@@ -4,6 +4,8 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.wrapper.*;
+import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.service.*;
@@ -143,7 +145,7 @@ public class AnnoWikiBackend extends WikiBackend {
     @Override
     public boolean reset() {
         List<Anno> anniBase = null;
-        int delta = 100;
+        int delta = DELTA_ORDINE_ANNI;
         int ordine = 0;
 
         if (mongoService.isCollectionNullOrEmpty(Anno.class)) {

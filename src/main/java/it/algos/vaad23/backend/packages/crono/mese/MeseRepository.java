@@ -39,5 +39,6 @@ public interface MeseRepository extends MongoRepository<Mese, String> {
     void delete(Mese entity);
 
     Mese findFirstByNome(String nome);
+    Mese findFirstByOrdine(int ordine);
 
 }// end of crud repository class
