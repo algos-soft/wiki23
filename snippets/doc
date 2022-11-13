@@ -113,6 +113,31 @@ String result = new StringBuilder()
   .body("Yours truly, Donald")
   .build();
 
+    @Test
+    @Order(6)
+    @DisplayName("6 - getSingleType")
+    void getType() {
+        System.out.println("Tutte le occorrenze della enumeration con toString() -> tag");
+
+        //--tag
+        //--esiste nella enumeration
+        System.out.println(VUOTA);
+        LIVELLI().forEach(this::getTypeBase);
+    }
+
+    //--tag
+    //--esiste nella enumeration
+    void getTypeBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoBooleano = (boolean) mat[1];
+        type = AELogLevel.getType(sorgente);
+        assertTrue(previstoBooleano ? type != null : type == null);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("%s%s%s", type, FORWARD, type != null ? type.getTag() : "non esiste"));
+    }
+
 
         if (WamEntity.class.isAssignableFrom(entityClass)||Milite.class.isAssignableFrom(entityClass)) {
             codice

@@ -103,6 +103,9 @@ public class AnnoBackend extends CrudBackend {
     public List<Anno> findAll() {
         return findAllDiscendente();
     }
+    public Anno findByOrdine(final int ordine) {
+        return repository.findFirstByOrdine(ordine);
+    }
 
     public List<Anno> findAllDiscendente() {
         return repository.findAll(Sort.by(Sort.Direction.DESC, "ordine"));

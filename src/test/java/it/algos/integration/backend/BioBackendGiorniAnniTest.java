@@ -3,14 +3,17 @@ package it.algos.integration.backend;
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.provider.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project wiki23
@@ -39,6 +42,133 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
     private List<Bio> listaBeans;
 
+    private Giorno giorno;
+
+    //--giorno progressivo nato
+    //--count previsto
+    protected static Stream<Arguments> GIORNO_NATO_ORD() {
+        return Stream.of(
+                Arguments.of(0, 0),
+                Arguments.of(-17, 0),
+                Arguments.of(2843, 0),
+                Arguments.of(283, 980),
+                Arguments.of(60, 294)
+        );
+    }
+
+    //--nome giorno nato
+    //--count previsto
+    protected static Stream<Arguments> GIORNO_NATO() {
+        return Stream.of(
+                Arguments.of(null, 0),
+                Arguments.of(VUOTA, 0),
+                Arguments.of("5 termidoro", 0),
+                Arguments.of("aprile", 0),
+                Arguments.of("9 ottobre", 980),
+                Arguments.of("29 febbraio", 294)
+        );
+    }
+
+    //--nome giorno
+    //--nome secolo
+    //--count previsto nato
+    //--count previsto morto
+    protected static Stream<Arguments> GIORNO_SECOLO() {
+        return Stream.of(
+                Arguments.of(null, null, 0, 0),
+                Arguments.of(VUOTA, VUOTA, 0, 0),
+                Arguments.of(null, VUOTA, 0, 0),
+                Arguments.of(VUOTA, null, 0, 0),
+                Arguments.of(null, "XX secolo", 0, 0),
+                Arguments.of(VUOTA, "XIX secolo", 0, 0),
+                Arguments.of("16 ottobre", null, 0, 0),
+                Arguments.of("18 settembre", VUOTA, 0, 0),
+                Arguments.of("1918", "XVI secolo", 0, 0),
+                Arguments.of("18 settembre", TAG_NO_SECOLO, 0, 0),
+                Arguments.of("7 maggio", TAG_LISTA_NO_ANNO, 1, 2),
+                Arguments.of("18 settembre", "XVI secolo", 9, 12),
+                Arguments.of("10 gennaio", "XVI secolo", 5, 10),
+                Arguments.of("1" + MASCULINE_ORDINAL_INDICATOR + SPAZIO + "gennaio", "XX secolo", 1599, 282),
+                Arguments.of("1" + DEGREE_SIGN + SPAZIO + "gennaio", "XVIII secolo", 59, 32)
+        );
+    }
+
+
+    //--giorno morto
+    //--count previsto
+    protected static Stream<Arguments> GIORNO_MORTO_ORD() {
+        return Stream.of(
+                Arguments.of(0, 0),
+                Arguments.of(-17, 0),
+                Arguments.of(2843, 0),
+                Arguments.of(283, 444),
+                Arguments.of(60, 119)
+        );
+    }
+
+    //--nome giorno morto
+    //--count previsto
+    protected static Stream<Arguments> GIORNO_MORTO() {
+        return Stream.of(
+                Arguments.of(null, 0),
+                Arguments.of(VUOTA, 0),
+                Arguments.of("5 termidoro", 0),
+                Arguments.of("aprile", 0),
+                Arguments.of("9 ottobre", 444),
+                Arguments.of("29 febbraio", 119)
+        );
+    }
+
+    //--nome anno nato
+    //--count previsto
+    protected static Stream<Arguments> ANNO_NATO() {
+        return Stream.of(
+                Arguments.of(null, 0),
+                Arguments.of(VUOTA, 0),
+                Arguments.of("3825", 0),
+                Arguments.of("4 luglio", 0),
+                Arguments.of("70 A.C.", 0),
+                Arguments.of("70 a.C.", 4),
+                Arguments.of("1645", 76)
+        );
+    }
+
+    //--nome anno morto
+    //--count previsto
+    protected static Stream<Arguments> ANNO_MORTO() {
+        return Stream.of(
+                Arguments.of(null, 0),
+                Arguments.of(VUOTA, 0),
+                Arguments.of("3825", 0),
+                Arguments.of("4 luglio", 0),
+                Arguments.of("70 A.C.", 0),
+                Arguments.of("70 a.C.", 1),
+                Arguments.of("1645", 85),
+                Arguments.of("54 a.C.", 9)
+        );
+    }
+
+    //--nome anno
+    //--nome mese
+    //--count previsto nato
+    //--count previsto morto
+    protected static Stream<Arguments> ANNO_MESE() {
+        return Stream.of(
+                Arguments.of(null, null, 0, 0),
+                Arguments.of(VUOTA, VUOTA, 0, 0),
+                Arguments.of(null, VUOTA, 0, 0),
+                Arguments.of(VUOTA, null, 0, 0),
+                Arguments.of(null, "aprile", 0, 0),
+                Arguments.of(VUOTA, "settembre", 0, 0),
+                Arguments.of("1918", null, 0, 0),
+                Arguments.of("377", VUOTA, 0, 0),
+                Arguments.of("3 gennaio", "aprile", 0, 0),
+                Arguments.of("1481", TAG_NO_MESE, 0, 0),
+                Arguments.of("1968", TAG_LISTA_NO_GIORNO, 212, 87),
+                Arguments.of("1735", "giugno", 10, 3),
+                Arguments.of("54 a.C.", "febbraio", 0, 0)
+        );
+    }
 
     /**
      * Qui passa una volta sola <br>
@@ -92,54 +222,34 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
     @Test
     @Order(21)
-    @DisplayName("21 - countGiornoNato")
+    @DisplayName("21 - countGiornoNatoOrd")
     void countGiornoNatoOrd() {
-        System.out.println("21 - countGiornoNato");
+        System.out.println("21 - countGiornoNatoOrd");
+        System.out.println(VUOTA);
+        GIORNO_NATO_ORD().forEach(this::countGiornoNatoOrdBase);
+    }
 
-        sorgenteIntero = 0;
-        ottenutoIntero = backend.countGiornoNato(sorgenteIntero);
-        assertTrue(ottenutoIntero == 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        message = String.format("Ci sono %d voci biografiche di nati nel giorno (intero) '%s' in totale", ottenutoIntero, sorgenteIntero);
-        System.out.println(message);
+    //--giorno progressivo nato
+    //--count previsto
+    void countGiornoNatoOrdBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgenteIntero = (int) mat[0];
+        previstoIntero = (int) mat[1];
 
-        sorgenteIntero = -17;
         ottenutoIntero = backend.countGiornoNato(sorgenteIntero);
-        assertTrue(ottenutoIntero == 0);
         assertEquals(previstoIntero, ottenutoIntero);
-        message = String.format("Ci sono %d voci biografiche di nati nel giorno (intero) '%s' in totale", ottenutoIntero, sorgenteIntero);
-        System.out.println(message);
 
-        sorgenteIntero = 24833;
-        ottenutoIntero = backend.countGiornoNato(sorgenteIntero);
-        assertTrue(ottenutoIntero == 0);
-        assertEquals(previstoIntero, ottenutoIntero);
         message = String.format("Ci sono %d voci biografiche di nati nel giorno (intero) '%s' in totale", ottenutoIntero, sorgenteIntero);
-        System.out.println(message);
-
-        sorgenteIntero = 283;
-        sorgente = giornoBackend.findByOrdine(sorgenteIntero).nome;
-        previstoIntero = 980;
-        ottenutoIntero = backend.countGiornoNato(sorgenteIntero);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        message = String.format("Ci sono %d voci biografiche di nati nel giorno (intero) '%s' in totale", ottenutoIntero, sorgenteIntero);
-        System.out.print(message);
-        System.out.print(FORWARD);
-        message = String.format("Corrisponde al giorno (text) %s", sorgente);
-        System.out.println(message);
-
-        sorgenteIntero = 60;
-        sorgente = giornoBackend.findByOrdine(sorgenteIntero).nome;
-        previstoIntero = 294;
-        ottenutoIntero = backend.countGiornoNato(sorgenteIntero);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        message = String.format("Ci sono %d voci biografiche di nati nel giorno (intero) '%s' in totale", ottenutoIntero, sorgenteIntero);
-        System.out.print(message);
-        System.out.print(FORWARD);
-        message = String.format("Corrisponde al giorno (text) %s", sorgente);
-        System.out.println(message);
+        giorno = giornoBackend.findByOrdine(sorgenteIntero);
+        if (giorno != null) {
+            System.out.print(message);
+            System.out.print(FORWARD);
+            message = String.format("Corrisponde al giorno (text) %s", giorno.nome);
+            System.out.println(message);
+        }
+        else {
+            System.out.println(message);
+        }
     }
 
     @Test
@@ -147,44 +257,22 @@ public class BioBackendGiorniAnniTest extends WikiTest {
     @DisplayName("22 - countGiornoNato")
     void countGiornoNato() {
         System.out.println("22 - countGiornoNato");
+        System.out.println(VUOTA);
+        GIORNO_NATO().forEach(this::countGiornoNatoBase);
+    }
 
-        sorgente = null;
-        ottenutoIntero = backend.countGiornoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
+    //--nome giorno nato
+    //--count previsto
+    void countGiornoNatoBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
 
-        sorgente = VUOTA;
         ottenutoIntero = backend.countGiornoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
 
-        sorgente = "5 termidoro";
-        ottenutoIntero = backend.countGiornoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
-
-        sorgente = "aprile";
-        ottenutoIntero = backend.countGiornoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
-
-        sorgente = "9 ottobre";
-        previstoIntero = 980;
-        ottenutoIntero = backend.countGiornoNato(sorgente);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
-
-        sorgente = "29 febbraio";
-        previstoIntero = 294;
-        ottenutoIntero = backend.countGiornoNato(sorgente);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
+        message = String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente);
+        System.out.println(message);
     }
 
 
@@ -193,54 +281,24 @@ public class BioBackendGiorniAnniTest extends WikiTest {
     @DisplayName("23 - findGiornoNato")
     void findGiornoNato() {
         System.out.println("23 - findGiornoNato");
+        System.out.println(VUOTA);
+        GIORNO_NATO().forEach(this::findGiornoNatoBase);
+    }
 
-        sorgente = null;
-        previstoIntero = 0;
+    //--nome giorno nato
+    //--count previsto
+    void findGiornoNatoBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
+
         listaBeans = backend.findGiornoNato(sorgente);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
 
-        sorgente = VUOTA;
-        previstoIntero = 0;
-        listaBeans = backend.findGiornoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
-
-        sorgente = "5 termidoro";
-        previstoIntero = 0;
-        listaBeans = backend.findGiornoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
-
-        sorgente = "aprile";
-        previstoIntero = 0;
-        listaBeans = backend.findGiornoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
-
-        sorgente = "9 ottobre";
-        previstoIntero = 980;
-        listaBeans = backend.findGiornoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
-
-        sorgente = "29 febbraio";
-        previstoIntero = 294;
-        listaBeans = backend.findGiornoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente));
+        message = String.format("Ci sono %d voci biografiche di nati nel giorno '%s' in totale", ottenutoIntero, sorgente);
+        System.out.println(message);
     }
 
 
@@ -249,85 +307,27 @@ public class BioBackendGiorniAnniTest extends WikiTest {
     @DisplayName("24 - countGiornoNatoSecolo")
     void countGiornoNatoSecolo() {
         System.out.println("24 - countGiornoNatoSecolo");
-        String giusto = MASCULINE_ORDINAL_INDICATOR;
-        String sbagliato = DEGREE_SIGN;
+        System.out.println(VUOTA);
+        GIORNO_SECOLO().forEach(this::countGiornoNatoSecoloBase);
+    }
 
-        sorgente = null;
-        sorgente2 = "XVI secolo";
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
+    //--nome giorno
+    //--nome secolo
+    //--count previsto nato
+    //--count previsto morto
+    void countGiornoNatoSecoloBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgente2 = (String) mat[1];
+        previstoIntero = (int) mat[2];
 
-        sorgente = VUOTA;
-        sorgente2 = VUOTA;
         ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1918";
-        sorgente2 = "XVI secolo";
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "16 ottobre";
-        sorgente2 = null;
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero == 0);
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
 
-        sorgente = "18 settembre";
-        sorgente2 = VUOTA;
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "16 ottobre";
-        sorgente2 = TAG_LISTA_NO_ANNO;
-        previstoIntero = 2;
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = TAG_NO_SECOLO;
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = "XVI secolo";
-        previstoIntero = 9;
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1" + giusto + SPAZIO + "gennaio"; // MASCULINE_ORDINAL_INDICATOR - giusto
-        sorgente2 = "XX secolo";
-        previstoIntero = 1599;
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1" + sbagliato + SPAZIO + "gennaio"; // DEGREE_SIGN - sbagliato
-        sorgente2 = "XVIII secolo";
-        previstoIntero = 59;
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "10 gennaio";
-        sorgente2 = "XVI secolo";
-        previstoIntero = 5;
-        ottenutoIntero = backend.countGiornoNatoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero > 0);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2));
+        sorgente = textService.isValid(sorgente) ? sorgente : "(null)";
+        sorgente2 = textService.isValid(sorgente2) ? sorgente2 : "(null)";
+        message = String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2);
+        System.out.println(message);
     }
 
 
@@ -336,89 +336,27 @@ public class BioBackendGiorniAnniTest extends WikiTest {
     @DisplayName("25 - findGiornoNatoSecolo")
     void findGiornoNatoSecolo() {
         System.out.println("25 - findGiornoNatoSecolo");
-        String giusto = MASCULINE_ORDINAL_INDICATOR;
-        String sbagliato = DEGREE_SIGN;
+        System.out.println(VUOTA);
+        GIORNO_SECOLO().forEach(this::findGiornoNatoSecoloBase);
+    }
 
-        sorgente = "1918";
-        sorgente2 = "XVI secolo";
-        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
+    //--nome giorno
+    //--nome secolo
+    //--count previsto nato
+    //--count previsto morto
+    void findGiornoNatoSecoloBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgente2 = (String) mat[1];
+        previstoIntero = (int) mat[2];
 
-        sorgente = "16 ottobre";
-        sorgente2 = null;
-        previstoIntero = 2;
-        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = VUOTA;
-        previstoIntero = 1;
         listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
 
-        sorgente = "18 settembre";
-        sorgente2 = TAG_LISTA_NO_ANNO;
-        previstoIntero = 1;
-        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = TAG_NO_SECOLO;
-        previstoIntero = 1;
-        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = "XVI secolo";
-        previstoIntero = 9;
-        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1" + giusto + SPAZIO + "gennaio"; // MASCULINE_ORDINAL_INDICATOR - giusto
-        sorgente2 = "XX secolo";
-        previstoIntero = 1442;
-        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1" + sbagliato + SPAZIO + "gennaio"; // DEGREE_SIGN - sbagliato
-        sorgente2 = "XVIII secolo";
-        previstoIntero = 54;
-        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "10 gennaio";
-        sorgente2 = "XVI secolo";
-        previstoIntero = 3;
-        listaBeans = backend.findGiornoNatoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-        printBeans(listaBeans);
+        message = String.format("Ci sono %d voci biografiche di nati nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2);
+        System.out.println(message);
     }
 
     @Test
@@ -429,243 +367,142 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
     @Test
     @Order(31)
-    @DisplayName("31 - countGiornoMorto")
-    void countGiornoMorto() {
-        System.out.println("31 - countGiornoMorto");
+    @DisplayName("31 - countGiornoMortoOrd")
+    void countGiornoMortoOrd() {
+        System.out.println("31 - countGiornoMortoOrd");
+        System.out.println(VUOTA);
+        GIORNO_MORTO_ORD().forEach(this::countGiornoMortoOrdBase);
+    }
 
-        sorgente = null;
-        ottenutoIntero = backend.countGiornoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
+    //--giorno progressivo morto
+    //--count previsto
+    void countGiornoMortoOrdBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgenteIntero = (int) mat[0];
+        previstoIntero = (int) mat[1];
 
-        sorgente = VUOTA;
-        ottenutoIntero = backend.countGiornoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "5 termidoro";
-        ottenutoIntero = backend.countGiornoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "aprile";
-        ottenutoIntero = backend.countGiornoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "18 settembre";
-        previstoIntero = 399;
-        ottenutoIntero = backend.countGiornoMorto(sorgente);
+        ottenutoIntero = backend.countGiornoMorto(sorgenteIntero);
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
 
-        sorgente = "29 febbraio";
-        previstoIntero = 119;
-        ottenutoIntero = backend.countGiornoMorto(sorgente);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
+        message = String.format("Ci sono %d voci biografiche di morti nel giorno (intero) '%s' in totale", ottenutoIntero, sorgenteIntero);
+        giorno = giornoBackend.findByOrdine(sorgenteIntero);
+        if (giorno != null) {
+            System.out.print(message);
+            System.out.print(FORWARD);
+            message = String.format("Corrisponde al giorno (text) %s", giorno.nome);
+            System.out.println(message);
+        }
+        else {
+            System.out.println(message);
+        }
     }
 
 
     @Test
     @Order(32)
-    @DisplayName("32 - findGiornoMorto")
-    void findGiornoMorto() {
-        System.out.println("32 - findGiornoMorto");
+    @DisplayName("32 - countGiornoMorto")
+    void countGiornoMorto() {
+        System.out.println("32 - countGiornoMorto");
+        System.out.println(VUOTA);
+        GIORNO_MORTO().forEach(this::countGiornoMortoBase);
+    }
 
-        sorgente = null;
-        previstoIntero = 0;
-        listaBeans = backend.findGiornoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
+    //--nome giorno morto
+    //--count previsto
+    void countGiornoMortoBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
 
-        sorgente = VUOTA;
-        previstoIntero = 0;
-        listaBeans = backend.findGiornoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
+        ottenutoIntero = backend.countGiornoMorto(sorgente);
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
 
-        sorgente = "5 termidoro";
-        previstoIntero = 0;
-        listaBeans = backend.findGiornoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "aprile";
-        previstoIntero = 0;
-        listaBeans = backend.findGiornoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "18 settembre";
-        previstoIntero = 399;
-        listaBeans = backend.findGiornoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "29 febbraio";
-        previstoIntero = 119;
-        listaBeans = backend.findGiornoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s in totale", ottenutoIntero, sorgente));
+        message = String.format("Ci sono %d voci biografiche di morti nel giorno '%s' in totale", ottenutoIntero, sorgente);
+        System.out.println(message);
     }
 
 
     @Test
     @Order(33)
-    @DisplayName("33 - countGiornoMortoSecolo")
-    void countGiornoMortoSecolo() {
-        System.out.println("33 - countGiornoMortoSecolo");
-        String giusto = MASCULINE_ORDINAL_INDICATOR;
-        String sbagliato = DEGREE_SIGN;
+    @DisplayName("33 - findGiornoMorto")
+    void findGiornoMorto() {
+        System.out.println("33 - findGiornoMorto");
+        System.out.println(VUOTA);
+        GIORNO_MORTO().forEach(this::findGiornoMortoBase);
+    }
 
-        sorgente = "1918";
-        sorgente2 = "XVI secolo";
-        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
+    //--nome giorno nato
+    //--count previsto
+    void findGiornoMortoBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
 
-        sorgente = "18 settembre";
-        sorgente2 = null;
-        previstoIntero = 2;
-        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
+        listaBeans = backend.findGiornoMorto(sorgente);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
 
-        sorgente = "18 settembre";
-        sorgente2 = VUOTA;
-        previstoIntero = 2;
-        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = TAG_LISTA_NO_ANNO;
-        previstoIntero = 2;
-        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = TAG_NO_SECOLO;
-        previstoIntero = 399;
-        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = "XVI secolo";
-        previstoIntero = 10;
-        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1" + giusto + SPAZIO + "gennaio"; // MASCULINE_ORDINAL_INDICATOR - giusto
-        sorgente2 = "XX secolo";
-        previstoIntero = 256;
-        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1" + sbagliato + SPAZIO + "gennaio"; // DEGREE_SIGN - sbagliato
-        sorgente2 = "XVIII secolo";
-        previstoIntero = 30;
-        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
+        message = String.format("Ci sono %d voci biografiche di morti nel giorno '%s' in totale", ottenutoIntero, sorgente);
+        System.out.println(message);
     }
 
 
     @Test
     @Order(34)
-    @DisplayName("34 - findGiornoMortoSecolo")
+    @DisplayName("34 - countGiornoMortoSecolo")
+    void countGiornoMortoSecolo() {
+        System.out.println("34 - countGiornoMortoSecolo");
+        System.out.println(VUOTA);
+        GIORNO_SECOLO().forEach(this::countGiornoMortoSecoloBase);
+    }
+
+    //--nome giorno
+    //--nome secolo
+    //--count previsto nato
+    //--count previsto morto
+    void countGiornoMortoSecoloBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgente2 = (String) mat[1];
+        previstoIntero = (int) mat[3];
+
+        ottenutoIntero = backend.countGiornoMortoSecolo(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+
+        sorgente = textService.isValid(sorgente) ? sorgente : "(null)";
+        sorgente2 = textService.isValid(sorgente2) ? sorgente2 : "(null)";
+        message = String.format("Ci sono %d voci biografiche di morti nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2);
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(35)
+    @DisplayName("35 - findGiornoMortoSecolo")
     void findGiornoMortoSecolo() {
-        System.out.println("34 - findGiornoMortoSecolo");
-        String giusto = MASCULINE_ORDINAL_INDICATOR;
-        String sbagliato = DEGREE_SIGN;
+        System.out.println("35 - findGiornoMortoSecolo");
+        System.out.println(VUOTA);
+        GIORNO_SECOLO().forEach(this::findGiornoMortoSecoloBase);
+    }
 
-        sorgente = "1918";
-        sorgente2 = "XVI secolo";
-        listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
+    //--nome giorno
+    //--nome secolo
+    //--count previsto nato
+    //--count previsto morto
+    void findGiornoMortoSecoloBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgente2 = (String) mat[1];
+        previstoIntero = (int) mat[3];
 
-        sorgente = "18 settembre";
-        sorgente2 = null;
-        previstoIntero = 2;
-        listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = VUOTA;
-        previstoIntero = 2;
         listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
         assertNotNull(listaBeans);
         ottenutoIntero = listaBeans.size();
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
 
-        sorgente = "18 settembre";
-        sorgente2 = TAG_LISTA_NO_ANNO;
-        previstoIntero = 2;
-        listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = TAG_NO_SECOLO;
-        previstoIntero = 399;
-        listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "18 settembre";
-        sorgente2 = "XVI secolo";
-        previstoIntero = 10;
-        listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1" + giusto + SPAZIO + "gennaio"; // MASCULINE_ORDINAL_INDICATOR - giusto
-        sorgente2 = "XX secolo";
-        previstoIntero = 256;
-        listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1" + sbagliato + SPAZIO + "gennaio"; // DEGREE_SIGN - sbagliato
-        sorgente2 = "XVIII secolo";
-        previstoIntero = 30;
-        listaBeans = backend.findGiornoMortoSecolo(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nel giorno %s per il secolo %s", ottenutoIntero, sorgente, sorgente2));
+        message = String.format("Ci sono %d voci biografiche di morti nel giorno '%s' per il secolo '%s'", ottenutoIntero, sorgente, sorgente2);
+        System.out.println(message);
     }
 
 
@@ -677,225 +514,110 @@ public class BioBackendGiorniAnniTest extends WikiTest {
 
 
     @Test
-    @Order(41)
-    @DisplayName("41 - countAnnoNato")
-    void countAllAnnoNato() {
-        System.out.println("41 - countAnnoNato");
-
-        sorgente = null;
-        ottenutoIntero = backend.countAnnoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = VUOTA;
-        ottenutoIntero = backend.countAnnoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "3825";
-        ottenutoIntero = backend.countAnnoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "4 luglio";
-        ottenutoIntero = backend.countAnnoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "70 A.C.";
-        ottenutoIntero = backend.countAnnoNato(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "70 a.C.";
-        previstoIntero = 4;
-        ottenutoIntero = backend.countAnnoNato(sorgente);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "1645";
-        previstoIntero = 76;
-        ottenutoIntero = backend.countAnnoNato(sorgente);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
+    @Order(42)
+    @DisplayName("42 - countAnnoNato")
+    void countAnnoNato() {
+        System.out.println("42 - countAnnoNato");
+        System.out.println(VUOTA);
+        ANNO_NATO().forEach(this::countAnnoNatoBase);
     }
 
+    //--nome anno nato
+    //--count previsto
+    void countAnnoNatoBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
 
-    @Test
-    @Order(42)
-    @DisplayName("42 - findAnnoNato")
-    void findAnnoNato() {
-        System.out.println("42 - findAnnoNato");
-
-        sorgente = null;
-        previstoIntero = 0;
-        listaBeans = backend.findAnnoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = VUOTA;
-        previstoIntero = 0;
-        listaBeans = backend.findAnnoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "3825";
-        previstoIntero = 0;
-        listaBeans = backend.findAnnoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "4 luglio";
-        previstoIntero = 0;
-        listaBeans = backend.findAnnoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "70 A.C.";
-        previstoIntero = 0;
-        listaBeans = backend.findAnnoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "70 a.C.";
-        previstoIntero = 4;
-        listaBeans = backend.findAnnoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
+        ottenutoIntero = backend.countAnnoNato(sorgente);
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
 
-        sorgente = "1645";
-        previstoIntero = 76;
-        listaBeans = backend.findAnnoNato(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
+        message = String.format("Ci sono %d voci biografiche di nati nell'anno '%s' in totale", ottenutoIntero, sorgente);
+        System.out.println(message);
     }
 
 
     @Test
     @Order(43)
-    @DisplayName("43 - countAnnoNatoMese")
-    void countAnnoNatoMese() {
-        System.out.println("43 - countAnnoNatoMese");
+    @DisplayName("43 - findAnnoNato")
+    void findAnnoNato() {
+        System.out.println("43 - findAnnoNato");
+        System.out.println(VUOTA);
+        ANNO_NATO().forEach(this::findAnnoNatoBase);
+    }
 
-        sorgente = "1645";
-        sorgente2 = VUOTA;
-        previstoIntero = 32;
-        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
+    //--nome anno nato
+    //--count previsto
+    void findAnnoNatoBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
 
-        sorgente = "1645";
-        sorgente2 = TAG_LISTA_NO_GIORNO;
-        previstoIntero = 32;
-        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
+        listaBeans = backend.findAnnoNato(sorgente);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
 
-        sorgente = "1645";
-        sorgente2 = "marzo";
-        previstoIntero = 3;
-        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1645";
-        sorgente2 = "Marzo";
-        previstoIntero = 3;
-        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1912";
-        previstoIntero = 1835;
-        ottenutoIntero = backend.countAnnoNato(sorgente);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "1912";
-        sorgente2 = "Agosto";
-        previstoIntero = 158;
-        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1912";
-        sorgente2 = VUOTA;
-        previstoIntero = 102;
-        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1912";
-        sorgente2 = TAG_LISTA_NO_GIORNO;
-        previstoIntero = 102;
-        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "70 a.C.";
-        sorgente2 = TAG_LISTA_NO_GIORNO;
-        previstoIntero = 3;
-        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
+        message = String.format("Ci sono %d voci biografiche di nati nell'anno '%s' in totale", ottenutoIntero, sorgente);
+        System.out.println(message);
     }
 
 
     @Test
     @Order(44)
-    @DisplayName("44 - findAnnoNatoMese")
-    void findAnnoNatoMese() {
-        System.out.println("44 - findAnnoNatoMese");
-
-        sorgente = "1645";
-        sorgente2 = VUOTA;
-        previstoIntero = 32;
-        listaBeans = backend.findAnnoNatoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1645";
-        sorgente2 = "marzo";
-        previstoIntero = 3;
-        listaBeans = backend.findAnnoNatoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
+    @DisplayName("44 - countAnnoNatoMese")
+    void countAnnoNatoMese() {
+        System.out.println("44 - countAnnoNatoMese");
         System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-        System.out.println(VUOTA);
-        printBio(listaBeans);
-
-        sorgente = "1912";
-        sorgente2 = "Agosto";
-        previstoIntero = 158;
-        listaBeans = backend.findAnnoNatoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-        System.out.println(VUOTA);
-        printBio(listaBeans);
-
+        ANNO_MESE().forEach(this::countAnnoNatoMeseBase);
     }
 
+    //--nome anno
+    //--nome mese
+    //--count previsto nato
+    //--count previsto morto
+    void countAnnoNatoMeseBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgente2 = (String) mat[1];
+        previstoIntero = (int) mat[2];
+
+        ottenutoIntero = backend.countAnnoNatoMese(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+
+        sorgente = textService.isValid(sorgente) ? sorgente : "(null)";
+        sorgente2 = textService.isValid(sorgente2) ? sorgente2 : "(null)";
+        message = String.format("Ci sono %d voci biografiche di nati nell'anno '%s' per il mese '%s'", ottenutoIntero, sorgente, sorgente2);
+        System.out.println(message);
+    }
+
+    @Test
+    @Order(45)
+    @DisplayName("45 - findAnnoNatoMese")
+    void findAnnoNatoMese() {
+        System.out.println("45 - findAnnoNatoMese");
+        System.out.println(VUOTA);
+        ANNO_MESE().forEach(this::findAnnoNatoMeseBase);
+    }
+
+    //--nome anno
+    //--nome mese
+    //--count previsto nato
+    //--count previsto morto
+    void findAnnoNatoMeseBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgente2 = (String) mat[1];
+        previstoIntero = (int) mat[2];
+
+        listaBeans = backend.findAnnoNatoMese(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+
+        message = String.format("Ci sono %d voci biografiche di nati nell'anno '%s' per il mese '%s'", ottenutoIntero, sorgente, sorgente2);
+        System.out.println(message);
+    }
 
     @Test
     @Order(50)
@@ -903,191 +625,112 @@ public class BioBackendGiorniAnniTest extends WikiTest {
     void test50() {
     }
 
-    @Test
-    @Order(51)
-    @DisplayName("51 - countAnnoMorto")
-    void countAnnoMorto() {
-        System.out.println("51 - countAnnoMorto");
-
-        sorgente = null;
-        ottenutoIntero = backend.countAnnoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = VUOTA;
-        ottenutoIntero = backend.countAnnoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "3825";
-        ottenutoIntero = backend.countAnnoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "4 luglio";
-        ottenutoIntero = backend.countAnnoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "70 A.C.";
-        ottenutoIntero = backend.countAnnoMorto(sorgente);
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "70 a.C.";
-        previstoIntero = 1;
-        ottenutoIntero = backend.countAnnoMorto(sorgente);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "1645";
-        previstoIntero = 85;
-        ottenutoIntero = backend.countAnnoMorto(sorgente);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "54 a.C.";
-        previstoIntero = 9;
-        ottenutoIntero = backend.countAnnoMorto(sorgente);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s in totale", ottenutoIntero, sorgente));
-    }
-
 
     @Test
     @Order(52)
-    @DisplayName("52 - findAnnoMorto")
-    void findAnnoMorto() {
-        System.out.println("52 - findAnnoMorto");
-
-        sorgente = null;
-        listaBeans = backend.findAnnoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = VUOTA;
-        listaBeans = backend.findAnnoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "3825";
-        listaBeans = backend.findAnnoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "4 luglio";
-        listaBeans = backend.findAnnoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di nati nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "70 A.C.";
-        listaBeans = backend.findAnnoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertTrue(ottenutoIntero == 0);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "70 a.C.";
-        previstoIntero = 1;
-        listaBeans = backend.findAnnoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s in totale", ottenutoIntero, sorgente));
-
-        sorgente = "1645";
-        previstoIntero = 85;
-        listaBeans = backend.findAnnoMorto(sorgente);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s in totale", ottenutoIntero, sorgente));
+    @DisplayName("52 - countAnnoMorto")
+    void countAnnoMorto() {
+        System.out.println("52 - countAnnoMorto");
+        System.out.println(VUOTA);
+        ANNO_MORTO().forEach(this::countAnnoMortoBase);
     }
 
+    //--nome giorno nato
+    //--count previsto
+    void countAnnoMortoBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
+
+        ottenutoIntero = backend.countAnnoMorto(sorgente);
+        assertEquals(previstoIntero, ottenutoIntero);
+
+        message = String.format("Ci sono %d voci biografiche di morti nell'anno '%s' in totale", ottenutoIntero, sorgente);
+        System.out.println(message);
+    }
 
     @Test
     @Order(53)
-    @DisplayName("53 - countAnnoMortoMese")
-    void countAnnoMortoMese() {
-        System.out.println("53 - countAnnoMortoMese");
+    @DisplayName("53 - findAnnoMorto")
+    void findAnnoMorto() {
+        System.out.println("53 - findAnnoMorto");
+        System.out.println(VUOTA);
+        ANNO_MORTO().forEach(this::findAnnoMortoBase);
+    }
 
-        sorgente = "1645";
-        sorgente2 = VUOTA;
-        previstoIntero = 32;
-        ottenutoIntero = backend.countAnnoMortoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
+    //--nome anno morto
+    //--count previsto
+    void findAnnoMortoBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
 
-        sorgente = "1645";
-        sorgente2 = TAG_LISTA_NO_GIORNO;
-        previstoIntero = 32;
-        ottenutoIntero = backend.countAnnoMortoMese(sorgente, sorgente2);
+        listaBeans = backend.findAnnoMorto(sorgente);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
         assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
 
-        sorgente = "1645";
-        sorgente2 = "marzo";
-        previstoIntero = 2;
-        ottenutoIntero = backend.countAnnoMortoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1645";
-        sorgente2 = "Marzo";
-        previstoIntero = 2;
-        ottenutoIntero = backend.countAnnoMortoMese(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
+        message = String.format("Ci sono %d voci biografiche di morti nell'anno '%s' in totale", ottenutoIntero, sorgente);
+        System.out.println(message);
     }
 
 
     @Test
     @Order(54)
-    @DisplayName("54 - findAllAnnoMortoMese")
-    void findAllAnnoMortoMese() {
-        System.out.println("54 - findAllAnnoMortoMese");
-
-        sorgente = "1645";
-        sorgente2 = VUOTA;
-        previstoIntero = 32;
-        listaBeans = backend.findAnnoMortoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-
-        sorgente = "1645";
-        sorgente2 = TAG_LISTA_NO_GIORNO;
-        previstoIntero = 32;
-        listaBeans = backend.findAnnoMortoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
+    @DisplayName("54 - countAnnoMortoMese")
+    void countAnnoMortoMese() {
+        System.out.println("54 - countAnnoMortoMese");
         System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-        System.out.println(VUOTA);
-        printBio(listaBeans);
-
-        sorgente = "1645";
-        sorgente2 = "marzo";
-        previstoIntero = 2;
-        listaBeans = backend.findAnnoMortoMese(sorgente, sorgente2);
-        assertNotNull(listaBeans);
-        ottenutoIntero = listaBeans.size();
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d voci biografiche di morti nell'anno %s per il mese di %s", ottenutoIntero, sorgente, sorgente2));
-        System.out.println(VUOTA);
-        printBio(listaBeans);
+        ANNO_MESE().forEach(this::countAnnoMortoMeseBase);
     }
+
+    //--nome anno
+    //--nome mese
+    //--count previsto nato
+    //--count previsto morto
+    void countAnnoMortoMeseBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgente2 = (String) mat[1];
+        previstoIntero = (int) mat[3];
+
+        ottenutoIntero = backend.countAnnoMortoMese(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+
+        sorgente = textService.isValid(sorgente) ? sorgente : "(null)";
+        sorgente2 = textService.isValid(sorgente2) ? sorgente2 : "(null)";
+        message = String.format("Ci sono %d voci biografiche di morti nell'anno '%s' per il mese '%s'", ottenutoIntero, sorgente, sorgente2);
+        System.out.println(message);
+    }
+
+    @Test
+    @Order(55)
+    @DisplayName("55 - findAnnoMortoMese")
+    void findAnnoMortoMese() {
+        System.out.println("55 - findAnnoMortoMese");
+        System.out.println(VUOTA);
+        ANNO_MESE().forEach(this::findAnnoMortoMeseBase);
+    }
+
+    //--nome anno
+    //--nome mese
+    //--count previsto nato
+    //--count previsto morto
+    void findAnnoMortoMeseBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgente2 = (String) mat[1];
+        previstoIntero = (int) mat[3];
+
+        listaBeans = backend.findAnnoMortoMese(sorgente, sorgente2);
+        assertNotNull(listaBeans);
+        ottenutoIntero = listaBeans.size();
+        assertEquals(previstoIntero, ottenutoIntero);
+
+        message = String.format("Ci sono %d voci biografiche di morti nell'anno '%s' per il mese '%s'", ottenutoIntero, sorgente, sorgente2);
+        System.out.println(message);
+    }
+
 
     @Test
     @Order(60)
