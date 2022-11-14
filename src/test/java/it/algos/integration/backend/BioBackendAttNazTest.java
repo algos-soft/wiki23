@@ -239,13 +239,13 @@ public class BioBackendAttNazTest extends WikiTest {
     void countAttivitaNazionalitaAll() {
         System.out.println("62 - countAttivitaNazionalitaAll");
 
-        sorgente = "accademici";
-        sorgente2 = "francesi";
-        previstoIntero = 15;
-        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
-        assertEquals(previstoIntero, ottenutoIntero);
-        System.out.println(VUOTA);
-        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
+//        sorgente = "accademici";
+//        sorgente2 = "francesi";
+//        previstoIntero = 15;
+//        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2);
+//        assertEquals(previstoIntero, ottenutoIntero);
+//        System.out.println(VUOTA);
+//        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s", sorgente, ottenutoIntero, sorgente2));
 
         sorgente = "accademici";
         sorgente2 = "francesi";
@@ -255,6 +255,8 @@ public class BioBackendAttNazTest extends WikiTest {
         assertEquals(previstoIntero, ottenutoIntero);
         System.out.println(VUOTA);
         System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s che iniziano con %s", sorgente, ottenutoIntero, sorgente2, sorgente3));
+        System.out.println(String.format("Tempo trascorso %s", dateService.deltaTextEsatto(inizio)));
+
     }
 
 

@@ -182,7 +182,7 @@ public class PaginaView extends WikiView {
      */
     public void elabora() {
         crudBackend.elabora();
-        refresh();
+        reload();
     }
 
 }// end of crud @Route view class

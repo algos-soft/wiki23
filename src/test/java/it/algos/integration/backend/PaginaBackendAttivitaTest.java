@@ -247,7 +247,7 @@ public class PaginaBackendAttivitaTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(8)
     @DisplayName("8 - count pagine di attività di secondo livello su mongoDB")
     void getList8() {

@@ -357,7 +357,8 @@ public class BioBackend extends WikiBackend {
         }
 
         if (listaNazionalita.size() == 0 && nazionalitaSingolarePlurale.equalsIgnoreCase(TAG_LISTA_NO_NAZIONALITA)) {
-            numBio = 0; for (String attivitaSingola : listaAttivita) {
+            numBio = 0;
+            for (String attivitaSingola : listaAttivita) {
                 numBio += countAttivitaNazionalitaBase(attivitaSingola, null);
                 List listone = bioService.fetchAttivita(attivitaSingola);
             }

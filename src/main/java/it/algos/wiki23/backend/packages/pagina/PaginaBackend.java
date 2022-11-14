@@ -129,11 +129,11 @@ public class PaginaBackend extends WikiBackend {
         mongoService.deleteAll(Pagina.class);
 
         elaboraGiorni();
-        //        elaboraAnni();
-        //        elaboraAttivita();
+        elaboraAnni();
+        elaboraAttivita();
         //        elaboraNazionalita();
-        //        elaboraCognomi();
-        //        elaboraUtenteBot();
+        elaboraCognomi();
+        elaboraUtenteBot();
 
         super.fixElaboraMinuti(inizio, "cancellazioni");
     }
@@ -183,7 +183,6 @@ public class PaginaBackend extends WikiBackend {
                 pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoBase, 0, true));
                 continue;
             }
-
 
             voci = getVociGiorno(wikiTitle);
             if (voci > 0) {
@@ -357,8 +356,8 @@ public class PaginaBackend extends WikiBackend {
         List<String> pagineAll = queryService.getList(tag, nameSpace);
         List<String> valideBase = attivitaBackend.findAllPlurali();
 
-        elaboraAttivitaPagine(valideBase, getPagine(pagineAll));
-        elaboraAttivitaSottoPagine(valideBase, getSottoPagine(pagineAll));
+        //        elaboraAttivitaPagine(valideBase, getPagine(pagineAll));
+        //        elaboraAttivitaSottoPagine(valideBase, getSottoPagine(pagineAll));
         elaboraAttivitaSottoSottoPagine(valideBase, getSottoSottoPagine(pagineAll));
     }
 
