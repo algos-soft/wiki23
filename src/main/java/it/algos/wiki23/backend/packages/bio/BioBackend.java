@@ -1151,13 +1151,15 @@ public class BioBackend extends WikiBackend {
             logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb()); return null;
         }
 
-        Bson bsonSort = Sorts.ascending(wikiTitle); Bson projection = Projections.fields(Projections.include(wikiTitle, pageId), Projections.excludeId());
+        Bson bsonSort = Sorts.ascending(wikiTitle);
+        Bson projection = Projections.fields(Projections.include(wikiTitle, pageId), Projections.excludeId());
         var documents = collection.find().sort(bsonSort).projection(projection);
 
         for (var doc : documents) {
             bio = new Bio(); bio.wikiTitle = ((Document) doc).get(wikiTitle, String.class); bio.pageId = ((Document) doc).get(pageId, Long.class);
             listaBio.add(bio);
-        } return listaBio;
+        }
+        return listaBio;
     }
 
 

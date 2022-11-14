@@ -252,7 +252,7 @@ public class PaginaBackendGiorniTest extends WikiTest {
     void getListaPagine2() {
         System.out.println("32 - pagine di giorni sul server via backend.getPagineGiorni()");
         String message;
-        previstoIntero = 735;
+        previstoIntero = 739;
 
         listaStr = backend.getPagineGiorni();
         assertNotNull(listaStr);
@@ -270,7 +270,7 @@ public class PaginaBackendGiorniTest extends WikiTest {
     void getGiorniPrimoLivello() {
         System.out.println("41 - pagine di giorni di primo livello sul server");
         String message;
-        previstoIntero = 732;
+        previstoIntero = 736;
 
         listaStr = backend.getGiorniPrimoLivello();
         assertNotNull(listaStr);
@@ -368,8 +368,7 @@ public class PaginaBackendGiorniTest extends WikiTest {
     }
 
 
-
-    //    @Test
+    @Test
     @Order(77)
     @DisplayName("77 - elaboraGiorniPagine")
     void elaboraGiorniPagine() {

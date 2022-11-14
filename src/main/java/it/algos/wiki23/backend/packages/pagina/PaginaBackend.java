@@ -172,11 +172,18 @@ public class PaginaBackend extends WikiBackend {
                 continue;
             }
 
+            // i Redirect
+            if (queryService.isRedirect(wikiTitle)) {
+                pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoRedirect, 0, false));
+                continue;
+            }
+
             // Quelle di primo livello che non esistono in Giorno
             if (!valideMongoBase.contains(wikiTitle)) {
                 pagineMongo.add(creaIfNotExist(wikiTitle, AETypePaginaCancellare.giornoBase, 0, true));
                 continue;
             }
+
 
             voci = getVociGiorno(wikiTitle);
             if (voci > 0) {

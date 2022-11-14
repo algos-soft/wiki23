@@ -61,7 +61,7 @@ public class GiornoWikiBackendTest extends WikiTest {
                 Arguments.of("43 marzo", false),
                 Arguments.of("19 dicembra", false),
                 Arguments.of("4 gennaio", true)
-                );
+        );
     }
 
     /**
@@ -150,7 +150,21 @@ public class GiornoWikiBackendTest extends WikiTest {
         GIORNI().forEach(this::isEsisteBase);
     }
 
+//    @Test
+    @Order(4)
+    @DisplayName("4 - dimensione pagine sul server")
+    void dimensionePagine() {
+        System.out.println("4 - dimensione pagine sul server");
+        System.out.println(VUOTA);
+        int dim = 0;
 
+        listaBeans = backend.findAll();
+        for (GiornoWiki giorno : listaBeans) {
+            dim = queryService.getLength(giorno.pageNati);
+            message = String.format("La pagina %s ha %s bytes", giorno.nome,textService.format(dim));
+            System.out.println(message);
+        }
+    }
 
 
     //--giorno
@@ -163,10 +177,10 @@ public class GiornoWikiBackendTest extends WikiTest {
         ottenutoBooleano = backend.isEsiste(sorgente);
         assertEquals(previstoBooleano, ottenutoBooleano);
         if (ottenutoBooleano) {
-            System.out.println(String.format("Il giorno %s esiste",sorgente));
+            System.out.println(String.format("Il giorno %s esiste", sorgente));
         }
         else {
-            System.out.println(String.format("Il giorno %s non esiste",sorgente));
+            System.out.println(String.format("Il giorno %s non esiste", sorgente));
         }
         System.out.println(VUOTA);
     }

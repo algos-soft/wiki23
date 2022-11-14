@@ -191,7 +191,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("4 - findSenzaTmpl ridotto senza tmplBio")
     void findSenzaTmpl() {
@@ -274,7 +274,7 @@ public class BioBackendTest extends WikiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(9)
     @DisplayName("9 - find wikiTitle + pageId")
     void findAllWikiTitlePageId() {
