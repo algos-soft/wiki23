@@ -352,13 +352,13 @@ public class PaginaBackend extends WikiBackend {
      */
     public void elaboraAttivita() {
         int nameSpace = 102;
-        String tag = "Biografie/Attività/";
+        String tag = "Biografie/Attività";
         List<String> pagineAll = queryService.getList(tag, nameSpace);
         List<String> valideBase = attivitaBackend.findAllPlurali();
 
         //        elaboraAttivitaPagine(valideBase, getPagine(pagineAll));
         //        elaboraAttivitaSottoPagine(valideBase, getSottoPagine(pagineAll));
-        elaboraAttivitaSottoSottoPagine(valideBase, getSottoSottoPagine(pagineAll));
+        elaboraAttivitaSottoSottoPagine(getSottoSottoPagine(pagineAll));
     }
 
     /**
@@ -478,7 +478,7 @@ public class PaginaBackend extends WikiBackend {
      * Quelle di terzo livello che non hanno un corrispondente secondo livello
      * Quelle di terzo livello che hanno un secondo livello che non supera le 50 voci
      */
-    public void elaboraAttivitaSottoSottoPagine(List<String> valideBase, List<String> pagine) {
+    public void elaboraAttivitaSottoSottoPagine(List<String> pagine) {
         String tagBase = PATH_ATTIVITA + SLASH;
         int voci = 0;
         String paginaParentePrimoLivello;

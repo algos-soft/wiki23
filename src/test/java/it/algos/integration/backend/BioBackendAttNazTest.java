@@ -257,6 +257,16 @@ public class BioBackendAttNazTest extends WikiTest {
         System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s che iniziano con %s", sorgente, ottenutoIntero, sorgente2, sorgente3));
         System.out.println(String.format("Tempo trascorso %s", dateService.deltaTextEsatto(inizio)));
 
+        sorgente = "sovrani";
+        sorgente2 = TAG_LISTA_NO_NAZIONALITA;
+        sorgente3 = "A";
+        previstoIntero = 328;
+        ottenutoIntero = backend.countAttivitaNazionalitaAll(sorgente, sorgente2, sorgente3);
+        assertEquals(previstoIntero, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("L'attività '%s' contiene %d voci biografiche di %s che iniziano con %s", sorgente, ottenutoIntero, sorgente2, sorgente3));
+        System.out.println(String.format("Tempo trascorso %s", dateService.deltaTextEsatto(inizio)));
+
     }
 
 

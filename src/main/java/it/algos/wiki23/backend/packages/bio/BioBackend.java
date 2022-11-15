@@ -360,7 +360,7 @@ public class BioBackend extends WikiBackend {
             numBio = 0;
             for (String attivitaSingola : listaAttivita) {
                 numBio += countAttivitaNazionalitaBase(attivitaSingola, null);
-                List listone = bioService.fetchAttivita(attivitaSingola);
+//                List listone = bioService.fetchAttivita(attivitaSingola);
             }
         }
 
@@ -486,7 +486,7 @@ public class BioBackend extends WikiBackend {
             }
         }
         else {
-            if (nazionalitaSingolarePlurale.equals(TAG_LISTA_NO_NAZIONALITA)) {
+            if (nazionalitaSingolarePlurale.equalsIgnoreCase(TAG_LISTA_NO_NAZIONALITA)) {
                 lista = repository.findAllByAttivitaOrderByOrdinamento(attivitaSingola);
                 lista = lista.stream().filter(bio -> (textService.isEmpty(bio.nazionalita))).collect(Collectors.toList());
             }
@@ -537,7 +537,9 @@ public class BioBackend extends WikiBackend {
         }
 
         if (textService.isValid(letteraIniziale)) {
-            lista = lista.stream().filter(bio -> (textService.isValid(bio.ordinamento) && bio.ordinamento.startsWith(letteraIniziale))).collect(Collectors.toList());
+            lista = lista.stream()
+                    .filter(bio -> (textService.isValid(bio.ordinamento) && bio.ordinamento.startsWith(letteraIniziale)))
+                    .collect(Collectors.toList());
         }
 
         return bioService.sortByForzaOrdinamento(lista);
