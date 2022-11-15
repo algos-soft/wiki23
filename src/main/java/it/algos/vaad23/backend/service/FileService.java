@@ -1502,11 +1502,11 @@ public class FileService extends AbstractService {
     }
 
     /**
-     * Crea una lista di tutte le Entity esistenti nel modulo indicato <br>
+     * Crea una lista di tutte le Entity esistenti nel modul
+     indicato <br>
      */
     public List<String> getModuleSubFilesEntity(String moduleName) throws AlgosException {
         String tagFinale = "/backend/packages";
-
         return getAllSubFilesEntity(PATH_PREFIX + moduleName + tagFinale);
     }
 
