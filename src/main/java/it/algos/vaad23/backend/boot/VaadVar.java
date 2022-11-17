@@ -75,7 +75,6 @@ public class VaadVar {
      */
     public static String projectNameUpper;
 
-
     /**
      * Classe da usare per lo startup del programma <br>
      * Di default VaadData oppure possibile sottoclasse del progetto <br>

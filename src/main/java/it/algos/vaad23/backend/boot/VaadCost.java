@@ -493,4 +493,8 @@ public class VaadCost {
 
     public static final char CHAR_DEGREE_SIGN = (char) 176;
 
+    public static final String REFLECTION_FILE = "file:";
+
+    public static final String REFLECTION_JAR = "jar:";
+
 }

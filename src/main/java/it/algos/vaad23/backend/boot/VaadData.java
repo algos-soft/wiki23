@@ -1,19 +1,27 @@
 package it.algos.vaad23.backend.boot;
 
+import com.google.common.collect.*;
+import com.google.common.reflect.*;
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
+import it.algos.wiki23.backend.boot.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.*;
 
 import javax.annotation.*;
+import java.io.*;
 import java.lang.reflect.*;
+import java.net.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.function.*;
+import java.util.jar.*;
 import java.util.stream.*;
 
 /**
@@ -82,8 +90,15 @@ public class VaadData extends AbstractService {
      * @since java 8
      */
     protected void resetData() {
+        boolean isJar = reflectionService.isJarRunning();
+        String message = String.format("Stiamo girando sotto %s", isJar ? "JAR" : "IDE");
+        logger.info(new WrapLog().message(message).type(AETypeLog.setup));
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
+
         resetData(VaadVar.moduloVaadin23);
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
         resetData(VaadVar.projectCurrent);
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
     }
 
 
@@ -199,5 +214,15 @@ public class VaadData extends AbstractService {
             logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
         }
     };
+
+
+    public class JarFilePathResolver {
+
+        public static String byGetProtectionDomain(Class clazz) throws URISyntaxException {
+            URL url = clazz.getProtectionDomain().getCodeSource().getLocation();
+            return Paths.get(url.toURI()).toString();
+        }
+
+    }
 
 }
