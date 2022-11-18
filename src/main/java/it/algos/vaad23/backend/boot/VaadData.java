@@ -124,11 +124,24 @@ public class VaadData extends AbstractService {
         //--tutte le classi contenute nella directory e nelle sue sottoclassi
         allModulePackagesClasses = fileService.getAllSubFilesJava(PATH_PREFIX + moduleName + tagFinale);
 
+        //test
+        if (allModulePackagesClasses != null) {
+            message = String.format("Ce ne sono %d", allModulePackagesClasses.size());
+            logger.error(new WrapLog().message(message).type(AETypeLog.checkData));
+        }
+        else {
+            message = "Tutto vuoto";
+            logger.error(new WrapLog().message(message).type(AETypeLog.checkData));
+            return;
+        }
+        //end
+
         //--seleziono solo le classi CrudBackend
         allBackendClasses = allModulePackagesClasses
                 .stream()
                 .filter(n -> n.endsWith(SUFFIX_BACKEND))
                 .collect(Collectors.toList());
+
         if (allBackendClasses != null && allBackendClasses.size() > 0) {
             message = String.format("Nel modulo %s sono stati trovati %d packages con classi di tipo xxxBackend", moduleName, allBackendClasses.size());
         }
@@ -142,6 +155,7 @@ public class VaadData extends AbstractService {
                 .stream()
                 .filter(checkUsaReset)
                 .collect(Collectors.toList());
+
         if (allBackendClassesResetStartUp != null && allBackendClassesResetStartUp.size() > 0) {
             message = String.format("Nel modulo %s sono state trovate %d classi xxxBackend che implementano il metodo 'reset'", moduleName, allBackendClassesResetStartUp.size());
             logger.info(new WrapLog().message(message).type(AETypeLog.checkData));

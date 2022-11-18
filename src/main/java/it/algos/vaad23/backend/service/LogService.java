@@ -123,7 +123,7 @@ public class LogService extends AbstractService {
         //        message += SEP;
         message += "Versione ";
         message += VaadVar.projectVersion;
-        message += " del ";
+        message += " di ";
         message += VaadVar.projectDate;
 
         this.info(new WrapLog().message(message).type(AETypeLog.setup));

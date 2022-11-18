@@ -1503,7 +1503,7 @@ public class FileService extends AbstractService {
 
     /**
      * Crea una lista di tutte le Entity esistenti nel modul
-     indicato <br>
+     * indicato <br>
      */
     public List<String> getModuleSubFilesEntity(String moduleName) throws AlgosException {
         String tagFinale = "/backend/packages";
@@ -1529,6 +1529,43 @@ public class FileService extends AbstractService {
      * @return canonicalName con i PUNTI di separazione e NON lo SLASH
      */
     public List<String> getAllSubFilesJava(String path) {
+        if (reflectionService.isJarRunning()) {
+            return getAllSubFilesJavaJAR(path);
+        }
+        else {
+            return getAllSubFilesJavaIDE(path);
+        }
+    }
+
+    /**
+     * Crea una lista di soli files java ricorsiva nelle sub-directory <br>
+     *
+     * @return canonicalName con i PUNTI di separazione e NON lo SLASH
+     */
+    public List<String> getAllSubFilesJavaJAR(String path) {
+        String jarPath = VUOTA;
+
+        try {
+            jarPath = getClass()
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI()
+                    .getPath();
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().message(unErrore.toString()).type(AETypeLog.wizard));
+        }
+        logger.error(new WrapLog().message(jarPath).type(AETypeLog.checkData));
+
+        return null;
+    }
+
+    /**
+     * Crea una lista di soli files java ricorsiva nelle sub-directory <br>
+     *
+     * @return canonicalName con i PUNTI di separazione e NON lo SLASH
+     */
+    public List<String> getAllSubFilesJavaIDE(String path) {
         List<String> listaCanonicalNamesOnlyFilesJava = new ArrayList<>();
         List<String> listaPathNamesOnlyFiles = getAllSubPathFiles(path);
         String canonicalName;
@@ -1545,6 +1582,7 @@ public class FileService extends AbstractService {
 
         return listaCanonicalNamesOnlyFilesJava;
     }
+
 
     /**
      * Crea una lista di soli files ricorsiva nelle sub-directory <br>
