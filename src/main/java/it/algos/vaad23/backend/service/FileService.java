@@ -1549,7 +1549,23 @@ public class FileService extends AbstractService {
      * @return canonicalName con i PUNTI di separazione e NON lo SLASH
      */
     public List<String> getAllSubFilesJavaJAR(String dirPath) {
-        return fileService.scanJarDir("/Users/gac/Desktop/wiki/wiki23-1.0.jar", dirPath); //@todo ASSOLUTAMENTE PROVVISORIO
+        ProtectionDomain domain;
+        CodeSource codeSource;
+        URL url;
+        String jarPath = VUOTA;
+
+        try {
+            domain = FileService.class.getProtectionDomain();
+            codeSource = domain.getCodeSource();
+            url = codeSource.getLocation();
+            jarPath = url.toString();
+            jarPath = textService.levaCoda(jarPath, JAR_PATH_SUFFIX);
+            jarPath = textService.levaTesta(jarPath, JAR_FILE_PREFIX);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        return fileService.scanJarDir(jarPath, dirPath);
     }
 
     /**
