@@ -1,27 +1,19 @@
 package it.algos.vaad23.backend.boot;
 
-import com.google.common.collect.*;
-import com.google.common.reflect.*;
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
-import it.algos.wiki23.backend.boot.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.*;
 
 import javax.annotation.*;
-import java.io.*;
 import java.lang.reflect.*;
-import java.net.*;
-import java.nio.file.*;
 import java.util.*;
 import java.util.function.*;
-import java.util.jar.*;
 import java.util.stream.*;
 
 /**
@@ -122,19 +114,11 @@ public class VaadData extends AbstractService {
 
         //--spazzola tutta la directory package del modulo in esame e recupera
         //--tutte le classi contenute nella directory e nelle sue sottoclassi
-        allModulePackagesClasses = fileService.getAllSubFilesJava(PATH_PREFIX + moduleName + tagFinale);
+        allModulePackagesClasses = fileService.getAllSubFilesJava(moduleName + tagFinale);
 
-        //test
-        if (allModulePackagesClasses != null) {
-            message = String.format("Ce ne sono %d", allModulePackagesClasses.size());
-            logger.error(new WrapLog().message(message).type(AETypeLog.checkData));
-        }
-        else {
-            message = "Tutto vuoto";
-            logger.error(new WrapLog().message(message).type(AETypeLog.checkData));
+        if (allModulePackagesClasses == null) {
             return;
         }
-        //end
 
         //--seleziono solo le classi CrudBackend
         allBackendClasses = allModulePackagesClasses
@@ -153,7 +137,7 @@ public class VaadData extends AbstractService {
         //--seleziono solo le classi xxxBackend che implementano il metodo reset
         allBackendClassesResetStartUp = allBackendClasses
                 .stream()
-                .filter(checkUsaReset)
+                .filter(clazzName -> reflectionService.isEsisteMetodo(clazzName.toString(), "reset"))
                 .collect(Collectors.toList());
 
         if (allBackendClassesResetStartUp != null && allBackendClassesResetStartUp.size() > 0) {
@@ -171,7 +155,9 @@ public class VaadData extends AbstractService {
         if (allBackendClassesResetStartUp != null) {
             allBackendClassesResetStartUp
                     .stream()
-                    .forEach(bootResetStartUp);
+                    //                    .forEach(bootResetStartUp);
+                    .forEach(clazzName -> reflectionService.esegueMetodo(clazzName.toString(), "resetStartUp"));
+
             message = String.format("Controllati i dati iniziali di tutti i packages del modulo %s", moduleName);
             logger.info(new WrapLog().message(message).type(AETypeLog.checkData));
         }
@@ -228,15 +214,5 @@ public class VaadData extends AbstractService {
             logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
         }
     };
-
-
-    public class JarFilePathResolver {
-
-        public static String byGetProtectionDomain(Class clazz) throws URISyntaxException {
-            URL url = clazz.getProtectionDomain().getCodeSource().getLocation();
-            return Paths.get(url.toURI()).toString();
-        }
-
-    }
 
 }

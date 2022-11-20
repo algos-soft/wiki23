@@ -4,16 +4,22 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.apache.commons.io.*;
+import org.apache.tomcat.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
 import java.io.*;
+import java.net.*;
 import java.nio.file.*;
+import java.security.*;
 import java.util.*;
+import java.util.jar.*;
 import java.util.stream.*;
+import java.util.zip.*;
 
 
 /**
@@ -1530,10 +1536,10 @@ public class FileService extends AbstractService {
      */
     public List<String> getAllSubFilesJava(String path) {
         if (reflectionService.isJarRunning()) {
-            return getAllSubFilesJavaJAR(path);
+            return getAllSubFilesJavaJAR(PATH_PREFIX_ALGOS + path);
         }
         else {
-            return getAllSubFilesJavaIDE(path);
+            return getAllSubFilesJavaIDE(PATH_PREFIX + path);
         }
     }
 
@@ -1542,22 +1548,70 @@ public class FileService extends AbstractService {
      *
      * @return canonicalName con i PUNTI di separazione e NON lo SLASH
      */
-    public List<String> getAllSubFilesJavaJAR(String path) {
-        String jarPath = VUOTA;
+    public List<String> getAllSubFilesJavaJAR(String dirPath) {
+        List<String> listaCompleta = new ArrayList<>();
 
-        try {
-            jarPath = getClass()
-                    .getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .toURI()
-                    .getPath();
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().message(unErrore.toString()).type(AETypeLog.wizard));
-        }
-        logger.error(new WrapLog().message(jarPath).type(AETypeLog.checkData));
+        //        String jarPath = VUOTA;
+        //        String outpath=VUOTA;
+        //        ProtectionDomain domain = FileService.class.getProtectionDomain();
+        //        CodeSource codeSource = domain.getCodeSource();
+        //        URL url = codeSource.getLocation();
+        //        String pippoz="jar:file:/Users/gac/Desktop/wiki/wiki23-1.0.jar!/BOOT-INF/classes!/ ";
+        //        try {
+        //            url=new URL(pippoz);
+        //        } catch (Exception unErrore) {
+        //            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        //        }
+        //
+        //        String outdir = "pippoz";
+        //        byte[] buffer = new byte[2048];
+        //int cont=0;
+        //        ZipEntry entry;
+        //long inizio =System.currentTimeMillis();
+        //        logger.error(new WrapLog().message("url -> "+url).type(AETypeLog.test));
+        //
+        //        try {
+        //            ZipInputStream stream = new ZipInputStream(url.openStream());
+        //            while ((entry = stream.getNextEntry()) != null) {
+        //                if (entry.getName().startsWith("BOOT-INF/classes/it/algos/vaad23/backend/packages/crono")) {
+        //                    logger.error(new WrapLog().message("entry -> "+entry).type(AETypeLog.test));
+        //                    listaCompleta.add(entry.getName());
+        //                    cont=cont+1;
+        //                }
+        //            }
+        //        } catch (Exception unErrore) {
+        //            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        //        }
+        //        logger.error(new WrapLog().message("outpath -> "+outpath).type(AETypeLog.test));
+        //        long fine =System.currentTimeMillis();
+        //        logger.error(new WrapLog().message("totale -> "+cont).type(AETypeLog.checkMenu));
+        //        logger.error(new WrapLog().message("delta -> "+(fine-inizio)).type(AETypeLog.checkMenu));
+        //
+        ////        try {
+        ////        logger.error(new WrapLog().message("outpath -> "+outpath).type(AETypeLog.test));
+        ////
+        ////            URI uri = url.toURI();
+        ////            if (uri == null) {
+        ////                logger.error(new WrapLog().message("uri==null").type(AETypeLog.test));
+        ////            }
+        ////            else {
+        ////                logger.error(new WrapLog().message("uri -> " + uri.toString()).type(AETypeLog.test));
+        ////            }
+        ////            String percorso = url.getPath();
+        ////            logger.error(new WrapLog().message("percorso -> " + percorso).type(AETypeLog.test));
+        ////
+        ////            jarPath = FileService.class
+        ////                    .getProtectionDomain()
+        ////                    .getCodeSource()
+        ////                    .getLocation()
+        ////                    .toURI()
+        ////                    .getPath();
+        ////        } catch (Exception unErrore) {
+        ////            logger.error(new WrapLog().message("jarPath vuoto").type(AETypeLog.test));
+        ////        }
+        ////        //        logger.error(new WrapLog().message(jarPath).type(AETypeLog.test));
 
-        return null;
+        return fileService.scanJarDir("/Users/gac/Desktop/wiki/wiki23-1.0.jar",dirPath);
     }
 
     /**
@@ -2038,6 +2092,48 @@ public class FileService extends AbstractService {
         }
 
         return lista;
+    }
+
+
+    public List<String> scanJar(String jarPath) {
+        JarFile jarFile;
+
+        try {
+            jarFile = new JarFile(jarPath);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+            return null;
+        }
+
+        return jarFile
+                .stream()
+                .map(entry -> entry.getName())
+                .collect(Collectors.toList());
+    }
+
+    public List<String> scanJarClasses(String jarPath) {
+        return scanJar(jarPath)
+                .stream()
+                .filter(entry -> entry.startsWith(JAR_CLASSES_PREFIX))
+                .filter(entry -> !entry.endsWith(SLASH))
+                .filter(entry -> !entry.contains(TAG_DOLLARO))
+                .map(entry -> entry.substring(JAR_CLASSES_PREFIX.length()))
+                .map(entry -> entry.substring(0, entry.length() - JAR_CLASSES_SUFFIX.length()))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> scanJarDir(String jarPath, String dirPath) {
+        return scanJarClasses(jarPath)
+                .stream()
+                .filter(entry -> entry.startsWith(dirPath))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> scanJarDirType(String jarPath, String dirPath, String suffix) {
+        return scanJarDir(jarPath, dirPath)
+                .stream()
+                .filter(entry -> entry.endsWith(suffix))
+                .collect(Collectors.toList());
     }
 
 }

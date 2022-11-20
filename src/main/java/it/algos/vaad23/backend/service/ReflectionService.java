@@ -2,7 +2,6 @@ package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
-import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
@@ -167,7 +167,7 @@ public class ReflectionService extends AbstractService {
 
         if (url == null) {
             message = "Url malformato";
-            logger.warn(new WrapLog().message(String.format(message)).usaDb());
+            logger.info(new WrapLog().message(String.format(message)).usaDb());
             return false;
         }
 
@@ -177,10 +177,103 @@ public class ReflectionService extends AbstractService {
         else {
             if (!url.toString().startsWith(REFLECTION_FILE)) {
                 message = String.format("Url errato %s%s", FORWARD, url.getProtocol());
-                logger.warn(new WrapLog().message(String.format(message)).usaDb());
+                logger.info(new WrapLog().message(String.format(message)).usaDb());
             }
             return false;
         }
+    }
+
+    public boolean isEsisteMetodo(String publicClassName, String publicMethodName) {
+        Class clazz = null;
+        Method[] methods = null;
+        List<String> nomiMetodi;
+
+        if (textService.isEmpty(publicClassName) || textService.isEmpty(publicMethodName)) {
+            return false;
+        }
+        publicClassName = textService.slashToPoint(publicClassName);
+        publicMethodName = textService.primaMinuscola(publicMethodName);
+
+        try {
+            clazz = Class.forName(publicClassName.toString());
+        } catch (Exception unErrore) {
+            logger.info(new WrapLog().exception(AlgosException.crea(unErrore)));
+        }
+        if (clazz == null) {
+            return false;
+        }
+
+        try {
+            methods = clazz.getDeclaredMethods();
+        } catch (Exception unErrore) {
+            logger.info(new WrapLog().exception(AlgosException.crea(unErrore)));
+        }
+
+        nomiMetodi = Arrays.stream(methods).map(method -> method.getName()).collect(Collectors.toList());
+        return nomiMetodi.contains(publicMethodName);
+    }
+
+    public boolean isEsisteMetodoAncheSovrascritto(String publicClassName, String publicMethodName) {
+        Class clazz = null;
+        Method[] methods = null;
+        List<String> nomiMetodi;
+
+        if (textService.isEmpty(publicClassName) || textService.isEmpty(publicMethodName)) {
+            return false;
+        }
+        publicClassName = textService.slashToPoint(publicClassName);
+        publicMethodName = textService.primaMinuscola(publicMethodName);
+
+        try {
+            clazz = Class.forName(publicClassName.toString());
+        } catch (Exception unErrore) {
+            logger.info(new WrapLog().exception(AlgosException.crea(unErrore)));
+        }
+        if (clazz == null) {
+            return false;
+        }
+
+        try {
+            methods = clazz.getMethods();
+        } catch (Exception unErrore) {
+            logger.info(new WrapLog().exception(AlgosException.crea(unErrore)));
+        }
+
+        nomiMetodi = Arrays.stream(methods).map(method -> method.getName()).collect(Collectors.toList());
+        return nomiMetodi.contains(publicMethodName);
+    }
+
+
+    public boolean esegueMetodo(String publicClassName, String publicMethodName) {
+        boolean eseguito = false;
+        Class clazz = null;
+        Method method ;
+        Object istanza ;
+
+        if (!isEsisteMetodoAncheSovrascritto(publicClassName, publicMethodName)) {
+            return false;
+        }
+        publicClassName = textService.slashToPoint(publicClassName);
+        publicMethodName = textService.primaMinuscola(publicMethodName);
+
+        try {
+            clazz = Class.forName(publicClassName.toString());
+        } catch (Exception unErrore) {
+            logger.info(new WrapLog().exception(AlgosException.crea(unErrore)));
+        }
+        if (clazz == null) {
+            return false;
+        }
+
+        try {
+            method = clazz.getMethod(publicMethodName);
+            istanza = appContext.getBean(clazz);
+            eseguito = (Boolean) method.invoke(istanza);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        return eseguito;
     }
 
 }

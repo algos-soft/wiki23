@@ -1,8 +1,12 @@
 package it.algos.unit.service;
 
+import it.algos.*;
 import it.algos.base.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.boot.test.context.*;
 
 /**
  * Project vaadin23
@@ -16,6 +20,7 @@ import org.junit.jupiter.api.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
 @DisplayName("Reflection service")
@@ -41,6 +46,7 @@ public class ReflectionServiceTest extends AlgosTest {
 
         //--reindirizzo l'istanza della superclasse
         service = reflectionService;
+        service.textService = textService;
     }
 
 
@@ -57,8 +63,30 @@ public class ReflectionServiceTest extends AlgosTest {
 
     @Test
     @Order(1)
-    @DisplayName("Primo test")
-    void primoTest() {
+    @DisplayName("1 - isEsisteMetodo")
+    void isEsisteMetodo() {
+        sorgente = "it/algos/vaad23/backend/packages/crono/anno/AnnoBackend";
+
+        sorgente2 = "pippoz";
+        previstoBooleano = false;
+        ottenutoBooleano = service.isEsisteMetodo(sorgente, sorgente2);
+        assertEquals(previstoBooleano, ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Nella classe %s non esiste il metodo '%s'", sorgente, sorgente2));
+
+        sorgente2 = "reset";
+        previstoBooleano = true;
+        ottenutoBooleano = service.isEsisteMetodo(sorgente, sorgente2);
+        assertEquals(previstoBooleano, ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Nella classe %s esiste il metodo '%s'", sorgente, sorgente2));
+
+        sorgente2 = "Reset";
+        previstoBooleano = true;
+        ottenutoBooleano = service.isEsisteMetodo(sorgente, sorgente2);
+        assertEquals(previstoBooleano, ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Nella classe %s esiste il metodo '%s'", sorgente, sorgente2));
     }
 
 
