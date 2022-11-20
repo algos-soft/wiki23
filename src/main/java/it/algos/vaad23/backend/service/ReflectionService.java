@@ -247,8 +247,8 @@ public class ReflectionService extends AbstractService {
     public boolean esegueMetodo(String publicClassName, String publicMethodName) {
         boolean eseguito = false;
         Class clazz = null;
-        Method method ;
-        Object istanza ;
+        Method method;
+        Object istanza;
 
         if (!isEsisteMetodoAncheSovrascritto(publicClassName, publicMethodName)) {
             return false;

@@ -4,10 +4,8 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.apache.commons.io.*;
-import org.apache.tomcat.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -19,7 +17,6 @@ import java.security.*;
 import java.util.*;
 import java.util.jar.*;
 import java.util.stream.*;
-import java.util.zip.*;
 
 
 /**
@@ -2087,134 +2084,6 @@ public class FileService extends AbstractService {
                 .stream()
                 .filter(entry -> entry.endsWith(suffix))
                 .collect(Collectors.toList());
-    }
-
-    public void testA(String jarPath) {
-        List<String> lista = new ArrayList<>();
-        //
-        //        String jarPath = VUOTA;
-        //        String outpath=VUOTA;
-        //        ProtectionDomain domain = FileService.class.getProtectionDomain();
-        //        CodeSource codeSource = domain.getCodeSource();
-        URL url = null;
-        //        String pippoz="jar:file:/Users/gac/Desktop/wiki/wiki23-1.0.jar!/BOOT-INF/classes!/ ";
-        File file = new File(jarPath);
-        Path path = Path.of(jarPath);
-        Stream<Path> streamB = null;
-
-        try {
-            JarFile jarFile = new JarFile(jarPath);
-            Enumeration enum2 = jarFile.entries();
-            while (enum2.hasMoreElements()) {
-                JarEntry entry = (JarEntry) enum2.nextElement();
-                String name = entry.getName();
-                lista.add(name);
-                System.out.println(name);
-
-            }
-            int a = 87;
-
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-        }
-
-        try {
-            streamB = Files.walk(path, 4);
-            for (Iterator<Path> it = streamB.iterator(); it.hasNext(); ) {
-                System.out.println(it.next());
-            }
-            //         List lista=   streamB.toList();
-            int a = 87;
-            //            url = new URL(jarPath);
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-        }
-
-        //        String outdir = "pippoz";
-        //        byte[] buffer = new byte[2048];
-        int cont = 0;
-        ZipEntry entry;
-        long inizio = System.currentTimeMillis();
-        logger.error(new WrapLog().message("url -> " + url).type(AETypeLog.test));
-
-        try {
-            //            ZipInputStream stream = new ZipInputStream(url.openStream());
-            ZipInputStream stream = new ZipInputStream(url.openStream());
-            while ((entry = stream.getNextEntry()) != null) {
-                if (entry.getName().startsWith("BOOT-INF/classes/it/algos/vaad23/backend/packages/crono")) {
-                    logger.error(new WrapLog().message("entry -> " + entry).type(AETypeLog.test));
-                    //                    listaCompleta.add(entry.getName());
-                    cont = cont + 1;
-                }
-            }
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-        }
-
-    }
-
-    public void testB() {
-        List<String> listaCompleta = new ArrayList<>();
-
-        String jarPath = VUOTA;
-        String outpath = VUOTA;
-        ProtectionDomain domain = FileService.class.getProtectionDomain();
-        CodeSource codeSource = domain.getCodeSource();
-        URL url = codeSource.getLocation();
-        String pippoz = "jar:file:/Users/gac/Desktop/wiki/wiki23-1.0.jar!/BOOT-INF/classes!/ ";
-        try {
-            url = new URL(pippoz);
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-        }
-
-        String outdir = "pippoz";
-        byte[] buffer = new byte[2048];
-        int cont = 0;
-        ZipEntry entry;
-        long inizio = System.currentTimeMillis();
-        logger.error(new WrapLog().message("url -> " + url).type(AETypeLog.test));
-
-        try {
-            ZipInputStream stream = new ZipInputStream(url.openStream());
-            while ((entry = stream.getNextEntry()) != null) {
-                if (entry.getName().startsWith("BOOT-INF/classes/it/algos/vaad23/backend/packages/crono")) {
-                    logger.error(new WrapLog().message("entry -> " + entry).type(AETypeLog.test));
-                    listaCompleta.add(entry.getName());
-                    cont = cont + 1;
-                }
-            }
-        } catch (Exception unErrore) {
-            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-        }
-        logger.error(new WrapLog().message("outpath -> " + outpath).type(AETypeLog.test));
-        long fine = System.currentTimeMillis();
-        logger.error(new WrapLog().message("totale -> " + cont).type(AETypeLog.checkMenu));
-        logger.error(new WrapLog().message("delta -> " + (fine - inizio)).type(AETypeLog.checkMenu));
-
-        //        try {
-        //        logger.error(new WrapLog().message("outpath -> "+outpath).type(AETypeLog.test));
-        //
-        //            URI uri = url.toURI();
-        //            if (uri == null) {
-        //                logger.error(new WrapLog().message("uri==null").type(AETypeLog.test));
-        //            }
-        //            else {
-        //                logger.error(new WrapLog().message("uri -> " + uri.toString()).type(AETypeLog.test));
-        //            }
-        //            String percorso = url.getPath();
-        //            logger.error(new WrapLog().message("percorso -> " + percorso).type(AETypeLog.test));
-        //
-        //            jarPath = FileService.class
-        //                    .getProtectionDomain()
-        //                    .getCodeSource()
-        //                    .getLocation()
-        //                    .toURI()
-        //                    .getPath();
-        //        } catch (Exception unErrore) {
-        //            logger.error(new WrapLog().message("jarPath vuoto").type(AETypeLog.test));
-        //        }
-        //        //        logger.error(new WrapLog().message(jarPath).type(AETypeLog.test));
     }
 
 }

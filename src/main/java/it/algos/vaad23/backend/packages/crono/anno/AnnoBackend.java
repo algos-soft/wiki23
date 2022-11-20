@@ -98,6 +98,7 @@ public class AnnoBackend extends CrudBackend {
     public Anno findByNome(final String nome) {
         return repository.findFirstByNome(nome);
     }
+
     public Anno findByOrdine(final int ordine) {
         return repository.findFirstByOrdine(ordine);
     }

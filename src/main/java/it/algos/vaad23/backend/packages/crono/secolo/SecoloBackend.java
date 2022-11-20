@@ -107,8 +107,9 @@ public class SecoloBackend extends CrudBackend {
                 .map(secolo -> secolo.nome)
                 .collect(Collectors.toList());
     }
+
     public List<String> findNomiAscendenti() {
-        List<Secolo> secoli= repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));
+        List<Secolo> secoli = repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));
         return secoli.stream()
                 .map(secolo -> secolo.nome)
                 .collect(Collectors.toList());

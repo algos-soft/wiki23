@@ -99,6 +99,7 @@ public class GiornoBackend extends CrudBackend {
     public Giorno findByNome(final String nome) {
         return repository.findFirstByNome(nome);
     }
+
     public Giorno findByOrdine(final int ordine) {
         return repository.findFirstByOrdine(ordine);
     }

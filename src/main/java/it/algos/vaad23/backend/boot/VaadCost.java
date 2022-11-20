@@ -22,7 +22,9 @@ public class VaadCost {
     public static final String ENCODE = "UTF-8";
 
     public static final String JAR_FILE_PREFIX = "jar:file:";
+
     public static final String JAR_CLASSES_PREFIX = "BOOT-INF/classes/";
+
     public static final String JAR_PATH_SUFFIX = "!/BOOT-INF/classes!/";
 
     public static final String JAR_CLASSES_SUFFIX = ".class";
