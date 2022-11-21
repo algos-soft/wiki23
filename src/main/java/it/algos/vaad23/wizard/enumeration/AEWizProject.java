@@ -32,10 +32,12 @@ public enum AEWizProject {
     resources("Directory RESOURCES (vaadin23)", true, false, "src/main/resources", AECopy.dirFilesAddOnly),
 
     property("File application.PROPERTIES (sources)", true, false, "src/main/resources/application.properties",
-            AECopy.sourceSovrascriveSempreAncheSeEsiste, "properties"),
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "properties"
+    ),
 
     banner("File BANNER di SpringBoot (sources) [need riavvio]", true, false, "src/main/resources/banner.txt", AECopy.sourceSoloSeNonEsiste,
-            "banner"),
+            "banner"
+    ),
 
     git("File GIT di esclusione (sources)", true, false, ".gitignore", AECopy.sourceSoloSeNonEsiste, "git"),
 
@@ -43,21 +45,27 @@ public enum AEWizProject {
 
     read("File README con note di testo (sources)", true, false, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
-    testBackend("Directory Test Backend (vaadin23)", false, false, "src/test/java/it/algos/integration/backend", AECopy.dirFilesAddOnly),
+    test("Directory Test (vaadin23)", false, false, "src/test/java/it/algos", AECopy.dirFilesAddOnly),
     application("Main class java", true, false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
-            AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"),
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
+    ),
     boot("@PROJECTUPPER@Boot: con fixMenuRoutes()", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Boot.java",
-            AECopy.sourceSovrascriveSempreAncheSeEsiste, "boot"),
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "boot"
+    ),
     cost("@PROJECTUPPER@Cost: costanti statiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Cost.java",
-            AECopy.sourceSovrascriveSempreAncheSeEsiste, "cost"),
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "cost"
+    ),
     vers("@PROJECTUPPER@Vers: versioni specifiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Vers.java",
-            AECopy.sourceSovrascriveSempreAncheSeEsiste, "vers"),
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "vers"
+    ),
     pref("@PROJECTUPPER@Pref: preferenze specifiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Pref" +
             ".java",
-            AECopy.sourceSovrascriveSempreAncheSeEsiste, "preferenza"),
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "preferenza"
+    ),
     enumeration("@FIRSTPROJECT@Pref: enumeration di preferenze specifiche del programma", true, false, "src/main/java/it/algos/@PROJECT" +
             "@/backend/enumeration/@FIRSTPROJECT@Pref.java",
-            AECopy.sourceSovrascriveSempreAncheSeEsiste, "enumeration"),
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "enumeration"
+    ),
     ;
 
 
