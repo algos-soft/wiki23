@@ -23,6 +23,7 @@ public enum AECopy {
     sourceSovrascriveSempreAncheSeEsiste("", AECopyType.source),
     sourceSoloSeNonEsiste("", AECopyType.source),
     sourceCheckFlagSeEsiste("", AECopyType.source),
+    elabora("Elaborazione specifica", AECopyType.elabora),
 
     ;
 

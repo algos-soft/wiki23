@@ -8,6 +8,8 @@ import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.*;
 
+import javax.persistence.*;
+
 /**
  * Project vaadin23
  * Created by Algos
@@ -24,6 +26,7 @@ import org.springframework.data.mongodb.core.mapping.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass
 public class Anno extends AEntity {
 
     @Indexed(unique = true, direction = IndexDirection.ASCENDING)

@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.*;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
@@ -25,6 +26,7 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass
 public class Continente extends AREntity {
 
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)

@@ -6,6 +6,8 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
 
+import javax.persistence.*;
+
 /**
  * Project vaadin23
  * Created by Algos
@@ -21,6 +23,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass
 public class Mese extends AEntity {
 
     @AIField(type = AETypeField.integer, widthEM = 6)

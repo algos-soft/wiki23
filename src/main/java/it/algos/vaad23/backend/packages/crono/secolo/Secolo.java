@@ -5,6 +5,8 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
 
+import javax.persistence.*;
+
 /**
  * Project vaadin23
  * Created by Algos
@@ -20,6 +22,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass
 public class Secolo extends AEntity {
 
     @AIField(type = AETypeField.integer, header = "#", widthEM = 4, caption = "Ordinamento a partire dal XX secolo a.C.")

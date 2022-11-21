@@ -39,7 +39,7 @@ public class WizElaboraFeedBack extends WizElabora {
         esisteDest = fileService.isEsisteDirectory(destWizard);
 
         if (esisteSrc && esisteDest) {
-            result = fileService.copyDirectory(AECopy.dirFilesAddOnly, srcWizard, destWizard);
+            result = fileService.copyDirectory(AECopy.dirFilesModifica, srcWizard, destWizard);
             if (result.isValido()) {
                 message = "La directory 'wizard' è stata aggiornata su 'vaadin23'";
                 logger.info(new WrapLog().type(AETypeLog.wizard).message(message));

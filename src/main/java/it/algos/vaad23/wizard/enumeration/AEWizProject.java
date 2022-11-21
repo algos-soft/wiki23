@@ -45,7 +45,7 @@ public enum AEWizProject {
 
     read("File README con note di testo (sources)", true, false, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
-    test("Directory Test (vaadin23)", false, false, "src/test/java/it/algos", AECopy.dirFilesAddOnly),
+    test("Directory Test (vaadin23)", false, false, VUOTA, AECopy.elabora),
     application("Main class java", true, false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),

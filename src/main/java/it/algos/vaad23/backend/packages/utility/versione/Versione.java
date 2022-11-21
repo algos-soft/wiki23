@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.*;
 
 
@@ -24,6 +25,7 @@ import java.time.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass
 public class Versione extends AEntity {
 
     @AIField(type = AETypeField.integer)

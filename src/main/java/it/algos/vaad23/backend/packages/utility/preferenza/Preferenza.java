@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.springframework.data.mongodb.core.index.*;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
@@ -16,6 +17,7 @@ import javax.validation.constraints.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@MappedSuperclass
 public class Preferenza extends AEntity {
 
     /**

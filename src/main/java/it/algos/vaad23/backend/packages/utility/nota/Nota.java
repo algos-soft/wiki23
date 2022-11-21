@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.*;
 import java.time.format.*;
@@ -25,6 +26,7 @@ import java.time.format.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass
 public class Nota extends AEntity {
 
     @AIField(type = AETypeField.enumeration, enumClazz = AETypeLog.class)

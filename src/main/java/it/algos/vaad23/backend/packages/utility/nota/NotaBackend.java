@@ -25,7 +25,7 @@ import java.time.*;
 @Service
 public class NotaBackend extends CrudBackend {
 
-    private NotaRepository repository;
+    public NotaRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) con @Qualifier (obbligatorio) <br>

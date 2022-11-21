@@ -29,7 +29,7 @@ import java.util.*;
 @Qualifier(TAG_VERSIONE)
 public class VersioneBackend extends CrudBackend {
 
-    private VersioneRepository repository;
+    public VersioneRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
