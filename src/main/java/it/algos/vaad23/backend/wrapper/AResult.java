@@ -33,6 +33,8 @@ public class AResult {
 
     private String type = VUOTA;
 
+    private String tagCode = VUOTA;
+
     private String method = VUOTA;
 
     private String errorCode = VUOTA;
@@ -223,7 +225,6 @@ public class AResult {
         return validMessage;
     }
 
-
     //    public String getWebTitle() {
     //        return webTitle;
     //    }
@@ -278,6 +279,16 @@ public class AResult {
 
     public void setLista(List lista) {
         this.lista = lista;
+    }
+
+    public List add(Object elementoLista) {
+        if (lista == null) {
+            lista = new ArrayList<>();
+        }
+
+        this.lista.add(elementoLista);
+
+        return lista;
     }
 
     //    public String getUrlPreliminary() {
@@ -366,6 +377,14 @@ public class AResult {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTagCode() {
+        return tagCode;
+    }
+
+    public void setTagCode(String tagCode) {
+        this.tagCode = tagCode;
     }
 
     public void print(final LogService logger, final AETypeLog typeLog) {

@@ -762,7 +762,7 @@ public class TextService extends AbstractService {
 
         if (this.isValid(testoOut) && this.isValid(tagFinale)) {
             testoOut = StringUtils.stripEnd(testoIn, SPAZIO);
-            tag = tagFinale.trim();
+            tag = tagFinale;
             if (testoOut.endsWith(tag)) {
                 testoOut = testoOut.substring(0, testoOut.length() - tag.length());
                 testoOut = StringUtils.stripEnd(testoOut, SPAZIO);

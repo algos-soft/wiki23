@@ -164,7 +164,7 @@ public class SecoloBackend extends CrudBackend {
         String anteCristoText;
 
         if (super.reset()) {
-            mappa = resourceService.leggeMappaServer(nomeFile);
+            mappa = resourceService.leggeMappa(nomeFile);
             if (mappa != null) {
                 for (String key : mappa.keySet()) {
                     riga = mappa.get(key);

@@ -29,7 +29,9 @@ public class WizElaboraFeedBack extends WizElabora {
         String srcWizardProject = System.getProperty("user.dir");
         String currentProject = fileService.estraeClasseFinaleSenzaJava(srcWizardProject).toLowerCase();
         String destBaseVaadin23 = textService.levaCoda(srcWizardProject, currentProject);
-
+        if (destBaseVaadin23.contains("tutorial")) {
+            destBaseVaadin23 = "/Users/gac/Documents/IdeaProjects/operativi/";
+        }
         destBaseVaadin23 += VAADIN_PROJECT + SLASH;
 
         String srcWizard = String.format("%s%s%s%s%s%s", srcWizardProject, SLASH, SOURCE_PREFIX, VAADIN_MODULE, SLASH, DIR_WIZARD);
@@ -41,8 +43,7 @@ public class WizElaboraFeedBack extends WizElabora {
         if (esisteSrc && esisteDest) {
             result = fileService.copyDirectory(AECopy.dirFilesModifica, srcWizard, destWizard);
             if (result.isValido()) {
-                message = "La directory 'wizard' è stata aggiornata su 'vaadin23'";
-                logger.info(new WrapLog().type(AETypeLog.wizard).message(message));
+                mostraRisultato(result, AECopy.dirFilesModifica, destWizard, "Rollback");
             }
             else {
                 message = "La directory 'wizard' non è stata aggiornata";

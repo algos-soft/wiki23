@@ -163,6 +163,25 @@ public class ResourceService extends AbstractService {
 
 
     /**
+     * Legge una mappa di risorse da {project directory}/config/ oppure dal server URL_BASE_VAADIN23_CONFIG <br>
+     * La mappa NON contiene i titoli <br>
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return mappa dei titoli più le righe grezze
+     */
+    public Map<String, List<String>> leggeMappa(final String simpleNameFileToBeRead) {
+        Map<String, List<String>> mappa;
+
+        mappa = leggeMappaServer(simpleNameFileToBeRead);
+        if (mappa == null) {
+            mappa = leggeMappaConfig(simpleNameFileToBeRead);
+        }
+
+        return mappa;
+    }
+
+    /**
      * Legge una mappa di risorse da {project directory}/config/ <br>
      * La mappa NON contiene i titoli <br>
      *
@@ -177,7 +196,7 @@ public class ResourceService extends AbstractService {
 
 
     /**
-     * Legge una mappa di risorse da {project directory}/config/ <br>
+     * Legge una mappa di risorse dal server URL_BASE_VAADIN23_CONFIG <br>
      * La mappa NON contiene i titoli <br>
      *
      * @param simpleNameFileToBeRead nome del file senza path e senza directory

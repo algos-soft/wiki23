@@ -12,7 +12,7 @@ public abstract class WizCost {
     public static final String VALORE_MANCANTE = "ATTENZIONE - Manca un valore indispensabile";
 
     //--flag per stampare info di debug
-    public static final boolean FLAG_DEBUG_WIZ = true;
+    public static final boolean FLAG_DEBUG_WIZ = false;
 
     public static final String DIR_PROJECTS = "IdeaProjects/";
 
