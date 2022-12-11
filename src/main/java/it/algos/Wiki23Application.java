@@ -24,7 +24,7 @@ import org.vaadin.artur.helpers.*;
  * In fase di sviluppo si possono avere diverse configurazioni, ognuna delle quali punta un ''main' diverso <br>
  * Nel JAR finale (runtime) si può avere una sola classe col metodo 'main' <br>
  * Nel WAR finale (runtime) occorre (credo) inserire dei servlet di context diversi <br>
- * Senza @ComponentScan, SpringBoot non 'vede' le classi con @SpringView che sono in una directory diversa da questo package <br>
+ * Senza @EntityScan, SpringBoot non 'vede' le classi con @SpringView che sono in una directory diversa da questo package <br>
  * <p>
  * Annotated with @SpringBootApplication (obbligatorio) <br>
  * Annotated with @EnableVaadin (obbligatorio) <br>
