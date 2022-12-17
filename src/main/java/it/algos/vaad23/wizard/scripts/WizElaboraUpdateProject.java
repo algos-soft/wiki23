@@ -33,10 +33,10 @@ public class WizElaboraUpdateProject extends WizElabora {
         AEWizProject wiz;
         destNewProject = System.getProperty("user.dir");
         newUpdateProject = fileService.estraeClasseFinaleSenzaJava(destNewProject).toLowerCase();
-        srcVaadin23 = textService.levaCoda(destNewProject, newUpdateProject);
-        srcVaadin23 += VAADIN_PROJECT + SLASH;
-        if (srcVaadin23.contains("tutorial")) {
-            srcVaadin23 = "/Users/gac/Documents/IdeaProjects/operativi/vaadin23/";
+        srcVaad24 = textService.levaCoda(destNewProject, newUpdateProject);
+        srcVaad24 += VAADIN_PROJECT + SLASH;
+        if (srcVaad24.contains("tutorial")) {
+            srcVaad24 = "/Users/gac/Documents/IdeaProjects/operativi/vaadin23/";
         }
 
         destNewProject += SLASH;

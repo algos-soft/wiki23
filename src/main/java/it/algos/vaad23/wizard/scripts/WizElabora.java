@@ -45,7 +45,7 @@ public abstract class WizElabora {
     @Autowired
     public FileService fileService;
 
-    protected String srcVaadin23;
+    protected String srcVaad24;
 
     protected String destNewProject;
 
@@ -75,7 +75,7 @@ public abstract class WizElabora {
 
     public void directory(final AEWizProject wiz) {
         AResult result;
-        String srcPath = srcVaadin23 + wiz.getCopyDest() + SLASH;
+        String srcPath = srcVaad24 + wiz.getCopyDest() + SLASH;
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
         String dir = fileService.lastDirectory(destPath).toLowerCase();
         String tag = progettoEsistente ? "Update" : "New";
@@ -87,7 +87,7 @@ public abstract class WizElabora {
 
     public void elabora(final AEWizProject wiz) {
         AResult result;
-        String srcPath = srcVaadin23 + wiz.getCopyDest() + SLASH;
+        String srcPath = srcVaad24 + wiz.getCopyDest() + SLASH;
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
         String dir = fileService.lastDirectory(destPath).toLowerCase();
         String oldToken = "SimpleApplication";
@@ -229,7 +229,7 @@ public abstract class WizElabora {
         AResult result;
         String dest = wiz.getCopyDest();
         String nomeFile = wiz.getFileSource();
-        String sorcePath = srcVaadin23 + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX + nomeFile;
+        String sorcePath = srcVaad24 + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX + nomeFile;
         sorcePath += sorcePath.endsWith(TXT_SUFFIX) ? VUOTA : TXT_SUFFIX;
         String sourceText = fileService.leggeFile(sorcePath);
         sourceText = AEToken.replaceAll(sourceText);

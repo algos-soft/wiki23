@@ -22,14 +22,14 @@ public class WizElaboraNewProject extends WizElabora {
 
     public static final String SOURCE_SUFFFIX = "/wizard/sources/";
 
-    public static final String VAADIN_PROJECT = "vaadin23";
+    public static final String VAADIN_PROJECT = "vaad24";
 
-    public static final String VAADIN_MODULE = "vaad23";
+    public static final String VAADIN_MODULE = "vaad24";
 
 
     public void esegue(final String pathNewUpdateProject) {
         progettoEsistente = fileService.isContieneProgettoValido(pathNewUpdateProject);
-        srcVaadin23 = System.getProperty("user.dir") + SLASH;
+        srcVaad24 = System.getProperty("user.dir") + SLASH;
         destNewProject = pathNewUpdateProject + SLASH;
         newUpdateProject = fileService.lastDirectory(destNewProject).toLowerCase();
         super.esegue();

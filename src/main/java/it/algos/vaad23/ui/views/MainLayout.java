@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.security.*;
 import it.algos.vaad23.backend.service.*;
@@ -18,6 +19,7 @@ import java.util.*;
 /**
  * The main view is a top-level placeholder for other views.
  */
+@SpringComponent
 public class MainLayout extends AppLayout {
 
     private final SecurityService securityService;
@@ -92,9 +94,7 @@ public class MainLayout extends AppLayout {
         H2 appName = new H2(textService.primaMaiuscola(VaadVar.projectCurrent));
         appName.addClassNames("flex", "items-center", "h-xl", "m-0", "px-m", "text-m");
 
-        com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
-                createNavigation(), createFooter()
-        );
+        com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName, createNavigation(), createFooter());
         section.addClassNames("flex", "flex-col", "items-stretch", "max-h-full", "min-h-full");
 
         addToDrawer(section);

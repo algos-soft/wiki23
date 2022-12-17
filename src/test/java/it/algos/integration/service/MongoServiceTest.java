@@ -32,7 +32,6 @@ import java.util.stream.*;
  * Time: 18:30
  */
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("service")

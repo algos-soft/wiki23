@@ -195,7 +195,7 @@ public abstract class CrudBackend extends AbstractService {
         String message;
 
         if (mongoService.isCollectionNullOrEmpty(entityClazz)) {
-            message = String.format("Creati i dati iniziale della collection %s che era vuota", entityClazz.getSimpleName());
+            message = String.format("Creati i dati iniziali della collection %s che era vuota", entityClazz.getSimpleName());
             logger.info(new WrapLog().message(message).type(AETypeLog.checkData).usaDb());
             return reset();
         }

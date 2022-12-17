@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.*;
  * Time: 17:04
  */
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Text Service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
