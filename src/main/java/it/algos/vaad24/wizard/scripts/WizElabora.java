@@ -65,15 +65,15 @@ public abstract class WizElabora {
         }
         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
 
-        it.algos.vaad24.wizard.enumeration.AEToken.reset();
-        it.algos.vaad24.wizard.enumeration.AEToken.setCrono();
-        it.algos.vaad24.wizard.enumeration.AEToken.targetProject.set(newUpdateProject);
-        it.algos.vaad24.wizard.enumeration.AEToken.targetProjectUpper.set(textService.primaMaiuscola(newUpdateProject));
-        it.algos.vaad24.wizard.enumeration.AEToken.targetProjectAllUpper.set(newUpdateProject.toUpperCase());
-        it.algos.vaad24.wizard.enumeration.AEToken.firstProject.set(newUpdateProject.substring(0, 1).toUpperCase());
+        AEToken.reset();
+        AEToken.setCrono();
+        AEToken.targetProject.set(newUpdateProject);
+        AEToken.targetProjectUpper.set(textService.primaMaiuscola(newUpdateProject));
+        AEToken.targetProjectAllUpper.set(newUpdateProject.toUpperCase());
+        AEToken.firstProject.set(newUpdateProject.substring(0, 1).toUpperCase());
     }
 
-    public void directory(final it.algos.vaad24.wizard.enumeration.AEWizProject wiz) {
+    public void directory(final AEWizProject wiz) {
         AResult result;
         String srcPath = srcVaad24 + wiz.getCopyDest() + SLASH;
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
