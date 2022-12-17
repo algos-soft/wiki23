@@ -28,14 +28,14 @@ public class WizElaboraFeedBack extends WizElabora {
         AResult result;
         String srcWizardProject = System.getProperty("user.dir");
         String currentProject = fileService.estraeClasseFinaleSenzaJava(srcWizardProject).toLowerCase();
-        String destBaseVaadin23 = textService.levaCoda(srcWizardProject, currentProject);
-        if (destBaseVaadin23.contains("tutorial")) {
-            destBaseVaadin23 = "/Users/gac/Documents/IdeaProjects/operativi/";
+        String destBaseVaad24 = textService.levaCoda(srcWizardProject, currentProject);
+        if (destBaseVaad24.contains("tutorial")) {
+            destBaseVaad24 = "/Users/gac/Documents/IdeaProjects/operativi/";
         }
-        destBaseVaadin23 += VAADIN_PROJECT + SLASH;
+        destBaseVaad24 += VAADIN_PROJECT + SLASH;
 
         String srcWizard = String.format("%s%s%s%s%s%s", srcWizardProject, SLASH, SOURCE_PREFIX, VAADIN_MODULE, SLASH, DIR_WIZARD);
-        String destWizard = String.format("%s%s%s%s%s", destBaseVaadin23, SOURCE_PREFIX, VAADIN_MODULE, SLASH, DIR_WIZARD);
+        String destWizard = String.format("%s%s%s%s%s", destBaseVaad24, SOURCE_PREFIX, VAADIN_MODULE, SLASH, DIR_WIZARD);
 
         esisteSrc = fileService.isEsisteDirectory(srcWizard);
         esisteDest = fileService.isEsisteDirectory(destWizard);
