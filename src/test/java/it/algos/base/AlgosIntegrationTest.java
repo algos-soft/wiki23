@@ -1,19 +1,30 @@
 package it.algos.base;
 
 import it.algos.vaad24.backend.service.*;
-import static org.hibernate.validator.internal.util.Contracts.*;
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: Fri, 03-Jun-2022
- * Time: 09:47
+ * Date: lun, 07-mar-2022
+ * Time: 19:47
+ * Classe astratta per i test <br>
+ *
+ * @see <a href="https://www.baeldung.com/parameterized-tests-junit-5">...</a>
  */
-public abstract class AlgosIntegrationTest extends AlgosTest {
+public abstract class AlgosIntegrationTest extends AlgosUnitTest {
 
+
+    /**
+     * Istanza di una interfaccia <br>
+     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ApplicationContext appContext;
 
     @Autowired
     protected MongoService mongoService;
@@ -27,8 +38,6 @@ public abstract class AlgosIntegrationTest extends AlgosTest {
      */
     protected void setUpAll() {
         super.setUpAll();
-
-        mongoService.fixProperties();
     }
 
     /**
@@ -38,17 +47,20 @@ public abstract class AlgosIntegrationTest extends AlgosTest {
      */
     protected void initMocks() {
         super.initMocks();
-        assertNotNull(mongoService);
+        assertNotNull(appContext);
+        //        assertNotNull(mongoService);
     }
 
+
     /**
-     * Qui passa prima di ogni test delle sottoclassi <br>
-     * Invocare PRIMA il metodo setUp() della superclasse <br>
-     * Si possono aggiungere regolazioni specifiche <br>
+     * Regola tutti riferimenti incrociati <br>
+     * Deve essere fatto dopo aver costruito tutte le referenze 'mockate' <br>
+     * Nelle sottoclassi devono essere regolati i riferimenti dei service specifici <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    @BeforeEach
-    protected void setUpEach() {
-        super.setUpEach();
+    protected void fixRiferimentiIncrociati() {
+        super.fixRiferimentiIncrociati();
+        classService.appContext = appContext;
     }
 
 }

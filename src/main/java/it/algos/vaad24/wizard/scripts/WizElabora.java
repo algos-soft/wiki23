@@ -90,7 +90,7 @@ public abstract class WizElabora {
         String srcPath = srcVaad24 + wiz.getCopyDest() + SLASH;
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
         String dir = fileService.lastDirectory(destPath).toLowerCase();
-        String oldToken = "SimpleApplication";
+        String oldToken = APPLICATION_VAADIN24;
         String newToken = fileService.estraeClasseFinaleSenzaJava(destNewProject);
         newToken = textService.primaMaiuscola(newToken) + APP_NAME;
         String tag = progettoEsistente ? "Update" : "New";

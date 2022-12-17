@@ -52,6 +52,7 @@ public class VaadCost {
     public static final String PROJECT_VAADIN23 = "vaadin23";
 
     public static final String PROJECT_VAADIN24 = "vaad24";
+    public static final String APPLICATION_VAADIN24 = "Vaad24SimpleApplication";
 
     public static final String MODULO_VAADIN23 = "vaad23";
 
