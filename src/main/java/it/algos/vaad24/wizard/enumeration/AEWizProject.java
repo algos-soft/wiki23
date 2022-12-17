@@ -21,9 +21,9 @@ public enum AEWizProject {
 
     frontend("Directory FRONTEND del Client (vaad24) [need riavvio]", true, false, "frontend", AECopy.dirFilesAddOnly),
 
-    links("Directory LINKS a siti web utili (vaad24)", true, false, "links", AECopy.dirFilesModifica),
+    links("Directory LINKS a siti web utili (vaad24)", true, true, "links", AECopy.dirFilesModifica),
 
-    snippets("Directory SNIPPETS di codice suggerito (vaad24)", true, false, "snippets", AECopy.dirFilesModifica),
+    snippets("Directory SNIPPETS di codice suggerito (vaad24)", true, true, "snippets", AECopy.dirFilesModifica),
 
     flow("Directory BASE Vaad24 (Wizard compreso)", true, false, "src/main/java/it/algos/vaad23", AECopy.dirDelete),
 
