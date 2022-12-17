@@ -1,12 +1,12 @@
 package it.algos.wiki23.backend.packages.giorno;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.logic.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import it.algos.vaad23.backend.packages.crono.giorno.*;
-import it.algos.vaad23.backend.wrapper.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.exception.*;
+import it.algos.vaad24.backend.logic.*;
+import it.algos.vaad24.backend.packages.crono.anno.*;
+import it.algos.vaad24.backend.packages.crono.giorno.*;
+import it.algos.vaad24.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
@@ -149,7 +149,7 @@ public class GiornoWikiBackend extends WikiBackend {
      * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    @Override
+//    @Override
     public boolean reset() {
         List<Giorno> giorniBase = null;
 
@@ -158,13 +158,13 @@ public class GiornoWikiBackend extends WikiBackend {
             return false;
         }
 
-        if (super.reset()) {
-            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
-            giorniBase = giornoBackend.findAll(sort);
-            for (Giorno giorno : giorniBase) {
-                creaIfNotExist(giorno);
-            }
-        }
+//        if (super.reset()) {
+//            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
+//            giorniBase = giornoBackend.findAll(sort);
+//            for (Giorno giorno : giorniBase) {
+//                creaIfNotExist(giorno);
+//            }
+//        }
 
         return true;
     }

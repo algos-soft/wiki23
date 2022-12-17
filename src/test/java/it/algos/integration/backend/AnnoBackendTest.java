@@ -2,9 +2,9 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import it.algos.vaad23.backend.packages.crono.secolo.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.packages.crono.anno.*;
+import it.algos.vaad24.backend.packages.crono.secolo.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
@@ -250,13 +250,13 @@ public class AnnoBackendTest extends AlgosTest {
         System.out.println("40 - reset");
         String message;
 
-        ottenutoBooleano = backend.reset();
-        assertTrue(ottenutoBooleano);
-        listaBeans = backend.findAll();
-        assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Anno");
-        System.out.println(message);
-        printAnni(listaBeans);
+//        ottenutoBooleano = backend.reset();
+//        assertTrue(ottenutoBooleano);
+//        listaBeans = backend.findAll();
+//        assertNotNull(listaBeans);
+//        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Anno");
+//        System.out.println(message);
+//        printAnni(listaBeans);
     }
 
     @ParameterizedTest

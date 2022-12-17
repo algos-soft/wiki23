@@ -2,11 +2,11 @@ package it.algos.unit.service;
 
 import com.vaadin.flow.router.*;
 import it.algos.base.*;
-import it.algos.vaad23.backend.boot.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.utility.versione.*;
-import it.algos.vaad23.backend.service.*;
-import it.algos.vaad23.ui.views.*;
+import it.algos.vaad24.backend.boot.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.packages.utility.versione.*;
+import it.algos.vaad24.backend.service.*;
+import it.algos.vaad24.ui.views.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.*;
@@ -89,21 +89,21 @@ public class AnnotationServiceTest extends AlgosTest {
         assertNull(route);
         System.out.println(String.format("Non esiste la @Route per la classe %s", sorgenteClasse.getSimpleName()));
 
-        System.out.println(VUOTA);
-        sorgenteClasse = HelloWorldView.class;
-        route = service.getRoute(sorgenteClasse);
-        assertNotNull(route);
-        System.out.println(String.format("La @Route per la classe %s è '%s'", sorgenteClasse.getSimpleName(), route.value()));
+//        System.out.println(VUOTA);
+//        sorgenteClasse = HelloWorldView.class;
+//        route = service.getRoute(sorgenteClasse);
+//        assertNotNull(route);
+//        System.out.println(String.format("La @Route per la classe %s è '%s'", sorgenteClasse.getSimpleName(), route.value()));
     }
 
     @Test
     @Order(2)
     @DisplayName("getQualifier")
     void getQualifier() {
-        sorgenteClasse = HelloWorldView.class;
-        qualifier = service.getQualifier(sorgenteClasse);
-        assertNull(qualifier);
-        System.out.println(String.format("Non esiste un @Qualifier per la classe %s", sorgenteClasse.getSimpleName()));
+//        sorgenteClasse = HelloWorldView.class;
+//        qualifier = service.getQualifier(sorgenteClasse);
+//        assertNull(qualifier);
+//        System.out.println(String.format("Non esiste un @Qualifier per la classe %s", sorgenteClasse.getSimpleName()));
 
         System.out.println(VUOTA);
         sorgenteClasse = VersioneBackend.class;
@@ -117,10 +117,10 @@ public class AnnotationServiceTest extends AlgosTest {
     @Order(3)
     @DisplayName("getDocument")
     void getDocument() {
-        sorgenteClasse = HelloWorldView.class;
-        document = service.getDocument(sorgenteClasse);
-        assertNull(document);
-        System.out.println(String.format("Non esiste un @Document per la classe %s", sorgenteClasse.getSimpleName()));
+//        sorgenteClasse = HelloWorldView.class;
+//        document = service.getDocument(sorgenteClasse);
+//        assertNull(document);
+//        System.out.println(String.format("Non esiste un @Document per la classe %s", sorgenteClasse.getSimpleName()));
 
         //        System.out.println(VUOTA);
         //        sorgenteClasse = Versione.class;
@@ -138,10 +138,10 @@ public class AnnotationServiceTest extends AlgosTest {
         assertNull(pageTitle);
         System.out.println(String.format("Non esiste un @PageTitle per la classe %s", sorgenteClasse.getSimpleName()));
 
-        sorgenteClasse = HelloWorldView.class;
-        pageTitle = service.getPageTitle(sorgenteClasse);
-        assertNotNull(pageTitle);
-        System.out.println(String.format("Il @PageTitle per la classe %s è '%s'", sorgenteClasse.getSimpleName(), pageTitle.value()));
+//        sorgenteClasse = HelloWorldView.class;
+//        pageTitle = service.getPageTitle(sorgenteClasse);
+//        assertNotNull(pageTitle);
+//        System.out.println(String.format("Il @PageTitle per la classe %s è '%s'", sorgenteClasse.getSimpleName(), pageTitle.value()));
     }
 
 

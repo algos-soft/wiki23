@@ -1,6 +1,6 @@
 package it.algos.wiki23.backend.wrapper;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.packages.bio.*;
 
 /**

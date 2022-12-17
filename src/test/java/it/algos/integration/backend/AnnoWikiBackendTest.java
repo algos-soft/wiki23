@@ -4,7 +4,7 @@ import it.algos.*;
 import it.algos.base.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import org.junit.jupiter.api.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;

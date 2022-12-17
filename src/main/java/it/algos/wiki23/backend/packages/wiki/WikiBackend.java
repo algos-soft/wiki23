@@ -1,10 +1,10 @@
 package it.algos.wiki23.backend.packages.wiki;
 
-import it.algos.vaad23.backend.entity.*;
-import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.logic.*;
-import it.algos.vaad23.backend.wrapper.*;
+import it.algos.vaad24.backend.entity.*;
+import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.exception.*;
+import it.algos.vaad24.backend.logic.*;
+import it.algos.vaad24.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;

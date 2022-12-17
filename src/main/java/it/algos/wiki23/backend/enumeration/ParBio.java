@@ -1,9 +1,9 @@
 package it.algos.wiki23.backend.enumeration;
 
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.service.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.exception.*;
+import it.algos.vaad24.backend.service.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
@@ -671,8 +671,6 @@ public enum ParBio {
      * La property dell'istanza ha lo stesso nome della enumeration
      * DEVE essere sovrascritto (implementato) per i campi campoSignificativo=true
      *
-     * @param originale istanza da cui estrarre (elaborare) il valore del parametro
-     * @param valida    istanza in cui inserire il valore del parametro
      */
     public void setBioValida(Bio istanza) {
     }// end of method
@@ -731,8 +729,6 @@ public enum ParBio {
      * Recupera il valore del parametro sesso da Originale
      * Inserisce il valore del parametro sesso in Valida
      *
-     * @param originale istanza da cui estrarre (elaborare) il valore del parametro
-     * @param valida    istanza in cui inserire il valore del parametro
      */
     public void setBioValidaSesso(Bio istanza) {
     }// end of method

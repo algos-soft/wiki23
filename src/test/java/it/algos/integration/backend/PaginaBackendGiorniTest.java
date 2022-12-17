@@ -5,7 +5,7 @@ import it.algos.base.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.pagina.*;
 import org.junit.jupiter.api.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;

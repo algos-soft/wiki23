@@ -1,6 +1,6 @@
 package it.algos.base;
 
-import it.algos.vaad23.backend.packages.utility.log.*;
+import it.algos.vaad24.backend.packages.utility.log.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.*;
 

@@ -1,7 +1,7 @@
 package it.algos.wiki23.backend.boot;
 
 import com.vaadin.flow.spring.annotation.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;

@@ -1,8 +1,8 @@
 package it.algos.wiki23.backend.service;
 
 import com.vaadin.flow.component.*;
-import it.algos.vaad23.backend.boot.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.boot.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.wrapper.*;

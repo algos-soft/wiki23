@@ -2,9 +2,9 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.crono.mese.*;
-import it.algos.vaad23.backend.service.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.packages.crono.mese.*;
+import it.algos.vaad24.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
@@ -148,11 +148,11 @@ public class MeseBackendTest extends AlgosTest {
         String message;
         backend.deleteAll();
 
-        listaBeans = backend.resetServer(nomeFile);
-        assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
-        System.out.println(message);
-        printBeans(listaBeans);
+//        listaBeans = backend.resetServer(nomeFile);
+//        assertNotNull(listaBeans);
+//        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
+//        System.out.println(message);
+//        printBeans(listaBeans);
     }
 
     @Test
@@ -163,11 +163,11 @@ public class MeseBackendTest extends AlgosTest {
         String message;
         backend.deleteAll();
 
-        listaBeans = backend.resetConfig(nomeFile);
-        assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
-        System.out.println(message);
-        printBeans(listaBeans);
+//        listaBeans = backend.resetConfig(nomeFile);
+//        assertNotNull(listaBeans);
+//        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
+//        System.out.println(message);
+//        printBeans(listaBeans);
     }
 
     @Test
@@ -177,13 +177,13 @@ public class MeseBackendTest extends AlgosTest {
         System.out.println("6 - reset");
         String message;
 
-        ottenutoBooleano = backend.reset();
-        assertTrue(ottenutoBooleano);
-        listaBeans = backend.findAll();
-        assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
-        System.out.println(message);
-        printBeans(listaBeans);
+//        ottenutoBooleano = backend.reset();
+//        assertTrue(ottenutoBooleano);
+//        listaBeans = backend.findAll();
+//        assertNotNull(listaBeans);
+//        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Mese");
+//        System.out.println(message);
+//        printBeans(listaBeans);
     }
 
     /**

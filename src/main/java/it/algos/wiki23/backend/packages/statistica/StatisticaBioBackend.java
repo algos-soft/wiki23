@@ -1,7 +1,7 @@
 package it.algos.wiki23.backend.packages.statistica;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.logic.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.logic.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;

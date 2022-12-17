@@ -1,9 +1,9 @@
 package it.algos.wiki23.wiki.query;
 
 import com.vaadin.flow.spring.annotation.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.wrapper.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.exception.*;
+import it.algos.vaad24.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import static it.algos.wiki23.backend.service.WikiApiService.*;
@@ -60,7 +60,6 @@ public class QueryWrite extends AQuery {
      *
      * @return wrapper di informazioni
      *
-     * @see https://www.mediawiki.org/wiki/API:Edit#Example
      */
     private WResult checkWrite(final String wikiTitleGrezzo, final String newText, final String summary) {
         queryType = AETypeQuery.getLoggatoConCookies;
@@ -223,7 +222,6 @@ public class QueryWrite extends AQuery {
      *
      * @return wrapper di informazioni
      *
-     * @see https://www.mediawiki.org/wiki/API:Edit#Example
      */
     public WResult urlRequest(final String wikiTitleGrezzo, final String newText, final String summary) {
         WResult result = checkWrite(wikiTitleGrezzo, newText, summary);
@@ -446,7 +444,6 @@ public class QueryWrite extends AQuery {
     /**
      * Restituisce il token dal testo JSON di una pagina di GET preliminary
      *
-     * @param textJSON in ingresso
      *
      * @return logintoken
      */
@@ -474,7 +471,6 @@ public class QueryWrite extends AQuery {
     /**
      * Restituisce il token dal testo JSON di una pagina di GET preliminary
      *
-     * @param textJSON in ingresso
      *
      * @return logintoken
      */
@@ -496,7 +492,6 @@ public class QueryWrite extends AQuery {
     /**
      * Restituisce il token dal testo JSON di una pagina di GET preliminary
      *
-     * @param textJSON in ingresso
      *
      * @return logintoken
      */

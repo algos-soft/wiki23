@@ -1,6 +1,6 @@
 package it.algos.base;
 
-import it.algos.vaad23.backend.service.*;
+import it.algos.vaad24.backend.service.*;
 import static org.hibernate.validator.internal.util.Contracts.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;

@@ -2,7 +2,7 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.pagina.*;

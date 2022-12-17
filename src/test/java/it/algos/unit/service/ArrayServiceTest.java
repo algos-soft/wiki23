@@ -3,8 +3,8 @@ package it.algos.unit.service;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.html.*;
 import it.algos.base.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.service.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

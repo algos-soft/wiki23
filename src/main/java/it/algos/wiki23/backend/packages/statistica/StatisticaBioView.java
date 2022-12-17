@@ -1,7 +1,7 @@
 package it.algos.wiki23.backend.packages.statistica;
 
 import com.vaadin.flow.router.*;
-import it.algos.vaad23.ui.views.*;
+import it.algos.vaad24.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import it.algos.wiki23.backend.statistiche.*;

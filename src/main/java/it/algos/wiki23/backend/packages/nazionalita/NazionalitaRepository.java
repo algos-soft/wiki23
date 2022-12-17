@@ -1,6 +1,6 @@
 package it.algos.wiki23.backend.packages.nazionalita;
 
-import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad24.backend.entity.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;

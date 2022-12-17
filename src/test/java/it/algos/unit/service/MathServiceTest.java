@@ -1,8 +1,8 @@
 package it.algos.unit.service;
 
 import it.algos.base.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.service.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.service.*;
 import org.junit.jupiter.api.*;
 
 /**

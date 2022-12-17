@@ -2,9 +2,9 @@ package it.algos.integration.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import it.algos.vaad23.backend.packages.utility.nota.*;
+import it.algos.vaad24.backend.packages.utility.nota.*;
 import org.junit.jupiter.api.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;

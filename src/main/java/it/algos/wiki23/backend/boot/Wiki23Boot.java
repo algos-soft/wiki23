@@ -2,11 +2,11 @@ package it.algos.wiki23.backend.boot;
 
 import com.vaadin.flow.component.map.configuration.*;
 import com.vaadin.flow.spring.annotation.*;
-import it.algos.vaad23.backend.boot.*;
-import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.packages.geografia.continente.*;
-import it.algos.vaad23.backend.service.*;
-import it.algos.vaad23.backend.wrapper.*;
+import it.algos.vaad24.backend.boot.*;
+import it.algos.vaad24.backend.interfaces.*;
+import it.algos.vaad24.backend.packages.geografia.continente.*;
+import it.algos.vaad24.backend.service.*;
+import it.algos.vaad24.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;

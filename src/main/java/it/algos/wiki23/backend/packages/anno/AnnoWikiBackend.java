@@ -1,9 +1,9 @@
 package it.algos.wiki23.backend.packages.anno;
 
-import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import it.algos.vaad23.backend.wrapper.*;
+import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.exception.*;
+import it.algos.vaad24.backend.packages.crono.anno.*;
+import it.algos.vaad24.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.bio.*;
@@ -142,7 +142,7 @@ public class AnnoWikiBackend extends WikiBackend {
      * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    @Override
+//    @Override
     public boolean reset() {
         List<Anno> anniBase = null;
         int delta = DELTA_ORDINE_ANNI;
@@ -153,23 +153,23 @@ public class AnnoWikiBackend extends WikiBackend {
             return false;
         }
 
-        if (super.reset()) {
-            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
-            anniBase = annoBackend.findAll(sort);
-
-            for (Anno anno : anniBase) {
-                ordine += delta;
-                try {
-                    creaIfNotExist(anno, ordine);
-                } catch (Exception unErrore) {
-                    logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-                }
-            }
-        }
-        else {
-            logger.error(new WrapLog().exception(new AlgosException("Non sono riuscito a cancellare la collezione 'AnnoWiki'")).usaDb());
-            return false;
-        }
+//        if (super.reset()) {
+//            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
+//            anniBase = annoBackend.findAll(sort);
+//
+//            for (Anno anno : anniBase) {
+//                ordine += delta;
+//                try {
+//                    creaIfNotExist(anno, ordine);
+//                } catch (Exception unErrore) {
+//                    logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+//                }
+//            }
+//        }
+//        else {
+//            logger.error(new WrapLog().exception(new AlgosException("Non sono riuscito a cancellare la collezione 'AnnoWiki'")).usaDb());
+//            return false;
+//        }
 
         return true;
     }

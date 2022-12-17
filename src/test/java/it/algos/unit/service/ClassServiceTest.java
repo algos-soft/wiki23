@@ -1,8 +1,8 @@
 package it.algos.unit.service;
 
 import it.algos.base.*;
-import it.algos.vaad23.backend.boot.*;
-import it.algos.vaad23.backend.service.*;
+import it.algos.vaad24.backend.boot.*;
+import it.algos.vaad24.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

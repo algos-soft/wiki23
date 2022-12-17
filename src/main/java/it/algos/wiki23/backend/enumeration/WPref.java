@@ -1,9 +1,9 @@
 package it.algos.wiki23.backend.enumeration;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.service.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.interfaces.*;
+import it.algos.vaad24.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 

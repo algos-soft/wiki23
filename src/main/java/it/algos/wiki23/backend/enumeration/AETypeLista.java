@@ -1,6 +1,6 @@
 package it.algos.wiki23.backend.enumeration;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 
 /**
  * Project wiki23

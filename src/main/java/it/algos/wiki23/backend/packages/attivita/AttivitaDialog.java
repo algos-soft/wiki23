@@ -3,11 +3,11 @@ package it.algos.wiki23.backend.packages.attivita;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
-import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.logic.*;
-import it.algos.vaad23.backend.service.*;
-import it.algos.vaad23.backend.wrapper.*;
-import it.algos.vaad23.ui.views.*;
+import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.logic.*;
+import it.algos.vaad24.backend.service.*;
+import it.algos.vaad24.backend.wrapper.*;
+import it.algos.vaad24.ui.views.*;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.*;

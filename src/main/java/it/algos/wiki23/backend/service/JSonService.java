@@ -1,7 +1,7 @@
 package it.algos.wiki23.backend.service;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.service.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.service.*;
 import static it.algos.wiki23.backend.service.WikiApiService.*;
 import org.json.simple.*;
 import org.springframework.beans.factory.config.*;

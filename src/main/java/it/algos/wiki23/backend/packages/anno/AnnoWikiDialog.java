@@ -1,10 +1,9 @@
 package it.algos.wiki23.backend.packages.anno;
 
-import it.algos.vaad23.backend.logic.*;
-import it.algos.vaad23.ui.views.*;
-
-import it.algos.vaad23.backend.logic.*;
-import it.algos.vaad23.ui.views.*;
+import it.algos.vaad24.backend.logic.*;
+import it.algos.vaad24.ui.views.*;
+import it.algos.vaad24.backend.logic.*;
+import it.algos.vaad24.ui.views.*;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.context.annotation.Scope;

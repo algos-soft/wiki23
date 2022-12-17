@@ -1,8 +1,8 @@
 package it.algos.wiki23.backend.statistiche;
 
 
-import it.algos.vaad23.backend.packages.crono.anno.*;
-import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.vaad24.backend.packages.crono.anno.*;
+import it.algos.vaad24.backend.packages.crono.giorno.*;
 import it.algos.wiki23.backend.enumeration.*;
 
 /**

@@ -1,7 +1,7 @@
 package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import it.algos.vaad23.backend.service.*;
+import it.algos.vaad24.backend.service.*;
 import it.sauronsoftware.cron4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;

@@ -1,7 +1,7 @@
 package it.algos.wiki23.backend.enumeration;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.interfaces.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.interfaces.*;
 
 import java.util.*;
 
