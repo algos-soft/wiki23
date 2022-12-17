@@ -5,7 +5,7 @@ import static it.algos.vaad24.backend.boot.VaadCost.*;
 import java.lang.annotation.*;
 
 /**
- * Project vaadin23
+ * Project vaad24
  * Created by Algos
  * User: gac
  * Date: ven, 13-ott-2017
