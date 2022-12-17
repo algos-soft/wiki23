@@ -1,8 +1,10 @@
 package it.algos.vaad24.wizard.scripts;
 
 import com.vaadin.flow.component.checkbox.*;
+import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.wizard.enumeration.*;
 import static it.algos.vaad24.wizard.scripts.WizElaboraNewProject.*;
 import org.springframework.beans.factory.config.*;
@@ -22,6 +24,10 @@ import java.util.*;
 public class WizElaboraUpdateProject extends WizElabora {
 
     public WizElaboraUpdateProject() {
+        super();
+    }// end of constructor
+
+    public WizElaboraUpdateProject(String updateProject) {
         super();
     }// end of constructor
 
@@ -51,6 +57,7 @@ public class WizElaboraUpdateProject extends WizElabora {
                 }
             }
         }
+        Avviso.show("Update project").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
         super.eliminaSources();
     }

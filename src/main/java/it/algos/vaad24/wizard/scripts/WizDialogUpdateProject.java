@@ -65,12 +65,12 @@ public class WizDialogUpdateProject extends WizDialog {
         String caption;
         checkBoxLayout = fixSezione("Flags di regolazione");
         mappaCheckbox = new LinkedHashMap<>();
-        it.algos.vaad24.wizard.enumeration.AEToken.targetProjectUpper.set(textService.primaMaiuscola(updateProject));
-        it.algos.vaad24.wizard.enumeration.AEToken.firstProject.set(updateProject.substring(0, 1).toUpperCase());
+        AEToken.targetProjectUpper.set(textService.primaMaiuscola(updateProject));
+        AEToken.firstProject.set(updateProject.substring(0, 1).toUpperCase());
 
         for (AEWizProject wiz : AEWizProject.getAllEnums()) {
             caption = wiz.getCaption();
-            caption = it.algos.vaad24.wizard.enumeration.AEToken.replaceAll(caption);
+            caption = AEToken.replaceAll(caption);
             check = new Checkbox(caption);
             check.setValue(wiz.isUpdate());
             mappaCheckbox.put(wiz.name(), check);
