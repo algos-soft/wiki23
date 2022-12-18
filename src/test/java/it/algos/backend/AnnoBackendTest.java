@@ -7,11 +7,14 @@ import it.algos.vaad24.backend.packages.crono.anno.*;
 import it.algos.vaad24.backend.packages.crono.secolo.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaad24
@@ -49,6 +52,19 @@ public class AnnoBackendTest extends AlgosUnitTest {
     private SecoloRepository secoloRepository;
 
     private Class entityClazz = Anno.class;
+
+
+    //--nome
+    //--esiste
+    protected static Stream<Arguments> ANNI() {
+        return Stream.of(
+                Arguments.of(VUOTA, false),
+                Arguments.of("0", false),
+                Arguments.of("24", true),
+                Arguments.of("24 a.C.", true),
+                Arguments.of("3208", false)
+        );
+    }
 
     /**
      * Qui passa una volta sola <br>
@@ -126,22 +142,146 @@ public class AnnoBackendTest extends AlgosUnitTest {
     }
 
 
+
+
+
     @Test
-    @Order(2)
-    @DisplayName("2 - findAll")
+    @Order(11)
+    @DisplayName("11 - findAll (entity)")
     void findAll() {
-        System.out.println("2 - findAll");
+        System.out.println("11 - findAll (entity)");
         String message;
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), dbName);
+        message = String.format("Ci sono in totale %s entities di %s in ordine di default", textService.format(listaBeans.size()), "Anno");
         System.out.println(message);
-        printSubLista(listaBeans);
+        printAnni(listaBeans);
     }
 
 
-//    @Test
+    @Test
+    @Order(12)
+    @DisplayName("12 - findAllAscendente (entity)")
+    void findAllAscendente() {
+        System.out.println("12 - findAllAscendente (entity)");
+        String message;
+
+        listaBeans = backend.findAllAscendente();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s in ordine ascendente", textService.format(listaBeans.size()), "Anno");
+        System.out.println(message);
+        printAnni(listaBeans);
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - findAllDiscendente (entity)")
+    void findAllDiscendente() {
+        System.out.println("13 - findAllDiscendente (entity)");
+        String message;
+
+        listaBeans = backend.findAllDiscendente();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s in ordine discendente", textService.format(listaBeans.size()), "Anno");
+        System.out.println(message);
+        printAnni(listaBeans);
+    }
+
+    @Test
+    @Order(21)
+    @DisplayName("21 - findNomi (nome)")
+    void findNomi() {
+        System.out.println("21 - findNomi (nome)");
+        String message;
+
+        listaStr = backend.findNomi();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s anni ordine di default", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiAnni(listaStr);
+    }
+
+    @Test
+    @Order(22)
+    @DisplayName("22 - findNomiAscendente (nome)")
+    void findNomiAscendente() {
+        System.out.println("22 - findNomiAscendente (nome)");
+        String message;
+
+        listaStr = backend.findNomiAscendente();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s anni in ordine ascendente", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiAnni(listaStr);
+    }
+
+    @Test
+    @Order(23)
+    @DisplayName("23 - findNomiDiscendente (nome)")
+    void findNomiDiscendente() {
+        System.out.println("23 - findNomiDiscendente (nome)");
+        String message;
+
+        listaStr = backend.findNomiDiscendente();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s anni in ordine discendente", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiAnni(listaStr);
+    }
+
+
+    @Test
+    @Order(31)
+    @DisplayName("31 - findAllBySecolo (entity)")
+    void findAllBySecolo() {
+        System.out.println("31 - findAllBySecolo (entity)");
+
+        for (Secolo sorgente : secoloBackend.findAll()) {
+            listaBeans = backend.findAllBySecolo(sorgente);
+            assertNotNull(listaBeans);
+            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaBeans.size()));
+            System.out.println(VUOTA);
+            System.out.println(message);
+            printAnni(listaBeans);
+        }
+    }
+
+
+    @Test
+    @Order(32)
+    @DisplayName("32 - findNomiBySecolo (nome)")
+    void findNomiBySecolo() {
+        System.out.println("32 - findNomiBySecolo (nome)");
+
+        for (String sorgente : secoloBackend.findNomiAscendenti()) {
+            listaStr = backend.findNomiBySecolo(sorgente);
+            assertNotNull(listaStr);
+            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaStr.size()));
+            System.out.println(VUOTA);
+            System.out.println(message);
+            printNomiAnni(listaStr);
+        }
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "ANNI")
+    @Order(61)
+    @DisplayName("61 - findByNome")
+    void findByNome(final String nome, final boolean esiste) {
+        System.out.println("61 - findByNome");
+        entityBean = backend.findByNome(nome);
+        assertEquals(esiste, entityBean != null);
+        if (entityBean != null) {
+            System.out.println(String.format("L'anno '%s' esiste", nome));
+        }
+        else {
+            System.out.println(String.format("L'anno '%s' non esiste", nome));
+        }
+    }
+
+    //    @Test
     @Order(91)
     @DisplayName("91 - resetOnlyEmpty pieno")
     void resetOnlyEmptyPieno() {
@@ -230,6 +370,33 @@ public class AnnoBackendTest extends AlgosUnitTest {
      */
     @AfterAll
     void tearDownAll() {
+    }
+
+    void printAnni(List<Anno> listaAnni) {
+        System.out.println(VUOTA);
+        int k = 0;
+
+        for (Anno anno : listaAnni) {
+            System.out.print(++k);
+            System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+            System.out.print(anno.ordine);
+            System.out.print(SPAZIO);
+            System.out.print(anno.nome);
+            System.out.print(SPAZIO);
+            System.out.println(anno.secolo);
+        }
+    }
+
+    void printNomiAnni(List<String> listaAnni) {
+        int k = 0;
+
+        for (String anno : listaAnni) {
+            System.out.print(++k);
+            System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+            System.out.println(anno);
+        }
     }
 
     void printBeans(List<Anno> listaBeans) {

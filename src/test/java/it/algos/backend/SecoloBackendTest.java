@@ -134,6 +134,36 @@ public class SecoloBackendTest extends AlgosUnitTest {
     }
 
 
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - findNomiDiscendenti (nome)")
+    void findNomi() {
+        System.out.println("3 - findNomiDiscendenti (nome)");
+        String message;
+
+        listaStr = backend.findNomi();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiSecoli(listaStr);
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - findNomiAscendenti (nome)")
+    void findNomiAscendenti() {
+        System.out.println("4 - findNomiAscendenti (nome)");
+        String message;
+
+        listaStr = backend.findNomiAscendenti();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiSecoli(listaStr);
+    }
+
     //    @Test
     @Order(91)
     @DisplayName("91 - resetOnlyEmpty pieno")
@@ -208,6 +238,18 @@ public class SecoloBackendTest extends AlgosUnitTest {
         message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), dbName);
         System.out.println(message);
         printSubLista(listaBeans);
+    }
+
+
+    void printNomiSecoli(List<String> listaSecoli) {
+        int k = 0;
+
+        for (String secolo : listaSecoli) {
+            System.out.print(++k);
+            System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+            System.out.println(secolo);
+        }
     }
 
     /**

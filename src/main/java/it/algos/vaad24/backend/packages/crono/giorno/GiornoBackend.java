@@ -100,6 +100,10 @@ public class GiornoBackend extends CrudBackend {
         return repository.findFirstByNome(nome);
     }
 
+    public boolean isEsiste(final String nome) {
+        return repository.findFirstByNome(nome) != null;
+    }
+
     public Giorno findByOrdine(final int ordine) {
         return repository.findFirstByOrdine(ordine);
     }
