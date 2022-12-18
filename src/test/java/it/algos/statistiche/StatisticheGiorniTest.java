@@ -1,4 +1,4 @@
-package it.algos.integration.statistiche;
+package it.algos.statistiche;
 
 import it.algos.*;
 import it.algos.base.*;

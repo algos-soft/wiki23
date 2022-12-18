@@ -1,4 +1,4 @@
-package it.algos.integration.statistiche;
+package it.algos.statistiche;
 
 import it.algos.*;
 import it.algos.base.*;
@@ -19,8 +19,8 @@ import org.springframework.test.context.junit.jupiter.*;
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Wed, 06-Jul-2022
- * Time: 20:25
+ * Date: Sat, 20-Aug-2022
+ * Time: 20:43
  * Unit test di una classe service o backend o query <br>
  * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
  * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -31,15 +31,15 @@ import org.springframework.test.context.junit.jupiter.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("statistiche")
-@DisplayName("Test StatisticheNazionalità")
+@DisplayName("Test StatisticheBio")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class StatisticheNazionalitaTest extends WikiTest {
+public class StatisticheBioTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private StatisticheNazionalita istanza;
+    private StatisticheBio istanza;
 
 
     /**
@@ -70,12 +70,13 @@ public class StatisticheNazionalitaTest extends WikiTest {
     @Order(1)
     @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new StatisticheNazionalita();
+        istanza = new StatisticheBio();
         assertNotNull(istanza);
         System.out.println(("1 - Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
+
 
     @Test
     @Order(2)
@@ -84,7 +85,7 @@ public class StatisticheNazionalitaTest extends WikiTest {
         System.out.println(("2 - Upload test"));
 
         System.out.println(VUOTA);
-        ottenutoRisultato = appContext.getBean(StatisticheNazionalita.class).uploadTest();
+        ottenutoRisultato = appContext.getBean(StatisticheBio.class).uploadTest();
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
     }

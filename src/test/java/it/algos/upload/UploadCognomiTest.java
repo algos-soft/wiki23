@@ -1,9 +1,9 @@
-package it.algos.integration.statistiche;
+package it.algos.upload;
 
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
-import it.algos.wiki23.backend.statistiche.*;
+import it.algos.wiki23.backend.upload.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +19,8 @@ import org.springframework.test.context.junit.jupiter.*;
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Sat, 20-Aug-2022
- * Time: 20:43
+ * Date: Tue, 18-Oct-2022
+ * Time: 14:18
  * Unit test di una classe service o backend o query <br>
  * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
  * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -30,16 +30,17 @@ import org.springframework.test.context.junit.jupiter.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
-@Tag("statistiche")
-@DisplayName("Test StatisticheBio")
+@Tag("production")
+@Tag("upload")
+@DisplayName("Cognomi upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class StatisticheBioTest extends WikiTest {
+public class UploadCognomiTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private StatisticheBio istanza;
+    private UploadCognomi istanza;
 
 
     /**
@@ -70,26 +71,29 @@ public class StatisticheBioTest extends WikiTest {
     @Order(1)
     @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new StatisticheBio();
+        istanza = new UploadCognomi();
         assertNotNull(istanza);
         System.out.println(("1 - Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-
     @Test
     @Order(2)
-    @DisplayName("2 - Upload test")
-    void uploadTest() {
-        System.out.println(("2 - Upload test"));
-
-        System.out.println(VUOTA);
-        ottenutoRisultato = appContext.getBean(StatisticheBio.class).uploadTest();
-        assertTrue(ottenutoRisultato.isValido());
-        printRisultato(ottenutoRisultato);
+    @DisplayName("2 - Upload test di un cognome senza sottopagine")
+    void upload2() {
+        System.out.println("2 - Upload test di un cognome senza sottopagine");
+        sorgente = "Adam";
+        appContext.getBean(UploadCognomi.class).test().upload(sorgente);
     }
-
+    @Test
+    @Order(3)
+    @DisplayName("3 - Upload test di un cognome con sottopagine")
+    void upload3() {
+        System.out.println("3 - Upload test di un cognome con sottopagine");
+        sorgente = "Thomas";
+        appContext.getBean(UploadCognomi.class).test().upload(sorgente);
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

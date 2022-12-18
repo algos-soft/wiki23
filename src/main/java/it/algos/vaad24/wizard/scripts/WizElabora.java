@@ -98,14 +98,14 @@ public abstract class WizElabora {
         switch (wiz) {
             case testService, testBackend -> {
                 result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
+                result = fixToken(result, destPath, oldToken, newToken);
                 mostraRisultato(result, AECopy.dirFilesModifica, dir, tag);
-                fixToken(destPath, oldToken, newToken);
             }
             default -> {}
         }
     }
 
-    public void fixToken(String destPath, String oldToken, String newToken) {
+    public AResult fixToken(AResult result, String destPath, String oldToken, String newToken) {
         String testo;
         String path;
         List<String> files = fileService.getFilesName(destPath);
@@ -116,6 +116,8 @@ public abstract class WizElabora {
             testo = textService.sostituisce(testo, oldToken, newToken);
             fileService.sovraScriveFile(path, testo);
         }
+
+        return result;
     }
 
     public void mostraRisultato(AResult result, AECopy copy, String dir, String tag) {

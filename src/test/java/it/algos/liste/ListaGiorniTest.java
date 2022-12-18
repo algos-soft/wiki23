@@ -1,4 +1,4 @@
-package it.algos.integration.liste;
+package it.algos.liste;
 
 import it.algos.*;
 import it.algos.base.*;

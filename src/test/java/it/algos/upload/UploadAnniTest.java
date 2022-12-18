@@ -1,4 +1,4 @@
-package it.algos.integration.upload;
+package it.algos.upload;
 
 import it.algos.*;
 import it.algos.base.*;

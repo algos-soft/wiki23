@@ -1,24 +1,26 @@
-package it.algos.integration.upload;
+package it.algos.statistiche;
 
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
-import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.upload.*;
-import it.algos.wiki23.backend.wrapper.*;
+import it.algos.wiki23.backend.statistiche.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.junit.jupiter.api.extension.*;
 import org.springframework.boot.test.context.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.test.context.junit.jupiter.*;
 
 /**
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Tue, 26-Jul-2022
- * Time: 08:49
+ * Date: Mon, 01-Aug-2022
+ * Time: 13:34
  * Unit test di una classe service o backend o query <br>
  * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
  * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -28,17 +30,16 @@ import org.springframework.test.context.junit.jupiter.*;
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
-@Tag("production")
-@Tag("upload")
-@DisplayName("Giorni upload")
+@Tag("statistiche")
+@DisplayName("Test StatisticheAnni")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UploadGiorniTest extends WikiTest {
+public class StatisticheAnniTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private UploadGiorni istanza;
+    private StatisticheAnni istanza;
 
 
     /**
@@ -69,65 +70,23 @@ public class UploadGiorniTest extends WikiTest {
     @Order(1)
     @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new UploadGiorni();
+        istanza = new StatisticheAnni();
         assertNotNull(istanza);
         System.out.println(("1 - Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-    //        @Test
-    @Order(2)
-    @DisplayName("2 - Upload test di un giorno morto con e senza paragrafi")
-    void uploadTestNato() {
-        System.out.println("2 - Upload test di un giorno morto senza paragrafi");
-        sorgente = "25 settembre";
-        appContext.getBean(UploadGiorni.class).senzaParagrafi().morte().test().upload(sorgente);
-        appContext.getBean(UploadGiorni.class).conParagrafi().morte().test().upload(sorgente);
-    }
-
-    //    @Test
-    @Order(3)
-    @DisplayName("3 - Upload con e senza usaSottoGiorniAnni")
-    void usaSottoGiorniAnni() {
-        System.out.println("3 - Upload con e senza usaSottoGiorniAnni");
-        sorgente = "25 settembre";
-        boolean usaSottoGiorniAnni = WPref.usaSottoGiorniAnni.is();
-
-        WPref.usaSottoGiorniAnni.setValue(false);
-        appContext.getBean(UploadGiorni.class).morte().test().upload(sorgente);
-
-        WPref.usaSottoGiorniAnni.setValue(true);
-        appContext.getBean(UploadGiorni.class).morte().test().upload(sorgente);
-
-        WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
-    }
 
     @Test
-    @Order(4)
-    @DisplayName("4 - Upload test di un giorno nato standard")
-    void uploadReale() {
-        System.out.println("4 - Upload test di un giorno nato standard");
-        sorgente = "26 dicembre";
-        appContext.getBean(UploadGiorni.class).nascita().test().upload(sorgente);
-    }
+    @Order(2)
+    @DisplayName("2 - Upload")
+    void upload2() {
+        System.out.println(("2 - Upload"));
 
-
-    //    @Test
-    @Order(5)
-    @DisplayName("5 - Upload all")
-    void uploadAll() {
-        System.out.println("5 - Upload all");
-        appContext.getBean(UploadGiorni.class).uploadAll();
-    }
-
-    //    @Test
-    @Order(6)
-    @DisplayName("6 - Upload test con result")
-    void uploadTestResult() {
-        System.out.println("6 - Upload test con result");
-        sorgente = "25 settembre";
-        ottenutoRisultato = appContext.getBean(UploadGiorni.class).nascita().test().upload(sorgente);
+        System.out.println(VUOTA);
+        ottenutoRisultato = appContext.getBean(StatisticheAnni.class).uploadTest();
+        assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
     }
 

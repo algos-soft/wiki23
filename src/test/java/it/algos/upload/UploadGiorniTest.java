@@ -1,26 +1,24 @@
-package it.algos.integration.upload;
+package it.algos.upload;
 
 import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.upload.*;
+import it.algos.wiki23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.junit.jupiter.api.extension.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.test.context.junit.jupiter.*;
 
 /**
  * Project wiki23
  * Created by Algos
  * User: gac
- * Date: Thu, 09-Jun-2022
- * Time: 14:22
+ * Date: Tue, 26-Jul-2022
+ * Time: 08:49
  * Unit test di una classe service o backend o query <br>
  * Estende la classe astratta AlgosTest che contiene le regolazioni essenziali <br>
  * Nella superclasse AlgosTest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -32,15 +30,15 @@ import org.springframework.test.context.junit.jupiter.*;
 @Tag("integration")
 @Tag("production")
 @Tag("upload")
-@DisplayName("Attività upload")
+@DisplayName("Giorni upload")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UploadAttivitaTest extends WikiTest {
+public class UploadGiorniTest extends WikiTest {
 
 
     /**
      * Classe principale di riferimento <br>
      */
-    private UploadAttivita istanza;
+    private UploadGiorni istanza;
 
 
     /**
@@ -69,70 +67,68 @@ public class UploadAttivitaTest extends WikiTest {
 
     @Test
     @Order(1)
-    @DisplayName("1- Costruttore base senza parametri")
+    @DisplayName("1 - Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new UploadAttivita();
+        istanza = new UploadGiorni();
         assertNotNull(istanza);
-        System.out.println(("1- Costruttore base senza parametri"));
+        System.out.println(("1 - Costruttore base senza parametri"));
         System.out.println(VUOTA);
         System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
     }
 
-
-    //    @Test
+    //        @Test
     @Order(2)
-    @DisplayName("2 - Upload test di una attività con e senza TOC")
-    void uploadToc() {
-        System.out.println("2 - Upload test di una attività con e senza TOC");
-        sorgente = "agronomi";
-        appContext.getBean(UploadAttivita.class).forceToc().test().upload(sorgente);
-        appContext.getBean(UploadAttivita.class).noToc().test().upload(sorgente);
+    @DisplayName("2 - Upload test di un giorno morto con e senza paragrafi")
+    void uploadTestNato() {
+        System.out.println("2 - Upload test di un giorno morto senza paragrafi");
+        sorgente = "25 settembre";
+        appContext.getBean(UploadGiorni.class).senzaParagrafi().morte().test().upload(sorgente);
+        appContext.getBean(UploadGiorni.class).conParagrafi().morte().test().upload(sorgente);
     }
-
 
     //    @Test
     @Order(3)
-    @DisplayName("3 - Upload di una attività plurale")
-    void upload3() {
-        System.out.println("3 - Upload di una attività plurale");
-        sorgente = "Allenatori di hockey su ghiaccio";
-        appContext.getBean(UploadAttivita.class).test().upload(sorgente);
+    @DisplayName("3 - Upload con e senza usaSottoGiorniAnni")
+    void usaSottoGiorniAnni() {
+        System.out.println("3 - Upload con e senza usaSottoGiorniAnni");
+        sorgente = "25 settembre";
+        boolean usaSottoGiorniAnni = WPref.usaSottoGiorniAnni.is();
+
+        WPref.usaSottoGiorniAnni.setValue(false);
+        appContext.getBean(UploadGiorni.class).morte().test().upload(sorgente);
+
+        WPref.usaSottoGiorniAnni.setValue(true);
+        appContext.getBean(UploadGiorni.class).morte().test().upload(sorgente);
+
+        WPref.usaSottoGiorniAnni.setValue(usaSottoGiorniAnni);
     }
 
-    //    @Test
+    @Test
     @Order(4)
-    @DisplayName("4- Upload test di una attività")
-    void upload4() {
-        System.out.println("4 - Upload test di una attività");
-        sorgente = "abati e badesse";
-        appContext.getBean(UploadAttivita.class).test().upload(sorgente);
+    @DisplayName("4 - Upload test di un giorno nato standard")
+    void uploadReale() {
+        System.out.println("4 - Upload test di un giorno nato standard");
+        sorgente = "26 dicembre";
+        appContext.getBean(UploadGiorni.class).nascita().test().upload(sorgente);
     }
+
 
     //    @Test
     @Order(5)
-    @DisplayName("5- Upload all attività")
-    void upload5() {
-        System.out.println("5 - Upload all attività");
-        appContext.getBean(UploadAttivita.class).test().uploadAll();
+    @DisplayName("5 - Upload all")
+    void uploadAll() {
+        System.out.println("5 - Upload all");
+        appContext.getBean(UploadGiorni.class).uploadAll();
     }
 
-
-    //        @Test
+    //    @Test
     @Order(6)
-    @DisplayName("6- Upload attività con poche voci")
-    void upload6() {
-        System.out.println("5 - Upload attività con poche voci");
-        sorgente = "agricoltori";
-        appContext.getBean(UploadAttivita.class).test().upload(sorgente);
-    }
-
-//    @Test
-    @Order(7)
-    @DisplayName("7 - Upload di una attività con sottoPagina")
-    void upload7() {
-        System.out.println("3 - Upload di una attività con sottoPagina");
-        sorgente = "dogi";
-        appContext.getBean(UploadAttivita.class).test().upload(sorgente);
+    @DisplayName("6 - Upload test con result")
+    void uploadTestResult() {
+        System.out.println("6 - Upload test con result");
+        sorgente = "25 settembre";
+        ottenutoRisultato = appContext.getBean(UploadGiorni.class).nascita().test().upload(sorgente);
+        printRisultato(ottenutoRisultato);
     }
 
     /**
