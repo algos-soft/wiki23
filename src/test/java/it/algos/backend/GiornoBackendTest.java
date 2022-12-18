@@ -145,14 +145,6 @@ public class GiornoBackendTest extends AlgosUnitTest {
     }
 
 
-
-
-
-
-
-
-
-
     @Test
     @Order(2)
     @DisplayName("2 - findAll (entity)")
@@ -225,7 +217,6 @@ public class GiornoBackendTest extends AlgosUnitTest {
         System.out.println(VUOTA);
         GIORNI().forEach(this::isEsisteBase);
     }
-
 
 
     //--giorno

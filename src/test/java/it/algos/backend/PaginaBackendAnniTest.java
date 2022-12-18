@@ -1,4 +1,4 @@
-package it.algos.integration.backend;
+package it.algos.backend;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.*;

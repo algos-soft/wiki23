@@ -1,8 +1,8 @@
-package it.algos.integration.backend;
+package it.algos.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import it.algos.wiki23.backend.packages.anno.*;
+import it.algos.vaad24.backend.packages.utility.log.*;
 import org.junit.jupiter.api.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,34 +18,34 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import com.vaadin.flow.component.textfield.TextField;
 
 /**
- * Project wiki23
+ * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: Tue, 08-Nov-2022
- * Time: 11:51
+ * Date: Sun, 20-Nov-2022
+ * Time: 19:37
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("backend")
-@DisplayName("AnnoWiki Backend")
+@DisplayName("Logger Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AnnoWikiBackendTest extends WikiTest {
+public class LoggerBackendTest extends AlgosTest {
 
     /**
      * The Service.
      */
     @InjectMocks
-    private AnnoWikiBackend backend;
+    private LoggerBackend backend;
 
     @Autowired
-    private AnnoWikiRepository repository;
+    private LoggerRepository repository;
 
 
-    private AnnoWiki entityBean;
+    private Logger entityBean;
 
 
-    private List<AnnoWiki> listaBeans;
+    private List<Logger> listaBeans;
 
     /**
      * Qui passa una volta sola <br>
@@ -60,9 +60,6 @@ public class AnnoWikiBackendTest extends WikiTest {
         backend.crudRepository = repository;
         backend.arrayService = arrayService;
         backend.reflectionService = reflectionService;
-        backend.mongoService = mongoService;
-        backend.annoBackend = annoBackend;
-        backend.wikiUtility = wikiUtility;
     }
 
 
@@ -118,24 +115,8 @@ public class AnnoWikiBackendTest extends WikiTest {
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "AnnoWiki");
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Logger");
         System.out.println(message);
-    }
-
-//    @Test
-    @Order(6)
-    @DisplayName("6 - reset")
-    void reset() {
-        System.out.println("6 - reset");
-        String message;
-
-        ottenutoBooleano = backend.reset();
-        assertTrue(ottenutoBooleano);
-        listaBeans = backend.findAll();
-        assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "AnnoWiki");
-        System.out.println(message);
-        printBeans(listaBeans);
     }
 
     /**
@@ -153,19 +134,16 @@ public class AnnoWikiBackendTest extends WikiTest {
     void tearDownAll() {
     }
 
-    void printBeans(List<AnnoWiki> listaBeans) {
+    void printBeans(List<Logger> listaBeans) {
         System.out.println(VUOTA);
         int k = 0;
 
-        for (AnnoWiki anno : listaBeans) {
+        for (Logger bean : listaBeans) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.print(anno.nome);
-            System.out.print(SPAZIO);
-            System.out.print(anno.ordine);
-            System.out.print(SPAZIO);
-            System.out.println(anno.secolo);
+            System.out.println(bean);
         }
     }
+
 }

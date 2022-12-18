@@ -1,8 +1,8 @@
-package it.algos.integration.backend;
+package it.algos.backend;
 
 import it.algos.*;
 import it.algos.base.*;
-import it.algos.vaad24.backend.packages.utility.log.*;
+import it.algos.vaad24.backend.packages.utility.versione.*;
 import org.junit.jupiter.api.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,30 +22,30 @@ import com.vaadin.flow.component.textfield.TextField;
  * Created by Algos
  * User: gac
  * Date: Sun, 20-Nov-2022
- * Time: 19:37
+ * Time: 19:40
  */
 @SpringBootTest(classes = {Wiki23Application.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
 @Tag("backend")
-@DisplayName("Logger Backend")
+@DisplayName("Versione Backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class LoggerBackendTest extends AlgosTest {
+public class VersioneBackendTest extends AlgosTest {
 
     /**
      * The Service.
      */
     @InjectMocks
-    private LoggerBackend backend;
+    private VersioneBackend backend;
 
     @Autowired
-    private LoggerRepository repository;
+    private VersioneRepository repository;
 
 
-    private Logger entityBean;
+    private Versione entityBean;
 
 
-    private List<Logger> listaBeans;
+    private List<Versione> listaBeans;
 
     /**
      * Qui passa una volta sola <br>
@@ -115,7 +115,7 @@ public class LoggerBackendTest extends AlgosTest {
 
         listaBeans = backend.findAll();
         assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Logger");
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Versione");
         System.out.println(message);
     }
 
@@ -134,11 +134,11 @@ public class LoggerBackendTest extends AlgosTest {
     void tearDownAll() {
     }
 
-    void printBeans(List<Logger> listaBeans) {
+    void printBeans(List<Versione> listaBeans) {
         System.out.println(VUOTA);
         int k = 0;
 
-        for (Logger bean : listaBeans) {
+        for (Versione bean : listaBeans) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);

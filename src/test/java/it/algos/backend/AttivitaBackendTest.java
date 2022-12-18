@@ -1,4 +1,4 @@
-package it.algos.integration.backend;
+package it.algos.backend;
 
 import it.algos.*;
 import it.algos.base.*;

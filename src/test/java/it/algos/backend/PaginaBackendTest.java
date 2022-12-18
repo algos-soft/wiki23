@@ -1,4 +1,4 @@
-package it.algos.integration.backend;
+package it.algos.backend;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
