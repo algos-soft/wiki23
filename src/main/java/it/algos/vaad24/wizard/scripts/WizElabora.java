@@ -1,12 +1,12 @@
 package it.algos.vaad24.wizard.scripts;
 
-import it.algos.vaad24.wizard.enumeration.*;
-import static it.algos.vaad24.wizard.scripts.WizCost.TXT_SUFFIX;
-import static it.algos.vaad24.wizard.scripts.WizCost.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.service.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.vaad24.wizard.enumeration.*;
+import static it.algos.vaad24.wizard.scripts.WizCost.TXT_SUFFIX;
+import static it.algos.vaad24.wizard.scripts.WizCost.*;
 import static it.algos.vaad24.wizard.scripts.WizElaboraNewProject.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -85,7 +85,7 @@ public abstract class WizElabora {
     }
 
 
-    public void elabora(final it.algos.vaad24.wizard.enumeration.AEWizProject wiz) {
+    public void elabora(final AEWizProject wiz) {
         AResult result;
         String srcPath = srcVaad24 + wiz.getCopyDest() + SLASH;
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
@@ -98,23 +98,29 @@ public abstract class WizElabora {
         switch (wiz) {
             case testService, testBackend -> {
                 result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
-                result = fixToken(result, destPath, oldToken, newToken);
+                result = fixToken(result, oldToken, newToken);
                 mostraRisultato(result, AECopy.dirFilesModifica, dir, tag);
             }
             default -> {}
         }
     }
 
-    public AResult fixToken(AResult result, String destPath, String oldToken, String newToken) {
-        String testo;
+    public AResult fixToken(AResult result, String oldToken, String newToken) {
+        String testoBase;
+        String testoSostituito;
         String path;
-        List<String> files = fileService.getFilesName(destPath);
+        String destPath = result.getTarget();
+        Map<String, List> resultMap = result.getMappa();
+        List<String> files = resultMap.get(AEKeyMapFile.modificati);
 
         for (String nomeFile : files) {
             path = destPath + nomeFile;
-            testo = fileService.leggeFile(path);
-            testo = textService.sostituisce(testo, oldToken, newToken);
-            fileService.sovraScriveFile(path, testo);
+            testoBase = fileService.leggeFile(path);
+            testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
+            fileService.sovraScriveFile(path, testoSostituito);
+            if (testoSostituito.equals(testoBase)) {
+                int a = 87;
+            }
         }
 
         return result;
@@ -127,41 +133,41 @@ public abstract class WizElabora {
         List<String> filesSorgenti = null;
         List<String> filesDestinazioneAnte = null;
         List<String> filesDestinazionePost = null;
-        List<String> filesAggiunti = null;
+        List<String> filesCreati = null;
         List<String> filesModificati = null;
 
         if (result.isValido()) {
             resultMap = result.getMappa();
             if (resultMap != null) {
-                filesSorgenti = resultMap.get(KEY_MAPPA_SORGENTI);
-                filesDestinazioneAnte = resultMap.get(KEY_MAPPA_DESTINAZIONE_ANTE);
-                filesDestinazionePost = resultMap.get(KEY_MAPPA_DESTINAZIONE_POST);
-                filesAggiunti = resultMap.get(KEY_MAPPA_AGGIUNTI);
-                filesModificati = resultMap.get(KEY_MAPPA_MODIFICATI);
+                filesSorgenti = resultMap.get(AEKeyMapFile.sorgenti);
+                filesDestinazioneAnte = resultMap.get(AEKeyMapFile.destinazioneAnte);
+                filesDestinazionePost = resultMap.get(AEKeyMapFile.destinazionePost);
+                filesCreati = resultMap.get(AEKeyMapFile.aggiuntiNuovi);
+                filesModificati = resultMap.get(AEKeyMapFile.modificati);
             }
             filesSorgenti = filesSorgenti != null ? filesSorgenti : new ArrayList<>();
             filesDestinazioneAnte = filesDestinazioneAnte != null ? filesDestinazioneAnte : new ArrayList<>();
             filesDestinazionePost = filesDestinazionePost != null ? filesDestinazionePost : new ArrayList<>();
-            filesAggiunti = filesAggiunti != null ? filesAggiunti : new ArrayList<>();
+            filesCreati = filesCreati != null ? filesCreati : new ArrayList<>();
             filesModificati = filesModificati != null ? filesModificati : new ArrayList<>();
 
             switch (copy) {
                 case dirOnly -> {}
                 case dirDelete -> {}
                 case dirFilesAddOnly -> {
-                    if (result.getTagCode().equals(KEY_DIR_CREATA_NON_ESISTENTE)) {
+                    if (result.getTagCode().equals(AEKeyDir.creataNuova.describeConstable())) {
                         messageType = "DirFilesAddOnly - Directory creata ex novo";
                         message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                         message = String.format("Files creati: %s", filesDestinazionePost);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
-                    if (result.getTagCode().equals(KEY_DIR_ESISTENTE)) {
+                    if (result.getTagCode().equals(AEKeyDir.esistente)) {
                         messageType = "DirFilesAddOnly - Directory già esistente";
                         message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
-                    if (result.getTagCode().equals(KEY_DIR_INTEGRATA)) {
+                    if (result.getTagCode().equals(AEKeyDir.integrata)) {
                         messageType = "DirFilesAddOnly - Directory esistente ma integrata";
                         message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
@@ -172,7 +178,7 @@ public abstract class WizElabora {
                         System.out.println(message);
                         message = String.format("Files destinazione preesistenti e rimasti (%s): %s", filesDestinazioneAnte.size(), filesDestinazioneAnte);
                         System.out.println(message);
-                        message = String.format("Files aggiunti (%s): %s", filesAggiunti.size(), filesAggiunti);
+                        message = String.format("Files creati (%s): %s", filesCreati.size(), filesCreati);
                         System.out.println(message);
                         message = String.format("Files modificati (%s): %s", filesModificati.size(), filesModificati);
                         System.out.println(message);
@@ -181,19 +187,19 @@ public abstract class WizElabora {
                     }
                 }
                 case dirFilesModifica -> {
-                    if (result.getTagCode().equals(KEY_DIR_CREATA_NON_ESISTENTE)) {
+                    if (result.getTagCode().equals(AEKeyDir.creataNuova)) {
                         messageType = "DirFilesModifica - Directory creata ex novo";
                         message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                         message = String.format("Files creati: %s", filesDestinazionePost);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
-                    if (result.getTagCode().equals(KEY_DIR_ESISTENTE)) {
+                    if (result.getTagCode().equals(AEKeyDir.esistente)) {
                         messageType = "DirFilesModifica - Directory esistente";
                         message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
-                    if (result.getTagCode().equals(KEY_DIR_INTEGRATA)) {
+                    if (result.getTagCode().equals(AEKeyDir.integrata)) {
                         messageType = "DirFilesModifica - Directory integrata";
                         message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
@@ -204,7 +210,7 @@ public abstract class WizElabora {
                         System.out.println(message);
                         message = String.format("Files destinazione preesistenti e rimasti (%s): %s", filesDestinazioneAnte.size(), filesDestinazioneAnte);
                         System.out.println(message);
-                        message = String.format("Files aggiunti (%s): %s", filesAggiunti.size(), filesAggiunti);
+                        message = String.format("Files aggiunti (%s): %s", filesCreati.size(), filesCreati);
                         System.out.println(message);
                         message = String.format("Files modificati (%s): %s", filesModificati.size(), filesModificati);
                         System.out.println(message);
@@ -227,7 +233,7 @@ public abstract class WizElabora {
     }
 
 
-    public void source(final it.algos.vaad24.wizard.enumeration.AEWizProject wiz) {
+    public void source(final AEWizProject wiz) {
         String message;
         AResult result;
         String dest = wiz.getCopyDest();
@@ -235,9 +241,9 @@ public abstract class WizElabora {
         String sorcePath = srcVaad24 + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX + nomeFile;
         sorcePath += sorcePath.endsWith(TXT_SUFFIX) ? VUOTA : TXT_SUFFIX;
         String sourceText = fileService.leggeFile(sorcePath);
-        sourceText = it.algos.vaad24.wizard.enumeration.AEToken.replaceAll(sourceText);
+        sourceText = AEToken.replaceAll(sourceText);
         String destPath = destNewProject + dest;
-        destPath = it.algos.vaad24.wizard.enumeration.AEToken.replaceAll(destPath);
+        destPath = AEToken.replaceAll(destPath);
         String tag = progettoEsistente ? "Update" : "New";
 
         result = fileService.scriveFile(wiz.getCopy(), destPath, sourceText);

@@ -4,8 +4,11 @@ import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.wrapper.*;
 import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.wizard.enumeration.*;
+import static it.algos.vaad24.wizard.scripts.WizCost.*;
 import static it.algos.vaad24.wizard.scripts.WizElaboraNewProject.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -58,8 +61,49 @@ public class WizElaboraUpdateProject extends WizElabora {
             }
         }
         Avviso.show("Update project").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-
         super.eliminaSources();
+    }
+
+
+    public void elabora(final AEWizProject wiz) {
+        AResult result;
+        String srcPath = srcVaad24 + wiz.getCopyDest() + SLASH;
+        String destPath = destNewProject + wiz.getCopyDest() + SLASH;
+        String dir = fileService.lastDirectory(destPath).toLowerCase();
+        String oldToken = APPLICATION_VAADIN24;
+        String newToken = fileService.estraeClasseFinaleSenzaJava(destNewProject);
+        newToken = textService.primaMaiuscola(newToken) + APP_NAME;
+        String tag = progettoEsistente ? "Update" : "New";
+
+        switch (wiz) {
+            case testService, testBackend -> {
+//                result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
+                result = fixToken(srcPath, destPath, oldToken, newToken);
+                mostraRisultato(result, AECopy.dirFilesModifica, dir, tag);
+            }
+            default -> {}
+        }
+    }
+
+    public AResult fixToken( String srcPath, String destPath, String oldToken, String newToken) {
+        String testoBase;
+        String testoSostituito;
+        String path;
+//        String destPath = result.getTarget();
+//        Map<String, List> resultMap = result.getMappa();
+//        List<String> files = resultMap.get(KEY_MAPPA_MODIFICATI);
+//        result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
+
+//        for (String nomeFile : files) {
+//            path = destPath + nomeFile;
+//            testoBase = fileService.leggeFile(path);
+//            testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
+//            fileService.sovraScriveFile(path, testoSostituito);
+//            if (testoSostituito.equals(testoBase)) {
+//            }
+//        }
+
+        return null;
     }
 
 }

@@ -2,13 +2,13 @@ package it.algos.vaad24.wizard.scripts;
 
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.spring.annotation.*;
-import it.algos.vaad24.ui.dialog.*;
-import static it.algos.vaad24.wizard.scripts.WizCost.*;
-import static it.algos.vaad24.wizard.scripts.WizElaboraNewProject.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.vaad24.ui.dialog.*;
+import static it.algos.vaad24.wizard.scripts.WizCost.*;
+import static it.algos.vaad24.wizard.scripts.WizElaboraNewProject.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Scope;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class WizElaboraFeedBack extends it.algos.vaad24.wizard.scripts.WizElabora {
+public class WizElaboraFeedBack extends WizElabora {
 
     public void esegue() {
         String message;
@@ -45,11 +45,11 @@ public class WizElaboraFeedBack extends it.algos.vaad24.wizard.scripts.WizElabor
         if (esisteSrc && esisteDest) {
             result = fileService.copyDirectory(AECopy.dirFilesModifica, srcWizard, destWizard);
             if (result.isValido()) {
-                if (result.getTagCode().equals(KEY_DIR_INTEGRATA)) {
+                if (result.getTagCode().equals(AEKeyDir.integrata.name())) {
                     mostraRisultato(result, AECopy.dirFilesModifica, destWizard, "Rollback");
                     Avviso.show("Feedback di wizard").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 }
-                if (result.getTagCode().equals(KEY_DIR_ESISTENTE)) {
+                if (result.getTagCode().equals(AEKeyDir.esistente.name())) {
                     message = "La directory 'wizard' non è stata modificata";
                     logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     Avviso.show("Feedback di wizard").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
