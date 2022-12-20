@@ -1,6 +1,7 @@
 package it.algos.wiki23.backend.boot;
 
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaad24.backend.boot.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import org.springframework.beans.factory.config.*;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Wiki23Cost {
 
+    public static final String PROJECT_CURRENT_MAIN_APPLICATION = "Wiki23Application";
     public static final String WIKI_TITLE_DEBUG = "Utente:Biobot/2";
 
     public static final int DELTA_ORDINE_ANNI = 100;

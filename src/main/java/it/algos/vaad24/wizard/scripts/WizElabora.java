@@ -145,7 +145,7 @@ public abstract class WizElabora {
                         System.out.println(message);
                     }
                 }
-                case dirFilesModifica -> {
+                case dirFilesModifica, dirFilesModificaToken -> {
                     if (result.getTagCode().equals(AEKeyDir.creataNuova)) {
                         messageType = "DirFilesModifica - Directory creata ex novo";
                         message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);

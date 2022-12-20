@@ -3,8 +3,10 @@ package it.algos.vaad24.wizard.scripts;
 import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaad24.backend.boot.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.exception.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.wizard.enumeration.*;
@@ -72,15 +74,15 @@ public class WizElaboraUpdateProject extends WizElabora {
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
         String dir = fileService.lastDirectory(destPath).toLowerCase();
         String oldToken = APPLICATION_VAADIN24;
-        String newToken = fileService.estraeClasseFinaleSenzaJava(destNewProject);
+        String newToken = VaadVar.projectCurrentMainApplication;
         newToken = textService.primaMaiuscola(newToken) + APP_NAME;
         String tag = progettoEsistente ? "Update" : "New";
 
         switch (wiz) {
             case testService, testBackend -> {
-                result = fileService.copyDirectory(AECopy.dirFilesModificaToken, srcPath, destPath);
+                result = fileService.copyDirectory(AECopy.dirFilesModificaToken, srcPath, destPath, oldToken, newToken);
                 result = fixToken(result, oldToken, newToken);
-                mostraRisultato(result, AECopy.dirFilesModifica, dir, tag);
+                mostraRisultato(result, AECopy.dirFilesModificaToken, dir, tag);
             }
             default -> {}
         }
@@ -91,16 +93,25 @@ public class WizElaboraUpdateProject extends WizElabora {
         String testoSostituito;
         String path;
         String destPath = result.getTarget();
-        Map<String, List> resultMap = result.getMappa();
-        List<String> files = resultMap.get(AEKeyMapFile.modificati);
+        Map<String, List> resultMap;
+        List<String> files;
 
-        for (String nomeFile : files) {
-            path = destPath + nomeFile;
-            testoBase = fileService.leggeFile(path);
-            testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
-            fileService.sovraScriveFile(path, testoSostituito);
-            if (testoSostituito.equals(testoBase)) {
-                int a = 87;
+        if (result == null || result.isErrato()) {
+            logger.warn(AETypeLog.file, new AlgosException(result.getErrorMessage()));
+            return result;
+        }
+        resultMap = result.getMappa();
+        files = resultMap != null ? resultMap.get(AEKeyMapFile.tokenModificati) : null;
+
+        if (files != null) {
+            for (String nomeFile : files) {
+                path = destPath + nomeFile;
+                testoBase = fileService.leggeFile(path);
+                testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
+                fileService.sovraScriveFile(path, testoSostituito);
+                if (testoSostituito.equals(testoBase)) {
+                    int a = 87;
+                }
             }
         }
 
@@ -108,29 +119,26 @@ public class WizElaboraUpdateProject extends WizElabora {
     }
 
 
-
-    public AResult fixToken( String srcPath, String destPath, String oldToken, String newToken) {
+    public AResult fixToken(String srcPath, String destPath, String oldToken, String newToken) {
         String testoBase;
         String testoSostituito;
         String path;
-//        String destPath = result.getTarget();
-//        Map<String, List> resultMap = result.getMappa();
-//        List<String> files = resultMap.get(KEY_MAPPA_MODIFICATI);
-//        result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
+        //        String destPath = result.getTarget();
+        //        Map<String, List> resultMap = result.getMappa();
+        //        List<String> files = resultMap.get(KEY_MAPPA_MODIFICATI);
+        //        result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
 
-//        for (String nomeFile : files) {
-//            path = destPath + nomeFile;
-//            testoBase = fileService.leggeFile(path);
-//            testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
-//            fileService.sovraScriveFile(path, testoSostituito);
-//            if (testoSostituito.equals(testoBase)) {
-//            }
-//        }
+        //        for (String nomeFile : files) {
+        //            path = destPath + nomeFile;
+        //            testoBase = fileService.leggeFile(path);
+        //            testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
+        //            fileService.sovraScriveFile(path, testoSostituito);
+        //            if (testoSostituito.equals(testoBase)) {
+        //            }
+        //        }
 
         return null;
     }
-
-
 
 
 }

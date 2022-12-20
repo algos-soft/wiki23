@@ -3,6 +3,7 @@ package it.algos.wiki23.backend.boot;
 import com.vaadin.flow.component.map.configuration.*;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad24.backend.boot.*;
+import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.interfaces.*;
 import it.algos.vaad24.backend.packages.geografia.continente.*;
 import it.algos.vaad24.backend.service.*;
@@ -82,6 +83,14 @@ public class Wiki23Boot extends VaadBoot {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         VaadVar.projectCurrent = "wiki23";
+
+
+        /**
+         * Nome della classe di partenza col metodo 'main' <br>
+         * Spesso coincide (non obbligatoriamente) con projectCurrent + Application <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.projectCurrentMainApplication = PROJECT_CURRENT_MAIN_APPLICATION;
 
         /**
          * Nome identificativo maiuscolo dell' applicazione <br>

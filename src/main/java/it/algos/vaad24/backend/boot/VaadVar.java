@@ -49,8 +49,14 @@ public class VaadVar {
      * Nome identificativo minuscolo del progetto corrente <br>
      * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
      */
-
     public static String projectCurrent;
+
+    /**
+     * Nome della classe di partenza col metodo 'main' <br>
+     * Spesso coincide (non obbligatoriamente) con projectCurrent + Application <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static String projectCurrentMainApplication;
 
     /**
      * Nome identificativo minuscolo dell' applicazione nella directory dei projects Idea <br>

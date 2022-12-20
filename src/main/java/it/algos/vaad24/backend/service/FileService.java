@@ -814,6 +814,17 @@ public class FileService extends AbstractService {
             return result.setErrorMessage(message);
         }
 
+        if (typeCopy == AECopy.dirFilesModificaToken) {
+            if (textService.isEmpty(srcToken)) {
+                message = "Manca il token sorgente";
+                return result.errorMessage(message);
+            }
+            if (textService.isEmpty(destToken)) {
+                message = "Manca il token destinazione";
+                return result.errorMessage(message);
+            }
+        }
+
         filesSorgenti = getFilesName(srcPath);
         resultMap.put(AEKeyMapFile.sorgenti.name(), filesSorgenti);
         result.setMappa(resultMap);

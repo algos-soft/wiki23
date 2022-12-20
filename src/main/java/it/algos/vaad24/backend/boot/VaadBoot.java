@@ -260,6 +260,7 @@ public class VaadBoot implements ServletContextListener {
          */
         VaadVar.projectNameModulo = MODULO_VAADIN24;
 
+
         /**
          * Lista dei moduli di menu da inserire nel Drawer del MainLayout per le gestione delle @Routes. <br>
          * Regolata dall'applicazione durante l'esecuzione del 'container startup' (non-UI logic) <br>
