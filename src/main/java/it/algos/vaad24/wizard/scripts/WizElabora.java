@@ -85,47 +85,6 @@ public abstract class WizElabora {
     }
 
 
-    public void elabora(final it.algos.vaad24.wizard.enumeration.AEWizProject wiz) {
-        AResult result;
-        String srcPath = srcVaad24 + wiz.getCopyDest() + SLASH;
-        String destPath = destNewProject + wiz.getCopyDest() + SLASH;
-        String dir = fileService.lastDirectory(destPath).toLowerCase();
-        String oldToken = APPLICATION_VAADIN24;
-        String newToken = fileService.estraeClasseFinaleSenzaJava(destNewProject);
-        newToken = textService.primaMaiuscola(newToken) + APP_NAME;
-        String tag = progettoEsistente ? "Update" : "New";
-
-        switch (wiz) {
-            case testService, testBackend -> {
-                result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
-                result = fixToken(result, oldToken, newToken);
-                mostraRisultato(result, AECopy.dirFilesModifica, dir, tag);
-            }
-            default -> {}
-        }
-    }
-
-    public AResult fixToken(AResult result, String oldToken, String newToken) {
-        String testoBase;
-        String testoSostituito;
-        String path;
-        String destPath = result.getTarget();
-        Map<String, List> resultMap = result.getMappa();
-        List<String> files = resultMap.get(AEKeyMapFile.modificati);
-
-        for (String nomeFile : files) {
-            path = destPath + nomeFile;
-            testoBase = fileService.leggeFile(path);
-            testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
-            fileService.sovraScriveFile(path, testoSostituito);
-            if (testoSostituito.equals(testoBase)) {
-                int a = 87;
-            }
-        }
-
-        return result;
-    }
-
     public void mostraRisultato(AResult result, AECopy copy, String dir, String tag) {
         String message;
         String messageType = VUOTA;

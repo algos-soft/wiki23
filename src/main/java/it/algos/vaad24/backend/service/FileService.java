@@ -741,7 +741,7 @@ public class FileService extends AbstractService {
     }
 
     public AResult copyDirectory(final AECopy typeCopy, String srcPath, String destPath) {
-        return copyDirectory(typeCopy, srcPath, destPath);
+        return copyDirectory(typeCopy, srcPath, destPath, VUOTA, VUOTA);
     }
 
     /**
