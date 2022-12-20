@@ -606,8 +606,8 @@ public abstract class AQuery {
      *
      * @param urlConn connessione
      */
-    protected Map downlodCookies(URLConnection urlConn) {
-        Map cookiesMap = new HashMap();
+    protected LinkedHashMap downlodCookies(URLConnection urlConn) {
+        LinkedHashMap cookiesMap = new LinkedHashMap();
         String headerName;
         String cookie;
         String name;
