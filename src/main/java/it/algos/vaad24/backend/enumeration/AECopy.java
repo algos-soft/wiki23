@@ -19,6 +19,7 @@ public enum AECopy {
     dirOnly("Se esiste già, non fa nulla. Se non esiste, crea la cartella e il suo contenuto.", AECopyType.directory),
     dirFilesAddOnly("Aggiunge directories e files senza modificare o cancellare quelli esistenti.", AECopyType.directory),
     dirFilesModifica("Aggiunge directories e files e modifica quelli esistenti.", AECopyType.directory),
+    dirFilesModificaToken("Aggiunge e modifica dirs/files con check del token.", AECopyType.directory),
 
     sourceSovrascriveSempreAncheSeEsiste("", AECopyType.source),
     sourceSoloSeNonEsiste("", AECopyType.source),

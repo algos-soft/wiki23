@@ -65,7 +65,7 @@ public class AResult {
 
     private List lista = null;
 
-    private Map mappa = null;
+    private LinkedHashMap mappa = null;
 
     protected AResult() {
         this(true, VUOTA);
@@ -178,6 +178,12 @@ public class AResult {
         AResult result = new AResult(false, errorMessage);
         result.setErrorCode(errorMessage);
         return result;
+    }
+
+
+    public AResult mappa(LinkedHashMap mappa) {
+        this.mappa = mappa;
+        return this;
     }
 
     public boolean isValido() {
@@ -324,11 +330,11 @@ public class AResult {
     //        this.urlRequest = urlRequest;
     //    }
 
-    public Map getMappa() {
+    public LinkedHashMap getMappa() {
         return mappa;
     }
 
-    public void setMappa(Map mappa) {
+    public void setMappa(LinkedHashMap mappa) {
         this.mappa = mappa;
     }
 

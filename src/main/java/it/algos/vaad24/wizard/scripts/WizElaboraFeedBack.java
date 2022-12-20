@@ -2,13 +2,13 @@ package it.algos.vaad24.wizard.scripts;
 
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaad24.ui.dialog.*;
+import static it.algos.vaad24.wizard.scripts.WizCost.*;
+import static it.algos.vaad24.wizard.scripts.WizElaboraNewProject.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
 import it.algos.vaad24.backend.wrapper.*;
-import it.algos.vaad24.ui.dialog.*;
-import static it.algos.vaad24.wizard.scripts.WizCost.*;
-import static it.algos.vaad24.wizard.scripts.WizElaboraNewProject.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Scope;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class WizElaboraFeedBack extends WizElabora {
+public class WizElaboraFeedBack extends it.algos.vaad24.wizard.scripts.WizElabora {
 
     public void esegue() {
         String message;

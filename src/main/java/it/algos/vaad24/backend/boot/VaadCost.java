@@ -19,6 +19,8 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadCost {
 
+    public static final String TAG_STORE = ".DS_Store";
+
     public static final String ENCODE = "UTF-8";
 
     public static final String JAR_FILE_PREFIX = "jar:file:";
@@ -52,6 +54,7 @@ public class VaadCost {
     public static final String PROJECT_VAADIN23 = "vaadin23";
 
     public static final String PROJECT_VAADIN24 = "vaad24";
+
     public static final String APPLICATION_VAADIN24 = "Vaad24SimpleApplication";
 
     public static final String MODULO_VAADIN23 = "vaad23";
@@ -59,6 +62,7 @@ public class VaadCost {
     public static final String MODULO_VAADIN24 = "vaad24";
 
     public static final String TAG_WIZ = "wizard";
+
     public static final String TAG_ROUTE_ALIAS_PARTE_PER_PRIMA = "";
 
     public static final String TAG_UTILITY = "utility";
@@ -222,32 +226,15 @@ public class VaadCost {
 
     public static final String KEY_MAPPA_LAST_MODIFICA = "lastModifica";
 
-    public static final String KEY_DIR_CREATA_NON_ESISTENTE = "dirCreataNuova";
-
-    public static final String KEY_DIR_CREATA_CANCELLATA = "dirCreataCancellata";
-
-    public static final String KEY_DIR_ESISTENTE = "dirEsistente";
-
-    public static final String KEY_DIR_INTEGRATA = "dirIntegrata";
-
-    public static final String KEY_FILE_ESISTENTE = "fileEsistente";
-
-    public static final String KEY_FILE_CREATO = "fileCreato";
-
-    public static final String KEY_FILE_MODIFICATO = "fileModificato";
+//    public static final String KEY_DIR_CREATA_NON_ESISTENTE = "dirCreataNuova";
+//
+//    public static final String KEY_DIR_CREATA_CANCELLATA = "dirCreataCancellata";
+//
+//    public static final String KEY_DIR_ESISTENTE = "dirEsistente";
+//
+//    public static final String KEY_DIR_INTEGRATA = "dirIntegrata";
 
 
-    public static final String KEY_MAPPA_SORGENTI = "sorgenti";
-
-    public static final String KEY_MAPPA_DESTINAZIONE_ANTE = "destinazioneAnte";
-
-    public static final String KEY_MAPPA_DESTINAZIONE_POST = "destinazionePost";
-
-    public static final String KEY_MAPPA_AGGIUNTI = "aggiunti";
-
-    public static final String KEY_MAPPA_RIMOSSI = "rimossi";
-
-    public static final String KEY_MAPPA_MODIFICATI = "modificati";
 
 
     /**
