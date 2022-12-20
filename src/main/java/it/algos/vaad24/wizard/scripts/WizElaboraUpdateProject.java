@@ -75,7 +75,6 @@ public class WizElaboraUpdateProject extends WizElabora {
         String dir = fileService.lastDirectory(destPath).toLowerCase();
         String oldToken = APPLICATION_VAADIN24;
         String newToken = VaadVar.projectCurrentMainApplication;
-        newToken = textService.primaMaiuscola(newToken) + APP_NAME;
         String tag = progettoEsistente ? "Update" : "New";
 
         switch (wiz) {
@@ -94,21 +93,35 @@ public class WizElaboraUpdateProject extends WizElabora {
         String path;
         String destPath = result.getTarget();
         Map<String, List> resultMap;
-        List<String> files;
+        List<String> allFiles = new ArrayList<>();
+        boolean status;
 
         if (result == null || result.isErrato()) {
             logger.warn(AETypeLog.file, new AlgosException(result.getErrorMessage()));
             return result;
         }
         resultMap = result.getMappa();
-        files = resultMap != null ? resultMap.get(AEKeyMapFile.tokenModificati) : null;
+        if (resultMap == null) {
+            logger.warn(AETypeLog.file, new AlgosException(result.getErrorMessage()));
+            return result;
+        }
 
-        if (files != null) {
-            for (String nomeFile : files) {
+        if (resultMap.get(AEKeyMapFile.aggiuntiNuovi.name()) != null) {
+            allFiles.addAll(resultMap.get(AEKeyMapFile.aggiuntiNuovi.name()));
+        }
+        if (resultMap.get(AEKeyMapFile.tokenUguali.name()) != null) {
+            allFiles.addAll(resultMap.get(AEKeyMapFile.tokenUguali.name()));
+        }
+        if (resultMap.get(AEKeyMapFile.tokenModificati.name()) != null) {
+            allFiles.addAll(resultMap.get(AEKeyMapFile.tokenModificati.name()));
+        }
+
+        if (allFiles != null) {
+            for (String nomeFile : allFiles) {
                 path = destPath + nomeFile;
                 testoBase = fileService.leggeFile(path);
                 testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
-                fileService.sovraScriveFile(path, testoSostituito);
+                status = fileService.sovraScriveFile(path, testoSostituito);
                 if (testoSostituito.equals(testoBase)) {
                     int a = 87;
                 }
