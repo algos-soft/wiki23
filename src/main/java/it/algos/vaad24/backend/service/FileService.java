@@ -973,13 +973,25 @@ public class FileService extends AbstractService {
                     filesDestinazionePost = getFilesName(destPath);
                     resultMap.put(AEKeyMapFile.destinazionePost.name(), filesDestinazionePost);
 
-                    if (filesAggiunti.size() == 0 && filesModificati.size() == 0) {
-                        result.setTagCode(AEKeyDir.esistente.name());
-                        message = String.format("La directory '%s' esisteva già e non è stato aggiunto/modificato nessun file.", path);
+                    if (typeCopy == AECopy.dirFilesModificaToken) {
+                        if (filesAggiunti.size() == 0 && filesTokenModificati.size() == 0) {
+                            result.setTagCode(AEKeyDir.esistente.name());
+                            message = String.format("La directory '%s' esisteva già e non è stato aggiunto/modificato nessun file.", path);
+                        }
+                        else {
+                            result.setTagCode(AEKeyDir.integrata.name());
+                            message = String.format("La directory '%s' esisteva già; aggiunti: %s; modificati (token): %s", path, filesAggiunti, filesTokenModificati);
+                        }
                     }
                     else {
-                        result.setTagCode(AEKeyDir.integrata.name());
-                        message = String.format("La directory '%s' esisteva già; aggiunti: %s; modificati: %s", path, filesAggiunti, filesModificati);
+                        if (filesAggiunti.size() == 0 && filesModificati.size() == 0) {
+                            result.setTagCode(AEKeyDir.esistente.name());
+                            message = String.format("La directory '%s' esisteva già e non è stato aggiunto/modificato nessun file.", path);
+                        }
+                        else {
+                            result.setTagCode(AEKeyDir.integrata.name());
+                            message = String.format("La directory '%s' esisteva già; aggiunti: %s; modificati: %s", path, filesAggiunti, filesModificati);
+                        }
                     }
                     result.setValidMessage(message);
                 }
