@@ -788,6 +788,8 @@ public class FileService extends AbstractService {
         AResult result = AResult.build().method("copyDirectory").target(destPath);
         String message;
         String tag;
+        String test = "/test/";
+        String dir = "directory";
         String path;
         File dirSrc = new File(srcPath);
         File dirDest = new File(destPath);
@@ -822,6 +824,7 @@ public class FileService extends AbstractService {
         srcPath = srcPath.endsWith(SLASH) ? srcPath : srcPath + SLASH;
         destPath = destPath.endsWith(SLASH) ? destPath : destPath + SLASH;
         path = this.findPathBreve(destPath);
+        dir = srcPath.contains(test) ? dir + " di test" : dir;
 
         result = result.type(typeCopy + FORWARD + typeCopy.getDescrizione());
 
@@ -832,7 +835,7 @@ public class FileService extends AbstractService {
         }
 
         if (!dirSrc.isDirectory()) {
-            message = String.format("Non esiste la directory sorgente '%s' da copiare.", srcPath);
+            message = String.format("Non esiste la %s sorgente '%s' da copiare.", srcPath, dir);
             return result.setErrorMessage(message);
         }
 
@@ -868,7 +871,7 @@ public class FileService extends AbstractService {
                     filesDestinazionePost = getFilesName(destPath);
                     resultMap.put(AEKeyMapFile.destinazionePost.name(), filesDestinazionePost);
 
-                    message = String.format("La directory '%s' esisteva già e non è stata toccata.", path);
+                    message = String.format("La %s '%s' esisteva già e non è stata toccata.", dir, path);
                     result.setValidMessage(message);
                 }
                 else {
@@ -897,7 +900,7 @@ public class FileService extends AbstractService {
                     filesDestinazionePost = getFilesName(destPath);
                     resultMap.put(AEKeyMapFile.destinazionePost.name(), filesDestinazionePost);
 
-                    message = String.format("La directory '%s' esisteva già ma è stata cancellata e creata ex-novo.", path);
+                    message = String.format("La %s '%s' esisteva già ma è stata cancellata e creata ex-novo.", dir ,path);
                     result.setValidMessage(message);
                 }
                 else {
@@ -921,11 +924,11 @@ public class FileService extends AbstractService {
                     resultMap.put(AEKeyMapFile.destinazionePost.name(), filesDestinazionePost);
 
                     if (filesAggiunti.size() > 0) {
-                        message = String.format("La directory '%s' esisteva già ma è stata integrata con nuovi files.", path);
+                        message = String.format("La %s '%s' esisteva già ma è stata integrata con nuovi files.", dir, path);
                         result.setTagCode(AEKeyDir.integrata.name());
                     }
                     else {
-                        message = String.format("La directory '%s' esisteva già e non è stato aggiunto nessun nuovo file.", path);
+                        message = String.format("La %s '%s' esisteva già e non è stato aggiunto nessun nuovo file.", dir, path);
                         result.setTagCode(AEKeyDir.esistente.name());
                     }
                     result.setValidMessage(message);
@@ -998,21 +1001,21 @@ public class FileService extends AbstractService {
                     if (typeCopy == AECopy.dirFilesModificaToken) {
                         if (filesAggiunti.size() == 0 && filesTokenModificati.size() == 0) {
                             result.setTagCode(AEKeyDir.esistente.name());
-                            message = String.format("La directory '%s' esisteva già e non è stato aggiunto/modificato nessun file.", path);
+                            message = String.format("La %s '%s' esisteva già e non è stato aggiunto/modificato nessun file.", dir, path);
                         }
                         else {
                             result.setTagCode(AEKeyDir.integrata.name());
-                            message = String.format("La directory '%s' esisteva già; aggiunti: %s; modificati (token): %s", path, filesAggiunti, filesTokenModificati);
+                            message = String.format("La %s '%s' esisteva già; aggiunti: %s; modificati (token): %s", dir, path, filesAggiunti, filesTokenModificati);
                         }
                     }
                     else {
                         if (filesAggiunti.size() == 0 && filesModificati.size() == 0) {
                             result.setTagCode(AEKeyDir.esistente.name());
-                            message = String.format("La directory '%s' esisteva già e non è stato aggiunto/modificato nessun file.", path);
+                            message = String.format("La %s '%s' esisteva già e non è stato aggiunto/modificato nessun file.", dir, path);
                         }
                         else {
                             result.setTagCode(AEKeyDir.integrata.name());
-                            message = String.format("La directory '%s' esisteva già; aggiunti: %s; modificati: %s", path, filesAggiunti, filesModificati);
+                            message = String.format("La %s '%s' esisteva già; aggiunti: %s; modificati: %s", dir, path, filesAggiunti, filesModificati);
                         }
                     }
                     result.setValidMessage(message);
