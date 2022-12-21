@@ -2,6 +2,7 @@ package it.algos.service;
 
 import it.algos.*;
 import it.algos.base.*;
+import it.algos.vaad24.backend.boot.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.service.*;
@@ -183,6 +184,28 @@ public class FileServiceTest extends AlgosIntegrationTest {
                 Arguments.of(AECopy.dirFilesModificaToken, SOURCE, PATH_DIRECTORY_TRE, false, TESTO_TOKEN_ANTE, VUOTA),
                 Arguments.of(AECopy.dirFilesModificaToken, SOURCE, PATH_DIRECTORY_TRE, true, TESTO_TOKEN_ANTE, TESTO_TOKEN_POST),
                 Arguments.of(AECopy.dirFilesModificaToken, SOURCE, PATH_DIRECTORY_TRE, true, TESTO_TOKEN_ANTE, TESTO_TOKEN_POST)
+        );
+    }
+
+
+    //--nomeModulo
+    //--esiste modulo
+    //--variabile di sistema (opzionale)
+    protected static Stream<Arguments> MODULO() {
+        return Stream.of(
+                Arguments.of(null, false, VUOTA),
+                Arguments.of(VUOTA, false, VUOTA),
+                Arguments.of(VaadVar.moduloVaadin24, true, "VaadVar.moduloVaadin24"),
+                Arguments.of(VaadVar.projectNameUpper, false, "VaadVar.projectNameUpper"),
+                Arguments.of(VaadVar.projectNameModulo, true, "VaadVar.projectNameModulo"),
+                Arguments.of(VaadVar.projectVaadin24, true, "VaadVar.projectVaadin24"),
+                Arguments.of(VaadVar.projectNameDirectoryIdea, false, "VaadVar.projectNameDirectoryIdea"),
+                Arguments.of(VaadVar.projectDate, false, "VaadVar.projectDate"),
+                Arguments.of(VaadVar.projectNote, false, "VaadVar.projectNote"),
+                Arguments.of(VaadVar.projectCurrentMainApplication, false, "VaadVar.projectCurrentMainApplication"),
+                Arguments.of("oldVaad", false, VUOTA),
+                Arguments.of("vaadin24", false, VUOTA),
+                Arguments.of("/Users/gac/Desktop/test/Pippo", false, VUOTA)
         );
     }
 
@@ -863,6 +886,36 @@ public class FileServiceTest extends AlgosIntegrationTest {
         print(listaStr);
     }
 
+    @ParameterizedTest
+    @MethodSource(value = "MODULO")
+    @Order(40)
+    @DisplayName("40 - lastDirectory")
+        //--nomeModulo
+        //--esiste modulo
+        //--variabile di sistema (opzionale)
+    void isEsisteModulo(final String nomeModulo, boolean esiste, String nomeVariabile) {
+        System.out.println("40 - lastDirectory");
+        System.out.println(VUOTA);
+
+        sorgente = nomeModulo;
+        if (textService.isValid(nomeVariabile)) {
+            System.out.println(String.format("Valore della variabile globale %s%s%s", nomeVariabile, FORWARD, sorgente));
+        }
+
+        ottenutoBooleano = service.isEsisteModulo(sorgente);
+        if (ottenutoBooleano) {
+            ottenuto = service.getPathDir(sorgente);
+            message = String.format("Esiste la directory del modulo '%s'", sorgente);
+            System.out.println(message);
+            message = String.format("%s", ottenuto);
+            System.out.println(message);
+        }
+        else {
+            message = String.format("Non esiste nessuna directory per il modulo '%s'", sorgente);
+            System.out.print(message);
+        }
+        assertEquals(ottenutoBooleano, esiste);
+    }
 
     private void creaCartelle() {
         service.deleteDirectory(PATH_DIRECTORY_UNO);
@@ -875,7 +928,7 @@ public class FileServiceTest extends AlgosIntegrationTest {
         service.creaDirectory(PATH_DIRECTORY_TRE);
         service.creaDirectory(PATH_DIRECTORY_TRE + NOME_DIR_SUB);
 
-        service.creaFile(PATH_DIRECTORY_UNO+NOME_FILE_SETTE);
+        service.creaFile(PATH_DIRECTORY_UNO + NOME_FILE_SETTE);
         service.creaFile(PATH_DIRECTORY_DUE + NOME_FILE_UNO);
         service.creaFile(PATH_DIRECTORY_DUE + NOME_FILE_DUE);
         service.creaFile(PATH_DIRECTORY_TRE + NOME_FILE_UNO);
@@ -889,7 +942,7 @@ public class FileServiceTest extends AlgosIntegrationTest {
 
         service.sovraScriveFile(PATH_DIRECTORY_TRE + NOME_FILE_UNO, TESTO_TOKEN_POST + TESTO_CON);
         service.sovraScriveFile(PATH_DIRECTORY_DUE + NOME_FILE_DUE, TESTO_TOKEN_POST + TESTO_CON);
-        service.sovraScriveFile(PATH_DIRECTORY_TRE + NOME_FILE_DUE, TESTO_TOKEN_POST+"diverso");
+        service.sovraScriveFile(PATH_DIRECTORY_TRE + NOME_FILE_DUE, TESTO_TOKEN_POST + "diverso");
         service.sovraScriveFile(PATH_DIRECTORY_TRE + NOME_FILE_TRE, TESTO_SENZA);
     }
 

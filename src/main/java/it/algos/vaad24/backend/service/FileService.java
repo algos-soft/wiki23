@@ -179,6 +179,28 @@ public class FileService extends AbstractService {
         return checkDirectory(absolutePathDirectoryToBeChecked).isValido();
     }
 
+    /**
+     * Controlla l'esistenza di un modulo <br>
+     * <p>
+     * Il nomeModulo non deve essere nullo <br>
+     * Il nomeModulo non deve essere vuoto <br>
+     * La richiesta è CASE SENSITIVE (maiuscole e minuscole NON SONO uguali) <br>
+     *
+     * @param nomeModulo da ricercare
+     *
+     * @return true se il modulo esiste, false se non sono rispettate le condizioni della richiesta
+     */
+    public boolean isEsisteModulo(final String nomeModulo) {
+        if (textService.isEmpty(nomeModulo)) {
+            return false;
+        }
+        if (nomeModulo.equals(textService.primaMaiuscola(nomeModulo))) {
+            return false;
+        }
+
+        String absolutePathDirectoryToBeChecked = getPathDir(nomeModulo);
+        return isEsisteDirectory(absolutePathDirectoryToBeChecked);
+    }
 
     /**
      * Controlla l'esistenza di un file <br>
@@ -1849,42 +1871,34 @@ public class FileService extends AbstractService {
      * @return lista dei path completi
      */
     public List<String> getPathModuloPackageFiles(final String nomeModulo) {
-        String pathPackage = VUOTA;
+        String pathPackage;
 
         if (textService.isEmpty(nomeModulo)) {
             logger.error(new AlgosException("Manca il nome del modulo"));
             return null;
         }
 
-        pathPackage += System.getProperty("user.dir") + SLASH;
-        pathPackage += "src/main/java/it/algos/";
-        pathPackage += nomeModulo + SLASH;
-
+        pathPackage = getPathDir(nomeModulo);
         return getAllSubPathFiles(pathPackage);
     }
 
-    //    /**
-    //     * Crea una lista (path completo) di tutti i files della directory package del modulo corrente <br>
-    //     *
-    //     * @return lista dei path completi
-    //     */
-    //    public List<String> getPathAllPackageFiles()  {
-    //        List<String> lista = new ArrayList<>();
-    //        String nomeModulo = VUOTA;
-    //
-    ////        if (textService.isEmpty(nomeModulo)) {
-    ////            logger.error(new AlgosException("Manca il nome del modulo"));
-    ////        }
-    ////        lista.addAll(getPathModuloPackageFiles(nomeModulo));
-    //
-    //        nomeModulo = VaadVar.projectNameModulo;
-    //        if (textService.isEmpty(nomeModulo)) {
-    //            logger.error(new AlgosException("Manca il nome del modulo"));
-    //        }
-    //        lista.addAll(getPathModuloPackageFiles(VaadVar.projectNameModulo));
-    //
-    //        return lista;
-    //    }
+    /**
+     * Crea un path completo della directory indicata <br>
+     */
+    public String getPathDir(final String nomeDirectory) {
+        String pathDir = VUOTA;
+
+        if (textService.isEmpty(nomeDirectory)) {
+            logger.error(new AlgosException("Manca il nome della directory"));
+            return null;
+        }
+
+        pathDir += System.getProperty("user.dir") + SLASH;
+        pathDir += PATH_PREFIX;
+        pathDir += nomeDirectory + SLASH;
+
+        return pathDir;
+    }
 
 
     /**
@@ -1909,7 +1923,7 @@ public class FileService extends AbstractService {
      *
      * @return path completo del file
      */
-    public String getPath(String simpleName) throws AlgosException {
+    public String getPath(String simpleName) {
         String pathCompleto = VUOTA;
         List<String> lista = getPathBreveAllPackageFiles();
 

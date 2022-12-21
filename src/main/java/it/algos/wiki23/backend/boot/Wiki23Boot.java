@@ -141,10 +141,18 @@ public class Wiki23Boot extends VaadBoot implements ServletContextListener {
         VaadVar.projectNameUpper = "Wiki23";
 
         /**
-         * Classe da usare per gestire le versioni <br>
-         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+         * Nome identificativo minuscolo del modulo dell' applicazione <br>
+         * Usato come parte del path delle varie directory <br>
+         * Spesso coincide (non obbligatoriamente) con projectNameIdea <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
+        VaadVar.projectNameModulo = "wiki23";
+
+        /**
+              * Classe da usare per gestire le versioni <br>
+              * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+              * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+              */
         VaadVar.versionClazz = Wiki23Vers.class;
 
         /**

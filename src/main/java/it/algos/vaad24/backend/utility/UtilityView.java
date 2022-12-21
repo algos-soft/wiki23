@@ -45,7 +45,23 @@ public class UtilityView extends VerticalLayout {
      * al termine del ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
+    public TextService textService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata dal framework SpringBoot/Vaadin usando il metodo setter() <br>
+     * al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
     public ClassService classService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public FileService fileService;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -114,13 +130,38 @@ public class UtilityView extends VerticalLayout {
     }
 
     private void resetEsegue() {
-        String sorgente = "vaad24";
-        AResult risultato;
-        List<Class> listaClazz = classService.allModuleBackendResetOrderedClass(sorgente);
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.reset));
+        resetSingoloModulo(VaadVar.moduloVaadin24);
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.reset));
+        resetSingoloModulo(VaadVar.projectNameModulo);
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.reset));
+    }
 
-        for (Class clazz : listaClazz) {
-            risultato = classService.esegueMetodo(clazz.getCanonicalName(), TAG_RESET_FORCING);
-            logger.info(new WrapLog().message(risultato.getValidMessage()).type(AETypeLog.reset));
+    private void resetSingoloModulo(String nomeModulo) {
+        AResult risultato;
+        boolean esiste;
+        String message;
+        List<Class> listaClazz;
+
+        esiste = fileService.isEsisteModulo(nomeModulo);
+        if (!esiste) {
+            message = String.format("Non esiste il modulo '%s'",nomeModulo);
+            logger.warn(new WrapLog().message(message).type(AETypeLog.reset));
+            return;
+        }
+
+        listaClazz = classService.allModuleBackendResetOrderedClass(nomeModulo);
+        if (listaClazz != null && listaClazz.size() > 0) {
+            message = String.format("Nel modulo %s ci sono %d classi che implementano il metodo %s", nomeModulo, listaClazz.size(), TAG_RESET_ONLY);
+            logger.info(new WrapLog().message(message).type(AETypeLog.reset));
+            for (Class clazz : listaClazz) {
+                risultato = classService.esegueMetodo(clazz.getCanonicalName(), TAG_RESET_FORCING);
+                logger.info(new WrapLog().message(risultato.getValidMessage()).type(AETypeLog.reset));
+            }
+        }
+        else {
+            message = String.format("Nel modulo %s non ci sono classi che implementino il metodo %s", nomeModulo, TAG_RESET_ONLY);
+            logger.info(new WrapLog().message(message).type(AETypeLog.reset));
         }
     }
 

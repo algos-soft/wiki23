@@ -129,13 +129,13 @@ public class AnnoWikiBackendTest extends WikiTest {
         System.out.println("6 - reset");
         String message;
 
-        ottenutoBooleano = backend.reset();
-        assertTrue(ottenutoBooleano);
-        listaBeans = backend.findAll();
-        assertNotNull(listaBeans);
-        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "AnnoWiki");
-        System.out.println(message);
-        printBeans(listaBeans);
+//        ottenutoBooleano = backend.resetOnlyEmpty();
+//        assertTrue(ottenutoBooleano);
+//        listaBeans = backend.findAll();
+//        assertNotNull(listaBeans);
+//        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "AnnoWiki");
+//        System.out.println(message);
+//        printBeans(listaBeans);
     }
 
     /**
