@@ -1065,7 +1065,7 @@ public class BioBackend extends WikiBackend {
     }
 
     public void resetErrori() {
-        mongoService.mongoOp.updateMulti(new Query(), Update.update("errato", false), Bio.class);
+//        mongoService.mongoOp.updateMulti(new Query(), Update.update("errato", false), Bio.class);
     }
 
     public int countErrori() {
