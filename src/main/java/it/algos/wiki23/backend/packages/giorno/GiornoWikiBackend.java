@@ -191,6 +191,9 @@ public class GiornoWikiBackend extends WikiBackend {
                 creaIfNotExist(giorno);
             }
         }
+        else {
+            return result;
+        }
 
         return fixResult(result);
     }

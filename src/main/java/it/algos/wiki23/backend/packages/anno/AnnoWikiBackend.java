@@ -258,6 +258,9 @@ public class AnnoWikiBackend extends WikiBackend {
                 creaIfNotExist(anno, ordine);
             }
         }
+        else {
+            return result;
+        }
 
         return fixResult(result);
     }
