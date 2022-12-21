@@ -3,6 +3,9 @@ package it.algos.wiki23.backend.packages.anno;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
 import it.algos.vaad24.backend.packages.crono.anno.*;
+import it.algos.vaad24.backend.packages.crono.giorno.*;
+import it.algos.vaad24.backend.packages.crono.mese.*;
+import it.algos.vaad24.backend.packages.crono.secolo.*;
 import it.algos.vaad24.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -45,6 +48,13 @@ public class AnnoWikiBackend extends WikiBackend {
     @Autowired
     public AnnoBackend annoBackend;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public SecoloBackend secoloBackend;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -134,46 +144,6 @@ public class AnnoWikiBackend extends WikiBackend {
         return listaNomi;
     }
 
-
-    /**
-     * Creazione di alcuni dati iniziali <br>
-     * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>
-     * La collezione viene svuotata <br>
-     * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
-     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-//    @Override
-    public boolean reset() {
-        List<Anno> anniBase = null;
-        int delta = DELTA_ORDINE_ANNI;
-        int ordine = 0;
-
-        if (mongoService.isCollectionNullOrEmpty(Anno.class)) {
-            logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Anno'")).usaDb());
-            return false;
-        }
-
-//        if (super.reset()) {
-//            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
-//            anniBase = annoBackend.findAll(sort);
-//
-//            for (Anno anno : anniBase) {
-//                ordine += delta;
-//                try {
-//                    creaIfNotExist(anno, ordine);
-//                } catch (Exception unErrore) {
-//                    logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
-//                }
-//            }
-//        }
-//        else {
-//            logger.error(new WrapLog().exception(new AlgosException("Non sono riuscito a cancellare la collezione 'AnnoWiki'")).usaDb());
-//            return false;
-//        }
-
-        return true;
-    }
-
     public int countListeDaCancellare() {
         int daCancellare = 0;
 
@@ -259,6 +229,37 @@ public class AnnoWikiBackend extends WikiBackend {
         }
 
         super.fixElaboraMinuti(inizio, "anni");
+    }
+
+    /**
+     * Creazione di alcuni dati <br>
+     * Esegue SOLO se la collection NON esiste oppure esiste ma è VUOTA <br>
+     * Viene invocato alla creazione del programma <br>
+     * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public AResult resetOnlyEmpty() {
+        AResult result = super.resetOnlyEmpty();
+        List<Anno> anniBase;
+        int delta = DELTA_ORDINE_ANNI;
+        int ordine = 0;
+
+        if (secoloBackend.count() < 1) {
+            logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Secolo'")).usaDb());
+            return result;
+        }
+
+        if (result.isValido()) {
+            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
+            anniBase = annoBackend.findAll(sort);
+            for (Anno anno : anniBase) {
+                ordine += delta;
+                creaIfNotExist(anno, ordine);
+            }
+        }
+
+        return fixResult(result);
     }
 
 }// end of crud backend class

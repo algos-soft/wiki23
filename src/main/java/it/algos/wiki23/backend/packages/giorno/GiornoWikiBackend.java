@@ -143,33 +143,29 @@ public class GiornoWikiBackend extends WikiBackend {
         return listaNomi;
     }
 
-    //    /**
-    //     * Creazione di alcuni dati iniziali <br>
-    //     * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>
-    //     * La collezione viene svuotata <br>
-    //     * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
-    //     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-    //     */
-    ////    @Override
-    //    public boolean reset() {
-    //        List<Giorno> giorniBase = null;
-    //
-    //        if (mongoService.isCollectionNullOrEmpty(Giorno.class)) {
-    //            logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Giorno'")));
-    //            return false;
-    //        }
-    //
-    ////        if (super.reset()) {
-    ////            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
-    ////            giorniBase = giornoBackend.findAll(sort);
-    ////            for (Giorno giorno : giorniBase) {
-    ////                creaIfNotExist(giorno);
-    ////            }
-    ////        }
-    //
-    //        return true;
-    //    }
 
+
+
+    /**
+     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void elabora() {
+        long inizio = System.currentTimeMillis();
+
+        //--Per ogni anno calcola quante biografie lo usano (nei 2 parametri)
+        //--Memorizza e registra il dato nella entityBean
+        for (GiornoWiki giornoWiki : findAll()) {
+            giornoWiki.bioNati = bioBackend.countGiornoNato(giornoWiki.nomeWiki);
+            giornoWiki.bioMorti = bioBackend.countGiornoMorto(giornoWiki.nomeWiki);
+
+            update(giornoWiki);
+        }
+
+        super.fixElaboraMinuti(inizio, "pagine di giorni");
+
+    }
 
     /**
      * Creazione di alcuni dati <br>
@@ -198,28 +194,5 @@ public class GiornoWikiBackend extends WikiBackend {
 
         return fixResult(result);
     }
-
-
-    /**
-     * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
-     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public void elabora() {
-        long inizio = System.currentTimeMillis();
-
-        //--Per ogni anno calcola quante biografie lo usano (nei 2 parametri)
-        //--Memorizza e registra il dato nella entityBean
-        for (GiornoWiki giornoWiki : findAll()) {
-            giornoWiki.bioNati = bioBackend.countGiornoNato(giornoWiki.nomeWiki);
-            giornoWiki.bioMorti = bioBackend.countGiornoMorto(giornoWiki.nomeWiki);
-
-            update(giornoWiki);
-        }
-
-        super.fixElaboraMinuti(inizio, "pagine di giorni");
-
-    }
-
 
 }// end of crud backend class
