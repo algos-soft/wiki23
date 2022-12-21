@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -1065,7 +1066,7 @@ public class BioBackend extends WikiBackend {
     }
 
     public void resetErrori() {
-//        mongoService.mongoOp.updateMulti(new Query(), Update.update("errato", false), Bio.class);
+        mongoService.mongoOp.updateMulti(new Query(), Update.update("errato", false), Bio.class);
     }
 
     public int countErrori() {
