@@ -29,7 +29,7 @@ import com.vaadin.flow.component.textfield.TextField;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class GiornoWikiDialog extends CrudDialog {
+public class GiornoWikiDialog extends CrudDialogBase {
 
     //--I fields devono essere class variable e non local variable
     private TextField code;
@@ -71,8 +71,7 @@ public class GiornoWikiDialog extends CrudDialog {
      * Aggiunge eventuali fields specifici direttamente al layout grafico (senza binder e senza fieldMap)
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    @Override
-    protected void fixBody() {
+    protected void fixBody2() {
         code = new TextField("Code");
         code.setReadOnly(operation == CrudOperation.DELETE);
 

@@ -10,6 +10,7 @@ import it.algos.vaad24.backend.enumeration.*;
 import lombok.*;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
 
 import javax.validation.constraints.*;
@@ -19,6 +20,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.stereotype.*;
 
 /**
  * Project wiki23
@@ -29,6 +31,7 @@ import com.vaadin.flow.component.textfield.TextField;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Component
 //Lombok
 @Data
 @NoArgsConstructor

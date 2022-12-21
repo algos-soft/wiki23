@@ -2,9 +2,6 @@ package it.algos.wiki23.backend.statistiche;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
-import it.algos.vaad24.backend.enumeration.*;
-import it.algos.vaad24.backend.exception.*;
-import it.algos.vaad24.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.giorno.*;
@@ -12,7 +9,6 @@ import it.algos.wiki23.backend.wrapper.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
-import java.time.*;
 import java.util.*;
 
 /**
@@ -97,8 +93,8 @@ public class StatisticheGiorni extends Statistiche {
         for (GiornoWiki giorno : (List<GiornoWiki>) lista) {
             nati = giorno.bioNati;
             morti = giorno.bioMorti;
-            mappaSingola = new MappaStatistiche(++pos, giorno.nome, nati, morti);
-            mappa.put(giorno.nome, mappaSingola);
+            mappaSingola = new MappaStatistiche(++pos, giorno.nomeWiki, nati, morti);
+            mappa.put(giorno.nomeWiki, mappaSingola);
             totNati += nati;
             totMorti += morti;
         }

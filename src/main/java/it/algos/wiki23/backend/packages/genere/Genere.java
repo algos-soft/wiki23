@@ -6,7 +6,9 @@ import it.algos.vaad24.backend.enumeration.*;
 import it.algos.wiki23.backend.enumeration.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
+import org.springframework.stereotype.*;
 
 /**
  * Project wiki
@@ -17,6 +19,7 @@ import org.springframework.data.mongodb.core.mapping.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Component
 @Document
 //Lombok
 @Data

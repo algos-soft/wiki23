@@ -258,7 +258,7 @@ public class AnnotationService extends AbstractService {
         }
 
         try {
-            reflectionJavaField = entityClazz.getField(fieldName);
+            reflectionJavaField = reflectionService.getField(entityClazz, fieldName);
             annotation = getAIField(reflectionJavaField);
         } catch (Exception unErrore) {
             message = String.format("Manca il field %s", fieldName);

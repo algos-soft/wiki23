@@ -42,6 +42,6 @@ public interface GiornoWikiRepository extends MongoRepository<GiornoWiki, String
     @Override
     void delete(GiornoWiki entity);
 
-    GiornoWiki findFirstByNome(String nome);
+    GiornoWiki findFirstByNomeWiki(String nome);
 
 }// end of crud repository class

@@ -1,25 +1,14 @@
 package it.algos.wiki23.backend.packages.giorno;
 
 import static it.algos.vaad24.backend.boot.VaadCost.*;
-import com.querydsl.core.annotations.*;
-import com.vaadin.flow.component.icon.*;
-import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.annotation.*;
 import it.algos.vaad24.backend.entity.*;
 import it.algos.vaad24.backend.enumeration.*;
-import it.algos.vaad24.backend.packages.crono.giorno.*;
 import lombok.*;
-import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
-
-import javax.validation.constraints.*;
-import javax.validation.constraints.Size;
-
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.stereotype.*;
 
 /**
  * Project wiki23
@@ -30,6 +19,7 @@ import com.vaadin.flow.component.textfield.TextField;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Component
 @Document
 //Lombok
 @Data
@@ -43,8 +33,8 @@ public class GiornoWiki extends AEntity {
     @AIField(type = AETypeField.integer, header = "#", widthEM = 3, caption = "Ordinamento da inizio anno")
     public int ordine;
 
-    @AIField(type = AETypeField.text, caption = "Nome corrente", sortProperty = "ordine")
-    public String nome;
+    @AIField(type = AETypeField.text, header = "nome", caption = "Nome corrente", sortProperty = "ordine")
+    public String nomeWiki;
 
     @Indexed(unique = false, direction = IndexDirection.DESCENDING)
     @AIField(type = AETypeField.integer, header = "nati", caption = "Numero di biografie che utilizzano i nati in questo giorno", widthEM = 6)

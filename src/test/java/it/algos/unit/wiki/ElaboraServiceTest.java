@@ -470,7 +470,7 @@ public class ElaboraServiceTest extends WikiTest {
 
     private void printGiorno(final String tagInput, final GiornoWiki giornoValido) {
         if (giornoValido != null) {
-            System.out.println(String.format("'%s' -> '%s'", tagInput, giornoValido.nome));
+            System.out.println(String.format("'%s' -> '%s'", tagInput, giornoValido.nomeWiki));
             System.out.println(VUOTA);
         }
         else {

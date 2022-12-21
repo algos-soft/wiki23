@@ -26,7 +26,10 @@ import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.*;
+import org.springframework.context.event.EventListener;
 
+import javax.servlet.*;
 import java.util.*;
 
 /**
@@ -47,7 +50,7 @@ import java.util.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class Wiki23Boot extends VaadBoot {
+public class Wiki23Boot extends VaadBoot implements ServletContextListener {
 
     private String property;
 
@@ -67,6 +70,43 @@ public class Wiki23Boot extends VaadBoot {
     @Autowired
     public QueryService queryService;
 
+
+    /**
+     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
+     * event, the application is ready to service Vaadin requests <br>
+     */
+    @EventListener(ContextRefreshedEvent.class)
+    public void onContextRefreshEvent() {
+        this.inizia();
+    }
+
+
+    /**
+     * Costruisce alcune istanze generali dell'applicazione e ne mantiene i riferimenti nelle apposite variabili <br>
+     * Le istanze (prototype) sono uniche per tutta l' applicazione <br>
+     * Vengono create SOLO in questa classe o in una sua sottoclasse <br>
+     * La selezione su quale istanza creare tocca a questa sottoclasse xxxBoot <br>
+     * Se la sottoclasse non ha creato l'istanza, ci pensa la superclasse <br>
+     * Può essere sovrascritto, invocando DOPO il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixVariabiliRiferimentoIstanzeGenerali() {
+        /*
+         * Classe da usare per lo startup del programma <br>
+         * Di default FlowData oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabiliRiferimentoIstanzeGenerali() del progetto corrente <br>
+         */
+        VaadVar.istanzaData = appContext.getBean(Wiki23Data.class);
+
+        /*
+         * Classe da usare per gestire le versioni <br>
+         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.versionClazz = Wiki23Vers.class;
+
+        super.fixVariabiliRiferimentoIstanzeGenerali();
+    }
 
     /**
      * Regola le variabili generali dell' applicazione con il loro valore iniziale di default <br>

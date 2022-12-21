@@ -125,14 +125,14 @@ public class VaadBoot implements ServletContextListener {
         this.setPrefInstance(prefInstance);
     }// end of constructor with @Autowired on setter
 
-    /**
-     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
-     * event, the application is ready to service Vaadin requests <br>
-     */
-    @EventListener(ContextRefreshedEvent.class)
-    public void onContextRefreshEvent() {
-        this.inizia();
-    }
+//    /**
+//     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
+//     * event, the application is ready to service Vaadin requests <br>
+//     */
+//    @EventListener(ContextRefreshedEvent.class)
+//    public void onContextRefreshEvent() {
+//        this.inizia();
+//    }
 
     /**
      * Primo ingresso nel programma <br>
@@ -259,7 +259,6 @@ public class VaadBoot implements ServletContextListener {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         VaadVar.projectNameModulo = MODULO_VAADIN24;
-
 
         /**
          * Lista dei moduli di menu da inserire nel Drawer del MainLayout per le gestione delle @Routes. <br>

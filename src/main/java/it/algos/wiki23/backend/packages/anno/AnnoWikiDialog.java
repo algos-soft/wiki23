@@ -28,7 +28,7 @@ import com.vaadin.flow.component.textfield.TextField;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class AnnoWikiDialog extends CrudDialog {
+public class AnnoWikiDialog extends CrudDialogBase {
 
     //--I fields devono essere class variable e non local variable
     private TextField code;

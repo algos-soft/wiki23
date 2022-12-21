@@ -1,23 +1,16 @@
 package it.algos.wiki23.backend.packages.giorno;
 
-import static it.algos.vaad24.backend.boot.VaadCost.*;
-import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
-import it.algos.vaad24.backend.logic.*;
-import it.algos.vaad24.backend.packages.crono.anno.*;
 import it.algos.vaad24.backend.packages.crono.giorno.*;
+import it.algos.vaad24.backend.packages.crono.mese.*;
 import it.algos.vaad24.backend.wrapper.*;
-import it.algos.wiki23.backend.enumeration.*;
-import it.algos.wiki23.backend.packages.bio.*;
 import it.algos.wiki23.backend.packages.wiki.*;
-import org.bson.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 /**
  * Project wiki23
@@ -47,6 +40,14 @@ public class GiornoWikiBackend extends WikiBackend {
     public GiornoBackend giornoBackend;
 
     /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MeseBackend meseBackend;
+
+    /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
      * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
      * Si usa un @Qualifier(), per specificare la classe che incrementa l'interfaccia repository <br>
@@ -68,7 +69,7 @@ public class GiornoWikiBackend extends WikiBackend {
     }
 
     public GiornoWiki checkAndSave(final GiornoWiki giornoWiki) {
-        return findByNome(giornoWiki.nome) != null ? null : repository.insert(giornoWiki);
+        return findByNome(giornoWiki.nomeWiki) != null ? null : repository.insert(giornoWiki);
     }
 
     /**
@@ -95,15 +96,15 @@ public class GiornoWikiBackend extends WikiBackend {
     public GiornoWiki newEntity(final Giorno giornoBase) {
         GiornoWiki giornoWiki = GiornoWiki.giornoWikiBuilder()
                 .ordine(giornoBase.ordine)
-                .nome(giornoBase.nome)
+                .nomeWiki(giornoBase.nome)
                 .build();
 
         return fixProperties(giornoWiki);
     }
 
     public GiornoWiki fixProperties(GiornoWiki giornoWiki) {
-        giornoWiki.pageNati = wikiUtility.wikiTitleNatiGiorno(giornoWiki.nome);
-        giornoWiki.pageMorti = wikiUtility.wikiTitleMortiGiorno(giornoWiki.nome);
+        giornoWiki.pageNati = wikiUtility.wikiTitleNatiGiorno(giornoWiki.nomeWiki);
+        giornoWiki.pageMorti = wikiUtility.wikiTitleMortiGiorno(giornoWiki.nomeWiki);
         return giornoWiki;
     }
 
@@ -117,12 +118,12 @@ public class GiornoWikiBackend extends WikiBackend {
     }
 
     public GiornoWiki findByNome(final String nome) {
-        return repository.findFirstByNome(nome);
+        return repository.findFirstByNomeWiki(nome);
     }
 
 
     public boolean isEsiste(final String nome) {
-        return repository.findFirstByNome(nome) != null;
+        return repository.findFirstByNomeWiki(nome) != null;
     }
 
     public boolean isNotEsiste(final String nome) {
@@ -142,32 +143,62 @@ public class GiornoWikiBackend extends WikiBackend {
         return listaNomi;
     }
 
+    //    /**
+    //     * Creazione di alcuni dati iniziali <br>
+    //     * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>
+    //     * La collezione viene svuotata <br>
+    //     * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
+    //     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    //     */
+    ////    @Override
+    //    public boolean reset() {
+    //        List<Giorno> giorniBase = null;
+    //
+    //        if (mongoService.isCollectionNullOrEmpty(Giorno.class)) {
+    //            logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Giorno'")));
+    //            return false;
+    //        }
+    //
+    ////        if (super.reset()) {
+    ////            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
+    ////            giorniBase = giornoBackend.findAll(sort);
+    ////            for (Giorno giorno : giorniBase) {
+    ////                creaIfNotExist(giorno);
+    ////            }
+    ////        }
+    //
+    //        return true;
+    //    }
+
+
     /**
-     * Creazione di alcuni dati iniziali <br>
-     * Viene invocato alla creazione del programma o dal bottone Reset della lista <br>
-     * La collezione viene svuotata <br>
+     * Creazione di alcuni dati <br>
+     * Esegue SOLO se la collection NON esiste oppure esiste ma è VUOTA <br>
+     * Viene invocato alla creazione del programma <br>
      * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-//    @Override
-    public boolean reset() {
-        List<Giorno> giorniBase = null;
+    @Override
+    public AResult resetOnlyEmpty() {
+        AResult result = super.resetOnlyEmpty();
+        List<Giorno> giorniBase;
 
-        if (mongoService.isCollectionNullOrEmpty(Giorno.class)) {
-            logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Giorno'")));
-            return false;
+        if (meseBackend.count() < 1) {
+            logger.error(new WrapLog().exception(new AlgosException("Manca la collezione 'Mese'")).usaDb());
+            return result;
         }
 
-//        if (super.reset()) {
-//            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
-//            giorniBase = giornoBackend.findAll(sort);
-//            for (Giorno giorno : giorniBase) {
-//                creaIfNotExist(giorno);
-//            }
-//        }
+        if (result.isValido()) {
+            Sort sort = Sort.by(Sort.Direction.ASC, "ordine");
+            giorniBase = giornoBackend.findAll(sort);
+            for (Giorno giorno : giorniBase) {
+                creaIfNotExist(giorno);
+            }
+        }
 
-        return true;
+        return fixResult(result);
     }
+
 
     /**
      * Esegue un azione di elaborazione, specifica del programma/package in corso <br>
@@ -180,8 +211,8 @@ public class GiornoWikiBackend extends WikiBackend {
         //--Per ogni anno calcola quante biografie lo usano (nei 2 parametri)
         //--Memorizza e registra il dato nella entityBean
         for (GiornoWiki giornoWiki : findAll()) {
-            giornoWiki.bioNati = bioBackend.countGiornoNato(giornoWiki.nome);
-            giornoWiki.bioMorti = bioBackend.countGiornoMorto(giornoWiki.nome);
+            giornoWiki.bioNati = bioBackend.countGiornoNato(giornoWiki.nomeWiki);
+            giornoWiki.bioMorti = bioBackend.countGiornoMorto(giornoWiki.nomeWiki);
 
             update(giornoWiki);
         }

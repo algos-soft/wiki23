@@ -5,6 +5,7 @@ import it.algos.vaad24.backend.annotation.*;
 import it.algos.vaad24.backend.entity.*;
 import it.algos.vaad24.backend.enumeration.*;
 import lombok.*;
+import org.springframework.stereotype.*;
 
 /**
  * Project wiki
@@ -15,6 +16,7 @@ import lombok.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Component
 //Lombok
 @Data
 @NoArgsConstructor

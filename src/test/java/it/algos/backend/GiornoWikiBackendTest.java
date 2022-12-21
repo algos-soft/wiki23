@@ -6,7 +6,6 @@ import it.algos.wiki23.backend.packages.giorno.*;
 import org.junit.jupiter.api.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.*;
@@ -14,11 +13,6 @@ import org.springframework.boot.test.context.*;
 
 import java.util.*;
 import java.util.stream.*;
-
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import com.vaadin.flow.component.textfield.TextField;
 
 /**
  * Project wiki23
@@ -161,7 +155,7 @@ public class GiornoWikiBackendTest extends WikiTest {
         listaBeans = backend.findAll();
         for (GiornoWiki giorno : listaBeans) {
             dim = queryService.getLength(giorno.pageNati);
-            message = String.format("La pagina %s ha %s bytes", giorno.nome,textService.format(dim));
+            message = String.format("La pagina %s ha %s bytes", giorno.nomeWiki,textService.format(dim));
             System.out.println(message);
         }
     }

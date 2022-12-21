@@ -226,15 +226,13 @@ public class VaadCost {
 
     public static final String KEY_MAPPA_LAST_MODIFICA = "lastModifica";
 
-//    public static final String KEY_DIR_CREATA_NON_ESISTENTE = "dirCreataNuova";
-//
-//    public static final String KEY_DIR_CREATA_CANCELLATA = "dirCreataCancellata";
-//
-//    public static final String KEY_DIR_ESISTENTE = "dirEsistente";
-//
-//    public static final String KEY_DIR_INTEGRATA = "dirIntegrata";
-
-
+    //    public static final String KEY_DIR_CREATA_NON_ESISTENTE = "dirCreataNuova";
+    //
+    //    public static final String KEY_DIR_CREATA_CANCELLATA = "dirCreataCancellata";
+    //
+    //    public static final String KEY_DIR_ESISTENTE = "dirEsistente";
+    //
+    //    public static final String KEY_DIR_INTEGRATA = "dirIntegrata";
 
 
     /**
@@ -420,7 +418,11 @@ public class VaadCost {
 
     public static final String FIELD_NAME_CODE = "code";
 
+    public static final String FIELD_NAME_NOME = "nome";
+
     public static final String FIELD_NAME_DESCRIZIONE = "descrizione";
+
+    public static final String FIELD_NAME_NOTE = "note";
 
     public static final String FIELD_NAME_RESET = "reset";
 
