@@ -396,7 +396,7 @@ public class PreferenzaDialog extends Dialog {
                         }
                     }
                     else {
-                        Avviso.show("Manca il valore").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                        Avviso.text("Manca il valore").error().open();
                         logger.info(new WrapLog().exception(new AlgosException("Manca il valore della preferenza che non può essere vuoto")));
                     }
                 }
@@ -531,9 +531,9 @@ public class PreferenzaDialog extends Dialog {
         }
         preferenzaBackend.update(currentItem);
         switch (operation) {
-            case ADD -> Avviso.show2000("Registrata la preferenza").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            case UPDATE -> Avviso.show2000("Registrata la modifica").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            default -> Notification.show("Caso non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            case ADD -> Avviso.text("Registrata la preferenza").success().open();
+            case UPDATE -> Avviso.text("Registrata la modifica").success().open();
+            default -> Avviso.text("Caso non previsto").error().open();
         }
 
         if (saveHandler != null) {
@@ -552,11 +552,11 @@ public class PreferenzaDialog extends Dialog {
 
     public void annullaHandler() {
         switch (operation) {
-            case ADD -> Avviso.show2000("Preferenza non registrata").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            case READ -> Avviso.show2000("Preferenza letta").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            case UPDATE -> Avviso.show2000("Preferenza non modificata").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            case DELETE -> Avviso.show2000("Preferenza non cancellata").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            default -> Notification.show("Caso non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            case ADD -> Avviso.text("Preferenza non registrata").primary().open();
+            case READ -> Avviso.text("Preferenza letta").success().open();
+            case UPDATE -> Avviso.text("Preferenza non modificata").primary().open();
+            case DELETE -> Avviso.text("Preferenza non cancellata").primary().open();
+            default -> Avviso.text("Caso non previsto").error().open();
         }
         if (annullaHandler != null) {
             annullaHandler.accept(currentItem);

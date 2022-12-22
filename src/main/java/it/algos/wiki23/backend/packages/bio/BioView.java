@@ -481,7 +481,7 @@ public class BioView extends WikiView {
 
     public void downloadHandler(final Bio bio) {
         grid.setItems(crudBackend.findAll(sortOrder));
-        Avviso.show(String.format("%s successfully downloaded", bio)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        Avviso.text(String.format("%s successfully downloaded", bio)).success().open();
     }
 
     @Override
@@ -491,7 +491,7 @@ public class BioView extends WikiView {
     public void elaboraHandler(final Bio bio) {
         backend.update(bio);
         grid.setItems(crudBackend.findAll(sortOrder));
-        Avviso.show(String.format("%s successfully elaborated", bio)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        Avviso.text(String.format("%s successfully elaborated", bio)).success().open();
     }
 
     protected void deleteEsegue() {

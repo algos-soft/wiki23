@@ -7,7 +7,6 @@ import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
-import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.page.*;
 import com.vaadin.flow.component.textfield.*;
@@ -414,7 +413,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         enumPref.inizia();
         //        vaadBoot.fixPreferenze();
         grid.setItems(backend.findAll());
-        Avviso.show("Refreshed view").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        Avviso.text("Refreshed view").primary().open();
     }
 
     /**
@@ -427,7 +426,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     public void deleteHandler(final Preferenza entityBean) {
         backend.delete(entityBean);
         grid.setItems(backend.findAll());
-        Avviso.show(String.format("%s successfully deleted", entityBean.code)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        Avviso.text(String.format("%s successfully deleted", entityBean.code)).success().open();
     }
 
     public void annullaHandler(final Preferenza entityBean) {

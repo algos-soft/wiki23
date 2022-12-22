@@ -62,7 +62,7 @@ public class WizElaboraUpdateProject extends WizElabora {
                 }
             }
         }
-        Avviso.show("Update project").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        Avviso.text("Update project").success().open();
 
         super.eliminaSources();
     }

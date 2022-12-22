@@ -10,7 +10,6 @@ import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.formlayout.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
-import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.component.timepicker.*;
@@ -24,7 +23,6 @@ import it.algos.vaad24.backend.logic.*;
 import it.algos.vaad24.backend.service.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.vaad24.ui.dialog.*;
-import it.algos.vaad24.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
@@ -479,9 +477,9 @@ public class CrudDialog extends Dialog {
         }
         crudBackend.update(currentItem);
         switch (operation) {
-            case ADD -> Avviso.show("Aggiunto un elemento").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            case UPDATE -> Avviso.show("Registrata la modifica").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            default -> Notification.show("Caso non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            case ADD -> Avviso.text("Aggiunto un elemento").success().open();
+            case UPDATE -> Avviso.text("Registrata la modifica").success().open();
+            default -> Avviso.text("Caso non previsto").error().open();
         }
 
         if (saveHandler != null) {
@@ -500,11 +498,11 @@ public class CrudDialog extends Dialog {
 
     public void annullaHandler() {
         switch (operation) {
-            case ADD -> Avviso.show("Non registrato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            case READ -> Avviso.show("Letto").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            case UPDATE -> Avviso.show("Non modificato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            case DELETE -> Avviso.show("Non cancellato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            default -> Notification.show("Caso non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            case ADD -> Avviso.text("Non registrato").primary().open();
+            case READ -> Avviso.text("Letto").success().open();
+            case UPDATE -> Avviso.text("Non modificato").primary().open();
+            case DELETE -> Avviso.text("Non cancellato").primary().open();
+            default -> Avviso.text("Caso non previsto").error().open();
         }
         if (annullaHandler != null) {
             annullaHandler.accept(currentItem);

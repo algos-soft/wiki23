@@ -7,7 +7,6 @@ import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
-import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.renderer.*;
@@ -690,18 +689,18 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     protected void resetEsegue() {
         if (crudBackend.resetForcing().isValido()) {
             grid.setItems(crudBackend.findAll(sortOrder));
-            Avviso.show("Eseguito reset all").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            Avviso.text("Eseguito reset all").success().open();
             refresh();
         }
         else {
-            Avviso.show("Reset non eseguito").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            Avviso.text("Reset non eseguito").error().open();
         }
     }
 
     protected void deleteEsegue() {
         crudBackend.deleteAll();
         grid.setItems(crudBackend.findAll(sortOrder));
-        Avviso.show("Delete all").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        Avviso.text("Delete all").success().open();
     }
 
     /**
@@ -773,7 +772,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     public void deleteHandler(final AEntity entityBean) {
         crudBackend.delete(entityBean);
         grid.setItems(crudBackend.findAll(sortOrder));
-        Avviso.show(String.format("%s successfully deleted", entityBean)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        Avviso.text(String.format("%s successfully deleted", entityBean)).success().open();
     }
 
     public void annullaHandler(final AEntity entityBean) {

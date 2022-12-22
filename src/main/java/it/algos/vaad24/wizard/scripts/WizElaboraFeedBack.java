@@ -49,18 +49,18 @@ public class WizElaboraFeedBack extends it.algos.vaad24.wizard.scripts.WizElabor
                     mostraRisultato(result, AECopy.dirFilesModifica, destWizard, "Rollback");
                     message = String.format("La directory 'wizard' su [%s] è stata aggiornata", PROJECT_VAADIN24);
                     logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-                    Avviso.show("Feedback di wizard").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    Avviso.text("Feedback di wizard").success().open();
                 }
                 if (result.getTagCode().equals(AEKeyDir.esistente.name())) {
                     message = String.format("La directory 'wizard' su [%s] non è stata modificata", PROJECT_VAADIN24);
                     logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-                    Avviso.show("Feedback di wizard").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+                    Avviso.text("Feedback di wizard").primary().open();
                 }
             }
             else {
                 message = "La directory 'wizard' ha dei problemi";
                 logger.warn(new WrapLog().type(AETypeLog.wizard).exception(new AlgosException(message)));
-                Avviso.show("Feedback non riuscito").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                Avviso.text("Feedback non riuscito").error().open();
             }
         }
         else {
@@ -72,7 +72,7 @@ public class WizElaboraFeedBack extends it.algos.vaad24.wizard.scripts.WizElabor
                 message = String.format("Il path destinazione %s è errato", destWizard);
                 logger.warn(new WrapLog().type(AETypeLog.wizard).message(message));
             }
-            Avviso.show("Feedback non riuscito").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            Avviso.text("Feedback non riuscito").primary().open();
         }
 
     }

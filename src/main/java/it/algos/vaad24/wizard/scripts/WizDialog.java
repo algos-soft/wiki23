@@ -515,7 +515,7 @@ public abstract class WizDialog extends Dialog {
         }
         else {
             this.close();
-            Avviso.show("Dialogo annullato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            Avviso.text("Dialogo annullato").primary().open();
             //        }
         }
     }

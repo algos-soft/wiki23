@@ -900,7 +900,7 @@ public class FileService extends AbstractService {
                     filesDestinazionePost = getFilesName(destPath);
                     resultMap.put(AEKeyMapFile.destinazionePost.name(), filesDestinazionePost);
 
-                    message = String.format("La %s '%s' esisteva già ma è stata cancellata e creata ex-novo.", dir ,path);
+                    message = String.format("La %s '%s' esisteva già ma è stata cancellata e creata ex-novo.", dir, path);
                     result.setValidMessage(message);
                 }
                 else {
@@ -1864,7 +1864,14 @@ public class FileService extends AbstractService {
      * @return lista dei path completi
      */
     public List<String> getPathModuloPackageFiles() {
-        return getPathModuloPackageFiles(VaadVar.projectNameModulo);
+        List<String> filesAll = new ArrayList<>();
+        List<String> filesVaad24 = getPathModuloPackageFiles(VaadVar.moduloVaadin24);
+        List<String> filesCurrent = getPathModuloPackageFiles(VaadVar.projectNameModulo);
+
+        filesAll.addAll(filesVaad24);
+        filesAll.addAll(filesCurrent);
+
+        return filesAll;
     }
 
 
