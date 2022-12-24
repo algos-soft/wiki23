@@ -27,11 +27,11 @@ import java.util.*;
 public class AEFontHeightTest extends AlgosUnitTest {
 
 
-    private AEFontHeight type;
+    private AEFontSize type;
 
-    private AEFontHeight[] matrice;
+    private AEFontSize[] matrice;
 
-    private List<AEFontHeight> listaEnum;
+    private List<AEFontSize> listaEnum;
 
     private List<String> listaTag;
 
@@ -67,14 +67,14 @@ public class AEFontHeightTest extends AlgosUnitTest {
     @Order(1)
     @DisplayName("1 - matrice dei valori")
     void matrice() {
-        matrice = AEFontHeight.values();
+        matrice = AEFontSize.values();
         assertNotNull(matrice);
 
         System.out.println("Tutti i valori della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
-        for (AEFontHeight valore : matrice) {
+        for (AEFontSize valore : matrice) {
             System.out.println(valore);
         }
     }
@@ -84,7 +84,7 @@ public class AEFontHeightTest extends AlgosUnitTest {
     @Order(2)
     @DisplayName("2 - lista dei valori metodo forEach")
     void forEach() {
-        listaEnum = AEFontHeight.getAllEnums();
+        listaEnum = AEFontSize.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println("Tutte le occorrenze della enumeration come ArrayList(), metodo forEach");
@@ -100,7 +100,7 @@ public class AEFontHeightTest extends AlgosUnitTest {
     @Order(3)
     @DisplayName("3 - lista dei valori metodo stream")
     void stream() {
-        listaEnum = AEFontHeight.getAllEnums();
+        listaEnum = AEFontSize.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println("Tutte le occorrenze della enumeration come ArrayList(), metodo stream");
@@ -116,7 +116,7 @@ public class AEFontHeightTest extends AlgosUnitTest {
     @Order(4)
     @DisplayName("4 - tag di ogni singola enumeration")
     void tag() {
-        listaEnum = AEFontHeight.getAllEnums();
+        listaEnum = AEFontSize.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println("Tutti i tag di ogni singola enumeration");
@@ -136,7 +136,7 @@ public class AEFontHeightTest extends AlgosUnitTest {
     @Order(5)
     @DisplayName("5 - lista dei tag")
     void allTag() {
-        listaTag = AEFontHeight.getAllTags();
+        listaTag = AEFontSize.getAllTags();
         assertNotNull(listaTag);
 
         System.out.println("Tutti i valori 'tag' della enumeration");

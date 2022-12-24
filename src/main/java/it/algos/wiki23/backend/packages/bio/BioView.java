@@ -474,14 +474,15 @@ public class BioView extends WikiView {
         if (entityBeanSenzaTempl.isPresent()) {
             bioBeanSenzaTempl = (Bio) entityBeanSenzaTempl.get();
             bioMongoCompleto = backend.findByKey(bioBeanSenzaTempl.pageId);
-            dialog = appContext.getBean(BioDialog.class, bioMongoCompleto, CrudOperation.DELETE, crudBackend, formPropertyNamesList);
-            dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
+            ADelete.delete(entityBeanSenzaTempl.toString(), this::deleteHandler);
+//            dialog = appContext.getBean(BioDialog.class, bioMongoCompleto, CrudOperation.DELETE, crudBackend, formPropertyNamesList);
+//            dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
         }
     }
 
     public void downloadHandler(final Bio bio) {
         grid.setItems(crudBackend.findAll(sortOrder));
-        Avviso.text(String.format("%s successfully downloaded", bio)).success().open();
+        Avviso.message(String.format("%s successfully downloaded", bio)).success().open();
     }
 
     @Override
@@ -491,11 +492,11 @@ public class BioView extends WikiView {
     public void elaboraHandler(final Bio bio) {
         backend.update(bio);
         grid.setItems(crudBackend.findAll(sortOrder));
-        Avviso.text(String.format("%s successfully elaborated", bio)).success().open();
+        Avviso.message(String.format("%s successfully elaborated", bio)).success().open();
     }
 
-    protected void deleteEsegue() {
-        super.deleteEsegue();
+    public void deleteHandler() {
+        super.deleteHandler();
 
         if (WPref.resetBio != null) {
             WPref.resetBio.setValue(ROOT_DATA_TIME);

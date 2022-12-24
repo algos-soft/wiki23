@@ -472,9 +472,9 @@ public class CrudDialogBase extends CrudDialog {
         }
         crudBackend.update(currentItem);
         switch (operation) {
-            case ADD -> Avviso.text("Aggiunto un elemento").success().open();
-            case UPDATE -> Avviso.text("Registrata la modifica").success().open();
-            default -> Avviso.text("Caso non previsto").error().open();
+            case ADD -> Avviso.message("Aggiunto un elemento").success().open();
+            case UPDATE -> Avviso.message("Registrata la modifica").success().open();
+            default -> Avviso.message("Caso non previsto").error().open();
         }
 
         if (saveHandler != null) {
@@ -493,11 +493,11 @@ public class CrudDialogBase extends CrudDialog {
 
     public void annullaHandler() {
         switch (operation) {
-            case ADD -> Avviso.text("Non registrato").primary().open();
-            case READ -> Avviso.text("Letto").success().open();
-            case UPDATE -> Avviso.text("Non modificato").primary().open();
-            case DELETE -> Avviso.text("Non cancellato").primary().open();
-            default -> Avviso.text("Caso non previsto").error().open();
+            case ADD -> Avviso.message("Non registrato").primary().open();
+            case READ -> Avviso.message("Letto").success().open();
+            case UPDATE -> Avviso.message("Non modificato").primary().open();
+            case DELETE -> Avviso.message("Non cancellato").primary().open();
+            default -> Avviso.message("Caso non previsto").error().open();
         }
         if (annullaHandler != null) {
             annullaHandler.accept(currentItem);

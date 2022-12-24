@@ -449,7 +449,7 @@ public class AttivitaView extends WikiView {
             }
             else {
                 message = String.format("L'attività %s non raggiunge il necessario numero di voci biografiche", attivita.singolare);
-                Avviso.text(message).primary().open();
+                Avviso.message(message).primary().open();
             }
         }
     }

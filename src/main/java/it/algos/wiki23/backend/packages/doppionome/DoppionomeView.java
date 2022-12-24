@@ -84,7 +84,7 @@ public class DoppionomeView extends WikiView {
         Span span = getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold));
         Anchor anchor = new Anchor(VaadCost.PATH_WIKI + "Categoria:Prenomi composti", "[[categoria:Prenomi composti]]");
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
-        anchor.getElement().getStyle().set(AEFontHeight.HTML, AEFontHeight.em9.getTag());
+        anchor.getElement().getStyle().set(AEFontSize.HTML, AEFontSize.em9.getTag());
         anchor.getElement().getStyle().set(AETypeColor.HTML, AETypeColor.verde.getTag());
         alertPlaceHolder.add(new Span(span, anchor));
 

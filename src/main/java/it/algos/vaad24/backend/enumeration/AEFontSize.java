@@ -14,7 +14,7 @@ import java.util.*;
  * Date: sab, 20-feb-2021
  * Time: 17:40
  */
-public enum AEFontHeight implements AIType, AITypePref {
+public enum AEFontSize implements AIType, AITypePref {
 
     normal("1"),
     number16("1.6"),
@@ -37,11 +37,11 @@ public enum AEFontHeight implements AIType, AITypePref {
     private String tag;
 
 
-    AEFontHeight(String tag) {
+    AEFontSize(String tag) {
         this.tag = tag;
     }
 
-    public static List<AEFontHeight> getAllEnums() {
+    public static List<AEFontSize> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
 
@@ -60,7 +60,7 @@ public enum AEFontHeight implements AIType, AITypePref {
         return listaTags;
     }
 
-    public static AEFontHeight getType(final String tag) {
+    public static AEFontSize getType(final String tag) {
         return getAllEnums()
                 .stream()
                 .filter(type -> type.getTag().equals(tag))
@@ -69,7 +69,7 @@ public enum AEFontHeight implements AIType, AITypePref {
     }
 
     @Override
-    public List<AEFontHeight> getAll() {
+    public List<AEFontSize> getAll() {
         return Arrays.stream(values()).toList();
     }
 

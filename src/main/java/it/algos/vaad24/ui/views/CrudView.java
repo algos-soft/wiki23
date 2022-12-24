@@ -228,6 +228,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     private Function<String, Grid.Column<AEntity>> getColonna = name -> grid.getColumnByKey(name);
 
+    protected Runnable confermaHandler;
 
     public CrudView(final CrudBackend crudBackend, final Class entityClazz) {
         this.crudBackend = crudBackend;
@@ -377,12 +378,12 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             if (AREntity.class.isAssignableFrom(entityClazz) || usaReset) {
                 buttonDeleteReset.getElement().setProperty("title", "Reset: ripristina nel database i valori di default annullando le " +
                         "eventuali modifiche apportate successivamente\nShortcut SHIFT+R");
-                buttonDeleteReset.addClickListener(event -> resetDialog());
+                buttonDeleteReset.addClickListener(event -> AReset.reset(this::reset));
                 buttonDeleteReset.addClickShortcut(Key.KEY_R, KeyModifier.SHIFT);
             }
             else {
                 buttonDeleteReset.getElement().setProperty("title", "Delete: cancella tutta la collection\nShortcut SHIFT+D");
-                buttonDeleteReset.addClickListener(event -> deleteAll());
+                buttonDeleteReset.addClickListener(event -> ADelete.deleteAll(this::deleteAll));
                 buttonDeleteReset.addClickShortcut(Key.KEY_D, KeyModifier.SHIFT);
             }
             buttonDeleteReset.setIcon(new Icon(VaadinIcon.REFRESH));
@@ -415,7 +416,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             buttonEdit.getElement().setProperty("title", "Update: modifica l'elemento selezionato\nShortcut SHIFT+E");
             buttonEdit.setIcon(new Icon(VaadinIcon.PENCIL));
             buttonEdit.setEnabled(false);
-            buttonEdit.addClickListener(e -> updateItem());
+            buttonEdit.addClickListener(event -> updateItem());
             buttonEdit.addClickShortcut(Key.KEY_E, KeyModifier.SHIFT);
             topPlaceHolder.add(buttonEdit);
         }
@@ -426,7 +427,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             buttonDelete.getElement().setProperty("title", "Delete: cancella l'elemento selezionato\nShortcut SHIFT+D");
             buttonDelete.setIcon(new Icon(VaadinIcon.TRASH));
             buttonDelete.setEnabled(false);
-            buttonDelete.addClickListener(e -> deleteItem());
+            buttonDelete.addClickListener(event -> deleteItem());
             buttonDelete.addClickShortcut(Key.KEY_D, KeyModifier.SHIFT);
             topPlaceHolder.add(buttonDelete);
         }
@@ -614,7 +615,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         if (bottomPlaceHolder != null) {
             bottomPlaceHolder.removeAll();
             if (usaBottomTotale) {
-                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontSize.em7)));
             }
 
             if (usaBottomInfo) {
@@ -625,7 +626,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
                 //--Locale.US per forzare la visualizzazione grafica di un punto anziché una virgola
                 message = String.format(Locale.US, "Algos® - %s %2.1f di %s%s", nome, doppio, data, note);
-                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blu).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blue).weight(AEFontWeight.bold).fontHeight(AEFontSize.em7)));
             }
         }
     }
@@ -678,29 +679,28 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         grid.setItems(crudBackend.findAll(sortOrder));
     }
 
-    protected void resetDialog() {
-        appContext.getBean(DialogReset.class).open(this::resetEsegue);
-    }
 
-    protected void deleteAll() {
-        appContext.getBean(DialogDeleteAll.class).open(this::deleteEsegue);
-    }
-
-    protected void resetEsegue() {
+    protected void reset() {
         if (crudBackend.resetForcing().isValido()) {
             grid.setItems(crudBackend.findAll(sortOrder));
-            Avviso.text("Eseguito reset all").success().open();
+            Avviso.message("Eseguito reset completo").success().open();
             refresh();
         }
         else {
-            Avviso.text("Reset non eseguito").error().open();
+            Avviso.message("Reset non eseguito").error().open();
         }
     }
 
-    protected void deleteEsegue() {
+    protected void deleteAll() {
+        int totaleEsistente = crudBackend.count();
+        if (totaleEsistente == 0) {
+            Avviso.message("Non ci sono entities da cancellare").primary().open();
+            return;
+        }
+
         crudBackend.deleteAll();
         grid.setItems(crudBackend.findAll(sortOrder));
-        Avviso.text("Delete all").success().open();
+        Avviso.message("Delete all").success().open();
     }
 
     /**
@@ -754,10 +754,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Passa al dialogo gli handler per annullare e cancellare <br>
      */
     public void deleteItem() {
-        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        Optional<AEntity> entityBean = grid.getSelectedItems().stream().findFirst();
         if (entityBean.isPresent()) {
-            dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBean.get(), CrudOperation.DELETE, crudBackend, formPropertyNamesList);
-            dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
+            ADelete.delete(entityBean.toString(), this::deleteHandler);
         }
     }
 
@@ -769,10 +768,16 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         grid.setItems(crudBackend.findAll(sortOrder));
     }
 
-    public void deleteHandler(final AEntity entityBean) {
-        crudBackend.delete(entityBean);
-        grid.setItems(crudBackend.findAll(sortOrder));
-        Avviso.text(String.format("%s successfully deleted", entityBean)).success().open();
+    public void deleteHandler() {
+        Optional<AEntity> entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            crudBackend.delete( entityBean.get());
+            grid.setItems(crudBackend.findAll(sortOrder));
+            Avviso.message(String.format("%s successfully deleted", entityBean.get())).success().open();
+        }
+        else {
+            Avviso.message("Nessuna entity selezionata").error().open();
+        }
     }
 
     public void annullaHandler(final AEntity entityBean) {
@@ -819,7 +824,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     public void addSpanBlue(final String message) {
-        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.blu)));
+        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.blue)));
     }
 
     public void addSpanRosso(final String message) {
@@ -839,10 +844,10 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         }
         if (wrap.getFontHeight() == null) {
             if (browserWidth == 0 || browserWidth > 500) {
-                wrap.fontHeight(AEFontHeight.em9);
+                wrap.fontHeight(AEFontSize.em9);
             }
             else {
-                wrap.fontHeight(AEFontHeight.em7);
+                wrap.fontHeight(AEFontSize.em7);
             }
         }
         if (wrap.getLineHeight() == null) {

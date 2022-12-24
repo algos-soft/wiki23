@@ -62,7 +62,7 @@ public class WizElaboraUpdateProject extends WizElabora {
                 }
             }
         }
-        Avviso.text("Update project").success().open();
+        Avviso.message("Update project").success().open();
 
         super.eliminaSources();
     }

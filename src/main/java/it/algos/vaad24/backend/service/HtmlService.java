@@ -44,7 +44,7 @@ public class HtmlService extends AbstractService {
         String message;
         AETypeColor color;
         AEFontWeight weight;
-        AEFontHeight fontHeight;
+        AEFontSize fontHeight;
         AELineHeight lineHeight;
         AEFontStyle style;
 
@@ -71,7 +71,7 @@ public class HtmlService extends AbstractService {
 
         fontHeight = wrap.getFontHeight();
         if (fontHeight != null) {
-            span.getElement().getStyle().set(AEFontHeight.HTML, fontHeight.getTag());
+            span.getElement().getStyle().set(AEFontSize.HTML, fontHeight.getTag());
         }
 
         lineHeight = wrap.getLineHeight();
@@ -119,7 +119,7 @@ public class HtmlService extends AbstractService {
      * @return elemento per html
      */
     public Span getSpanBlu(final String message) {
-        return getSpan(new WrapSpan(message).color(AETypeColor.blu));
+        return getSpan(new WrapSpan(message).color(AETypeColor.blue));
     }
 
 

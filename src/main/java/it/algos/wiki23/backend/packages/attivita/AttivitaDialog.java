@@ -90,7 +90,7 @@ public class AttivitaDialog extends CrudDialog {
         layout.setPadding(false);
         layout.setSpacing(true);
         layout.setMargin(false);
-        layout.add(htmlService.getSpan(new WrapSpan("Attività singolari associate al plurale di questa attività e che confluiscono nella medesima pagina").color(AETypeColor.blu).lineHeight(AELineHeight.em3)));
+        layout.add(htmlService.getSpan(new WrapSpan("Attività singolari associate al plurale di questa attività e che confluiscono nella medesima pagina").color(AETypeColor.blue).lineHeight(AELineHeight.em3)));
         for (Attivita attivita : lista) {
             layout.add(htmlService.getSpan(new WrapSpan(attivita.singolare).color(AETypeColor.verde).lineHeight(AELineHeight.em3)));
         }

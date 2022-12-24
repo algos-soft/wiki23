@@ -396,7 +396,7 @@ public class PreferenzaDialog extends Dialog {
                         }
                     }
                     else {
-                        Avviso.text("Manca il valore").error().open();
+                        Avviso.message("Manca il valore").error().open();
                         logger.info(new WrapLog().exception(new AlgosException("Manca il valore della preferenza che non può essere vuoto")));
                     }
                 }
@@ -531,9 +531,9 @@ public class PreferenzaDialog extends Dialog {
         }
         preferenzaBackend.update(currentItem);
         switch (operation) {
-            case ADD -> Avviso.text("Registrata la preferenza").success().open();
-            case UPDATE -> Avviso.text("Registrata la modifica").success().open();
-            default -> Avviso.text("Caso non previsto").error().open();
+            case ADD -> Avviso.message("Registrata la preferenza").success().open();
+            case UPDATE -> Avviso.message("Registrata la modifica").success().open();
+            default -> Avviso.message("Caso non previsto").error().open();
         }
 
         if (saveHandler != null) {
@@ -552,11 +552,11 @@ public class PreferenzaDialog extends Dialog {
 
     public void annullaHandler() {
         switch (operation) {
-            case ADD -> Avviso.text("Preferenza non registrata").primary().open();
-            case READ -> Avviso.text("Preferenza letta").success().open();
-            case UPDATE -> Avviso.text("Preferenza non modificata").primary().open();
-            case DELETE -> Avviso.text("Preferenza non cancellata").primary().open();
-            default -> Avviso.text("Caso non previsto").error().open();
+            case ADD -> Avviso.message("Preferenza non registrata").primary().open();
+            case READ -> Avviso.message("Preferenza letta").success().open();
+            case UPDATE -> Avviso.message("Preferenza non modificata").primary().open();
+            case DELETE -> Avviso.message("Preferenza non cancellata").primary().open();
+            default -> Avviso.message("Caso non previsto").error().open();
         }
         if (annullaHandler != null) {
             annullaHandler.accept(currentItem);

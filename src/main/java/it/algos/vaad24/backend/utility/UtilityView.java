@@ -118,18 +118,15 @@ public class UtilityView extends VerticalLayout {
 
         Button bottone = new Button("Reset all");
         bottone.getElement().setAttribute("theme", "primary");
-        bottone.addClickListener(event -> dialogoConfermaReset());
+        bottone.addClickListener(event -> AReset.reset(this::reset));
 
         this.add(paragrafo);
         layout.add(bottone);
         this.add(layout);
     }
 
-    private void dialogoConfermaReset() {
-        appContext.getBean(DialogReset.class).open(this::resetEsegue);
-    }
 
-    private void resetEsegue() {
+    private void reset() {
         logger.info(new WrapLog().message(VUOTA).type(AETypeLog.reset));
         resetSingoloModulo(VaadVar.moduloVaadin24);
         logger.info(new WrapLog().message(VUOTA).type(AETypeLog.reset));

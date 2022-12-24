@@ -413,7 +413,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         enumPref.inizia();
         //        vaadBoot.fixPreferenze();
         grid.setItems(backend.findAll());
-        Avviso.text("Refreshed view").primary().open();
+        Avviso.message("Refreshed view").primary().open();
     }
 
     /**
@@ -426,7 +426,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     public void deleteHandler(final Preferenza entityBean) {
         backend.delete(entityBean);
         grid.setItems(backend.findAll());
-        Avviso.text(String.format("%s successfully deleted", entityBean.code)).success().open();
+        Avviso.message(String.format("%s successfully deleted", entityBean.code)).success().open();
     }
 
     public void annullaHandler(final Preferenza entityBean) {
@@ -450,7 +450,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         if (bottomPlaceHolder != null) {
             bottomPlaceHolder.removeAll();
             if (usaBottomTotale) {
-                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontSize.em7)));
             }
 
             if (usaBottomInfo) {
@@ -460,7 +460,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
                 //--Locale.US per forzare la visualizzazione grafica di un punto anziché una virgola
                 message = String.format(Locale.US, "Algos® - %s %2.1f di %s", nome, doppio, data);
-                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blu).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blue).weight(AEFontWeight.bold).fontHeight(AEFontSize.em7)));
             }
         }
     }
@@ -470,7 +470,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     }
 
     public void spanBlue(final String message) {
-        span(new WrapSpan(message).color(AETypeColor.blu));
+        span(new WrapSpan(message).color(AETypeColor.blue));
     }
 
     public void spanRosso(final String message) {
@@ -492,10 +492,10 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         }
         if (wrap.getFontHeight() == null) {
             if (width == 0 || width > 500) {
-                wrap.fontHeight(AEFontHeight.em9);
+                wrap.fontHeight(AEFontSize.em9);
             }
             else {
-                wrap.fontHeight(AEFontHeight.em7);
+                wrap.fontHeight(AEFontSize.em7);
             }
         }
 

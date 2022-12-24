@@ -428,14 +428,14 @@ public class LogService extends AbstractService {
 
     public String warn(final WrapLog wrap) {
         if (UI.getCurrent() != null) {
-            Avviso.text("Warning").error().open();
+            Avviso.message("Warning").error().open();
         }
         return logBase(AELogLevel.warn, wrap);
     }
 
     public String error(final WrapLog wrap) {
         if (UI.getCurrent() != null) {
-            Avviso.text("Errore").error().open();
+            Avviso.message("Errore").error().open();
         }
         return logBase(AELogLevel.error, wrap);
     }

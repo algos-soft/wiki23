@@ -16,7 +16,7 @@ public class Avviso {
 
     public static final Notification.Position POSIZIONE = Notification.Position.BOTTOM_START;
 
-    private String text;
+    private String message;
 
     private Notification.Position posizione = POSIZIONE;
 
@@ -24,54 +24,14 @@ public class Avviso {
 
     private int durata = DURATA;
 
-    public static void show(String text) {
-         Notification.show(text, DURATA, POSIZIONE);
+    public static void show(String messaggioImmediatamenteVisibile) {
+         Notification.show(messaggioImmediatamenteVisibile, DURATA, POSIZIONE);
     }
 
 
-//    public static Notification show1000(String text) {
-//        return Notification.show(text, 1000, Notification.Position.BOTTOM_START);
-//    }
-//
-//    public static Notification show2000(String text) {
-//        return Notification.show(text, 2000, Notification.Position.BOTTOM_START);
-//    }
-//
-//    public static Notification show3000(String text) {
-//        return Notification.show(text, 3000, Notification.Position.BOTTOM_START);
-//    }
-
-    //    public static Notification center(String text) {
-    //        return Notification.show(text, durata(), Notification.Position.MIDDLE);
-    //    }
-    //
-    //    public static Notification centerPrimary(String text) {
-    //        Notification notification = Notification.show(text, durata(), Notification.Position.MIDDLE);
-    //        notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-    //        return notification;
-    //    }
-    //
-    //    public static Notification centerSuccess(String text) {
-    //        Notification notification = Notification.show(text, durata(), Notification.Position.MIDDLE);
-    //        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-    //        return notification;
-    //    }
-
-    //    public static Notification centerError(String text) {
-    //        Notification notification = Notification.show(text, durata(), Notification.Position.MIDDLE);
-    //        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-    //        return notification;
-    //    }
-
-
-    public static void open(String text) {
-         Notification.show(text, DURATA, POSIZIONE);
-    }
-
-    public static Avviso text(String text) {
+    public static Avviso message(String message) {
         Avviso avviso = new Avviso();
-
-        avviso.text = text;
+        avviso.message = message;
         return avviso;
     }
 
@@ -107,10 +67,10 @@ public class Avviso {
 
     public void open() {
         if (themeVariant == null) {
-            Notification.show(text, durata(), posizione);
+            Notification.show(message, durata(), posizione);
         }
         else {
-            Notification.show(text, durata(), posizione).addThemeVariants(themeVariant);
+            Notification.show(message, durata(), posizione).addThemeVariants(themeVariant);
         }
     }
 

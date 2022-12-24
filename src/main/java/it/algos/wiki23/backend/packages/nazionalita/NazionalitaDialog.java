@@ -91,7 +91,7 @@ public class NazionalitaDialog extends CrudDialog {
         layout.setPadding(false);
         layout.setSpacing(true);
         layout.setMargin(false);
-        layout.add(htmlService.getSpan(new WrapSpan("Nazionalità singolari associate").color(AETypeColor.blu).lineHeight(AELineHeight.em3)));
+        layout.add(htmlService.getSpan(new WrapSpan("Nazionalità singolari associate").color(AETypeColor.blue).lineHeight(AELineHeight.em3)));
         for (Nazionalita nazionalita : lista) {
             layout.add(htmlService.getSpan(new WrapSpan(nazionalita.singolare).color(AETypeColor.verde).lineHeight(AELineHeight.em3)));
         }

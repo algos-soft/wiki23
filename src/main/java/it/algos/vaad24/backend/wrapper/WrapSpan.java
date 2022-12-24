@@ -26,7 +26,7 @@ public class WrapSpan {
 
     private AETypeColor color;
 
-    private AEFontHeight fontHeight;
+    private AEFontSize fontHeight;
 
     private AELineHeight lineHeight;
 
@@ -59,7 +59,7 @@ public class WrapSpan {
         return this;
     }
 
-    public WrapSpan fontHeight(AEFontHeight fontHeight) {
+    public WrapSpan fontHeight(AEFontSize fontHeight) {
         this.fontHeight = fontHeight;
         return this;
     }
@@ -81,7 +81,7 @@ public class WrapSpan {
         return color;
     }
 
-    public AEFontHeight getFontHeight() {
+    public AEFontSize getFontHeight() {
         return fontHeight;
     }
 

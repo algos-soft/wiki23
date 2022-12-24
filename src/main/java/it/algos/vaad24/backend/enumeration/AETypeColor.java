@@ -14,7 +14,7 @@ import java.util.*;
 public enum AETypeColor implements AIType {
     normale("black"),
     nero("black"),
-    blu("blue"),
+    blue("blue"),
     verde("green"),
     rosso("red"),
     ;

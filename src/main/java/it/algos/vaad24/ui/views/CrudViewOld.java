@@ -15,7 +15,6 @@ import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.logic.*;
 import it.algos.vaad24.backend.service.*;
 import it.algos.vaad24.backend.wrapper.*;
-import it.algos.vaad24.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 import org.vaadin.crudui.crud.impl.*;
@@ -203,7 +202,7 @@ public abstract class CrudViewOld extends VerticalLayout implements AfterNavigat
             buttonDeleteAll.setText("Delete All");
             buttonDeleteAll.getElement().setAttribute("theme", "error");
             gridCrud.getCrudLayout().addFilterComponent(buttonDeleteAll);
-            buttonDeleteAll.addClickListener(event -> openConfirmDeleteAll());
+//            buttonDeleteAll.addClickListener(event -> openConfirmDeleteAll());
         }
 
         if (usaBottoneFilter) {
@@ -244,15 +243,15 @@ public abstract class CrudViewOld extends VerticalLayout implements AfterNavigat
     }
 
 
-    /**
-     * Opens the confirmation dialog before deleting all items. <br>
-     * <p>
-     * The dialog will display the given title and message(s), then call <br>
-     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
-     */
-    protected final void openConfirmDeleteAll() {
-        appContext.getBean(DialogDelete.class, "tutta la collection").open(this::deleteAll);
-    }
+//    /**
+//     * Opens the confirmation dialog before deleting all items. <br>
+//     * <p>
+//     * The dialog will display the given title and message(s), then call <br>
+//     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+//     */
+//    protected final void openConfirmDeleteAll() {
+//        appContext.getBean(DialogDelete.class, "tutta la collection").open(this::deleteAll);
+//    }
 
     /**
      * Cancellazione effettiva (dopo dialogo di conferma) di tutte le entities della collezione. <br>
@@ -288,7 +287,7 @@ public abstract class CrudViewOld extends VerticalLayout implements AfterNavigat
     }
 
     public void spanBlue(final String message) {
-        span(new WrapSpan(message).color(AETypeColor.blu));
+        span(new WrapSpan(message).color(AETypeColor.blue));
     }
 
     public void spanRosso(final String message) {
@@ -310,10 +309,10 @@ public abstract class CrudViewOld extends VerticalLayout implements AfterNavigat
         }
         if (wrap.getFontHeight() == null) {
             if (width == 0 || width > 500) {
-                wrap.fontHeight(AEFontHeight.em9);
+                wrap.fontHeight(AEFontSize.em9);
             }
             else {
-                wrap.fontHeight(AEFontHeight.em7);
+                wrap.fontHeight(AEFontSize.em7);
             }
         }
         if (wrap.getLineHeight() == null) {
