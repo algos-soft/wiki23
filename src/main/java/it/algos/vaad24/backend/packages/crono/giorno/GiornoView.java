@@ -4,6 +4,7 @@ import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.packages.crono.mese.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -83,8 +84,8 @@ public class GiornoView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpan("Usati solo in background. Costruiti hard-code");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpan(ASpan.text("Usati solo in background. Costruiti hardcoded.").verde());
+        addSpan(ASpan.text("Solo hard coded. Non creabili e non modificabili").rosso());
     }
 
     /**

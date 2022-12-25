@@ -9,6 +9,7 @@ import com.vaadin.flow.router.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import static it.algos.vaad24.backend.boot.VaadCost.PATH_WIKI;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -112,7 +113,9 @@ public class AnnoWikiView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        addSpanRossoSmall(String.format("%s: %s", "Pagine da cancellare", backend.countListeDaCancellare()));
+        String message;
+        message = String.format("%s: %s", "Pagine da cancellare", backend.countListeDaCancellare());
+        addSpan(ASpan.text(message).rosso().small());
     }
 
     @Override

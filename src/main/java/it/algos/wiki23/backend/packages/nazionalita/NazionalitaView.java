@@ -117,16 +117,16 @@ public class NazionalitaView extends WikiView {
 
         message = "1) Tabella nazionalità del parametro 'nazionalità',";
         message += " da singolare maschile e femminile al plurale maschile per la pagina della lista.";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "2) Tabella di conversione dal nome della nazionalità a quello della voce corrispondente, per creare dei piped wikilink";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "Indipendentemente da come sono scritte nel modulo, tutte le nazionalità sono convertite in minuscolo.";
-        addSpanRosso(message);
+        addSpan(ASpan.text(message).rosso());
 
         message = String.format("Le singole pagine di nazionalità vengono create su wiki quando superano le %s biografie.", WPref.sogliaAttNazWiki.get());
-        addSpanRossoBold(message);
+        addSpan(ASpan.text(message).rosso().bold());
     }
 
     @Override

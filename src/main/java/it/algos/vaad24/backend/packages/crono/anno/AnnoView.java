@@ -6,6 +6,7 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.packages.crono.secolo.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -87,8 +88,9 @@ public class AnnoView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpan("Usati solo in background. Costruiti hard-code");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpan(ASpan.text("L'anno zero non esiste").blue().bold());
+        addSpan(ASpan.text("Usati solo in background. Costruiti hardcoded.").verde());
+        addSpan(ASpan.text("Solo hard coded. Non creabili e non modificabili").rosso());
     }
 
     /**

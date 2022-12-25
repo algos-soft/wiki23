@@ -7,6 +7,7 @@ import com.vaadin.flow.router.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.boot.*;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -77,8 +78,8 @@ public class VersioneView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpanVerde("Sviluppo, patch e update del programma. Sigla V iniziale per il programma base Vaadin23");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpan(ASpan.text("Sviluppo, patch e update del programma.").verde());
+        addSpan(ASpan.text("Solo hard coded. Non creabili e non modificabili").rosso());
     }
 
     @Override

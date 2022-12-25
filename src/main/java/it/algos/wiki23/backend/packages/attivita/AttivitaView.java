@@ -109,7 +109,10 @@ public class AttivitaView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        addSpanRossoSmall(String.format("%s: %s", "Liste da cancellare", backend.countAttivitaDaCancellare()));
+        String message;
+
+        message = String.format("%s: %s", "Liste da cancellare", backend.countAttivitaDaCancellare());
+        addSpan(ASpan.text(message).rosso().small());
 
         String modulo = PATH_WIKI + PATH_MODULO;
 
@@ -128,26 +131,26 @@ public class AttivitaView extends WikiView {
 
         message = "1) Tabella attività dei parametri 'Attività/Attività2/Attività3',";
         message += " da singolare maschile e femminile al plurale maschile per la pagina della lista.";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "2) Tabella attività che sono ammesse nei parametri Attività/Attività2/Attività3 anche col prefisso \"ex\"";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "3) Tabella di conversione dal nome dell'attività a quello della voce corrispondente, per creare dei piped wikilink";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "Indipendentemente da come sono scritte nel modulo, tutte le attività singolari e plurali sono convertite in minuscolo.";
-        addSpanRosso(message);
+        addSpan(ASpan.text(message).verde());
 
         message = String.format("Le singole pagine di attività vengono create su wiki quando superano le %s biografie.", WPref.sogliaAttNazWiki.get());
-        addSpanRossoBold(message);
+        addSpan(ASpan.text(message).rosso().bold());
         if (WPref.usaTreAttivita.is()) {
             message = "Ultima elaborazione effettuata considerando la validità delle voci biografiche in base ad una qualsiasi delle '''3''' attività.";
         }
         else {
             message = "Ultima elaborazione effettuata considerando la validità delle voci biografiche sola in base all'attività principale.";
         }
-        addSpanRossoBold(message);
+        addSpan(ASpan.text(message).rosso().bold());
     }
 
     @Override

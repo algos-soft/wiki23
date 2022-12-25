@@ -4,6 +4,7 @@ import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -73,9 +74,10 @@ public class SecoloView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpanBlue("L'anno zero non esiste");
-        addSpan("Usati solo in background. File originale (CSV) sul server Algos");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpan(ASpan.text("L'anno zero non esiste").blue().bold());
+        addSpan(ASpan.text("L'anno 2000 è l'ultimo del XX secolo").blue().bold());
+        addSpan(ASpan.text("Usati solo in background. File originale (CSV) sul server /www.algos.it/vaadin23/config").verde());
+        addSpan(ASpan.text("Solo hard coded. Non creabili e non modificabili").rosso());
     }
 
 

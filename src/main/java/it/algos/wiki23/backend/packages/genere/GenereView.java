@@ -7,6 +7,7 @@ import com.vaadin.flow.router.*;
 import it.algos.vaad24.backend.boot.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -96,21 +97,21 @@ public class GenereView extends WikiView {
 
         message = "Contiene la tabella di conversione delle attività passate via parametri 'Attività/Attività2/Attività3',";
         message += " da singolare maschile e femminile (usati nell'incipit) al plurale maschile e femminile.";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
         message = "Usate per le intestazioni dei paragrafi nelle liste di antroponimi previste nel [Progetto:Antroponimi].";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "Le attività sono elencate all'interno del modulo con la seguente sintassi:";
         message += " [\"attivita singolare maschile\"] = \"attività plurale maschile\";";
         message += " [\"attivita singolare femminile\"] = \"attività plurale femminile\".";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "Indipendentemente da come sono scritte nel modulo, tutte le attività singolari e plurali sono convertite in minuscolo.";
         message += " Le voci delle ex-attività vengono aggiunte al package attività";
-        addSpanRosso(message);
+        addSpan(ASpan.text(message).rosso());
 
         message = "Il package 'genere' deve essere aggiornato prima di regolare 'attività'.";
-        addSpanRossoBold(message);
+        addSpan(ASpan.text(message).rosso().bold());
     }
 
 

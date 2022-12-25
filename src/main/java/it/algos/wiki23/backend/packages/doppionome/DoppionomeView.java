@@ -6,6 +6,7 @@ import it.algos.vaad24.backend.boot.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.wiki.*;
@@ -78,10 +79,10 @@ public class DoppionomeView extends WikiView {
 
         message = "Sono elencati i nomi doppi (ad esempio 'Maria Teresa').";
         message += " BioBot crea una lista di biografati una volta superate le 50 biografie (tra nomi e nomi doppi).";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "Vedi anche la ";
-        Span span = getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold));
+        Span span = ASpan.text(message).verde().bold();
         Anchor anchor = new Anchor(VaadCost.PATH_WIKI + "Categoria:Prenomi composti", "[[categoria:Prenomi composti]]");
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
         anchor.getElement().getStyle().set(AEFontSize.HTML, AEFontSize.em9.getTag());
@@ -90,7 +91,7 @@ public class DoppionomeView extends WikiView {
 
         message = "La lista nomi prevede solo nomi singoli a cui vengono aggiunti questi nomi doppi accettabili.";
         message += " Quando si crea la lista nomi, i nomi doppi vengono scaricati e aggiunti alla lista stessa.";
-        addSpanRosso(message);
+        addSpan(ASpan.text(message).rosso());
     }
 
     /**

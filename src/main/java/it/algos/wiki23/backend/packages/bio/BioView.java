@@ -123,6 +123,7 @@ public class BioView extends WikiView {
         int numBio = 0;
         WResult result;
         categoria = WPref.categoriaBio.getStr();
+        String message;
 
         result = appContext.getBean(QueryInfoCat.class).urlRequest(categoria);
         numBio = result.getIntValue();
@@ -131,7 +132,8 @@ public class BioView extends WikiView {
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
         alertPlaceHolder.add(new Span(anchor));
 
-        addSpanVerde(String.format("Nella categoria [%s] sono presenti %s biografie (probabile)", categoria, textService.format(numBio - 1)));
+        message = String.format("Nella categoria [%s] sono presenti %s biografie (probabile)", categoria, textService.format(numBio - 1));
+        addSpan(ASpan.text(message).verde());
     }
 
     @Override
@@ -475,8 +477,8 @@ public class BioView extends WikiView {
             bioBeanSenzaTempl = (Bio) entityBeanSenzaTempl.get();
             bioMongoCompleto = backend.findByKey(bioBeanSenzaTempl.pageId);
             ADelete.delete(entityBeanSenzaTempl.toString(), this::deleteHandler);
-//            dialog = appContext.getBean(BioDialog.class, bioMongoCompleto, CrudOperation.DELETE, crudBackend, formPropertyNamesList);
-//            dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
+            //            dialog = appContext.getBean(BioDialog.class, bioMongoCompleto, CrudOperation.DELETE, crudBackend, formPropertyNamesList);
+            //            dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
         }
     }
 

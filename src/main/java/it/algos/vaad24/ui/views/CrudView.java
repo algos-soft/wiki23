@@ -819,46 +819,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
 
-    public void addSpanVerde(final String message) {
-        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde)));
-    }
-
-    public void addSpanBlue(final String message) {
-        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.blue)));
-    }
-
-    public void addSpanRosso(final String message) {
-        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso)));
-    }
-
-    public void addSpan(final String message) {
-        alertPlaceHolder.add(getSpan(new WrapSpan(message)));
-    }
-
-    public Span getSpan(WrapSpan wrap) {
-        if (wrap.getColor() == null) {
-            wrap.color(AETypeColor.verde);
-        }
-        if (wrap.getWeight() == null) {
-            wrap.weight(AEFontWeight.normal);
-        }
-        if (wrap.getFontHeight() == null) {
-            if (browserWidth == 0 || browserWidth > 500) {
-                wrap.fontHeight(AEFontSize.em9);
-            }
-            else {
-                wrap.fontHeight(AEFontSize.em7);
-            }
-        }
-        if (wrap.getLineHeight() == null) {
-            if (browserWidth == 0 || browserWidth > 500) {
-                wrap.lineHeight(AELineHeight.em12);
-            }
-            else {
-                wrap.lineHeight(AELineHeight.em3);
-            }
-        }
-        return htmlService.getSpan(wrap);
+    public void addSpan(ASpan span) {
+        alertPlaceHolder.add(span);
     }
 
 }// end of crud abstract @Route view class

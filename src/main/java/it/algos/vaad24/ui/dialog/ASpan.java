@@ -30,6 +30,8 @@ public class ASpan extends Span {
         ASpan span = new ASpan();
         span.setText(text);
         span.getElement().setProperty(TAG_INNER_HTML, text);
+        span.getElement().getStyle().set(TAG_HTML_FONT_SIZE, AEFontSize.em9.getTag());
+        span.getElement().getStyle().set(TAG_HTML_LINE_HEIGHT, AELineHeight.em12.getTag());
         return span;
     }
 
@@ -66,12 +68,13 @@ public class ASpan extends Span {
     }
 
     public ASpan small() {
-        this.fontSize = AEFontSize.px14;
+        this.fontSize = AEFontSize.em7;
+        this.getElement().getStyle().set(TAG_HTML_LINE_HEIGHT, AELineHeight.em12.getTag());
         return size(fontSize);
     }
 
     public ASpan big() {
-        this.fontSize = AEFontSize.px22;
+        this.fontSize = AEFontSize.em9;
         return size(fontSize);
     }
 

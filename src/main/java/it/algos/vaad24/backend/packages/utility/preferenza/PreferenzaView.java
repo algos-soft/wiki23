@@ -140,13 +140,19 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void fixAlert() {
-        spanBlue("Preferenze registrate nel database mongoDB");
-        spanRosso("Mostra solo le properties di un programma non multiCompany");
-        span(String.format("Vaad23=true per le preferenze del programma base '%s'", VaadVar.projectVaadin24));
-        span(String.format("Vaad23=false per le preferenze del programma corrente '%s'", VaadVar.projectCurrent));
-        span("NeedRiavvio=true se la preferenza ha effetto solo dopo un riavvio del programma");
-        spanRosso("Le preferenze sono create/cancellate solo via hardcode (tramite una Enumeration)");
-        spanRosso("Refresh ripristina nel database i valori di default annullando le successive modifiche");
+        VerticalLayout span = new VerticalLayout();
+        span.setPadding(false);
+        span.setSpacing(false);
+        span.setMargin(false);
+        this.add(span);
+
+        span.add(ASpan.text("Preferenze registrate nel database mongoDB").blue());
+        span.add(ASpan.text("Mostra solo le properties di un programma non multiCompany").rosso());
+        span.add(ASpan.text(String.format("Vaad23=true per le preferenze del programma base '%s'", VaadVar.projectVaadin24)).verde());
+        span.add(ASpan.text(String.format("Vaad23=false per le preferenze del programma corrente '%s'", VaadVar.projectCurrent)).verde());
+        span.add(ASpan.text("NeedRiavvio=true se la preferenza ha effetto solo dopo un riavvio del programma").verde());
+        span.add(ASpan.text("Le preferenze sono create/cancellate solo via hardcode (tramite una Enumeration)").rosso());
+        span.add(ASpan.text("Refresh ripristina nel database i valori di default annullando le successive modifiche").rosso());
     }
 
     /**

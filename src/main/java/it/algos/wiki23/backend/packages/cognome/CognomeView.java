@@ -9,6 +9,7 @@ import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.PATH_WIKI;
@@ -98,10 +99,10 @@ public class CognomeView extends WikiView {
 
         message = "Sono elencati i cognomi.";
         message += " BioBot crea una lista di biografati una volta superate le 50 biografie che usano quel cognome.";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "Vedi anche la ";
-        Span span = getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold));
+        Span span = ASpan.text(message).verde().bold();
         Anchor anchor = new Anchor(VaadCost.PATH_WIKI + "Categoria:Liste di persone per cognome", "[[categoria:Liste di persone per cognome]]");
         anchor.getElement().getStyle().set(AEFontWeight.HTML, AEFontWeight.bold.getTag());
         anchor.getElement().getStyle().set(AEFontSize.HTML, AEFontSize.em9.getTag());
@@ -109,9 +110,9 @@ public class CognomeView extends WikiView {
         alertPlaceHolder.add(new Span(span, anchor));
 
         message = String.format("Elabora crea sul database locale mongo tutti i cognomi usati da almeno %d voci.", numMongo);
-        addSpanRosso(message);
+        addSpan(ASpan.text(message).rosso());
         message = String.format("Upload crea sul server wiki le pagine per tutti i cognomi usati da almeno %d voci.", numMWiki);
-        addSpanRosso(message);
+        addSpan(ASpan.text(message).rosso());
     }
 
 

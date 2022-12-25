@@ -97,7 +97,7 @@ public class GiornoWikiView extends WikiView {
         super.usaBottoneUploadNati = true;
         super.usaBottoneUploadMorti = true;
 
-//        super.dialogClazz = GiornoWikiDialog.class;
+        //        super.dialogClazz = GiornoWikiDialog.class;
         super.unitaMisuraElaborazione = "minuti";
         super.unitaMisuraUpload = "minuti";
         super.fixPreferenzeBackend();
@@ -110,9 +110,11 @@ public class GiornoWikiView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
+        String message;
 
         int errati = paginaBackend.countGiorniErrati();
-        addSpanRossoSmall(String.format("%s: %s", "Pagine dei giorni da cancellare", errati));
+        message = String.format("%s: %s", "Pagine dei giorni da cancellare", errati);
+        addSpan(ASpan.text(message).rosso().small());
     }
 
 

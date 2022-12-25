@@ -6,6 +6,7 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -75,8 +76,8 @@ public class NotaView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpanVerde("Appunti per sviluppo e @todo");
-        addSpanRosso("Al termine spuntarli e non cancellarli");
+        addSpan(ASpan.text("Appunti per sviluppo e @todo").verde());
+        addSpan(ASpan.text("Al termine spuntarli e non cancellarli").rosso());
     }
 
     @Override

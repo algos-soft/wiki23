@@ -14,6 +14,7 @@ import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
 import it.algos.vaad24.backend.service.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.pagina.*;
@@ -325,7 +326,7 @@ public abstract class WikiView extends CrudView {
                         message += String.format(" in circa %d %s.", durata, "minuti");
                     }
                 }
-                addSpanVerdeSmall(message);
+                addSpan(ASpan.text(message).verde().small());
             }
             if (lastDownload != null && lastDownload.get() instanceof LocalDateTime download) {
                 if (download.equals(ROOT_DATA_TIME)) {
@@ -344,7 +345,7 @@ public abstract class WikiView extends CrudView {
                         }
                     }
                 }
-                addSpanVerdeSmall(message);
+                addSpan(ASpan.text(message).verde().small());
             }
             if (lastElaborazione != null && lastElaborazione.get() instanceof LocalDateTime elaborazione) {
                 if (elaborazione.equals(ROOT_DATA_TIME)) {
@@ -359,7 +360,7 @@ public abstract class WikiView extends CrudView {
                     }
                 }
 
-                addSpanVerdeSmall(message);
+                addSpan(ASpan.text(message).verde().small());
             }
 
             if (lastStatistica != null && lastStatistica.get() instanceof LocalDateTime statistica) {
@@ -369,7 +370,7 @@ public abstract class WikiView extends CrudView {
                 else {
                     message = String.format("Ultime statistiche registrate il %s", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(statistica));
                 }
-                addSpanVerdeSmall(message);
+                addSpan(ASpan.text(message).verde().small());
             }
 
             if (lastUpload != null && lastUpload.get() instanceof LocalDateTime upload) {
@@ -385,7 +386,7 @@ public abstract class WikiView extends CrudView {
                         message += String.format(" Prossimo upload previsto %s.", DateTimeFormatter.ofPattern("EEE, d MMM yyy 'alle' HH:mm").format(next));
                     }
                 }
-                addSpanVerdeSmall(message);
+                addSpan(ASpan.text(message).verde().small());
             }
         }
     }
@@ -936,17 +937,17 @@ public abstract class WikiView extends CrudView {
         reload();
     }
 
-    public void addSpanVerdeSmall(final String message) {
-        infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde).fontHeight(AEFontSize.em7)));
-    }
-
-    public void addSpanRossoSmall(final String message) {
-        infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).fontHeight(AEFontSize.em7)));
-    }
-
-    public void addSpanRossoBold(final String message) {
-        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).weight(AEFontWeight.bold)));
-    }
+//    public void addSpanVerdeSmall(final String message) {
+//        infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde).fontHeight(AEFontSize.em7)));
+//    }
+//
+//    public void addSpanRossoSmall(final String message) {
+//        infoPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).fontHeight(AEFontSize.em7)));
+//    }
+//
+//    public void addSpanRossoBold(final String message) {
+//        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso).weight(AEFontWeight.bold)));
+//    }
 
     public void fixStatisticheMinuti(final long inizio) {
         long fine = System.currentTimeMillis();

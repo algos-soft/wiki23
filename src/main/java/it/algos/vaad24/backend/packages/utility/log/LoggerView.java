@@ -5,6 +5,7 @@ import com.vaadin.flow.router.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.boot.*;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -77,13 +78,13 @@ public class LoggerView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpanBlue("Diverse modalità di 'uscita' dei logs, regolate da flag:");
-        addSpanVerde("A) nella cartella di log (sempre)");
-        addSpanVerde("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag");
-        addSpanVerde("C) nella collection del database (facoltativo)");
-        addSpanVerde("D) in una mail (facoltativo e di norma solo per 'error')");
-        addSpanRosso("Necessita di config.logback-spring.xml e attivazione in application.properties");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpan(ASpan.text("Diverse modalità di 'uscita' dei logs, regolate da flag:").blue());
+        addSpan(ASpan.text("A) nella cartella di log (sempre)").verde());
+        addSpan(ASpan.text("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag").verde());
+        addSpan(ASpan.text("C) nella collection del database (facoltativo)").verde());
+        addSpan(ASpan.text("D) in una mail (facoltativo e di norma solo per 'error')").verde());
+        addSpan(ASpan.text("Necessita di config.logback-spring.xml e attivazione in application.properties").rosso());
+        addSpan(ASpan.text("Solo hard coded. Non creabili e non modificabili").rosso());
     }
 
 

@@ -6,6 +6,7 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.entity.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.wiki.*;
@@ -82,19 +83,19 @@ public class ProfessioneView extends WikiView {
 
         message = "Contiene la tabella di conversione delle attività passate via parametri 'Attività/Attività2/Attività3',";
         message += " dal nome dell'attività a quello della voce corrispondente per creare dei -piped wikilink-.";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "Le attività sono elencate all'interno del modulo con la seguente sintassi:";
         message += " [\"attivitaforma1\"]=\"voce di riferimento\"; [\"attivitaforma2\"]=\"voce di riferimento\".";
-        addSpanVerde(message);
+        addSpan(ASpan.text(message).verde());
 
         message = "Le attività e le pagine mantengono il maiuscolo/minuscolo previsto nel modulo.";
         message += " Le voci maschili che corrispondono alla pagina (non presenti nel modulo) vengono aggiunte.";
         message += " Le voci delle ex-attività (non presenti nel modulo) vengono aggiunte prendendole dal package 'attivita'";
-        addSpanRosso(message);
+        addSpan(ASpan.text(message).rosso());
 
         message = "Il package 'attività' deve essere aggiornato prima di regolare 'professione'.";
-        addSpanRossoBold(message);
+        addSpan(ASpan.text(message).rosso().bold());
     }
 
     protected void fixBottoniTopSpecifici() {

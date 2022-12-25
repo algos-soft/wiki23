@@ -10,6 +10,7 @@ import it.algos.vaad24.backend.entity.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.enumeration.*;
@@ -108,11 +109,11 @@ public class ErroreBioView extends WikiView {
         int nazionalita = backend.countNazionalitaGenere();
         int ordinamento = backend.countOrdinamento();
 
-        addSpanVerde(String.format("%s: %s", AETypeBioError.sessoMancante, nulli));
-        addSpanVerde(String.format("%s: %s", AETypeBioError.sessoLungo, lunghi));
-        addSpanVerde(String.format("%s: %s", AETypeBioError.sessoErrato, errati));
-        addSpanVerde(String.format("%s: %s", AETypeBioError.nazionalitaGenere, nazionalita));
-        addSpanVerde(String.format("%s: %s", AETypeBioError.mancaOrdinamento, ordinamento));
+        addSpan(ASpan.text(String.format("%s: %s", AETypeBioError.sessoMancante, nulli)));
+        addSpan(ASpan.text(String.format("%s: %s", AETypeBioError.sessoLungo, lunghi)));
+        addSpan(ASpan.text(String.format("%s: %s", AETypeBioError.sessoErrato, errati)));
+        addSpan(ASpan.text(String.format("%s: %s", AETypeBioError.nazionalitaGenere, nazionalita)));
+        addSpan(ASpan.text(String.format("%s: %s", AETypeBioError.mancaOrdinamento, ordinamento)));
     }
 
     @Override

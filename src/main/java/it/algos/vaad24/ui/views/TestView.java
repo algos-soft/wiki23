@@ -7,7 +7,11 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.service.*;
+import it.algos.vaad24.backend.wrapper.*;
 import it.algos.vaad24.ui.dialog.*;
+import org.springframework.beans.factory.annotation.*;
 
 import javax.annotation.*;
 
@@ -24,6 +28,14 @@ import javax.annotation.*;
 @Route(value = TAG_TEST, layout = MainLayout.class)
 @RouteAlias(value = TAG_ROUTE_ALIAS_PARTE_PER_PRIMA, layout = MainLayout.class)
 public class TestView extends VerticalLayout {
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public HtmlService htmlService;
 
     @PostConstruct
     protected void postConstruct() {
@@ -42,7 +54,7 @@ public class TestView extends VerticalLayout {
         this.paragrafoSpan();
         this.paragrafoAvviso();
         this.paragrafoConferma();
-                this.paragrafoDelete();
+        this.paragrafoDelete();
         //        this.paragrafoConfermaAnnullaCancella();
     }
 
@@ -68,16 +80,21 @@ public class TestView extends VerticalLayout {
         layout.add(new Label("Label di testo semplice (non modificabile). Specifico per componenti e non per testi"));
         layout.add(ASpan.text("ASpan di testo semplice. -> ASpan.text(\"Un testo\")"));
         layout.add(ASpan.text("Testo html con inserti <span style=\"color:red;\">rosso</span> di sera e <span style=\"color:green;font-weight:bold\">verde</span> di mattina"));
+        layout.add(ASpan.text("Verde bold small").verde().bold().small());
+        layout.add(ASpan.text("Altro small").rosso().small());
+        layout.add(ASpan.text("Blue big").blue().bold());
+        layout.add(ASpan.text("Gli small funzionano solo nei layout verticali").verde().italic());
+
         barra.add(ASpan.text("-> ASpan.text(\"Un testo\").verde().bold().small().italic():"));
-        barra.add(ASpan.text("Verde").verde().bold().small().italic());
+        barra.add(ASpan.text("Verde").verde().bold().italic());
         barra.add(ASpan.text("Altri ->"));
         barra.add(ASpan.text("Verde").verde());
         barra.add(ASpan.text("Blue").blue());
         barra.add(ASpan.text("Rosso").rosso());
         barra.add(ASpan.text("Italic").rosso().bold().italic());
-        barra.add(ASpan.text("Small").blue().bold().small());
-        barra.add(ASpan.text("Normale").blue().bold());
-        barra.add(ASpan.text("Big").blue().bold().big());
+        barra.add(ASpan.text("Bold").blue().bold());
+        barra.add(ASpan.text("Normale").rosso().bold());
+        barra.add(ASpan.text("Ancora").blue().bold().italic());//
 
         this.add(paragrafo);
         this.add(layout);
@@ -307,7 +324,7 @@ public class TestView extends VerticalLayout {
 
         Button bottone6 = new Button("Delete");
         bottone6.getElement().setAttribute("theme", "error primary");
-        bottone6.addClickListener(event -> ADelete.delete("entityName",null));
+        bottone6.addClickListener(event -> ADelete.delete("entityName", null));
         barra.add(bottone6);
         layout.add(barra);
 
@@ -325,6 +342,34 @@ public class TestView extends VerticalLayout {
         ConfirmDialog dialog = new ConfirmDialog();
         dialog.setText("Tre bottoni");
         dialog.open();
+    }
+
+    public Span getSpan(WrapSpan wrap) {
+        int browserWidth = 270;
+
+        if (wrap.getColor() == null) {
+            wrap.color(AETypeColor.verde);
+        }
+        if (wrap.getWeight() == null) {
+            wrap.weight(AEFontWeight.normal);
+        }
+        if (wrap.getFontHeight() == null) {
+            if (browserWidth == 0 || browserWidth > 500) {
+                wrap.fontHeight(AEFontSize.em9);
+            }
+            else {
+                wrap.fontHeight(AEFontSize.em7);
+            }
+        }
+        if (wrap.getLineHeight() == null) {
+            if (browserWidth == 0 || browserWidth > 500) {
+                wrap.lineHeight(AELineHeight.em12);
+            }
+            else {
+                wrap.lineHeight(AELineHeight.em3);
+            }
+        }
+        return htmlService.getSpan(wrap);
     }
 
 }

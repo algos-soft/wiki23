@@ -1,6 +1,7 @@
 package it.algos.vaad24.backend.packages.geografia.continente;
 
 import com.vaadin.flow.router.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -72,9 +73,10 @@ public class ContinenteView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpan("Usati solo come supporto. File originale (CSV) sul server Algos");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili. @Indexed unici per 'ordine' e per 'nome'");
-        addSpanRosso("Ordinati di default per 'ordine'. Ordinabili anche per 'nome'");
+
+        addSpan(ASpan.text("Usati solo in background. File originale (CSV) sul server /www.algos.it/vaadin23/config").verde());
+        addSpan(ASpan.text("Solo hard coded. Non creabili e non modificabili").rosso());
+        addSpan(ASpan.text("Ordinati di default per 'ordine'. Ordinabili anche per 'nome'.").rosso());
     }
 
 
