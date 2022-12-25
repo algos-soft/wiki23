@@ -12,8 +12,10 @@ import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.service.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import it.algos.vaad24.wizard.scripts.*;
+import static it.algos.vaad24.wizard.scripts.WizCost.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 import org.springframework.core.env.*;
@@ -115,7 +117,7 @@ public class WizardView extends VerticalLayout {
 
         this.titolo();
 
-         projectBaseFlow = isProjectBaseFlow();
+        projectBaseFlow = isProjectBaseFlow();
         if (projectBaseFlow) {
             this.paragrafoNewProject();
         }
@@ -209,7 +211,7 @@ public class WizardView extends VerticalLayout {
         layout.setMargin(false);
         layout.setPadding(false);
         layout.setSpacing(false);
-        H3 paragrafo = new H3(it.algos.vaad24.wizard.scripts.WizCost.TITOLO_FEEDBACK_PROGETTO);
+        H3 paragrafo = new H3(TITOLO_FEEDBACK_PROGETTO);
         paragrafo.getElement().getStyle().set("color", "blue");
         this.add(paragrafo);
 
@@ -225,37 +227,50 @@ public class WizardView extends VerticalLayout {
     }
 
     private void openFeedBack() {
-        appContext.getBean(WizDialogFeedBack.class).open(this::elaboraFeedBack);
+        StringBuffer buffer = new StringBuffer();
+        String message;
+        String srcVaadin23 = System.getProperty("user.dir");
+        String currentProject = fileService.estraeClasseFinaleSenzaJava(srcVaadin23).toLowerCase();
+
+        message = String.format("Ricopia la directory %s di %s su %s", TAG_WIZ, currentProject, PROJECT_VAADIN24);
+        buffer.append(ASpan.text(message).verde().bold().get());
+        buffer.append(CAPO_HTML);
+        message = String.format("Non modifica %s su %s", "../"+DIR_WIZARD + DIR_SOURCES, PROJECT_VAADIN24);
+        buffer.append(ASpan.text(message).verde().bold().get());
+        buffer.append(CAPO_HTML);
+        buffer.append(ASpan.text("Le modifiche sono irreversibili").rosso().bold().get());
+
+        AConfirm.title(TITOLO_FEEDBACK_PROGETTO).message(buffer.toString()).confirmError("Feedback").annullaPrimary().open(this::elaboraFeedBack);
     }
 
-    private void elaboraFeedBack(final boolean nonUsato) {
+    private void elaboraFeedBack() {
         appContext.getBean(WizElaboraFeedBack.class).esegue();
     }
 
-//    public void paragrafoNewPackage() {
-//        VerticalLayout layout = new VerticalLayout();
-//        layout.setMargin(false);
-//        layout.setPadding(false);
-//        layout.setSpacing(false);
-//        H3 paragrafo;
-//        Label label;
-//
-//        paragrafo = new H3(WizCost.TITOLO_NEW_PACKAGE);
-//        paragrafo.getElement().getStyle().set("color", "blue");
-//        label = new Label("Creazione di un nuovo package. Regola alcuni flags di possibili opzioni");
-//
-//        Button bottone = new Button(String.format("New package vaadin23"));
-//        bottone.getElement().setAttribute("theme", "primary");
-//        layout.add(label, new HorizontalLayout(bottone));
-//
-//        this.add(paragrafo);
-//        this.add(layout);
-//    }
+    //    public void paragrafoNewPackage() {
+    //        VerticalLayout layout = new VerticalLayout();
+    //        layout.setMargin(false);
+    //        layout.setPadding(false);
+    //        layout.setSpacing(false);
+    //        H3 paragrafo;
+    //        Label label;
+    //
+    //        paragrafo = new H3(WizCost.TITOLO_NEW_PACKAGE);
+    //        paragrafo.getElement().getStyle().set("color", "blue");
+    //        label = new Label("Creazione di un nuovo package. Regola alcuni flags di possibili opzioni");
+    //
+    //        Button bottone = new Button(String.format("New package vaadin23"));
+    //        bottone.getElement().setAttribute("theme", "primary");
+    //        layout.add(label, new HorizontalLayout(bottone));
+    //
+    //        this.add(paragrafo);
+    //        this.add(layout);
+    //    }
 
-//    private void elaboraNewPackage() {
-//        //        elaboraNewPackage.esegue();
-//        //        dialogNewPackage.close();
-//    }
+    //    private void elaboraNewPackage() {
+    //        //        elaboraNewPackage.esegue();
+    //        //        dialogNewPackage.close();
+    //    }
 
 
     protected void sicroBottomLayout() {
@@ -266,23 +281,23 @@ public class WizardView extends VerticalLayout {
         String data;
         String note;
 
-//        property = "algos.simple.name";
-//        nome = Objects.requireNonNull(environment.getProperty(property));
-//
-//        property = "algos.simple.version";
-//        doppio = Double.parseDouble(Objects.requireNonNull(environment.getProperty(property)));
-//
-//        property = "algos.simple.version.date";
-//        data = Objects.requireNonNull(environment.getProperty(property));
-//
-//        property = "algos.simple.version.note";
-//        note = Objects.requireNonNull(environment.getProperty(property));
-//
-//        note = textService.isValid(note) ? SLASH_SPACE + note : VUOTA;
-//
-//        //--Locale.US per forzare la visualizzazione grafica di un punto anziché una virgola
-//        message = String.format(Locale.US, "Algos® - %s %2.1f di %s%s", nome, doppio, data, note);
-//        this.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blu).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+        //        property = "algos.simple.name";
+        //        nome = Objects.requireNonNull(environment.getProperty(property));
+        //
+        //        property = "algos.simple.version";
+        //        doppio = Double.parseDouble(Objects.requireNonNull(environment.getProperty(property)));
+        //
+        //        property = "algos.simple.version.date";
+        //        data = Objects.requireNonNull(environment.getProperty(property));
+        //
+        //        property = "algos.simple.version.note";
+        //        note = Objects.requireNonNull(environment.getProperty(property));
+        //
+        //        note = textService.isValid(note) ? SLASH_SPACE + note : VUOTA;
+        //
+        //        //--Locale.US per forzare la visualizzazione grafica di un punto anziché una virgola
+        //        message = String.format(Locale.US, "Algos® - %s %2.1f di %s%s", nome, doppio, data, note);
+        //        this.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blu).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
     }
 
 }

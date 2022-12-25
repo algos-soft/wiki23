@@ -1,5 +1,6 @@
 package it.algos.vaad24.backend.service;
 
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
@@ -98,6 +99,9 @@ public class HtmlService extends AbstractService {
         return getSpan(new WrapSpan(message));
     }
 
+    public static Html getPar(final String message) {
+        return new Html("<p>" + message + "</p>");
+    }
 
     /**
      * Costruisce uno span colorato verde <br>

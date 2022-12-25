@@ -27,6 +27,7 @@ public enum AEFontSize implements AIType, AITypePref {
     px10("10px"),
     px14("14px"),
     px18("18px"),
+    px20("20px"),
     px22("22px"),
     cento80("80%"),
     cento120("120%"),

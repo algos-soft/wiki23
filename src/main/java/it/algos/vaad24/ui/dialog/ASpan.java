@@ -69,8 +69,9 @@ public class ASpan extends Span {
         this.fontSize = AEFontSize.px14;
         return size(fontSize);
     }
+
     public ASpan big() {
-        this.fontSize = AEFontSize.px18;
+        this.fontSize = AEFontSize.px22;
         return size(fontSize);
     }
 
@@ -92,12 +93,11 @@ public class ASpan extends Span {
     }
 
     public String get() {
-//        Object alfa=  this.getText();
-//        Element beta=  this.getElement();
-//       Object gamma= beta.getAttributeNames();
-//       String delta=beta.toString();
-////       delta=delta.replaceAll("\\\"","\\\\\"");
         return this.getElement().toString();
+    }
+
+    public String getPar() {
+        return "<p>" + this.get() + "</p>";
     }
 
 }

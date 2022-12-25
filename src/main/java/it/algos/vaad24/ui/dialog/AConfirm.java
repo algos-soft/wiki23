@@ -3,6 +3,7 @@ package it.algos.vaad24.ui.dialog;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.confirmdialog.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.service.*;
 
 /**
  * Project vaad24
@@ -26,24 +27,24 @@ public class AConfirm extends ConfirmDialog {
 
     public static void html(String html) {
         AConfirm dialog = new AConfirm();
-        dialog.setText(new Html("<p>" + html + "</p>"));
+        dialog.setText(HtmlService.getPar(html));
         dialog.open();
     }
 
     public static void show(String message) {
         AConfirm dialog = new AConfirm();
-        dialog.setText(new Html("<p>" + message + "</p>"));
+        dialog.setText(HtmlService.getPar(message));
         dialog.open();
     }
 
     public static AConfirm title(String title) {
         AConfirm dialog = new AConfirm();
-        dialog.setHeader(title);
+        dialog.setHeader(new Html( ASpan.text(title).blue().bold().big().getPar()));
         return dialog;
     }
 
     public AConfirm message(String message) {
-        this.setText(new Html("<p>" + message + "</p>"));
+        this.setText(HtmlService.getPar(message));
         return this;
     }
 

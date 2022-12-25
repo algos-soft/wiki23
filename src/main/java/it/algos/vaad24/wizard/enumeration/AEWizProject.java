@@ -25,7 +25,7 @@ public enum AEWizProject {
 
     snippets("Directory SNIPPETS di codice suggerito (vaad24)", true, true, "snippets", AECopy.dirFilesModifica),
 
-    flow("Directory BASE Vaad24 (Wizard compreso)", true, false, "src/main/java/it/algos/vaad24", AECopy.dirDelete),
+    flow("Directory BASE Vaad24 (Wizard compreso)", true, true, "src/main/java/it/algos/vaad24", AECopy.dirDelete),
 
     //    projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
 
