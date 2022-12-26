@@ -1,6 +1,7 @@
 package it.algos.wiki23.backend.packages.statistica;
 
 import com.vaadin.flow.router.*;
+import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
 import it.algos.wiki23.backend.packages.wiki.*;
@@ -13,6 +14,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.data.domain.*;
 
 /**
  * Project wiki23
@@ -59,6 +61,8 @@ public class StatisticaBioView extends WikiView {
 
         super.gridPropertyNamesList = Arrays.asList("ordine", "evento", "bio", "giorni", "anni", "attivita", "nazionalita", "attesa");
         super.formPropertyNamesList = Arrays.asList("ordine", "evento", "bio", "giorni", "anni", "attivita", "nazionalita", "attesa");
+        super.sortOrder = Sort.by(Sort.Direction.DESC, "evento");
+
         super.usaBottoneDeleteAll = true;
         this.usaBottoneDownload = false;
         this.usaBottoneUploadAll = false;
@@ -82,6 +86,13 @@ public class StatisticaBioView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
+
+        String message;
+        message = String.format("Statistiche automatiche registrate sul server. Tipicamente una volta a settimana.");
+        addSpan(ASpan.text(message));
+        addSpan(ASpan.text("Biografie/Statistiche").verde());
+        addSpan(ASpan.text("Biografie/Giorni").verde());
+        addSpan(ASpan.text("Biografie/Anni").verde());
     }
 
     /**

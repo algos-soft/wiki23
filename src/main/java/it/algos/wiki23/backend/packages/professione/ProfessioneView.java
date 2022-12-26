@@ -91,7 +91,8 @@ public class ProfessioneView extends WikiView {
 
         message = "Le attività e le pagine mantengono il maiuscolo/minuscolo previsto nel modulo.";
         message += " Le voci maschili che corrispondono alla pagina (non presenti nel modulo) vengono aggiunte.";
-        message += " Le voci delle ex-attività (non presenti nel modulo) vengono aggiunte prendendole dal package 'attivita'";
+        addSpan(ASpan.text(message).rosso());
+        message = " Le voci delle ex-attività (non presenti nel modulo) vengono aggiunte prendendole dal package 'attivita'";
         addSpan(ASpan.text(message).rosso());
 
         message = "Il package 'attività' deve essere aggiornato prima di regolare 'professione'.";

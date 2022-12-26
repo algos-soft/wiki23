@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.packages.statistica;
 
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.logic.*;
+import it.algos.vaad24.backend.packages.crono.secolo.*;
 import it.algos.wiki23.backend.packages.wiki.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
@@ -119,7 +120,7 @@ public class StatisticaBioBackend extends WikiBackend {
 
     @Override
     public List findAll() {
-        return super.findAll();
+        return repository.findAll(Sort.by(Sort.Direction.DESC, "evento"));
     }
 
     public int getNewOrdine() {

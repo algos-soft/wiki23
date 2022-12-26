@@ -113,8 +113,8 @@ public class AnnoWikiView extends WikiView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        String message;
-        message = String.format("%s: %s", "Pagine da cancellare", backend.countListeDaCancellare());
+
+        String message = String.format("%s: %s", "Pagine da cancellare", backend.countListeDaCancellare());
         addSpan(ASpan.text(message).rosso().small());
     }
 
