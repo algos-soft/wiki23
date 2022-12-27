@@ -99,7 +99,7 @@ public class WrapSpanTest extends AlgosTest {
         span = htmlService.getSpan(istanza);
         printSpan(span);
 
-        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontHeight.number16);
+        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontSize.number16);
         assertNotNull(istanza);
         span = htmlService.getSpan(istanza);
         printSpan(span);

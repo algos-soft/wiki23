@@ -277,6 +277,7 @@ public class ClassService extends AbstractService {
         if (canonicalName.endsWith(JAVA_SUFFIX)) {
             canonicalName = textService.levaCoda(canonicalName, JAVA_SUFFIX);
         }
+        canonicalName = textService.slashToPoint(canonicalName);
 
         try {
             clazz = Class.forName(canonicalName);
