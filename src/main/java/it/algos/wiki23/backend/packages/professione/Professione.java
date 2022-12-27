@@ -7,6 +7,8 @@ import it.algos.vaad24.backend.enumeration.*;
 import lombok.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
+
 /**
  * Project wiki
  * Created by Algos
@@ -23,6 +25,7 @@ import org.springframework.stereotype.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Professione extends AEntity {
 
     private static final transient int WIDTHEM = 20;

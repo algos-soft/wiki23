@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
@@ -29,6 +30,7 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Pagina extends AEntity {
 
 

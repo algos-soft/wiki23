@@ -8,6 +8,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
 import java.time.*;
 
 
@@ -28,6 +29,7 @@ import java.time.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Versione extends AEntity {
 
     @AIField(type = AETypeField.integer)

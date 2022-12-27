@@ -32,6 +32,7 @@ import java.time.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Bio extends AEntity {
 
     @Indexed(unique = true, direction = IndexDirection.ASCENDING)

@@ -2,11 +2,12 @@ package it.algos.vaad24.backend.packages.anagrafica;
 
 import it.algos.vaad24.backend.entity.*;
 import lombok.*;
-import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
@@ -26,6 +27,7 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Via extends AEntity {
 
 

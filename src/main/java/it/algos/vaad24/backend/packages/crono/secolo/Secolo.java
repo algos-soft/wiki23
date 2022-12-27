@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
+
 
 /**
  * Project vaadin23
@@ -25,6 +27,7 @@ import org.springframework.stereotype.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Secolo extends AEntity {
 
     @AIField(type = AETypeField.integer, header = "#", widthEM = 4, caption = "Ordinamento a partire dal XX secolo a.C.")

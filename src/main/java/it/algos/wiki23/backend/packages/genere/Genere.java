@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
+
 /**
  * Project wiki
  * Created by Algos
@@ -27,6 +29,7 @@ import org.springframework.stereotype.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Genere extends AEntity {
 
     private static final transient int WIDTHEM = 20;

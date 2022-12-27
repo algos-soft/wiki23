@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import javax.validation.constraints.Size;
 
@@ -38,6 +39,7 @@ import org.springframework.stereotype.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Cognome extends AEntity {
 
     private static final transient int WIDTHEM = 20;

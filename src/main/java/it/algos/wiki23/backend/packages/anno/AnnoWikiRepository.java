@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 

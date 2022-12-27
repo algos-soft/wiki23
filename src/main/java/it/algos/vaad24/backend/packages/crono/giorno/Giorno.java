@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
+
 
 /**
  * Project vaadin23
@@ -29,6 +31,7 @@ import org.springframework.stereotype.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 @AIEntity(preReset = "mese")
 public class Giorno extends AEntity {
 

@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.*;
 import java.time.format.*;
@@ -28,6 +29,7 @@ import java.time.format.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Logger extends AEntity {
 
     @AIField(type = AETypeField.enumeration, enumClazz = AETypeLog.class)

@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
+
 /**
  * Project wiki
  * Created by Algos
@@ -25,6 +27,7 @@ import org.springframework.stereotype.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Nazionalita extends AEntity {
 
     private static final transient int WIDTHEM = 20;

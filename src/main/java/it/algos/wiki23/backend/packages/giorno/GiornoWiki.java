@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
+
 /**
  * Project wiki23
  * Created by Algos
@@ -27,6 +29,7 @@ import org.springframework.stereotype.*;
 @AllArgsConstructor
 @Builder(builderMethodName = "giornoWikiBuilder")
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class GiornoWiki extends AEntity {
 
     @Indexed(unique = true, direction = IndexDirection.ASCENDING)

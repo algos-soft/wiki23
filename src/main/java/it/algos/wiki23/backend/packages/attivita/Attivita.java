@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
 
+import javax.persistence.*;
+
 /**
  * Project vaadwiki
  * Created by Algos
@@ -28,6 +30,7 @@ import org.springframework.stereotype.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
+@MappedSuperclass()
 public class Attivita extends AEntity {
 
     private static final transient int WIDTHEM = 20;
