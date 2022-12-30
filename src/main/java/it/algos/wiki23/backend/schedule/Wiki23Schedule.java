@@ -1,0 +1,52 @@
+package it.algos.wiki23.backend.schedule;
+
+import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaad24.backend.boot.*;
+import it.algos.vaad24.backend.schedule.*;
+import org.springframework.beans.factory.config.*;
+import org.springframework.context.annotation.Scope;
+
+import javax.annotation.*;
+
+/**
+ * Project vaad24
+ * Created by Algos
+ * User: gac
+ * Date: Thu, 29-Dec-2022
+ * Time: 17:47
+ */
+@SpringComponent
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+public class Wiki23Schedule extends VaadSchedule {
+
+
+    /**
+     * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
+     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
+     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+     * <p>
+     * Se viene implementata una sottoclasse, passa di qui per ogni sottoclasse oltre che per questa istanza <br>
+     * Se esistono delle sottoclassi, passa di qui per ognuna di esse (oltre a questa classe madre) <br>
+     * <p>
+     * Elenca tutti i task di questa applicazione <br>
+     */
+    @PostConstruct
+    @Override
+    public void startSchedule() throws IllegalStateException {
+
+        VaadVar.taskList.add(appContext.getBean(TaskBio.class));
+
+        //        schedule(appContext.getBean(TaskElaborazione.class));   // AESchedule.dieciSabato
+        //        schedule(appContext.getBean(TaskBio.class));            // AESchedule.zeroCinqueNoLunedi
+        //        schedule(appContext.getBean(TaskGiorni.class));         // AESchedule.dueNoLunedi
+        //        schedule(appContext.getBean(TaskAnni.class));           // AESchedule.quattroNoLunedi
+        //        schedule(appContext.getBean(TaskAttivita.class));       // AESchedule.dieciMartedi
+        //        schedule(appContext.getBean(TaskCognomi.class));       // AESchedule.dieciMercoledi
+        //        schedule(appContext.getBean(TaskNazionalita.class));    // AESchedule.dieciGiovedi
+        //        //            schedule(appContext.getBean(TaskNomi.class));       // AESchedule.dieciVenerdi
+        //        schedule(appContext.getBean(TaskElaborazione.class));   // AESchedule.dieciSabato
+
+        super.startSchedule();
+    }
+
+}

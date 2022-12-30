@@ -9,6 +9,7 @@ import it.algos.vaad24.backend.packages.utility.log.*;
 import it.algos.vaad24.backend.packages.utility.nota.*;
 import it.algos.vaad24.backend.packages.utility.preferenza.*;
 import it.algos.vaad24.backend.packages.utility.versione.*;
+import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.service.*;
 import it.algos.vaad24.backend.utility.*;
 import it.algos.vaad24.backend.wrapper.*;
@@ -402,9 +403,26 @@ public class VaadBoot implements ServletContextListener {
 
     /**
      * Eventuali task <br>
-     * Sviluppato nelle sottoclassi <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void fixSchedule() {
+        String message;
+        String clazzName;
+        AESchedule type;
+
+        if (VaadVar.taskList != null && VaadVar.taskList.size() > 0) {
+            for (VaadTask task : VaadVar.taskList) {
+                clazzName = task.getClass().getSimpleName();
+                type = task.getTypeSchedule();
+                message = String.format("%s%s%s eseguita %s [%s]", clazzName, FORWARD, task.getDescrizione(), type.getNota(), type.getPattern());
+                logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
+            }
+        }
+        else {
+            message = String.format("Nel modulo %s non ci sono 'task'", VaadVar.projectNameUpper);
+            logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
+        }
+
         logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
     }
 

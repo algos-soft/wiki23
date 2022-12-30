@@ -2,6 +2,7 @@ package it.algos.vaad24.backend.boot;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaad24.backend.schedule.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
@@ -31,6 +32,12 @@ public class VaadVar {
      * Usata da ALayoutService per conto di MainLayout allo start della UI-logic <br>
      */
     public static List<Class<? extends Component>> menuRouteList;
+
+    /**
+     * Lista delle (eventuali) task per gli eventi Schedule. <br>
+     * Deve essere regolato in VaadSchedule o in una sua sottoclasse <br>
+     */
+    public static List<VaadTask> taskList = new ArrayList<>();
 
 
     /**
@@ -146,5 +153,6 @@ public class VaadVar {
      * Può essere true anche se usaCompany=false <br>
      */
     public static boolean usaSecurity;
+
 
 }

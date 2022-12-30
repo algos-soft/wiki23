@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
@@ -19,11 +20,11 @@ import java.time.*;
  * User: gac
  * Date: Tue, 05-Jul-2022
  * Time: 19:03
- * Il ciclo normale di download (questo task) viene effettuata tutti i giorni ESCULSO il lunedì
+ * Il ciclo normale di download (questo task) viene effettuata tutti i giorni ESCLUSO il lunedì
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskBio extends WikiTask {
+public class TaskBio extends VaadTask {
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -31,31 +32,29 @@ public class TaskBio extends WikiTask {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    private DownloadService service;
+    private DownloadService downloadService;
 
+
+    public TaskBio() {
+        super.descrizione = "Download di tutte le biografie nuove e modificate";
+        super.typeSchedule = AESchedule.zeroCinqueNoLunedi;
+    }
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        long inizio = System.currentTimeMillis();
+        super.execute(taskExecutionContext);
 
         if (WPref.usaTaskBio.is()) {
             fixNext();
-            service.cicloCorrente();
+            downloadService.cicloCorrente();
             appContext.getBean(StatisticheBio.class).upload();
-            loggerDownload(inizio);
+            super.loggerTask();
+        }
+        else {
+            super.loggerNoTask();
         }
     }
 
-    /**
-     * Descrizione: a mezzanotte escluso la domenica/lunedì
-     */
-    private static final String PATTERN = AESchedule.zeroCinqueNoLunedi.getPattern();
-
-
-    @Override
-    public String getPattern() {
-        return PATTERN;
-    }
 
     public void fixNext() {
         LocalDateTime adesso = LocalDateTime.now();
@@ -63,14 +62,14 @@ public class TaskBio extends WikiTask {
         WPref.downloadBioPrevisto.setValue(prossimo);
     }
 
-    public void loggerDownload(long inizio) {
-        long fine = System.currentTimeMillis();
-        String message;
-        long delta = fine - inizio;
-        delta = delta / 1000 / 60;
-
-        message = String.format("Task per il ciclo download bio in %s minuti", delta);
-        logger.info(new WrapLog().type(AETypeLog.bio).message(message).usaDb());
-    }
+    //    public void loggerDownload(long inizio) {
+    //        long fine = System.currentTimeMillis();
+    //        String message;
+    //        long delta = fine - inizio;
+    //        delta = delta / 1000 / 60;
+    //
+    //        message = String.format("Task per il ciclo download bio in %s minuti", delta);
+    //        logger.info(new WrapLog().type(AETypeLog.bio).message(message).usaDb());
+    //    }
 
 }
