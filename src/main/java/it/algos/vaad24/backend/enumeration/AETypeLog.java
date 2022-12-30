@@ -49,6 +49,7 @@ public enum AETypeLog implements AIType {
     bio("cicloBio"),
     test("test"),
     spazio("spazio"),
+    schedule("schedule"),
     ;
 
     private String tag;

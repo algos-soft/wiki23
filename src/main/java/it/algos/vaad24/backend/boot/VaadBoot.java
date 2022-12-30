@@ -123,14 +123,14 @@ public class VaadBoot implements ServletContextListener {
         this.setPrefInstance(prefInstance);
     }// end of constructor with @Autowired on setter
 
-//    /**
-//     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
-//     * event, the application is ready to service Vaadin requests <br>
-//     */
-//    @EventListener(ContextRefreshedEvent.class)
-//    public void onContextRefreshEvent() {
-//        this.inizia();
-//    }
+    //    /**
+    //     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
+    //     * event, the application is ready to service Vaadin requests <br>
+    //     */
+    //    @EventListener(ContextRefreshedEvent.class)
+    //    public void onContextRefreshEvent() {
+    //        this.inizia();
+    //    }
 
     /**
      * Primo ingresso nel programma <br>
@@ -158,6 +158,7 @@ public class VaadBoot implements ServletContextListener {
         this.fixData();
         this.fixVersioni();
         this.fixLogin();
+        this.fixSchedule();
 
         logger.setUpEnd();
     }
@@ -397,6 +398,14 @@ public class VaadBoot implements ServletContextListener {
      * Sviluppato nelle sottoclassi <br>
      */
     public void fixLogin() {
+    }
+
+    /**
+     * Eventuali task <br>
+     * Sviluppato nelle sottoclassi <br>
+     */
+    public void fixSchedule() {
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
     }
 
 

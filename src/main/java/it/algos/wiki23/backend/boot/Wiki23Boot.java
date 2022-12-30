@@ -4,6 +4,7 @@ import com.vaadin.flow.component.map.configuration.*;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad24.backend.boot.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
+import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.interfaces.*;
 import it.algos.vaad24.backend.packages.geografia.continente.*;
 import it.algos.vaad24.backend.service.*;
@@ -239,6 +240,22 @@ public class Wiki23Boot extends VaadBoot implements ServletContextListener {
         VaadVar.menuRouteList.add(StatisticaBioView.class);
         VaadVar.menuRouteList.add(ErroreBioView.class);
         VaadVar.menuRouteList.add(PaginaView.class);
+    }
+
+    /**
+     * Eventuali task <br>
+     * Sviluppato nelle sottoclassi <br>
+     */
+    @Override
+    public void fixSchedule() {
+        super.fixSchedule();
+        String message;
+
+        message = String.format("Nel modulo %s ci sono otto 'task'", VaadVar.projectNameUpper);
+        logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
+        logger.info(new WrapLog().message("Pippo").type(AETypeLog.schedule));
+        logger.info(new WrapLog().message("Pluto").type(AETypeLog.schedule));
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
     }
 
     @Override

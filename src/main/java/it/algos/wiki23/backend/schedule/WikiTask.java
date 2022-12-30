@@ -19,6 +19,10 @@ public abstract class WikiTask extends Task {
 
     protected long inizio;
 
+    protected String wikiPattern;
+
+    protected String descrizione;
+
     /**
      * Istanza di una interfaccia <br>
      * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
@@ -47,6 +51,14 @@ public abstract class WikiTask extends Task {
 
         message = String.format("Task per %s eseguito in %s minuti", dettaglio, delta);
         logger.info(new WrapLog().type(AETypeLog.task).message(message).usaDb());
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public String getWikiPattern() {
+        return wikiPattern;
     }
 
 }

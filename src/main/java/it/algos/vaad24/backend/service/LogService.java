@@ -119,12 +119,12 @@ public class LogService extends AbstractService {
         String message = VUOTA;
         message += VaadVar.projectNameUpper;
         message += SEP;
-        //        message += VaadVar.projectDescrizione;
-        //        message += SEP;
         message += "Versione ";
         message += VaadVar.projectVersion;
         message += " di ";
         message += VaadVar.projectDate;
+        message += SEP;
+        message += VaadVar.projectNote;
 
         this.info(new WrapLog().message(message).type(AETypeLog.setup));
         this.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
