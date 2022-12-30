@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
+import java.time.*;
+
 /**
  * Project wiki23
  * Created by Algos
@@ -21,7 +24,14 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskNazionalita extends WikiTask {
+public class TaskNazionalita extends VaadTask {
+
+
+    public TaskNazionalita() {
+        super.descrizione = "Upload di tutte le nazionalità";
+        super.typeSchedule = AESchedule.dieciGiovedi;
+    }
+
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -33,9 +43,8 @@ public class TaskNazionalita extends WikiTask {
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        long inizio;
-
         if (WPref.usaTaskNazionalita.is()) {
+            fixNext();
 
             //--Statistiche
             inizio = System.currentTimeMillis();
@@ -46,21 +55,20 @@ public class TaskNazionalita extends WikiTask {
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadNazionalita.class).uploadAll();
             loggerUpload(inizio);
+            super.loggerTask();
+        }
+        else {
+            super.loggerNoTask();
         }
     }
 
 
-    /**
-     * Descrizione: ogni settimana la mattina di giovedì
-     * * 0 10 * * Thu
-     */
-    private static final String PATTERN = AESchedule.dieciGiovedi.getPattern();
-
-
-    @Override
-    public String getPattern() {
-        return PATTERN;
+    public void fixNext() {
+        LocalDateTime adesso = LocalDateTime.now();
+        LocalDateTime prossimo = adesso.plusDays(7);
+        WPref.uploadNazionalitaPrevisto.setValue(prossimo);
     }
+
 
     public void loggerElabora(long inizio) {
         long fine = System.currentTimeMillis();

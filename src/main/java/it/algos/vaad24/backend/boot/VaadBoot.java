@@ -158,8 +158,8 @@ public class VaadBoot implements ServletContextListener {
         this.fixMenuRoutes();
         this.fixData();
         this.fixVersioni();
-        this.fixLogin();
         this.fixSchedule();
+        this.fixLogin();
 
         logger.setUpEnd();
     }
@@ -414,7 +414,7 @@ public class VaadBoot implements ServletContextListener {
             for (VaadTask task : VaadVar.taskList) {
                 clazzName = task.getClass().getSimpleName();
                 type = task.getTypeSchedule();
-                message = String.format("%s%s%s eseguita %s [%s]", clazzName, FORWARD, task.getDescrizione(), type.getNota(), type.getPattern());
+                message = String.format("%s [%s]%s %s eseguita %s", clazzName, type.getPattern(), FORWARD, task.getDescrizione(), type.getNota());
                 logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
             }
         }

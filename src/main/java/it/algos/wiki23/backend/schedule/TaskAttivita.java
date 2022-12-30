@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.attivita.*;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
+import java.time.*;
+
 /**
  * Project wiki23
  * Created by Algos
@@ -21,7 +24,13 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskAttivita extends WikiTask {
+public class TaskAttivita extends VaadTask {
+
+    public TaskAttivita() {
+        super.descrizione = "Upload di tutte le attività";
+        super.typeSchedule = AESchedule.dieciMartedi;
+    }
+
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -33,9 +42,8 @@ public class TaskAttivita extends WikiTask {
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        long inizio;
-
         if (WPref.usaTaskAttivita.is()) {
+            fixNext();
 
             //--Statistiche
             inizio = System.currentTimeMillis();
@@ -46,21 +54,21 @@ public class TaskAttivita extends WikiTask {
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadAttivita.class).uploadAll();
             loggerUpload(inizio);
+            super.loggerTask();
+        }
+        else {
+            super.loggerNoTask();
         }
     }
 
 
-    /**
-     * Descrizione: ogni settimana la mattina di martedì
-     * 0 10 * * Tue
-     */
-    private static final String PATTERN = AESchedule.dieciMartedi.getPattern();
-
-
-    @Override
-    public String getPattern() {
-        return PATTERN;
+    public void fixNext() {
+        LocalDateTime adesso = LocalDateTime.now();
+        LocalDateTime prossimo = adesso.plusDays(7);
+        WPref.uploadAttivitaPrevisto.setValue(prossimo);
     }
+
+
 
     public void loggerElabora(long inizio) {
         long fine = System.currentTimeMillis();

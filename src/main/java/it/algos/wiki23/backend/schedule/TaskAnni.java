@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.statistiche.*;
@@ -21,7 +22,12 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskAnni extends WikiTask {
+public class TaskAnni extends VaadTask {
+
+    public TaskAnni() {
+        super.descrizione = "Upload di tutte le liste per anno";
+        super.typeSchedule = AESchedule.quattroNoLunedi;
+    }
 
 
     @Override
@@ -37,21 +43,13 @@ public class TaskAnni extends WikiTask {
             //--L'upload comprende anche le info per la view
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadAnni.class).uploadAll();
-            super.loggerTask("upload liste degli anni");
+            super.loggerTask();
+        }
+        else {
+            super.loggerNoTask();
         }
     }
 
-
-    /**
-     * Descrizione: alle 4 di notte escluso il lunedì
-     */
-    private static final String PATTERN = AESchedule.quattroNoLunedi.getPattern();
-
-
-    @Override
-    public String getPattern() {
-        return PATTERN;
-    }
 
     public void fixNext() {
         LocalDateTime adesso = LocalDateTime.now();

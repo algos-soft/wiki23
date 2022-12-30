@@ -34,17 +34,17 @@ public class Wiki23Schedule extends VaadSchedule {
     @Override
     public void startSchedule() throws IllegalStateException {
 
+        //        VaadVar.taskList.add(appContext.getBean(TaskBioReset.class));
         VaadVar.taskList.add(appContext.getBean(TaskBio.class));
-
-        //        schedule(appContext.getBean(TaskElaborazione.class));   // AESchedule.dieciSabato
-        //        schedule(appContext.getBean(TaskBio.class));            // AESchedule.zeroCinqueNoLunedi
-        //        schedule(appContext.getBean(TaskGiorni.class));         // AESchedule.dueNoLunedi
-        //        schedule(appContext.getBean(TaskAnni.class));           // AESchedule.quattroNoLunedi
-        //        schedule(appContext.getBean(TaskAttivita.class));       // AESchedule.dieciMartedi
-        //        schedule(appContext.getBean(TaskCognomi.class));       // AESchedule.dieciMercoledi
-        //        schedule(appContext.getBean(TaskNazionalita.class));    // AESchedule.dieciGiovedi
-        //        //            schedule(appContext.getBean(TaskNomi.class));       // AESchedule.dieciVenerdi
-        //        schedule(appContext.getBean(TaskElaborazione.class));   // AESchedule.dieciSabato
+        VaadVar.taskList.add(appContext.getBean(TaskGiorni.class));
+        VaadVar.taskList.add(appContext.getBean(TaskAnni.class));
+        VaadVar.taskList.add(appContext.getBean(TaskAttivita.class));
+        VaadVar.taskList.add(appContext.getBean(TaskNazionalita.class));
+        //        VaadVar.taskList.add(appContext.getBean(TaskCognomi.class));
+        //        VaadVar.taskList.add(appContext.getBean(TaskNomi.class));
+        //        VaadVar.taskList.add(appContext.getBean(TaskElaborazione.class));
+        //        VaadVar.taskList.add(appContext.getBean(TaskCognomi.class));
+        //        VaadVar.taskList.add(appContext.getBean(TaskCognomi.class));
 
         super.startSchedule();
     }

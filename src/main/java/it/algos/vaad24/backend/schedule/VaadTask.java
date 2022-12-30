@@ -81,5 +81,15 @@ public class VaadTask extends Task {
         logger.info(new WrapLog().type(AETypeLog.task).message(message).usaDb());
     }
 
+    public void loggerNoTask() {
+        String message;
+        String clazzName;
+
+        clazzName = this.getClass().getSimpleName();
+        message = String.format("%s%s%s [%s] non eseguita per flag disabilitato", clazzName, FORWARD, descrizione, getPattern());
+
+        logger.info(new WrapLog().type(AETypeLog.task).message(message));
+    }
+
 }
 

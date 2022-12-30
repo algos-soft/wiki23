@@ -3,6 +3,7 @@ package it.algos.vaad24.wizard.scripts;
 import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaad24.ui.dialog.*;
 import static it.algos.vaad24.wizard.scripts.WizCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.wrapper.*;
@@ -95,7 +96,7 @@ public class WizDialogUpdateProject extends WizDialog {
         confirmButton.setEnabled(true);
         message = "Confermando vengono aggiornati i files selezionati";
         spanConferma = new HorizontalLayout();
-        spanConferma.add(htmlService.getSpan(new WrapSpan().message(message).color(AETypeColor.rosso)));
+        spanConferma.add(ASpan.text(message).rosso().bold());
     }
 
     /**

@@ -2,6 +2,7 @@ package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.statistiche.*;
@@ -21,8 +22,13 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskGiorni extends WikiTask {
+public class TaskGiorni extends VaadTask {
 
+
+    public TaskGiorni() {
+        super.descrizione = "Upload di tutte le liste per giorno";
+        super.typeSchedule = AESchedule.dueNoLunedi;
+    }
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
@@ -37,20 +43,14 @@ public class TaskGiorni extends WikiTask {
             //--L'upload comprende anche le info per la view
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadGiorni.class).uploadAll();
-            super.loggerTask("upload liste dei giorni");
+            super.loggerTask();
+        }
+        else {
+            super.loggerNoTask();
         }
     }
 
-    /**
-     * Descrizione: alle 2 di notte escluso il lunedì
-     */
-    private static final String PATTERN = AESchedule.dueNoLunedi.getPattern();
 
-
-    @Override
-    public String getPattern() {
-        return PATTERN;
-    }
 
     public void fixNext() {
         LocalDateTime adesso = LocalDateTime.now();

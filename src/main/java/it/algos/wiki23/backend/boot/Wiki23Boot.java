@@ -242,25 +242,11 @@ public class Wiki23Boot extends VaadBoot implements ServletContextListener {
         VaadVar.menuRouteList.add(PaginaView.class);
     }
 
-//    /**
-//     * Eventuali task <br>
-//     * Sviluppato nelle sottoclassi <br>
-//     */
-//    @Override
-//    public void fixSchedule() {
-//        super.fixSchedule();
-//        String message;
-//
-//        message = String.format("Nel modulo %s ci sono otto 'task'", VaadVar.projectNameUpper);
-//        logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
-//        logger.info(new WrapLog().message("Pippo").type(AETypeLog.schedule));
-//        logger.info(new WrapLog().message("Pluto").type(AETypeLog.schedule));
-//        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
-//    }
 
     @Override
     public void fixLogin() {
         queryService.logAsBot();
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
     }
 
 }
