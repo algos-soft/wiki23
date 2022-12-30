@@ -107,6 +107,8 @@ public class VaadBoot implements ServletContextListener {
     @Autowired
     protected MongoService mongoService;
 
+    @Autowired
+    protected PreferenceService preferenceService;
 
     /**
      * Constructor with @Autowired on setter. Usato quando ci sono sottoclassi. <br>
@@ -409,12 +411,33 @@ public class VaadBoot implements ServletContextListener {
         String message;
         String clazzName;
         AESchedule type;
+        boolean status;
+        String desc;
+        String pattern;
+        String nota;
+        String flagText;
+        AIGenPref flagTask;
 
         if (VaadVar.taskList != null && VaadVar.taskList.size() > 0) {
             for (VaadTask task : VaadVar.taskList) {
                 clazzName = task.getClass().getSimpleName();
+                desc = task.getDescrizioneTask();
                 type = task.getTypeSchedule();
-                message = String.format("%s [%s]%s %s eseguita %s", clazzName, type.getPattern(), FORWARD, task.getDescrizione(), type.getNota());
+                pattern = type.getPattern();
+                nota = type.getNota();
+                flagTask = task.getFlagAttivazione();
+                if (flagTask == null) {
+                    flagText = TASK_NO_FLAG;
+                }
+                else {
+                    if (flagTask.is()) {
+                        flagText = flagTask.getKeyCode() + TASK_FLAG_ATTIVA;
+                    }
+                    else {
+                        flagText = flagTask.getKeyCode() + TASK_FLAG_DISATTIVA;
+                    }
+                }
+                message = String.format("%s [%s] %s%s %s eseguita %s", clazzName, pattern, flagText, FORWARD, desc, nota);
                 logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
             }
         }

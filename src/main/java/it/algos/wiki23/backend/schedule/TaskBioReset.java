@@ -50,10 +50,10 @@ public class TaskBioReset extends WikiTask {
     private static final String PATTERN = AESchedule.zeroCinqueLunedi.getPattern();
 
 
-    @Override
-    public String getPattern() {
-        return PATTERN;
-    }
+//    @Override
+//    public String getPattern() {
+//        return PATTERN;
+//    }
 
 
     public void loggerDownload(long inizio) {
@@ -63,7 +63,7 @@ public class TaskBioReset extends WikiTask {
         delta = delta / 1000 / 60;
 
         message = String.format("Task per il ciclo reset bio in %s minuti", delta);
-        logger.info(new WrapLog().type(AETypeLog.bio).message(message).usaDb());
+//        logger.info(new WrapLog().type(AETypeLog.bio).message(message).usaDb());
     }
 
 }

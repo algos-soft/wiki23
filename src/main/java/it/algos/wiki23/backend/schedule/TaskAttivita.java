@@ -24,11 +24,13 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskAttivita extends VaadTask {
+public class TaskAttivita extends WikiTask {
 
     public TaskAttivita() {
-        super.descrizione = "Upload di tutte le attività";
+        super.descrizioneTask = "Upload di tutte le attività";
         super.typeSchedule = AESchedule.dieciMartedi;
+        super.flagAttivazione = WPref.usaTaskAttivita;
+        super.flagPrevisione = WPref.uploadAttivitaPrevisto;
     }
 
 
@@ -38,12 +40,12 @@ public class TaskAttivita extends VaadTask {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    public  AttivitaBackend attivitaBackend;
+    public AttivitaBackend attivitaBackend;
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         if (WPref.usaTaskAttivita.is()) {
-            fixNext();
+            super.fixNext();
 
             //--Statistiche
             inizio = System.currentTimeMillis();
@@ -60,14 +62,6 @@ public class TaskAttivita extends VaadTask {
             super.loggerNoTask();
         }
     }
-
-
-    public void fixNext() {
-        LocalDateTime adesso = LocalDateTime.now();
-        LocalDateTime prossimo = adesso.plusDays(7);
-        WPref.uploadAttivitaPrevisto.setValue(prossimo);
-    }
-
 
 
     public void loggerElabora(long inizio) {

@@ -22,18 +22,20 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskAnni extends VaadTask {
+public class TaskAnni extends WikiTask {
 
     public TaskAnni() {
-        super.descrizione = "Upload di tutte le liste per anno";
+        super.descrizioneTask = "Upload di tutte le liste per anno";
         super.typeSchedule = AESchedule.quattroNoLunedi;
+        super.flagAttivazione = WPref.usaTaskAnni;
+        super.flagPrevisione = WPref.uploadAnniPrevisto;
     }
 
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         if (WPref.usaTaskAnni.is()) {
-            fixNext();
+            super.fixNext();
 
             //--Le statistiche comprendono anche l'elaborazione
             //--L'elaborazione comprende le info per la view
@@ -51,11 +53,6 @@ public class TaskAnni extends VaadTask {
     }
 
 
-    public void fixNext() {
-        LocalDateTime adesso = LocalDateTime.now();
-        LocalDateTime prossimo = adesso.plusDays(1);
-        WPref.uploadGiorniPrevisto.setValue(prossimo);
-    }
 
 }
 

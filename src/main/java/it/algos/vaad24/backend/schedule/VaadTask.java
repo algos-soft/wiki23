@@ -3,6 +3,7 @@ package it.algos.vaad24.backend.schedule;
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.interfaces.*;
 import it.algos.vaad24.backend.service.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.sauronsoftware.cron4j.*;
@@ -26,7 +27,9 @@ public class VaadTask extends Task {
 
     protected AESchedule typeSchedule;
 
-    protected String descrizione;
+    protected String descrizioneTask;
+
+    protected AIGenPref flagAttivazione;
 
     /**
      * Istanza di una interfaccia <br>
@@ -58,8 +61,8 @@ public class VaadTask extends Task {
     }
 
 
-    public String getDescrizione() {
-        return descrizione;
+    public String getDescrizioneTask() {
+        return descrizioneTask;
     }
 
 
@@ -67,6 +70,9 @@ public class VaadTask extends Task {
         return typeSchedule;
     }
 
+    public AIGenPref getFlagAttivazione() {
+        return flagAttivazione;
+    }
 
     public void loggerTask() {
         long fine = System.currentTimeMillis();
@@ -76,7 +82,7 @@ public class VaadTask extends Task {
         delta = delta / 1000 / 60;
 
         clazzName = this.getClass().getSimpleName();
-        message = String.format("%s%s%s [%s] eseguita in %s minuti", clazzName, FORWARD, descrizione, getPattern(), delta);
+        message = String.format("%s%s%s [%s] eseguita in %s minuti", clazzName, FORWARD, descrizioneTask, getPattern(), delta);
 
         logger.info(new WrapLog().type(AETypeLog.task).message(message).usaDb());
     }
@@ -86,7 +92,7 @@ public class VaadTask extends Task {
         String clazzName;
 
         clazzName = this.getClass().getSimpleName();
-        message = String.format("%s%s%s [%s] non eseguita per flag disabilitato", clazzName, FORWARD, descrizione, getPattern());
+        message = String.format("%s%s%s [%s] non eseguita per flag disabilitato", clazzName, FORWARD, descrizioneTask, getPattern());
 
         logger.info(new WrapLog().type(AETypeLog.task).message(message));
     }

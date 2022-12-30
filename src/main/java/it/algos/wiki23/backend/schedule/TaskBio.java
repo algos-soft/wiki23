@@ -24,7 +24,7 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskBio extends VaadTask {
+public class TaskBio extends WikiTask {
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -36,8 +36,10 @@ public class TaskBio extends VaadTask {
 
 
     public TaskBio() {
-        super.descrizione = "Download di tutte le biografie nuove e modificate";
+        super.descrizioneTask = "Download di tutte le biografie nuove e modificate";
         super.typeSchedule = AESchedule.zeroCinqueNoLunedi;
+        super.flagAttivazione = WPref.usaTaskBio;
+        super.flagPrevisione = WPref.downloadBioPrevisto;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class TaskBio extends VaadTask {
         super.execute(taskExecutionContext);
 
         if (WPref.usaTaskBio.is()) {
-            fixNext();
+            super.fixNext();
             downloadService.cicloCorrente();
             appContext.getBean(StatisticheBio.class).upload();
             super.loggerTask();
@@ -55,11 +57,5 @@ public class TaskBio extends VaadTask {
         }
     }
 
-
-    public void fixNext() {
-        LocalDateTime adesso = LocalDateTime.now();
-        LocalDateTime prossimo = adesso.plusDays(1);
-        WPref.downloadBioPrevisto.setValue(prossimo);
-    }
 
 }

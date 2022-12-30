@@ -51,9 +51,9 @@ public class TaskElaborazione extends WikiTask {
     private static final String PATTERN = AESchedule.dieciSabato.getPattern();
 
 
-    @Override
-    public String getPattern() {
-        return PATTERN;
-    }
+//    @Override
+//    public String getPattern() {
+//        return PATTERN;
+//    }
 
 }

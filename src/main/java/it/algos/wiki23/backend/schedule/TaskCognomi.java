@@ -2,14 +2,18 @@ package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.cognome.*;
+import it.algos.wiki23.backend.statistiche.*;
 import it.algos.wiki23.backend.upload.*;
 import it.sauronsoftware.cron4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+
+import java.time.*;
 
 /**
  * Project wiki23
@@ -22,6 +26,15 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TaskCognomi extends WikiTask {
 
+
+    public TaskCognomi() {
+        super.descrizioneTask = "Upload di tutti i cognomi";
+        super.typeSchedule = AESchedule.dieciMercoledi;
+        super.flagAttivazione = WPref.usaTaskCognomi;
+        super.flagPrevisione = WPref.uploadCognomiPrevisto;
+    }
+
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -32,38 +45,18 @@ public class TaskCognomi extends WikiTask {
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        long inizio;
-
         if (WPref.usaTaskCognomi.is()) {
+            super.fixNext();
 
             //--Upload
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadCognomi.class).uploadAll();
             loggerUpload(inizio);
+            super.loggerTask();
         }
-    }
-
-
-    /**
-     * Descrizione: ogni settimana la mattina di martedì
-     * 0 10 * * Tue
-     */
-    private static final String PATTERN = AESchedule.dieciMercoledi.getPattern();
-
-
-    @Override
-    public String getPattern() {
-        return PATTERN;
-    }
-
-    public void loggerElabora(long inizio) {
-        long fine = System.currentTimeMillis();
-        String message;
-        long delta = fine - inizio;
-        delta = delta / 1000 / 60;
-
-        message = String.format("Task per elaborare le attività in %s minuti", delta);
-        logger.info(new WrapLog().type(AETypeLog.elabora).message(message).usaDb());
+        else {
+            super.loggerNoTask();
+        }
     }
 
 

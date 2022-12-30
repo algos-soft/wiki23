@@ -84,6 +84,7 @@ public class VaadCost {
     public static final String VUOTA = "";
 
     public static final String CAPO = "\n";
+
     public static final String CAPO_HTML = "</br>";
 
     public static final String TAB = "\t";
@@ -552,6 +553,13 @@ public class VaadCost {
     public static final String BUTTON_CONFERMA = "Conferma";
 
     public static final String BUTTON_CANCELLA = "Annulla";
+
     public static final String BUTTON_REJECT = "Cancella";
+
+    public static final String TASK_NO_FLAG = "Senza flag";
+
+    public static final String TASK_FLAG_ATTIVA = "=acceso";
+
+    public static final String TASK_FLAG_DISATTIVA = "=spento";
 
 }

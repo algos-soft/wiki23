@@ -40,11 +40,9 @@ public class Wiki23Schedule extends VaadSchedule {
         VaadVar.taskList.add(appContext.getBean(TaskAnni.class));
         VaadVar.taskList.add(appContext.getBean(TaskAttivita.class));
         VaadVar.taskList.add(appContext.getBean(TaskNazionalita.class));
-        //        VaadVar.taskList.add(appContext.getBean(TaskCognomi.class));
+        VaadVar.taskList.add(appContext.getBean(TaskCognomi.class));
         //        VaadVar.taskList.add(appContext.getBean(TaskNomi.class));
         //        VaadVar.taskList.add(appContext.getBean(TaskElaborazione.class));
-        //        VaadVar.taskList.add(appContext.getBean(TaskCognomi.class));
-        //        VaadVar.taskList.add(appContext.getBean(TaskCognomi.class));
 
         super.startSchedule();
     }

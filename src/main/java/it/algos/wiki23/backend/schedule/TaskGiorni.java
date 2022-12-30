@@ -22,18 +22,20 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskGiorni extends VaadTask {
+public class TaskGiorni extends WikiTask {
 
 
     public TaskGiorni() {
-        super.descrizione = "Upload di tutte le liste per giorno";
+        super.descrizioneTask = "Upload di tutte le liste per giorno";
         super.typeSchedule = AESchedule.dueNoLunedi;
+        super.flagAttivazione = WPref.usaTaskGiorni;
+        super.flagPrevisione = WPref.uploadGiorniPrevisto;
     }
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         if (WPref.usaTaskGiorni.is()) {
-            fixNext();
+            super.fixNext();
 
             //--Le statistiche comprendono anche l'elaborazione
             //--L'elaborazione comprende le info per la view
@@ -48,14 +50,6 @@ public class TaskGiorni extends VaadTask {
         else {
             super.loggerNoTask();
         }
-    }
-
-
-
-    public void fixNext() {
-        LocalDateTime adesso = LocalDateTime.now();
-        LocalDateTime prossimo = adesso.plusDays(1);
-        WPref.uploadGiorniPrevisto.setValue(prossimo);
     }
 
 }

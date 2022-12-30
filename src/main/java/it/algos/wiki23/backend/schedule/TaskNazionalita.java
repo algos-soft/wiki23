@@ -24,12 +24,14 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskNazionalita extends VaadTask {
+public class TaskNazionalita extends WikiTask {
 
 
     public TaskNazionalita() {
-        super.descrizione = "Upload di tutte le nazionalità";
+        super.descrizioneTask = "Upload di tutte le nazionalità";
         super.typeSchedule = AESchedule.dieciGiovedi;
+        super.flagAttivazione = WPref.usaTaskNazionalita;
+        super.flagPrevisione = WPref.uploadNazionalitaPrevisto;
     }
 
 
@@ -44,7 +46,7 @@ public class TaskNazionalita extends VaadTask {
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         if (WPref.usaTaskNazionalita.is()) {
-            fixNext();
+            super.fixNext();
 
             //--Statistiche
             inizio = System.currentTimeMillis();
@@ -60,13 +62,6 @@ public class TaskNazionalita extends VaadTask {
         else {
             super.loggerNoTask();
         }
-    }
-
-
-    public void fixNext() {
-        LocalDateTime adesso = LocalDateTime.now();
-        LocalDateTime prossimo = adesso.plusDays(7);
-        WPref.uploadNazionalitaPrevisto.setValue(prossimo);
     }
 
 
