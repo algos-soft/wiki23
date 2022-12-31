@@ -21,9 +21,11 @@ public enum AETypeSchedule {
             AESchedule.dueNoLunedi,
             AESchedule.quattroNoLunedi,
             AESchedule.dieciMartedi,
-            AESchedule.dieciGiovedi,
             AESchedule.dieciMercoledi,
-            AESchedule.dieciSabato
+            AESchedule.dieciGiovedi,
+            AESchedule.dieciVenerdi,
+            AESchedule.dieciSabato,
+            AESchedule.dieciDomenica
     ),
     schema2(
             AESchedule.zeroCinqueLunedi,
@@ -31,9 +33,11 @@ public enum AETypeSchedule {
             AESchedule.dueNoLunedi,
             AESchedule.quattroNoLunedi,
             AESchedule.dieciMartedi,
-            AESchedule.dieciGiovedi,
             AESchedule.dieciMercoledi,
-            AESchedule.dieciSabato
+            AESchedule.dieciGiovedi,
+            AESchedule.dieciVenerdi,
+            AESchedule.dieciSabato,
+            AESchedule.dieciDomenica
     );
 
     private AESchedule resetBio;
@@ -49,8 +53,11 @@ public enum AETypeSchedule {
     private AESchedule nazionalita;
 
     private AESchedule cognomi;
+    private AESchedule nomi;
 
     private AESchedule elabora;
+
+    private AESchedule statistiche;
 
 
     AETypeSchedule(
@@ -61,7 +68,9 @@ public enum AETypeSchedule {
             AESchedule attivita,
             AESchedule nazionalita,
             AESchedule cognomi,
-            AESchedule elabora) {
+            AESchedule nomi,
+            AESchedule elabora,
+            AESchedule statistiche) {
         this.resetBio = resetBio;
         this.updateBio = updateBio;
         this.giorni = giorni;
@@ -69,7 +78,9 @@ public enum AETypeSchedule {
         this.attivita = attivita;
         this.nazionalita = nazionalita;
         this.cognomi = cognomi;
+        this.nomi = nomi;
         this.elabora = elabora;
+        this.statistiche = statistiche;
     }
 
     public AESchedule getResetBio() {
@@ -100,7 +111,15 @@ public enum AETypeSchedule {
         return cognomi;
     }
 
+    public AESchedule getNomi() {
+        return nomi;
+    }
+
     public AESchedule getElabora() {
         return elabora;
+    }
+
+    public AESchedule getStatistiche() {
+        return statistiche;
     }
 }

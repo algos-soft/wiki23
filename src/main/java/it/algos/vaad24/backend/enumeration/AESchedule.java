@@ -102,6 +102,12 @@ public enum AESchedule {
      */
     dieciSabato("0 10 * * sat", "alle dieci di ogni sabato.", 7),
 
+    /**
+     * Pattern: 0 10 * * sun
+     * Descrizione: alle dieci di ogni domenica
+     */
+    dieciDomenica("0 10 * * sun", "alle dieci di ogni domenica.", 7),
+
     ;
 
     /**

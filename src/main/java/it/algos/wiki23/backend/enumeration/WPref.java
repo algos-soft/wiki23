@@ -44,6 +44,10 @@ public enum WPref implements AIGenPref {
     uploadCognomiTime("uploadCognomiTime", AETypePref.integer, 0, "Durata upload dei cognomi in minuti."),
     uploadCognomiPrevisto("uploadCognomiPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per i cognomi."),
 
+    uploadNomi("uploadNomi", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le liste di nomi oltre la soglia di 50 biografie"),
+    uploadNomiTime("uploadNomiTime", AETypePref.integer, 0, "Durata upload dei nomi in minuti."),
+    uploadNomiPrevisto("uploadNomiPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per i nomi."),
+
     usaTaskResetBio("usaTaskResetBio", AETypePref.bool, false, "Reset calendarizzato di tutte le biografie"),
     resetBio("resetBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Reset completo delle voci biografiche"),
     resetBioTime("resetBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata Reset completo delle biografie in minuti."),
@@ -137,22 +141,27 @@ public enum WPref implements AIGenPref {
     ),
 
     usaTaskBio("usaTaskBio", AETypePref.bool, false, "Download calendarizzato di tutte le biografie"),
-    usaTaskAttivita("usaTaskAttivita", AETypePref.bool, false, "Upload calendarizzato di tutte le attività"),
-    usaTaskNazionalita("usaTaskNazionalita", AETypePref.bool, false, "Upload calendarizzato di tutte le nazionalità"),
     usaTaskGiorni("usaTaskGiorni", AETypePref.bool, false, "Upload calendarizzato di tutte le pagine dei giorni nato/morto"),
     usaTaskAnni("usaTaskAnni", AETypePref.bool, false, "Upload calendarizzato di tutte le pagine degli anni nato/morto"),
+    usaTaskAttivita("usaTaskAttivita", AETypePref.bool, false, "Upload calendarizzato di tutte le attività"),
+    usaTaskNazionalita("usaTaskNazionalita", AETypePref.bool, false, "Upload calendarizzato di tutte le nazionalità"),
     usaTaskCognomi("usaTaskCognomi", AETypePref.bool, false, "Upload calendarizzato di tutte le pagine dei cognomi"),
+    usaTaskNomi("usaTaskNomi", AETypePref.bool, false, "Upload calendarizzato di tutte le pagine dei nomi"),
+    usaTaskElabora("usaTaskElabora", AETypePref.bool, false, "Lista pagine da cancellare e lista errori"),
+    usaTaskStatistiche("usaTaskStatistiche", AETypePref.bool, false, "Elaborazione di alcune statistiche"),
+
+
     usaRigheGiorni("usaRigheGiorni", AETypePref.bool, true, "Usa righe raggruppate per anno nelle liste dei giorni"),
     usaRigheAnni("usaRigheAnni", AETypePref.bool, true, "Usa righe raggruppate per giorno nelle liste degli anni"),
     sogliaCognomiMongo("sogliaCognomiMongo", AETypePref.integer, 30, "Soglia minima per creare una entity nella collezione Cognomi sul mongoDB"),
     sogliaCognomiWiki("sogliaCognomiWiki", AETypePref.integer, 50, "Soglia minima per creare una pagina Cognomi sul server wiki"),
     usaLoggerTask("usaLoggerTask", AETypePref.bool, true, "Registra sul log interno l'esecuzione dell task programmate"),
 
-    usaTaskElabora("usaTaskElabora", AETypePref.bool, false, "Lista pagine da cancellare e lista errori"),
     elaboraPagineCancella("elaboraPagineCancella", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione delle pagine da cancellare"),
     elaboraPagineCancellaTime("elaboraPagineCancellaTime", AETypePref.integer, 0, "Durata elaborazione delle pagine da cancellare in minuti."),
     elaboraPagineCancellaPrevisto("elaboraPagineCancellaPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossima elaborazione delle pagine da cancellare."),
 
+    statistichePrevisto("statistichePrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossima elaborazione delle statistiche"),
 
     maxPageLength("maxPageLength", AETypePref.integer, 200000, "Soglia massima di una pagina in byte"),
     maxBioPageAnniGiorni("maxBioPageAnniGiorni", AETypePref.integer, 1700, "Soglia massima di bio per usare le sottopagine  giorni/anni"),
