@@ -41,7 +41,7 @@ public enum AESchedule {
     /**
      * Descrizione: ogni giorno a mezzanotte <br>
      */
-    giorno("0 0 * * *", "ogni giorno a mezzanotte"),
+    giorno("0 0 * * *", "ogni giorno a mezzanotte", 1),
 
     /**
      * Descrizione: ogni minuto
@@ -52,55 +52,55 @@ public enum AESchedule {
      * Pattern: 0 0 * * mon
      * Descrizione: ogni settimana ai cinque dopo mezzanotte tra domenica e lunedì
      */
-    zeroCinqueLunedi("5 0 * * mon", "ogni settimana ai cinque dopo mezzanotte tra domenica e lunedì."),
+    zeroCinqueLunedi("5 0 * * mon", "ogni settimana ai cinque dopo mezzanotte tra domenica e lunedì.", 7),
 
     /**
      * Pattern: 0 0 * * sun,tue,wed,thu,fri,sat
      * Descrizione: ai cinque dopo mezzanotte di ogni giorno della settimana esclusa la notte tra domenica e lunedì
      */
-    zeroCinqueNoLunedi("5 0 * * sun,tue,wed,thu,fri,sat", "ai cinque dopo mezzanotte di ogni giorno della settimana esclusa la notte tra domenica e lunedì."),
+    zeroCinqueNoLunedi("5 0 * * sun,tue,wed,thu,fri,sat", "ai cinque dopo mezzanotte di ogni giorno della settimana esclusa la notte tra domenica e lunedì.", 1),
 
     /**
      * Pattern: 0 2 * * sun,tue,wed,thu,fri,sat
      * Descrizione: alle due di ogni mattina della settimana escluso il lunedì
      */
-    dueNoLunedi("0 2 * * sun,tue,wed,thu,fri,sat", "alle due di ogni mattina della settimana escluso il lunedì."),
+    dueNoLunedi("0 2 * * sun,tue,wed,thu,fri,sat", "alle due di ogni mattina della settimana escluso il lunedì.", 1),
 
     /**
      * Pattern: 0 4 * * sun,tue,wed,thu,fri,sat
      * Descrizione: alle quattro di ogni mattina della settimana escluso il lunedì
      */
-    quattroNoLunedi("0 4 * * sun,tue,wed,thu,fri,sat", "alle quattro di ogni mattina della settimana escluso il lunedì."),
+    quattroNoLunedi("0 4 * * sun,tue,wed,thu,fri,sat", "alle quattro di ogni mattina della settimana escluso il lunedì.", 1),
 
     /**
      * Pattern: 0 10 * * tue
      * Descrizione: alle dieci di ogni martedì
      */
-    dieciMartedi("0 10 * * tue", "alle dieci di ogni martedì."),
+    dieciMartedi("0 10 * * tue", "alle dieci di ogni martedì.", 7),
 
     /**
      * Pattern: 0 10 * * wed
      * Descrizione: alle dieci di ogni mercoledì
      */
-    dieciMercoledi("0 10 * * wed", "alle dieci di ogni mercoledì."),
+    dieciMercoledi("0 10 * * wed", "alle dieci di ogni mercoledì.", 7),
 
     /**
      * Pattern: 0 10 * * thu
      * Descrizione: alle dieci di ogni giovedì
      */
-    dieciGiovedi("0 10 * * thu", "alle dieci di ogni giovedì."),
+    dieciGiovedi("0 10 * * thu", "alle dieci di ogni giovedì.", 7),
 
     /**
      * Pattern: 0 10 * * fri
      * Descrizione: alle dieci di ogni venerdì
      */
-    dieciVenerdi("0 10 * * fri", "alle dieci di ogni venerdì."),
+    dieciVenerdi("0 10 * * fri", "alle dieci di ogni venerdì.", 7),
 
     /**
      * Pattern: 0 10 * * sat
      * Descrizione: alle dieci di ogni sabato
      */
-    dieciSabato("0 10 * * sat", "alle dieci di ogni sabato."),
+    dieciSabato("0 10 * * sat", "alle dieci di ogni sabato.", 7),
 
     ;
 
@@ -121,7 +121,7 @@ public enum AESchedule {
      * @param nota    esplicativa da inserire nei log
      */
     AESchedule(String pattern, String nota) {
-        this(pattern, nota, 1);
+        this(pattern, nota, 0);
     }
 
 
@@ -130,8 +130,9 @@ public enum AESchedule {
      * @param nota    esplicativa da inserire nei log
      */
     AESchedule(String pattern, String nota, int giorniNext) {
-        this.setPattern(pattern);
-        this.setNota(nota);
+        this.pattern = pattern;
+        this.nota = nota;
+        this.giorniNext = giorniNext;
     }
 
     public static List<AESchedule> getAllEnums() {

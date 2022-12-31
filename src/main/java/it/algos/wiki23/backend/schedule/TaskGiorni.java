@@ -31,7 +31,6 @@ public class TaskGiorni extends VaadTask {
         super.typeSchedule = Wiki23Var.typeSchedule.getGiorni();
         super.flagAttivazione = WPref.usaTaskGiorni;
         super.flagPrevisione = WPref.uploadGiorniPrevisto;
-        super.nextDays = Wiki23Var.typeSchedule.getGiorni().getGiorniNext();
     }
 
     @Override

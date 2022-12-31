@@ -41,7 +41,6 @@ public class TaskBioReset extends VaadTask {
         super.typeSchedule = Wiki23Var.typeSchedule.getResetBio();
         super.flagAttivazione = WPref.usaTaskResetBio;
         super.flagPrevisione = WPref.resetBioPrevisto;
-        super.nextDays = 15;
     }
 
 

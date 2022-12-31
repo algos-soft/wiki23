@@ -416,6 +416,7 @@ public class VaadBoot implements ServletContextListener {
         String nota;
         String flagText;
         AIGenPref flagTask;
+        int nextDays = 0;
 
         if (VaadVar.taskList != null && VaadVar.taskList.size() > 0) {
             for (VaadTask task : VaadVar.taskList) {
@@ -424,6 +425,7 @@ public class VaadBoot implements ServletContextListener {
                 type = task.getTypeSchedule();
                 pattern = type.getPattern();
                 nota = type.getNota();
+                nextDays = task.getTypeSchedule().getGiorniNext();
                 flagTask = task.getFlagAttivazione();
                 if (flagTask == null) {
                     flagText = TASK_NO_FLAG + TASK_FLAG_SEMPRE_ATTIVA;
@@ -436,7 +438,7 @@ public class VaadBoot implements ServletContextListener {
                         flagText = flagTask.getKeyCode() + TASK_FLAG_DISATTIVA;
                     }
                 }
-                message = String.format("%s [%s] %s%s%s; eseguita %s", clazzName, pattern, flagText, FORWARD, desc, nota);
+                message = String.format("%s [%s] %s (+%s)%s%s; eseguita %s", clazzName, pattern, flagText, nextDays, FORWARD, desc, nota);
                 logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
             }
         }

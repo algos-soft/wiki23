@@ -32,7 +32,6 @@ public class TaskAttivita extends VaadTask {
         super.typeSchedule = Wiki23Var.typeSchedule.getAttivita();
         super.flagAttivazione = WPref.usaTaskAttivita;
         super.flagPrevisione = WPref.uploadAttivitaPrevisto;
-        super.nextDays = 7;
     }
 
 

@@ -45,7 +45,6 @@ public class TaskElabora extends VaadTask {
         super.typeSchedule = Wiki23Var.typeSchedule.getElabora();
         super.flagAttivazione = WPref.usaTaskElabora;
         super.flagPrevisione = WPref.elaboraPagineCancellaPrevisto;
-        super.nextDays = 15;
     }
 
     @Override

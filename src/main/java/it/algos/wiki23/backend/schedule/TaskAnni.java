@@ -30,7 +30,6 @@ public class TaskAnni extends VaadTask {
         super.typeSchedule = Wiki23Var.typeSchedule.getAnni();
         super.flagAttivazione = WPref.usaTaskAnni;
         super.flagPrevisione = WPref.uploadAnniPrevisto;
-        super.nextDays = 1;
     }
 
 

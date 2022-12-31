@@ -33,7 +33,6 @@ public class TaskCognomi extends VaadTask {
         super.typeSchedule = Wiki23Var.typeSchedule.getCognomi();
         super.flagAttivazione = WPref.usaTaskCognomi;
         super.flagPrevisione = WPref.uploadCognomiPrevisto;
-        super.nextDays = 7;
     }
 
 
