@@ -558,6 +558,7 @@ public class VaadCost {
 
     public static final String TASK_NO_FLAG = "Senza flag";
 
+    public static final String TASK_FLAG_SEMPRE_ATTIVA = "=sempre acceso";
     public static final String TASK_FLAG_ATTIVA = "=acceso";
 
     public static final String TASK_FLAG_DISATTIVA = "=spento";

@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.wiki23.backend.boot.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.statistiche.*;
 import it.algos.wiki23.backend.upload.*;
@@ -22,21 +23,20 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskGiorni extends WikiTask {
+public class TaskGiorni extends VaadTask {
 
 
     public TaskGiorni() {
-        super.descrizioneTask = "Upload di tutte le liste per giorno";
-        super.typeSchedule = AESchedule.dueNoLunedi;
+        super.descrizioneTask = WPref.uploadGiorni.getDescrizione();
+        super.typeSchedule = Wiki23Var.typeSchedule.getGiorni();
         super.flagAttivazione = WPref.usaTaskGiorni;
         super.flagPrevisione = WPref.uploadGiorniPrevisto;
+        super.nextDays = Wiki23Var.typeSchedule.getGiorni().getGiorniNext();
     }
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        if (WPref.usaTaskGiorni.is()) {
-            super.fixNext();
-
+        if (execute()) {
             //--Le statistiche comprendono anche l'elaborazione
             //--L'elaborazione comprende le info per la view
             //--Le statistiche comprendono le info per la view
@@ -46,9 +46,6 @@ public class TaskGiorni extends WikiTask {
             inizio = System.currentTimeMillis();
             appContext.getBean(UploadGiorni.class).uploadAll();
             super.loggerTask();
-        }
-        else {
-            super.loggerNoTask();
         }
     }
 

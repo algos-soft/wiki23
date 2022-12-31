@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.wiki23.backend.boot.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.nazionalita.*;
 import it.algos.wiki23.backend.statistiche.*;
@@ -24,14 +25,15 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskNazionalita extends WikiTask {
+public class TaskNazionalita extends VaadTask {
 
 
     public TaskNazionalita() {
-        super.descrizioneTask = "Upload di tutte le nazionalità";
-        super.typeSchedule = AESchedule.dieciGiovedi;
+        super.descrizioneTask = WPref.uploadNazionalita.getDescrizione();
+        super.typeSchedule = Wiki23Var.typeSchedule.getNazionalita();
         super.flagAttivazione = WPref.usaTaskNazionalita;
         super.flagPrevisione = WPref.uploadNazionalitaPrevisto;
+        super.nextDays = 7;
     }
 
 
@@ -45,7 +47,9 @@ public class TaskNazionalita extends WikiTask {
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        if (WPref.usaTaskNazionalita.is()) {
+        super.execute(taskExecutionContext);
+
+        if (flagAttivazione.is()) {
             super.fixNext();
 
             //--Statistiche

@@ -10,6 +10,7 @@ import it.algos.vaad24.backend.packages.geografia.continente.*;
 import it.algos.vaad24.backend.service.*;
 import it.algos.vaad24.backend.wrapper.*;
 import static it.algos.wiki23.backend.boot.Wiki23Cost.*;
+import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.anno.*;
 import it.algos.wiki23.backend.packages.attivita.*;
 import it.algos.wiki23.backend.packages.bio.*;
@@ -23,6 +24,7 @@ import it.algos.wiki23.backend.packages.pagina.*;
 import it.algos.wiki23.backend.packages.professione.*;
 import it.algos.wiki23.backend.packages.statistica.*;
 import it.algos.wiki23.backend.packages.wiki.*;
+import it.algos.wiki23.backend.schedule.*;
 import it.algos.wiki23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
@@ -125,7 +127,6 @@ public class Wiki23Boot extends VaadBoot implements ServletContextListener {
          */
         VaadVar.projectCurrent = "wiki23";
 
-
         /**
          * Nome della classe di partenza col metodo 'main' <br>
          * Spesso coincide (non obbligatoriamente) con projectCurrent + Application <br>
@@ -150,10 +151,10 @@ public class Wiki23Boot extends VaadBoot implements ServletContextListener {
         VaadVar.projectNameModulo = "wiki23";
 
         /**
-              * Classe da usare per gestire le versioni <br>
-              * Di default FlowVers oppure possibile sottoclasse del progetto <br>
-              * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
-              */
+         * Classe da usare per gestire le versioni <br>
+         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
         VaadVar.versionClazz = Wiki23Vers.class;
 
         /**
@@ -194,6 +195,11 @@ public class Wiki23Boot extends VaadBoot implements ServletContextListener {
             String message = String.format("Non ho trovato la property %s nelle risorse", property);
             logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
         }
+
+        /**
+         * Schedule per ogni task del programma <br>
+         */
+        Wiki23Var.typeSchedule = AETypeSchedule.schema1;
     }
 
     /**
@@ -212,6 +218,17 @@ public class Wiki23Boot extends VaadBoot implements ServletContextListener {
     @Qualifier(TAG_WIKI23_PREFERENCES)
     public void setPrefInstance(final AIEnumPref prefInstance) {
         this.prefInstance = prefInstance;
+    }
+
+    /**
+     * Eventuali task <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixSchedule() {
+        appContext.getBean(Wiki23Schedule.class);
+
+        super.fixSchedule();
     }
 
     /**

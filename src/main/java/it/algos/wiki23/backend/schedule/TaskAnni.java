@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.wiki23.backend.boot.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.statistiche.*;
 import it.algos.wiki23.backend.upload.*;
@@ -22,19 +23,22 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskAnni extends WikiTask {
+public class TaskAnni extends VaadTask {
 
     public TaskAnni() {
-        super.descrizioneTask = "Upload di tutte le liste per anno";
-        super.typeSchedule = AESchedule.quattroNoLunedi;
+        super.descrizioneTask = WPref.uploadAnni.getDescrizione();
+        super.typeSchedule = Wiki23Var.typeSchedule.getAnni();
         super.flagAttivazione = WPref.usaTaskAnni;
         super.flagPrevisione = WPref.uploadAnniPrevisto;
+        super.nextDays = 1;
     }
 
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        if (WPref.usaTaskAnni.is()) {
+        super.execute(taskExecutionContext);
+
+        if (flagAttivazione.is()) {
             super.fixNext();
 
             //--Le statistiche comprendono anche l'elaborazione
@@ -51,7 +55,6 @@ public class TaskAnni extends WikiTask {
             super.loggerNoTask();
         }
     }
-
 
 
 }

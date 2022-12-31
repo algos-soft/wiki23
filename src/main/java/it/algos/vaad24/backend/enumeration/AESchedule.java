@@ -114,19 +114,30 @@ public enum AESchedule {
      */
     private String nota;
 
+    private int giorniNext;
 
     /**
      * @param pattern di schedulazione di tipo 'UNIX'
      * @param nota    esplicativa da inserire nei log
      */
     AESchedule(String pattern, String nota) {
+        this(pattern, nota, 1);
+    }
+
+
+    /**
+     * @param pattern di schedulazione di tipo 'UNIX'
+     * @param nota    esplicativa da inserire nei log
+     */
+    AESchedule(String pattern, String nota, int giorniNext) {
         this.setPattern(pattern);
         this.setNota(nota);
-    }// fine del costruttore
+    }
 
     public static List<AESchedule> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
+
     public static List<String> getAllPattern() {
         List<String> listaTags = new ArrayList<>();
 
@@ -153,5 +164,8 @@ public enum AESchedule {
         this.nota = nota;
     }
 
+    public int getGiorniNext() {
+        return giorniNext;
+    }
 }// end of enum
 

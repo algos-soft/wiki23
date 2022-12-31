@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.wiki23.backend.boot.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.packages.cognome.*;
 import it.algos.wiki23.backend.statistiche.*;
@@ -24,14 +25,15 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskCognomi extends WikiTask {
+public class TaskCognomi extends VaadTask {
 
 
     public TaskCognomi() {
-        super.descrizioneTask = "Upload di tutti i cognomi";
-        super.typeSchedule = AESchedule.dieciMercoledi;
+        super.descrizioneTask = WPref.uploadCognomi.getDescrizione();
+        super.typeSchedule = Wiki23Var.typeSchedule.getCognomi();
         super.flagAttivazione = WPref.usaTaskCognomi;
         super.flagPrevisione = WPref.uploadCognomiPrevisto;
+        super.nextDays = 7;
     }
 
 
@@ -45,7 +47,9 @@ public class TaskCognomi extends WikiTask {
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        if (WPref.usaTaskCognomi.is()) {
+        super.execute(taskExecutionContext);
+
+        if (flagAttivazione.is()) {
             super.fixNext();
 
             //--Upload

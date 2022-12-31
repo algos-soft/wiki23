@@ -2,9 +2,12 @@ package it.algos.wiki23.backend.schedule;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
+import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.wiki23.backend.boot.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
+import it.algos.wiki23.backend.statistiche.*;
 import it.sauronsoftware.cron4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Scope;
@@ -21,9 +24,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * Nella giornata di lunedì gli altri task NON devono girare
  */
 @SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-
-public class TaskBioReset extends WikiTask {
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class TaskBioReset extends VaadTask {
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -34,36 +36,29 @@ public class TaskBioReset extends WikiTask {
     private DownloadService service;
 
 
-    @Override
-    public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-        long inizio = System.currentTimeMillis();
-
-        if (WPref.usaTaskBio.is()) {
-//            service.cicloIniziale();
-//            loggerDownload(inizio);
-        }
+    public TaskBioReset() {
+        super.descrizioneTask = WPref.resetBio.getDescrizione();
+        super.typeSchedule = Wiki23Var.typeSchedule.getResetBio();
+        super.flagAttivazione = WPref.usaTaskResetBio;
+        super.flagPrevisione = WPref.resetBioPrevisto;
+        super.nextDays = 15;
     }
 
-    /**
-     * Descrizione: ogni settimana, a mezzanotte della domenica/lunedi
-     */
-    private static final String PATTERN = AESchedule.zeroCinqueLunedi.getPattern();
 
+    @Override
+    public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
+        super.execute(taskExecutionContext);
 
-//    @Override
-//    public String getPattern() {
-//        return PATTERN;
-//    }
+        if (flagAttivazione.is()) {
+            super.fixNext();
 
-
-    public void loggerDownload(long inizio) {
-        long fine = System.currentTimeMillis();
-        String message;
-        long delta = fine - inizio;
-        delta = delta / 1000 / 60;
-
-        message = String.format("Task per il ciclo reset bio in %s minuti", delta);
-//        logger.info(new WrapLog().type(AETypeLog.bio).message(message).usaDb());
+            //            service.cicloIniziale();
+            //            loggerDownload(inizio);
+            super.loggerTask();
+        }
+        else {
+            super.loggerNoTask();
+        }
     }
 
 }

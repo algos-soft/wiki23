@@ -26,7 +26,7 @@ public enum WPref implements AIGenPref {
     downloadAttivitaTime("downloadAttivitaTime", AETypePref.integer, 0, "Durata download delle attività in minuti."),
     elaboraAttivita("elaboraAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le attività."),
     elaboraAttivitaTime("elaboraAttivitaTime", AETypePref.integer, 0, "Durata elaborazione delle attività in minuti."),
-    uploadAttivita("uploadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le attività."),
+    uploadAttivita("uploadAttivita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le liste di attività"),
     uploadAttivitaTime("uploadAttivitaTime", AETypePref.integer, 0, "Durata upload delle attività in minuti."),
     uploadAttivitaPrevisto("uploadAttivitaPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per le attività."),
 
@@ -35,19 +35,21 @@ public enum WPref implements AIGenPref {
     downloadNazionalitaTime("downloadNazionalitaTime", AETypePref.integer, 0, "Durata download delle nazionalità in minuti."),
     elaboraNazionalita("elaboraNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le nazionalità."),
     elaboraNazionalitaTime("elaboraNazionalitaTime", AETypePref.integer, 0, "Durata elaborazione delle nazionalità in minuti."),
-    uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le nazionalità."),
+    uploadNazionalita("uploadNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le liste di nazionalità"),
     uploadNazionalitaTime("uploadNazionalitaTime", AETypePref.integer, 0, "Durata upload delle nazionalità in minuti."),
     uploadNazionalitaPrevisto("uploadNazionalitaPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per le nazionalità."),
 
 
-    uploadCognomi("uploadCognomi", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutti i cognomi oltre la soglia di 50 biografie."),
+    uploadCognomi("uploadCognomi", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le liste di cognomi oltre la soglia di 50 biografie"),
     uploadCognomiTime("uploadCognomiTime", AETypePref.integer, 0, "Durata upload dei cognomi in minuti."),
     uploadCognomiPrevisto("uploadCognomiPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per i cognomi."),
 
+    usaTaskResetBio("usaTaskResetBio", AETypePref.bool, false, "Reset calendarizzato di tutte le biografie"),
+    resetBio("resetBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Reset completo delle voci biografiche"),
+    resetBioTime("resetBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata Reset completo delle biografie in minuti."),
+    resetBioPrevisto("resetBioPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo reset previsto delle voci biografiche."),
 
-    resetBio("resetBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download completo delle voci biografiche."),
-    resetBioTime("resetBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata download completo delle biografie in minuti."),
-    downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download delle voci biografiche."),
+    downloadBio("downloadBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Download di tutte le biografie nuove e modificate"),
     downloadBioTime("downloadBioTime", AETypePref.integer, ROOT_DATA_TIME, "Durata ciclo completo download delle biografie in minuti."),
     downloadBioPrevisto("downloadBioPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo download previsto delle voci biografiche."),
     elaboraBio("elaboraBio", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione di tutte le biografie."),
@@ -70,13 +72,13 @@ public enum WPref implements AIGenPref {
     statisticaNazionalita("statisticaNazionalita", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per le nazionalità."),
 
 
-    uploadGiorni("uploadGiorni", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutti i nati/morti nei giorni."),
+    uploadGiorni("uploadGiorni", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le liste di nati/morti per giorno"),
     uploadGiorniTime("uploadGiorniTime", AETypePref.integer, 0, "Durata upload dei giorni in minuti."),
     uploadGiorniPrevisto("uploadGiorniPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per i giorni."),
     statisticaGiorni("statisticaGiorni", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per i giorni."),
 
 
-    uploadAnni("uploadAnni", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutti i nati/morti negli anni."),
+    uploadAnni("uploadAnni", AETypePref.localdatetime, ROOT_DATA_TIME, "Upload di tutte le liste di nati/morti per anno"),
     uploadAnniTime("uploadAnniTime", AETypePref.integer, 0, "Durata upload degli anni in minuti."),
     uploadAnniPrevisto("uploadAnniPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossimo upload previsto per gli anni."),
     statisticaAnni("statisticaAnni", AETypePref.localdatetime, ROOT_DATA_TIME, "Creazione della pagina di statistiche per gli anni."),
@@ -146,9 +148,12 @@ public enum WPref implements AIGenPref {
     sogliaCognomiWiki("sogliaCognomiWiki", AETypePref.integer, 50, "Soglia minima per creare una pagina Cognomi sul server wiki"),
     usaLoggerTask("usaLoggerTask", AETypePref.bool, true, "Registra sul log interno l'esecuzione dell task programmate"),
 
-    elaboraPagineCancella("elaboraPagineCancella", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione delle pagine da cancellare."),
-    elaboraPagineCancellaTime("elaboraPagineCancellaTime", AETypePref.integer, 0, "Durata elaborazione delle pagine da cancellare in minuti."),
     usaTaskElabora("usaTaskElabora", AETypePref.bool, false, "Lista pagine da cancellare e lista errori"),
+    elaboraPagineCancella("elaboraPagineCancella", AETypePref.localdatetime, ROOT_DATA_TIME, "Elaborazione delle pagine da cancellare"),
+    elaboraPagineCancellaTime("elaboraPagineCancellaTime", AETypePref.integer, 0, "Durata elaborazione delle pagine da cancellare in minuti."),
+    elaboraPagineCancellaPrevisto("elaboraPagineCancellaPrevisto", AETypePref.localdatetime, ROOT_DATA_TIME, "Prossima elaborazione delle pagine da cancellare."),
+
+
     maxPageLength("maxPageLength", AETypePref.integer, 200000, "Soglia massima di una pagina in byte"),
     maxBioPageAnniGiorni("maxBioPageAnniGiorni", AETypePref.integer, 1700, "Soglia massima di bio per usare le sottopagine  giorni/anni"),
     scriveComunque("scriveComunque", AETypePref.bool, false, "Forza comunque la registrazione della pagina anche se le modifiche sono sulla data"),

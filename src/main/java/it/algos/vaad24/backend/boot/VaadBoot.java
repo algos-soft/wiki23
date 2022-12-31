@@ -411,7 +411,6 @@ public class VaadBoot implements ServletContextListener {
         String message;
         String clazzName;
         AESchedule type;
-        boolean status;
         String desc;
         String pattern;
         String nota;
@@ -427,7 +426,7 @@ public class VaadBoot implements ServletContextListener {
                 nota = type.getNota();
                 flagTask = task.getFlagAttivazione();
                 if (flagTask == null) {
-                    flagText = TASK_NO_FLAG;
+                    flagText = TASK_NO_FLAG + TASK_FLAG_SEMPRE_ATTIVA;
                 }
                 else {
                     if (flagTask.is()) {
@@ -437,7 +436,7 @@ public class VaadBoot implements ServletContextListener {
                         flagText = flagTask.getKeyCode() + TASK_FLAG_DISATTIVA;
                     }
                 }
-                message = String.format("%s [%s] %s%s %s eseguita %s", clazzName, pattern, flagText, FORWARD, desc, nota);
+                message = String.format("%s [%s] %s%s%s; eseguita %s", clazzName, pattern, flagText, FORWARD, desc, nota);
                 logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
             }
         }

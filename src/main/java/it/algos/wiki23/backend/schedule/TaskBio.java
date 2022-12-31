@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.schedule.*;
 import it.algos.vaad24.backend.wrapper.*;
+import it.algos.wiki23.backend.boot.*;
 import it.algos.wiki23.backend.enumeration.*;
 import it.algos.wiki23.backend.service.*;
 import it.algos.wiki23.backend.statistiche.*;
@@ -24,7 +25,7 @@ import java.time.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TaskBio extends WikiTask {
+public class TaskBio extends VaadTask {
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -36,18 +37,20 @@ public class TaskBio extends WikiTask {
 
 
     public TaskBio() {
-        super.descrizioneTask = "Download di tutte le biografie nuove e modificate";
-        super.typeSchedule = AESchedule.zeroCinqueNoLunedi;
+        super.descrizioneTask = WPref.downloadBio.getDescrizione();
+        super.typeSchedule = Wiki23Var.typeSchedule.getUpdateBio();
         super.flagAttivazione = WPref.usaTaskBio;
         super.flagPrevisione = WPref.downloadBioPrevisto;
+        super.nextDays = 1;
     }
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         super.execute(taskExecutionContext);
 
-        if (WPref.usaTaskBio.is()) {
+        if (flagAttivazione.is()) {
             super.fixNext();
+
             downloadService.cicloCorrente();
             appContext.getBean(StatisticheBio.class).upload();
             super.loggerTask();
@@ -56,6 +59,5 @@ public class TaskBio extends WikiTask {
             super.loggerNoTask();
         }
     }
-
 
 }

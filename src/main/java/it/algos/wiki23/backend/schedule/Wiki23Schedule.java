@@ -16,7 +16,7 @@ import javax.annotation.*;
  * Time: 17:47
  */
 @SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Wiki23Schedule extends VaadSchedule {
 
 
@@ -34,7 +34,7 @@ public class Wiki23Schedule extends VaadSchedule {
     @Override
     public void startSchedule() throws IllegalStateException {
 
-        //        VaadVar.taskList.add(appContext.getBean(TaskBioReset.class));
+        VaadVar.taskList.add(appContext.getBean(TaskBioReset.class));
         VaadVar.taskList.add(appContext.getBean(TaskBio.class));
         VaadVar.taskList.add(appContext.getBean(TaskGiorni.class));
         VaadVar.taskList.add(appContext.getBean(TaskAnni.class));
@@ -42,7 +42,7 @@ public class Wiki23Schedule extends VaadSchedule {
         VaadVar.taskList.add(appContext.getBean(TaskNazionalita.class));
         VaadVar.taskList.add(appContext.getBean(TaskCognomi.class));
         //        VaadVar.taskList.add(appContext.getBean(TaskNomi.class));
-        //        VaadVar.taskList.add(appContext.getBean(TaskElaborazione.class));
+        VaadVar.taskList.add(appContext.getBean(TaskElabora.class));
 
         super.startSchedule();
     }
