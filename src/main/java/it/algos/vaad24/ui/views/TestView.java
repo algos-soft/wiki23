@@ -26,7 +26,7 @@ import javax.annotation.*;
 @SpringComponent
 @PageTitle("Test")
 @Route(value = TAG_TEST, layout = MainLayout.class)
-@RouteAlias(value = TAG_ROUTE_ALIAS_PARTE_PER_PRIMA, layout = MainLayout.class)
+//@RouteAlias(value = TAG_ROUTE_ALIAS_PARTE_PER_PRIMA, layout = MainLayout.class)
 public class TestView extends VerticalLayout {
 
     /**
