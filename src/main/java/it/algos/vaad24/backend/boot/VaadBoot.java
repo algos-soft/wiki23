@@ -427,7 +427,7 @@ public abstract class VaadBoot implements ServletContextListener {
         String desc;
         String pattern;
         String nota;
-        String flagText;
+        String flagText=VUOTA;
         AIGenPref flagTask;
         int nextDays = 0;
 
@@ -444,12 +444,12 @@ public abstract class VaadBoot implements ServletContextListener {
                     flagText = TASK_NO_FLAG + TASK_FLAG_SEMPRE_ATTIVA;
                 }
                 else {
-                    if (flagTask.is()) {
-                        flagText = flagTask.getKeyCode() + TASK_FLAG_ATTIVA;
-                    }
-                    else {
-                        flagText = flagTask.getKeyCode() + TASK_FLAG_DISATTIVA;
-                    }
+//                    if (flagTask.is()) {
+//                        flagText = flagTask.getKeyCode() + TASK_FLAG_ATTIVA;
+//                    }
+//                    else {
+//                        flagText = flagTask.getKeyCode() + TASK_FLAG_DISATTIVA;
+//                    }
                 }
                 message = String.format("%s [%s] %s (+%s)%s%s; eseguita %s", clazzName, pattern, flagText, nextDays, FORWARD, desc, nota);
                 logger.info(new WrapLog().message(message).type(AETypeLog.schedule));
