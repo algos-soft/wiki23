@@ -3,6 +3,7 @@ package it.algos;
 import com.vaadin.flow.component.dependency.*;
 import com.vaadin.flow.server.*;
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.wiki23.backend.boot.*;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.boot.autoconfigure.domain.*;
@@ -51,6 +52,8 @@ public class Wiki23Application extends SpringBootServletInitializer {
      */
     public static void main(String[] args) {
         LaunchUtil.launchBrowserInDevelopmentMode(SpringApplication.run(Wiki23Application.class, args));
+        Wiki23Boot.start();
+
     }// end of SpringBoot constructor
 
 

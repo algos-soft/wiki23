@@ -112,11 +112,15 @@ public class UtilityView extends VerticalLayout {
         layout.setMargin(false);
         layout.setPadding(false);
         layout.setSpacing(false);
+        String message;
+        List<String> lista;
         H3 paragrafo = new H3("Reset di tutte le collection [ordinate] che lo implementano");
         paragrafo.getElement().getStyle().set("color", "blue");
 
-        layout.add(new Label(String.format("Esegue il %s() su tutte le collection [ordinate] che implementano %s()", TAG_RESET_FORCING, TAG_RESET_ONLY)));
-
+        message = String.format("Esegue il %s() su tutte le collection [ordinate] che implementano %s()", TAG_RESET_FORCING, TAG_RESET_ONLY);
+        layout.add(ASpan.text(message));
+        lista = getListaReset();
+        layout.add(ASpan.text(lista.toString()));
         Button bottone = new Button("Reset all");
         bottone.getElement().setAttribute("theme", "primary");
         bottone.addClickListener(event -> AReset.reset(this::reset));
@@ -124,6 +128,15 @@ public class UtilityView extends VerticalLayout {
         this.add(paragrafo);
         layout.add(bottone);
         this.add(layout);
+    }
+
+    private List<String> getListaReset() {
+        List<String> lista = new ArrayList<>();
+
+        lista.addAll(classService.allModuleEntityResetName(VaadVar.moduloVaadin24));
+        lista.addAll(classService.allModuleEntityResetName(VaadVar.projectNameModulo));
+
+        return lista;
     }
 
 
@@ -143,7 +156,7 @@ public class UtilityView extends VerticalLayout {
 
         esiste = fileService.isEsisteModulo(nomeModulo);
         if (!esiste) {
-            message = String.format("Non esiste il modulo '%s'",nomeModulo);
+            message = String.format("Non esiste il modulo '%s'", nomeModulo);
             logger.warn(new WrapLog().message(message).type(AETypeLog.reset));
             return;
         }

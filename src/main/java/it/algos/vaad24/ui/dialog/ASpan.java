@@ -30,7 +30,7 @@ public class ASpan extends Span {
         ASpan span = new ASpan();
         span.setText(text);
         span.getElement().setProperty(TAG_INNER_HTML, text);
-        span.getElement().getStyle().set(TAG_HTML_FONT_SIZE, AEFontSize.em9.getTag());
+        span.getElement().getStyle().set(TAG_HTML_FONT_SIZE, AEFontSize.normal.getTag());
         span.getElement().getStyle().set(TAG_HTML_LINE_HEIGHT, AELineHeight.em12.getTag());
         return span;
     }

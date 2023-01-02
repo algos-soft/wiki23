@@ -73,15 +73,18 @@ public class Wiki23Boot extends VaadBoot implements ServletContextListener {
     @Autowired
     public QueryService queryService;
 
-
-    /**
-     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
-     * event, the application is ready to service Vaadin requests <br>
-     */
-    @EventListener(ContextRefreshedEvent.class)
-    public void onContextRefreshEvent() {
-        this.inizia();
+    public static void start() {
+        new Wiki23Boot();
     }
+
+//    /**
+//     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
+//     * event, the application is ready to service Vaadin requests <br>
+//     */
+//    @EventListener(ContextRefreshedEvent.class)
+//    public void onContextRefreshEvent() {
+//        this.inizia();
+//    }
 
 
     /**

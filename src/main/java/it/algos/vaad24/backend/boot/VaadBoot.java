@@ -1,6 +1,5 @@
 package it.algos.vaad24.backend.boot;
 
-import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
@@ -15,11 +14,10 @@ import it.algos.vaad24.backend.utility.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.vaad24.wizard.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.*;
 
+import javax.annotation.*;
 import javax.servlet.*;
 import java.util.*;
 
@@ -46,9 +44,9 @@ import java.util.*;
  * 7) costruisce una versione demo <br>
  * 8) controlla l' esistenza di utenti abilitati all' accesso <br>
  */
-@SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class VaadBoot implements ServletContextListener {
+//@SpringComponent
+//@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+public abstract class VaadBoot implements ServletContextListener {
 
     protected boolean allDebugSetup;
 
@@ -125,6 +123,21 @@ public class VaadBoot implements ServletContextListener {
         //        this.setDataInstance(dataInstance);
         this.setPrefInstance(prefInstance);
     }// end of constructor with @Autowired on setter
+
+
+    /**
+     * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
+     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
+     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+     * <p>
+     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti <br>
+     * L'ordine con cui vengono chiamati (nella stessa classe) NON è garantito <br>
+     * Se viene implementata una istanza di sottoclasse, passa di qui per ogni istanza <br>
+     */
+    @PostConstruct
+    private void postConstruct() {
+        this.inizia();
+    }
 
     //    /**
     //     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
