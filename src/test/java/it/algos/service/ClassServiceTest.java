@@ -522,7 +522,7 @@ public class ClassServiceTest extends AlgosIntegrationTest {
         //--moduleName
     void allModuleEntityResetName(final String moduleName) {
         sorgente = moduleName;
-        listaStr = service.allModuleEntityResetName(sorgente);
+        listaStr = service.allModuleEntityResetNameList(sorgente);
 
         if (listaStr != null && listaStr.size() > 0) {
             message = String.format("51 - Collection name ed ancestor delle %d classi 'entity' del modulo '%s' che implementano la classe 'backend' con resetOnlyEmpty", listaStr.size(), sorgente);
