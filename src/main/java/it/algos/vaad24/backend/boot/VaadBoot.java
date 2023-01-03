@@ -1,5 +1,6 @@
 package it.algos.vaad24.backend.boot;
 
+import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad24.backend.boot.VaadCost.*;
 import it.algos.vaad24.backend.enumeration.*;
 import it.algos.vaad24.backend.exception.*;
@@ -14,7 +15,11 @@ import it.algos.vaad24.backend.utility.*;
 import it.algos.vaad24.backend.wrapper.*;
 import it.algos.vaad24.wizard.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.EventListener;
+import org.springframework.context.event.*;
 import org.springframework.core.env.*;
 
 import javax.annotation.*;
@@ -44,11 +49,12 @@ import java.util.*;
  * 7) costruisce una versione demo <br>
  * 8) controlla l' esistenza di utenti abilitati all' accesso <br>
  */
-//@SpringComponent
-//@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public abstract class VaadBoot implements ServletContextListener {
+@SpringComponent
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+public  class VaadBoot implements ServletContextListener {
 
     protected boolean allDebugSetup;
+    private String property;
 
     /**
      * Istanza di una interfaccia SpringBoot <br>
@@ -116,6 +122,8 @@ public abstract class VaadBoot implements ServletContextListener {
      * Al termine del ciclo init() del costruttore il framework SpringBoot/Vaadin, inietterà la relativa istanza <br>
      */
     public VaadBoot() {
+        LogService.debug(": [flow     ] - VaadBoot, init()");
+
         //        this.setMongo(mongo);
         //        this.setLogger(logger)
         //        this.setEnvironment(environment);
@@ -136,17 +144,18 @@ public abstract class VaadBoot implements ServletContextListener {
      */
     @PostConstruct
     private void postConstruct() {
+        LogService.debug(": [flow     ] - VaadBoot.postConstruct()");
         this.inizia();
     }
 
-    //    /**
-    //     * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
-    //     * event, the application is ready to service Vaadin requests <br>
-    //     */
-    //    @EventListener(ContextRefreshedEvent.class)
-    //    public void onContextRefreshEvent() {
-    //        this.inizia();
-    //    }
+        /**
+         * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
+         * event, the application is ready to service Vaadin requests <br>
+         */
+        @EventListener(ContextRefreshedEvent.class)
+        public void onContextRefreshEvent() {
+//            this.inizia();
+        }
 
     /**
      * Primo ingresso nel programma <br>
@@ -321,6 +330,88 @@ public abstract class VaadBoot implements ServletContextListener {
          * Può essere true anche se usaCompany=false <br>
          */
         VaadVar.usaSecurity = false;
+
+
+        /*
+         * Nome identificativo minuscolo del progetto corrente <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        try {
+            property = "algos.project.name";
+            VaadVar.projectCurrent = Objects.requireNonNull(environment.getProperty(property)).toLowerCase();
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+            VaadVar.projectCurrent = "simple";
+        }
+
+        /*
+         * Nome identificativo maiuscolo dell' applicazione <br>
+         * Usato (eventualmente) nella barra di menu in testa pagina <br>
+         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        try {
+            property = "algos.project.name";
+            VaadVar.projectNameUpper = Objects.requireNonNull(environment.getProperty(property));
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+            VaadVar.projectNameUpper = "Simple";
+        }
+
+        /*
+         * Nome identificativo minuscolo del progetto corrente <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        try {
+            property = "algos.project.nameModulo";
+            VaadVar.projectNameModulo = Objects.requireNonNull(environment.getProperty(property)).toLowerCase();
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+            VaadVar.projectCurrent = "simple";
+        }
+
+        /*
+         * Versione dell' applicazione <br>
+         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        try {
+            property = "algos.project.version";
+            VaadVar.projectVersion = Double.parseDouble(Objects.requireNonNull(environment.getProperty(property)));
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+        }
+
+        /*
+         * Data di rilascio della versione <br>
+         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        try {
+            property = "algos.project.version.date";
+            VaadVar.projectDate = Objects.requireNonNull(environment.getProperty(property));
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+        }
+
+        /*
+         * Note di rilascio della versione <br>
+         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        try {
+            property = "algos.project.version.note";
+            VaadVar.projectNote = Objects.requireNonNull(environment.getProperty(property));
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+        }
+
     }
 
     /**
@@ -427,7 +518,7 @@ public abstract class VaadBoot implements ServletContextListener {
         String desc;
         String pattern;
         String nota;
-        String flagText=VUOTA;
+        String flagText;
         AIGenPref flagTask;
         int nextDays = 0;
 
@@ -444,12 +535,13 @@ public abstract class VaadBoot implements ServletContextListener {
                     flagText = TASK_NO_FLAG + TASK_FLAG_SEMPRE_ATTIVA;
                 }
                 else {
-//                    if (flagTask.is()) {
-//                        flagText = flagTask.getKeyCode() + TASK_FLAG_ATTIVA;
-//                    }
-//                    else {
-//                        flagText = flagTask.getKeyCode() + TASK_FLAG_DISATTIVA;
-//                    }
+                    flagTask.setPreferenceService(preferenceService);
+                    if (flagTask.is()) {
+                        flagText = flagTask.getKeyCode() + TASK_FLAG_ATTIVA;
+                    }
+                    else {
+                        flagText = flagTask.getKeyCode() + TASK_FLAG_DISATTIVA;
+                    }
                 }
                 message = String.format("%s [%s] %s (+%s)%s%s; eseguita %s", clazzName, pattern, flagText, nextDays, FORWARD, desc, nota);
                 logger.info(new WrapLog().message(message).type(AETypeLog.schedule));

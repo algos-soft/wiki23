@@ -19,6 +19,8 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadCost {
 
+    public static final boolean DEBUG = true;
+
     public static final String TAG_STORE = ".DS_Store";
 
     public static final String ENCODE = "UTF-8";
@@ -54,6 +56,7 @@ public class VaadCost {
     public static final String PROJECT_VAADIN23 = "vaadin23";
 
     public static final String PROJECT_VAADIN24 = "vaad24";
+    public static final String TAG_LOG_ADMIN = "vaad24.admin";
 
     public static final String APPLICATION_VAADIN24 = "Vaad24SimpleApplication";
 
@@ -559,6 +562,7 @@ public class VaadCost {
     public static final String TASK_NO_FLAG = "Senza flag";
 
     public static final String TASK_FLAG_SEMPRE_ATTIVA = "=sempre acceso";
+
     public static final String TASK_FLAG_ATTIVA = "=acceso";
 
     public static final String TASK_FLAG_DISATTIVA = "=spento";

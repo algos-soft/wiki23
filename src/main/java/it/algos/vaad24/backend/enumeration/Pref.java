@@ -199,6 +199,7 @@ public enum Pref implements AIGenPref {
         preferenceService.setEnumCurrentObj(type, keyCode, currentValue);
     }
 
+
     @Component
     public static class PreferenzaServiceInjector {
 

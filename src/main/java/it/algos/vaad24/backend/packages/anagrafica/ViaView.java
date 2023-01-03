@@ -1,6 +1,8 @@
 package it.algos.vaad24.backend.packages.anagrafica;
 
 import com.vaadin.flow.router.*;
+import it.algos.vaad24.backend.service.*;
+import it.algos.vaad24.backend.wrapper.*;
 import it.algos.vaad24.ui.dialog.*;
 import it.algos.vaad24.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
@@ -40,6 +42,7 @@ public class ViaView extends CrudView {
     public ViaView(@Autowired final ViaBackend crudBackend) {
         super(crudBackend, Via.class);
         this.backend = crudBackend;
+        LogService.debug(": [flow     ] - ViaView.init()");
     }
 
     /**
@@ -50,7 +53,7 @@ public class ViaView extends CrudView {
     @Override
     protected void fixPreferenze() {
         super.fixPreferenze();
-
+        logger.info(new WrapLog().message(String.format("")));
         super.gridPropertyNamesList = Arrays.asList("nome");
         super.formPropertyNamesList = Arrays.asList("nome");
 

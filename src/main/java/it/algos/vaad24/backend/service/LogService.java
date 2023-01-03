@@ -85,6 +85,7 @@ public class LogService extends AbstractService {
      */
     protected Predicate<StackTraceElement> checkStartAlgos = stack -> stack.getClassName().startsWith(PATH_ALGOS);
 
+
     /**
      * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
@@ -96,9 +97,40 @@ public class LogService extends AbstractService {
      */
     @PostConstruct
     private void postConstruct() {
-        slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
+        slf4jLogger = LoggerFactory.getLogger(TAG_LOG_ADMIN);
+        LogService.debug(": [flow     ] - LogService.postConstruct()");
     }
 
+    public static void debug(String message) {
+        LogService log = new LogService();
+        if (VaadCost.DEBUG && message != null && message.length() > 0) {
+            if (log.slf4jLogger == null) {
+
+                log.slf4jLogger = LoggerFactory.getLogger(TAG_LOG_ADMIN);
+                if (log.slf4jLogger != null) {
+                    log.textService = new TextService();
+                    log.info(new WrapLog().message(message).type(AETypeLog.flow));
+                }
+                else {
+                    System.out.println(message);
+                }
+            }
+            else {
+                System.out.println(message);
+            }
+        }
+    }
+
+    public static void debugBean(Object newStaticInstance) {
+        String message;
+        String clazz;
+
+        if (newStaticInstance != null) {
+            clazz = newStaticInstance.getClass().getSimpleName();
+            message = String.format(": [flow     ] - VaadConfiguration: Singleton%s new %s()", FORWARD, clazz);
+            LogService.debug(message);
+        }
+    }
 
     /**
      * Logger specifico <br>
@@ -143,7 +175,6 @@ public class LogService extends AbstractService {
         mailService.send("gac@algos.it", "Mercoledi", message);
         return false;
     }
-
 
     public String fixMessageLog(final WrapLogCompany wrap, final String messageIn) {
         String message = messageIn;
@@ -443,7 +474,6 @@ public class LogService extends AbstractService {
     public String debug(final WrapLog wrap) {
         return logBase(AELogLevel.debug, wrap);
     }
-
 
     /**
      * Gestisce tutti i log <br>
