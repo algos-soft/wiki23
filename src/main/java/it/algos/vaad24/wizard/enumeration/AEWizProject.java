@@ -17,15 +17,15 @@ public enum AEWizProject {
 
     config("Directory CONFIG di risorse on-line esterne al JAR (vaad24)", true, false, "config", AECopy.dirFilesModifica),
 
-    documentation("Directory DOC di documentazione (vaad24)", true, false, "doc", AECopy.dirFilesModifica),
+    documentation("Directory DOC di documentazione (vaad24)", true, true, "doc", AECopy.dirFilesModifica),
 
     frontend("Directory FRONTEND del Client (vaad24) [need riavvio]", true, false, "frontend", AECopy.dirFilesAddOnly),
 
-    links("Directory LINKS a siti web utili (vaad24)", true, false, "links", AECopy.dirFilesModifica),
+    links("Directory LINKS a siti web utili (vaad24)", true, true, "links", AECopy.dirFilesModifica),
 
-    snippets("Directory SNIPPETS di codice suggerito (vaad24)", true, false, "snippets", AECopy.dirFilesModifica),
+    snippets("Directory SNIPPETS di codice suggerito (vaad24)", true, true, "snippets", AECopy.dirFilesModifica),
 
-    flow("Directory BASE Vaad24 (Wizard compreso)", true, false, "src/main/java/it/algos/vaad24", AECopy.dirDelete),
+    flow("Directory BASE Vaad24 (Wizard compreso)", true, true, "src/main/java/it/algos/vaad24", AECopy.dirDelete),
 
     //    projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
 
