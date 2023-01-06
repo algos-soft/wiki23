@@ -58,7 +58,7 @@ public class WizElaboraUpdateProject extends WizElabora {
                     case directory -> directory(wiz);
                     case file -> file(wiz);
                     case source -> source(wiz);
-                    case elabora -> elabora(wiz);
+                    case elaboraFile, elaboraDir -> elabora(wiz);
                 }
             }
         }
@@ -78,6 +78,11 @@ public class WizElaboraUpdateProject extends WizElabora {
         String tag = progettoEsistente ? "Update" : "New";
 
         switch (wiz) {
+            case pomVaad24 -> {
+                result = fileService.copyFile(AECopy.fileDelete, srcVaad24, destNewProject, wiz.getNomeFile());
+                result = fixToken(result, oldToken, newToken);
+                mostraRisultato(result, AECopy.dirFilesModificaToken, dir, tag);
+            }
             case testService, testBackend -> {
                 result = fileService.copyDirectory(AECopy.dirFilesModificaToken, srcPath, destPath, oldToken, newToken);
                 result = fixToken(result, oldToken, newToken);

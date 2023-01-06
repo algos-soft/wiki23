@@ -8,5 +8,5 @@ package it.algos.vaad24.backend.enumeration;
  * Time: 17:23
  */
 public enum AECopyType {
-    directory, file, source, elabora
+    directory, file, source, elaboraFile, elaboraDir
 }

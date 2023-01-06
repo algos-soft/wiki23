@@ -551,7 +551,7 @@ public class ClassService extends AbstractService {
      *
      * @return lista del nome di tutte le classi 'entity' che implementano 'resetOnlyEmpty' nella classe xxxBackend del package
      */
-    public List<String> allModuleEntityResetNameList(final String moduleName) {
+    public List<String> allModuleEntityResetName(final String moduleName) {
         if (textService.isEmpty(moduleName)) {
             return null;
         }
@@ -559,25 +559,6 @@ public class ClassService extends AbstractService {
         return allModuleEntityResetClass(moduleName)
                 .stream()
                 .map(entityClazz -> annotationService.getReset(entityClazz))
-                .collect(Collectors.toList());
-    }
-    /**
-     * Spazzola tutta la directory package del modulo in esame e recupera
-     * tutte le classi di tipo 'entity' che implementano 'resetOnlyEmpty'
-     * nella classe xxxBackend contenute nella directory e nelle sue sottoclassi
-     *
-     * @param moduleName dal cui vanno estratte tutte le classi di tipo 'resetOnlyEmpty' che usano reset
-     *
-     * @return lista del nome di tutte le classi 'entity' che implementano 'resetOnlyEmpty' nella classe xxxBackend del package
-     */
-    public List<String> allModuleEntityResetNameSingle(final String moduleName) {
-        if (textService.isEmpty(moduleName)) {
-            return null;
-        }
-
-        return allModuleEntityResetClass(moduleName)
-                .stream()
-                .map(entityClazz -> annotationService.getCollectionName(entityClazz))
                 .collect(Collectors.toList());
     }
 
@@ -617,7 +598,7 @@ public class ClassService extends AbstractService {
             mappaClazz.put(simpleName, backendClazz);
         }
 
-        keyCollectionList = this.allModuleEntityResetNameList(moduleName);
+        keyCollectionList = this.allModuleEntityResetName(moduleName);
         keyCollectionList = arrayService.orderTree(keyCollectionList);
 
         if (keyCollectionList != null && keyCollectionList.size() > 0) {
@@ -632,26 +613,6 @@ public class ClassService extends AbstractService {
         return allOrderedClazz;
     }
 
-    /**
-     * Spazzola tutta la directory package del modulo in esame e recupera in ordine
-     * tutti i nomi delle classi di tipo 'backend' && 'reset' contenute nella directory e nelle sue sottoclassi
-     *
-     * @param moduleName dal cui vanno estratte tutte le classi di tipo 'backend' del package
-     *
-     * @return lista ordinata dei nomi di tutte le classi 'backend' && 'reset' del package
-     */
-    public List<String> allModuleBackendResetOrderedClassName(final String moduleName) {
-        List<String> allOrderedClazzName = new ArrayList<>();
-        List<Class> allOrderedClazz = allModuleBackendResetOrderedClass(moduleName);
-
-        if (allOrderedClazz!=null&&allOrderedClazz.size()>0) {
-            for (Class clazz : allOrderedClazz) {
-                allOrderedClazzName.add(clazz.getSimpleName());
-            }
-        }
-
-        return allOrderedClazzName;
-    }
 
     public AResult esegueMetodo(String publicClassName, String publicMethodName) {
         AResult result = AResult.build();

@@ -41,14 +41,15 @@ public enum AEWizProject {
 
     git("File GIT di esclusione (sources)", true, false, ".gitignore", AECopy.sourceSoloSeNonEsiste, "git"),
 
-    pom("File POM.xml di Maven (sources)", true, false, "pom.xml", AECopy.sourceSovrascriveSempreAncheSeEsiste, "pom"),
+    pomVaad24("File POM.xml di Maven (vaad24)", true, true, "pom.xml", AECopy.elaboraFile),
+    pomSources("File POM.xml di Maven (sources)", true, false, "pom.xml", AECopy.sourceSovrascriveSempreAncheSeEsiste, "pom"),
 
     read("File README con note di testo (sources)", true, false, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
     testBase("Directory TEST /base (vaad24)", false, false, "src/test/java/it/algos/base", AECopy.dirFilesModifica),
     testEnum("Directory TEST /enum (vaad24)", false, true, "src/test/java/it/algos/enumeration", AECopy.dirFilesModifica),
-    testService("Directory TEST /service (vaad24)", false, true, "src/test/java/it/algos/service", AECopy.elabora),
-    testBackend("Directory TEST /backend (vaad24)", false, true, "src/test/java/it/algos/backend", AECopy.elabora),
+    testService("Directory TEST /service (vaad24)", false, true, "src/test/java/it/algos/service", AECopy.elaboraDir),
+    testBackend("Directory TEST /backend (vaad24)", false, true, "src/test/java/it/algos/backend", AECopy.elaboraDir),
     application("Main class java", true, false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),
@@ -145,6 +146,9 @@ public enum AEWizProject {
     //    }
 
     public String getCopyDest() {
+        return copyDest;
+    }
+    public String getNomeFile() {
         return copyDest;
     }
 
