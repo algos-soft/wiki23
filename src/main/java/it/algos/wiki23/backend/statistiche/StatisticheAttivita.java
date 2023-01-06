@@ -220,14 +220,11 @@ public class StatisticheAttivita extends Statistiche {
         message = "La '''differenza''' tra le voci della categoria e quelle utilizzate è dovuta allo specifico utilizzo del [[template:Bio|template Bio]] ed in particolare all'uso del parametro Categorie=NO";
         buffer.append(textService.setRef(message));
         buffer.append(" voci biografiche che usano il [[template:Bio|template Bio]] e");
-        if (WPref.usaTreAttivita.is()) {
+        if (WPref.usaTreAttivitaStatistiche.is()) {
             buffer.append(" i parametri '''''attività, attività2, attività3'''''.");
-            //            message = "Ogni persona è presente in '''diverse liste''', in base a quanto riportato in uno dei '''3''' parametri '''''attività, attività2 e attività3''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona";
         }
         else {
             buffer.append(" il '''primo''' parametro '''''attività'''''.");
-            //            message = String.format("Ogni persona è presente in '''una sola lista''', in base a quanto riportato nel" +
-            //                    " '''primo''' parametro '''''attività''''' del [[template:Bio|template Bio]] presente nella voce biografica specifica della persona");
         }
         buffer.append(CAPO);
 
@@ -271,7 +268,7 @@ public class StatisticheAttivita extends Statistiche {
         buffer.append(textService.setRef(message));
         buffer.append(CAPO);
 
-        if (WPref.usaTreAttivita.is()) {
+        if (WPref.usaTreAttivitaStatistiche.is()) {
             buffer.append(color);
             buffer.append(textService.setBold("1° att"));
             buffer.append(CAPO);
@@ -304,7 +301,7 @@ public class StatisticheAttivita extends Statistiche {
         String riga;
         MappaStatistiche mappaSingola;
         String message;
-        boolean treAttivita = WPref.usaTreAttivita.is();
+        boolean treAttivita = WPref.usaTreAttivitaStatistiche.is();
         int soglia = WPref.sogliaAttNazWiki.getInt();
         boolean linkLista = WPref.usaLinkStatistiche.is();
 
@@ -457,7 +454,7 @@ public class StatisticheAttivita extends Statistiche {
         int k = 1;
         String riga;
         String message;
-        boolean treAttivita = WPref.usaTreAttivita.is();
+        boolean treAttivita = WPref.usaTreAttivitaStatistiche.is();
         boolean linkLista = WPref.usaLinkStatistiche.is();
 
         for (String key : mappa.keySet()) {

@@ -98,6 +98,7 @@ public enum WPref implements AIGenPref {
     sogliaIncludeParagrafo("sogliaIncludeParagrafo", AETypePref.integer, 50, "Soglia minima per usare i paragrafi 'inclusi' di secondo livello"),
 
     usaTreAttivita("usaTreAttivita", AETypePref.bool, false, "Considera tutte le attività (tre) nelle liste di attività"),
+    usaTreAttivitaStatistiche("usaTreAttivitaStatistiche", AETypePref.bool, true, "Considera tutte le attività (tre) nelle statistiche di attività"),
     usaParagrafiDimensionati("usaParagrafiDimensionati", AETypePref.bool, true, "Nel titolo del paragrafo aggiunge la dimensione delle " +
             "voci elencate"),
     usaLinkStatistiche("usaLinkStatistiche", AETypePref.bool, true, "Link alle liste di attività nel template statistiche, anche se " +

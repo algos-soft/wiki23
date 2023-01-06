@@ -91,7 +91,7 @@ public class StatisticheAttivitaTest extends WikiTest {
         WPref.usaTreAttivita.setValue(oldValue);
     }
 
-    //    @Test
+    //        @Test
     @Order(3)
     @DisplayName("3 - Upload col valore 'usaTreAttivita=true'")
     void upload3() {
@@ -100,7 +100,7 @@ public class StatisticheAttivitaTest extends WikiTest {
 
         System.out.println(VUOTA);
         WPref.usaTreAttivita.setValue(true);
-        ottenutoRisultato = appContext.getBean(StatisticheAttivita.class).upload();
+        ottenutoRisultato = appContext.getBean(StatisticheAttivita.class).test().upload();
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
 
@@ -141,7 +141,7 @@ public class StatisticheAttivitaTest extends WikiTest {
         assertTrue(ottenutoRisultato.isValido());
 
         printTime();
-//        printRisultato(ottenutoRisultato);
+        printRisultato(ottenutoRisultato);
     }
 
     /**

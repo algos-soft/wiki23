@@ -51,9 +51,9 @@ public class TaskAttivita extends VaadTask {
             super.fixNext();
 
             //--Statistiche
-            inizio = System.currentTimeMillis();
-            appContext.getBean(StatisticheAttivita.class).upload();
-            loggerElabora(inizio);
+//            inizio = System.currentTimeMillis();
+//            appContext.getBean(StatisticheAttivita.class).upload();
+//            loggerElabora(inizio);
 
             //--Upload
             inizio = System.currentTimeMillis();

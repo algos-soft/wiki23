@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.domain.*;
 import org.springframework.boot.autoconfigure.security.servlet.*;
 import org.springframework.boot.web.servlet.support.*;
 import org.springframework.context.*;
-import org.vaadin.artur.helpers.*;
 
 /**
  * Project Wiki23
@@ -51,7 +50,7 @@ public class Wiki23Application extends SpringBootServletInitializer {
      * @param args eventuali parametri in ingresso
      */
     public static void main(String[] args) {
-        LaunchUtil.launchBrowserInDevelopmentMode(SpringApplication.run(Wiki23Application.class, args));
+        SpringApplication.run(Wiki23Application.class, args);
         Wiki23Boot.start();
 
     }// end of SpringBoot constructor

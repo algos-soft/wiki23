@@ -250,12 +250,12 @@
             <version>2.2.5</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.vaadin.artur/a-vaadin-helper -->
-        <dependency>
-            <groupId>org.vaadin.artur</groupId>
-            <artifactId>a-vaadin-helper</artifactId>
-            <version>1.9.0</version>
-        </dependency>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.vaadin.artur/a-vaadin-helper &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.vaadin.artur</groupId>-->
+<!--            <artifactId>a-vaadin-helper</artifactId>-->
+<!--            <version>1.9.0</version>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
         <dependency>
