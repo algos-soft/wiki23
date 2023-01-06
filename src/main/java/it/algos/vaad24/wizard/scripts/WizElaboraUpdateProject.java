@@ -153,7 +153,7 @@ public class WizElaboraUpdateProject extends WizElabora {
             int a = 87;
         }
 
-        return null;
+        return AResult.valido();
     }
 
 

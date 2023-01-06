@@ -47,9 +47,9 @@ public enum AEWizProject {
     read("File README con note di testo (sources)", true, false, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
     testBase("Directory TEST /base (vaad24)", false, false, "src/test/java/it/algos/base", AECopy.dirFilesModifica),
-    testEnum("Directory TEST /enum (vaad24)", false, false, "src/test/java/it/algos/enumeration", AECopy.dirFilesModifica),
-    testService("Directory TEST /service (vaad24)", false, false, "src/test/java/it/algos/service", AECopy.elaboraDir),
-    testBackend("Directory TEST /backend (vaad24)", false, false, "src/test/java/it/algos/backend", AECopy.elaboraDir),
+    testEnum("Directory TEST /enum (vaad24)", false, true, "src/test/java/it/algos/enumeration", AECopy.dirFilesModifica),
+    testService("Directory TEST /service (vaad24)", false, true, "src/test/java/it/algos/service", AECopy.elaboraDir),
+    testBackend("Directory TEST /backend (vaad24)", false, true, "src/test/java/it/algos/backend", AECopy.elaboraDir),
     application("Main class java", true, false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),
