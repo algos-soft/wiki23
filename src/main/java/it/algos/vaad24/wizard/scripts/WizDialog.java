@@ -154,7 +154,7 @@ public abstract class WizDialog extends Dialog {
     //    protected ComboBox<String> fieldComboPackages;
     //
     //    protected String nomeModulo;
-    protected HorizontalLayout spanConferma;
+    protected VerticalLayout spanConferma;
 
     /**
      * Regolazioni grafiche

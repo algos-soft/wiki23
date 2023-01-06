@@ -1169,12 +1169,24 @@ public class FileService extends AbstractService {
      * @param text                contenuto del file
      */
     public boolean sovraScriveFile(String pathFileToBeWritten, String text) {
+        return sovraScriveFileDir(pathFileToBeWritten, text, true);
+    }
+
+    /**
+     * Sovrascrive un file
+     *
+     * @param pathFileToBeWritten nome completo del file
+     * @param text                contenuto del file
+     */
+    public boolean sovraScriveFileDir(String pathFileToBeWritten, String text, boolean creaDirectory) {
         boolean status = false;
         File fileToBeWritten;
         FileWriter fileWriter = null;
 
         fileToBeWritten = new File(pathFileToBeWritten);
-        creaDirectoryParentAndFile(fileToBeWritten);
+        if (creaDirectory) {
+            creaDirectoryParentAndFile(fileToBeWritten);
+        }
 
         try {
             fileWriter = new FileWriter(fileToBeWritten);

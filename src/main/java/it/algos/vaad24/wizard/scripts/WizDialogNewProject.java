@@ -133,7 +133,7 @@ public class WizDialogNewProject extends it.algos.vaad24.wizard.scripts.WizDialo
         cancelButton.getElement().setAttribute("theme", "secondary");
         confirmButton.getElement().setAttribute("theme", "primary");
 
-        spanConferma = new HorizontalLayout();
+        spanConferma = new VerticalLayout();
     }
 
 

@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Scope;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class WizElaboraFeedBack extends it.algos.vaad24.wizard.scripts.WizElabora {
+public class WizElaboraFeedBack extends WizElabora {
 
     public void esegue() {
         String message;

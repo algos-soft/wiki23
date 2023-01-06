@@ -80,80 +80,78 @@ public class WizElaboraUpdateProject extends WizElabora {
         switch (wiz) {
             case pomVaad24 -> {
                 result = fileService.copyFile(AECopy.fileDelete, srcVaad24, destNewProject, wiz.getNomeFile());
-                result = fixToken(result, oldToken, newToken);
+                oldToken = PROJECT_VAADIN24;
+                newToken = VaadVar.projectCurrent;
+                result = fixToken(result, wiz, oldToken, newToken);
                 mostraRisultato(result, AECopy.dirFilesModificaToken, dir, tag);
             }
             case testService, testBackend -> {
                 result = fileService.copyDirectory(AECopy.dirFilesModificaToken, srcPath, destPath, oldToken, newToken);
-                result = fixToken(result, oldToken, newToken);
+                result = fixToken(result, wiz, oldToken, newToken);
                 mostraRisultato(result, AECopy.dirFilesModificaToken, dir, tag);
             }
             default -> {}
         }
     }
 
-    public AResult fixToken(AResult result, String oldToken, String newToken) {
+    public AResult fixToken(AResult result, AEWizProject wiz, String oldToken, String newToken) {
         String testoBase;
         String testoSostituito;
         String path;
         String destPath = result.getTarget();
         Map<String, List> resultMap;
         List<String> allFiles = new ArrayList<>();
+        AECopy copy = wiz.getCopy();
         boolean status;
 
         if (result == null || result.isErrato()) {
             logger.warn(AETypeLog.file, new AlgosException(result.getErrorMessage()));
             return result;
         }
-        resultMap = result.getMappa();
-        if (resultMap == null) {
-            logger.warn(AETypeLog.file, new AlgosException(result.getErrorMessage()));
-            return result;
-        }
 
-        if (resultMap.get(AEKeyMapFile.aggiuntiNuovi.name()) != null) {
-            allFiles.addAll(resultMap.get(AEKeyMapFile.aggiuntiNuovi.name()));
-        }
-        if (resultMap.get(AEKeyMapFile.tokenUguali.name()) != null) {
-            allFiles.addAll(resultMap.get(AEKeyMapFile.tokenUguali.name()));
-        }
-        if (resultMap.get(AEKeyMapFile.tokenModificati.name()) != null) {
-            allFiles.addAll(resultMap.get(AEKeyMapFile.tokenModificati.name()));
-        }
+        if (copy == AECopy.elaboraDir) {
+            resultMap = result.getMappa();
+            if (resultMap == null) {
+                logger.warn(AETypeLog.file, new AlgosException(result.getErrorMessage()));
+                return result;
+            }
 
-        if (allFiles != null) {
-            for (String nomeFile : allFiles) {
-                path = destPath + nomeFile;
-                testoBase = fileService.leggeFile(path);
-                testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
-                status = fileService.sovraScriveFile(path, testoSostituito);
-                if (testoSostituito.equals(testoBase)) {
-                    int a = 87;
+            if (resultMap.get(AEKeyMapFile.aggiuntiNuovi.name()) != null) {
+                allFiles.addAll(resultMap.get(AEKeyMapFile.aggiuntiNuovi.name()));
+            }
+            if (resultMap.get(AEKeyMapFile.tokenUguali.name()) != null) {
+                allFiles.addAll(resultMap.get(AEKeyMapFile.tokenUguali.name()));
+            }
+            if (resultMap.get(AEKeyMapFile.tokenModificati.name()) != null) {
+                allFiles.addAll(resultMap.get(AEKeyMapFile.tokenModificati.name()));
+            }
+
+            if (allFiles != null) {
+                for (String nomeFile : allFiles) {
+                    path = destPath + nomeFile;
+                    result = fixToken(path, oldToken, newToken, true);
                 }
             }
+        }
+        else {
+            result = fixToken(destPath, oldToken, newToken, false);
         }
 
         return result;
     }
 
 
-    public AResult fixToken(String srcPath, String destPath, String oldToken, String newToken) {
+    public AResult fixToken(String path, String oldToken, String newToken, boolean creaDir) {
         String testoBase;
         String testoSostituito;
-        String path;
-        //        String destPath = result.getTarget();
-        //        Map<String, List> resultMap = result.getMappa();
-        //        List<String> files = resultMap.get(KEY_MAPPA_MODIFICATI);
-        //        result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
+        boolean status;
 
-        //        for (String nomeFile : files) {
-        //            path = destPath + nomeFile;
-        //            testoBase = fileService.leggeFile(path);
-        //            testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
-        //            fileService.sovraScriveFile(path, testoSostituito);
-        //            if (testoSostituito.equals(testoBase)) {
-        //            }
-        //        }
+        testoBase = fileService.leggeFile(path);
+        testoSostituito = textService.sostituisce(testoBase, oldToken, newToken);
+        status = fileService.sovraScriveFileDir(path, testoSostituito, creaDir);
+        if (testoSostituito.equals(testoBase)) {
+            int a = 87;
+        }
 
         return null;
     }

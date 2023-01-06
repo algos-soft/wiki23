@@ -203,6 +203,7 @@ public class WizardView extends VerticalLayout {
     }
 
     private void elaboraUpdateProject(final LinkedHashMap<String, Checkbox> mappaCheckbox) {
+        elaboraFeedBack();
         appContext.getBean(WizElaboraUpdateProject.class, updateProject).esegue(mappaCheckbox);
     }
 
